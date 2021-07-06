@@ -85,6 +85,13 @@ public:
     virtual std::string getCorrelationId() = 0;
 
     /**
+     * Set the correlation id which can be used to debug transaction errors
+     * through the full ledger stack
+     * @return the OLD Correlation ID, if it was set (empty string if it was unset)
+     */
+    virtual std::string setCorrelationId(const std::string & correlationId) = 0;
+
+    /**
      * Sign all inputs for given transaction. 
      * Build DER encoded signature from RSV data.
      * @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration

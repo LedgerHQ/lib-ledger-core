@@ -61,6 +61,7 @@ namespace ledger {
             std::chrono::system_clock::time_point getDate() override;
             std::shared_ptr<api::EthereumLikeBlock> getBlock() override;
             std::string getCorrelationId() override;
+            std::string setCorrelationId(const std::string& newId) override;
             void setSignature(const std::vector<uint8_t> & vSignature, const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) override ;
             void setDERSignature(const std::vector<uint8_t> & signature) override;
             void setVSignature(const std::vector<uint8_t> & vSignature) override;

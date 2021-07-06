@@ -47,13 +47,18 @@ public:
 
     virtual std::string getCorrelationId() const = 0;
 
+    /**
+     * Set the correlation id which can be used to debug transaction errors
+     * through the full ledger stack
+     * @return the OLD Correlation ID, if it was set (empty string if it was unset)
+     */
+    virtual std::string setCorrelationId(const std::string & correlationId) = 0;
+
     virtual void setSender(const std::string & sender) = 0;
 
     virtual void setFee(const std::string & fee) = 0;
 
     virtual void setNote(const std::string & note) = 0;
-
-    virtual void setCorrelationId(const std::string & correlationId) = 0;
 
     virtual void setPaymentInfo(const AlgorandPaymentInfo & info) = 0;
 

@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <vector>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
@@ -45,6 +46,16 @@ public:
 
     /** Returns the transaction memo */
     virtual std::shared_ptr<StellarLikeMemo> getMemo() = 0;
+
+    /** Get the correlation id */
+    virtual std::string getCorrelationId() = 0;
+
+    /**
+     * Set the correlation id which can be used to debug transaction errors
+     * through the full ledger stack
+     * @return the OLD Correlation ID, if it was set (empty string if it was unset)
+     */
+    virtual std::string setCorrelationId(const std::string & correlationId) = 0;
 };
 
 } } }  // namespace ledger::core::api

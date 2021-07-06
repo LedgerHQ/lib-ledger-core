@@ -130,6 +130,12 @@ namespace ledger {
             return _correlationId;
         }
 
+        std::string BitcoinLikeTransactionApi::setCorrelationId(const std::string& newId)  {
+            auto oldId = _correlationId;
+            _correlationId = newId;
+            return oldId;
+        }
+
         optional<int32_t> BitcoinLikeTransactionApi::getTimestamp() {
             return _timestamp.map<int32_t>([](const uint32_t &v) {
                 return (int32_t) v;

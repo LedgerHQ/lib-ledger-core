@@ -34,6 +34,12 @@ public:
 
     virtual std::shared_ptr<StellarLikeTransactionBuilder> setBaseFee(const std::shared_ptr<Amount> & baseFee) = 0;
 
+    /**
+     * Set the correlation id (used to track a transaction)
+     * @return A reference on the same builder in order to chain calls.
+     */
+    virtual std::shared_ptr<StellarLikeTransactionBuilder> setCorrelationId(const std::string & correlationId) = 0;
+
     virtual std::shared_ptr<StellarLikeTransactionBuilder> setTextMemo(const std::string & text) = 0;
 
     virtual std::shared_ptr<StellarLikeTransactionBuilder> setNumberMemo(const std::shared_ptr<BigInt> & number) = 0;
