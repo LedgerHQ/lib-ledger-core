@@ -50,7 +50,7 @@ namespace ledger {
 
             Future<std::shared_ptr<stellar::Account>> getAccount(const std::string &accountId) const override;
 
-            Future<std::string> postTransaction(const std::vector<uint8_t> &tx) override;
+            Future<std::string> postTransaction(const std::vector<uint8_t> &tx, const std::string& correlationId = "") override;
         };
     }
 }

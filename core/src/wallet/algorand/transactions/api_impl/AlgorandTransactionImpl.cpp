@@ -205,9 +205,10 @@ namespace algorand {
         return correlationId;
     }
 
-    void AlgorandTransactionImpl::setCorrelationId(const std::string& corrId) 
-    {
-        correlationId = corrId;
+    std::string AlgorandTransactionImpl::setCorrelationId(const std::string& newId)  {
+        auto oldId = correlationId;
+        correlationId = newId;
+        return oldId;
     }
 
 } // namespace algorand

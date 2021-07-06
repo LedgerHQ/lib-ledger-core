@@ -387,5 +387,11 @@ namespace ledger {
             return _correlationId;
         }
 
+        std::string RippleLikeTransactionApi::setCorrelationId(const std::string& newId)  {
+            auto oldId = _correlationId;
+            _correlationId = newId;
+            return oldId;
+        }
+
     }
 }

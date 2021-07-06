@@ -433,10 +433,12 @@ namespace ledger {
             return _txData;
         }
 
-        void CosmosLikeTransactionApi::setCorrelationId(const std::string &correlationId)
-        {
-            _correlationId = correlationId;
+        std::string CosmosLikeTransactionApi::setCorrelationId(const std::string& newId)  {
+            auto oldId = _correlationId;
+            _correlationId = newId;
+            return oldId;
         }
+
 
         std::string CosmosLikeTransactionApi::getCorrelationId() const
         {

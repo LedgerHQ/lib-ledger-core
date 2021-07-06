@@ -58,6 +58,13 @@ public:
     /** Get Signing public Key */
     virtual std::string getCorrelationId() const = 0;
 
+    /**
+     * Set the correlation id which can be used to debug transaction errors
+     * through the full ledger stack
+     * @return the OLD Correlation ID, if it was set (empty string if it was unset)
+     */
+    virtual std::string setCorrelationId(const std::string & correlationId) = 0;
+
     /** Serialize the transaction to be signed */
     virtual std::string serializeForSignature() = 0;
 
