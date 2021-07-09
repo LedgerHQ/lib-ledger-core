@@ -275,13 +275,18 @@ namespace ledger {
                     });
         }
 
-        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
             std::stringstream body;
             auto hexTx = "0x" + hex::toString(transaction);
             body << "{" << "\"tx\":" << '"' << hexTx << '"' << "}";
             auto bodyString = body.str();
+            std::unordered_map<std::string, std::string> headers;
+            if(!correlationId.empty()) {
+                headers["X-Correlation-ID"] = correlationId;
+            }
             return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send", getExplorerVersion(), getNetworkParameters().Identifier),
-                               std::vector<uint8_t>(bodyString.begin(), bodyString.end())
+                               std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
+                               headers
             ).json().template map<String>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) -> String {
                 auto& json = *std::get<1>(result);
                 return json["result"].GetString();
@@ -300,8 +305,8 @@ namespace ledger {
             return getLedgerApiRawTransaction(transactionHash);
         }
 
-        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t>& transaction) {
-            return pushLedgerApiTransaction(transaction);
+        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t>& transaction, const std::string& correlationId) {
+            return pushLedgerApiTransaction(transaction, correlationId);
         }
 
         FuturePtr<EthereumLikeBlockchainExplorer::TransactionsBulk>

@@ -101,6 +101,12 @@ namespace ledger {
         }
 
         std::shared_ptr<api::RippleLikeTransactionBuilder>
+        RippleLikeTransactionBuilder::setCorrelationId(const std::string &correlationId) {
+            _request.correlationId = correlationId;
+            return shared_from_this();
+        }
+
+        std::shared_ptr<api::RippleLikeTransactionBuilder>
         RippleLikeTransactionBuilder::addMemo(const api::RippleLikeMemo& memo) {
             _request.memos.push_back(memo);
             return shared_from_this();

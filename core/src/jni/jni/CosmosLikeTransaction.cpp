@@ -112,6 +112,16 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_CosmosLikeTransaction_00024Cpp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeTransaction_00024CppProxy_native_1getCorrelationId(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeTransaction>(nativeRef);
+        auto r = ref->getCorrelationId();
+        return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeTransaction_00024CppProxy_native_1serializeForSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {

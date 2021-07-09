@@ -81,6 +81,9 @@ public:
     /** Get the dust amount based on the maximum estimated size of the transaction */
     virtual int64_t getDustAmount() = 0;
 
+    /** Get the id used to track a transaction */
+    virtual std::string getCorrelationId() = 0;
+
     /**
      * Sign all inputs for given transaction. 
      * Build DER encoded signature from RSV data.

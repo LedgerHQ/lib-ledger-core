@@ -46,6 +46,8 @@ TezosLikeTransaction = interface +c {
 	getBlockHash(): optional<string>;
 	# Get status of transaction: equals to 1 if succeeded, 0 otherwise
 	getStatus(): i32;
+	# Get the correlation id
+	getCorrelationId(): string;
 }
 
 #Class representing a Tezos Operation
@@ -94,6 +96,9 @@ TezosLikeTransactionBuilder = interface +c {
 	# Reference : https://tezos.gitlab.io/zeronet/whitedoc/michelson.html
 	# @return A reference on the same builder in order to chain calls.
 	setStorageLimit(storageLimit: BigInt): TezosLikeTransactionBuilder;
+	# Set the correlation id (used to track a transaction)
+	# @return A reference on the same builder in order to chain calls.
+	setCorrelationId(correlationId: string): TezosLikeTransactionBuilder;
 
 	# Build a transaction from the given builder parameters.
 	build(callback: Callback<TezosLikeTransaction>);

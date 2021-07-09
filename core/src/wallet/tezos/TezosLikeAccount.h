@@ -141,6 +141,9 @@ namespace ledger {
 
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
+            void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
+                                         const std::shared_ptr<api::StringCallback> &callback,
+                                         const std::string& correlationId);
 
             std::shared_ptr<TezosLikeKeychain> _keychain;
             std::string _accountAddress;

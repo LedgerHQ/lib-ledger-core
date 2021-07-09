@@ -34,6 +34,8 @@
 #include <api/Configuration.hpp>
 #include <rapidjson/document.h>
 #include <wallet/currencies.hpp>
+#include <wallet/common/api_impl/OperationApi.h>
+
 
 namespace ledger {
     namespace core {
@@ -122,18 +124,18 @@ namespace ledger {
         }
 
         Future<String>
-        NodeRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+        NodeRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("submit");
             bodyRequest.pushParameter("tx_blob", hex::toString(transaction));
             auto requestBody = bodyRequest.getString();
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
-                    .json().template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
+                    .json().template map<String>(getExplorerContext(), [correlationId](const HttpRequest::JsonResult &result) -> String {
                         auto &json = *std::get<1>(result);
                         if (!json.IsObject() || !json.HasMember("result") ||
                             !json["result"].IsObject()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"result\" in response");
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "{} Failed to broadcast transaction, no (or malformed) field \"result\" in response", CORRELATIONID_PREFIX(correlationId));
                         }
 
                         auto resultObj = json["result"].GetObject();
@@ -143,13 +145,13 @@ namespace ledger {
                              resultObj["engine_result"] == "terQUEUED")) {
                           // Check presence of tx_json field
                           if (!resultObj.HasMember("tx_json") || !resultObj["tx_json"].IsObject()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"tx_json\" in response");
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "{} Failed to broadcast transaction, no (or malformed) field \"tx_json\" in response", CORRELATIONID_PREFIX(correlationId));
                           }
                           auto txnObj = resultObj["tx_json"].GetObject();
 
                           // Check presence of hash field
                           if (!txnObj.HasMember("hash") || !txnObj["hash"].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"hash\" in response");
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "{} Failed to broadcast transaction, no (or malformed) field \"hash\" in response", CORRELATIONID_PREFIX(correlationId));
                           }
 
                           return txnObj["hash"].GetString();
@@ -157,7 +159,8 @@ namespace ledger {
 
 
                         throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                             "Failed to broadcast transaction: {}",
+                                             "{} Failed to broadcast transaction: {}",
+                                             CORRELATIONID_PREFIX(correlationId), 
                                              resultObj["engine_result"].GetString());
                     });
         }
@@ -193,8 +196,8 @@ namespace ledger {
                     });
         }
 
-        Future<String> NodeRippleLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
-            return pushLedgerApiTransaction(transaction);
+        Future<String> NodeRippleLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
+            return pushLedgerApiTransaction(transaction, correlationId);
         }
 
         FuturePtr<RippleLikeBlockchainExplorer::TransactionsBulk>

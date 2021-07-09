@@ -59,6 +59,9 @@ public:
     /** Get status of transaction: equals to 1 if succeeded, 0 otherwise */
     virtual int32_t getStatus() = 0;
 
+    /** Get correlation id */
+    virtual std::string getCorrelationId() = 0;
+
     /** Serialize the transaction to its raw format. */
     virtual std::vector<uint8_t> serialize() = 0;
 
