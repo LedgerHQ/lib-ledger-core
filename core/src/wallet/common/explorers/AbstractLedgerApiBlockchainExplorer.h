@@ -159,7 +159,7 @@ namespace ledger {
                         });
             }
 
-            virtual Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) = 0 ;
+            virtual Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId="") = 0 ;
         protected:
             virtual std::shared_ptr<api::ExecutionContext> getExplorerContext() const = 0;
             virtual NetworkParameters getNetworkParameters() const = 0;

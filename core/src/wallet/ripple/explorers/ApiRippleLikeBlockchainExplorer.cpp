@@ -47,7 +47,7 @@ namespace ledger {
         }
 
         Future<String>
-        ApiRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+        ApiRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
             throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Missing implementation of pushTransaction method for Ripple API");
         }
 
@@ -114,8 +114,8 @@ namespace ledger {
             throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Missing implementation of getRawTransaction method for Ripple API");
         }
 
-        Future<String> ApiRippleLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
-            return pushLedgerApiTransaction(transaction);
+        Future<String> ApiRippleLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
+            return pushLedgerApiTransaction(transaction, correlationId);
         }
 
         FuturePtr<RippleLikeBlockchainExplorer::TransactionsBulk>

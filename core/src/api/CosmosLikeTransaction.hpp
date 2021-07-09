@@ -55,6 +55,9 @@ public:
     /** Get Signing public Key */
     virtual std::vector<uint8_t> getSigningPubKey() const = 0;
 
+    /** Get Signing public Key */
+    virtual std::string getCorrelationId() const = 0;
+
     /** Serialize the transaction to be signed */
     virtual std::string serializeForSignature() = 0;
 

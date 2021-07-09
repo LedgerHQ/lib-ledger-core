@@ -42,6 +42,8 @@ RippleLikeTransaction = interface +c {
     getDestinationTag(): optional<i64>;
     # Status of the transaction.
     getStatus(): i32;
+    # Get the correlation id
+    getCorrelationId(): string;
 }
 
 #Class representing a Ripple Operation
@@ -80,6 +82,10 @@ RippleLikeTransactionBuilder = interface +c {
     # Set fees (in drop) the originator is willing to pay
     # @return A reference on the same builder in order to chain calls.
     setFees(fees: Amount): RippleLikeTransactionBuilder;
+
+    # Set correlation id
+    # @return A reference on the same builder in order to chain calls.
+    setCorrelationId(correlationId: string): RippleLikeTransactionBuilder;
 
     # Add a memo.
     # @return A reference on the same builder in order to chain calls.

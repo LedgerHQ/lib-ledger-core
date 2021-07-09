@@ -70,7 +70,7 @@ namespace algorand {
 
         Future<model::TransactionParams> getTransactionParams() const;
 
-        Future<std::string> pushTransaction(const std::vector<uint8_t> & transaction);
+        Future<std::string> pushTransaction(const std::vector<uint8_t> & transaction, const std::string& correlationId="");
 
     private:
 

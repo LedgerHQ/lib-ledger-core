@@ -220,8 +220,9 @@ namespace ledger {
         }
 
         void TezosLikeAccount::_broadcastRawTransaction(const std::vector<uint8_t> &transaction,
-                                                       const std::shared_ptr<api::StringCallback> &callback,
-                                                       const std::shared_ptr<BigInt>& counter) {
+                                                        const std::shared_ptr<api::StringCallback> &callback,
+                                                        const std::shared_ptr<BigInt>& counter,
+                                                        const std::string& correlationId) {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             _explorer->pushTransaction(transaction)
                     .map<std::string>(getContext(),
@@ -247,13 +248,20 @@ namespace ledger {
 
         void TezosLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                        const std::shared_ptr<api::StringCallback> &callback) {
+            broadcastRawTransaction(transaction, callback, "");
+        }
+
+        void TezosLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
+                                                       const std::shared_ptr<api::StringCallback> &callback,
+                                                       const std::string& correlationId) {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             const std::string optimisticStrategy = self->getWallet()->getConfiguration()->getString(
                 api::TezosConfiguration::TEZOS_COUNTER_STRATEGY).value_or("");
             if (optimisticStrategy == "OPTIMISTIC") {
                 throw Exception(api::ErrorCode::API_ERROR, "broadcastRawTransaction not authorized with OPTIMISTIC COUNTER" );
             }
-            _broadcastRawTransaction(transaction, callback, nullptr);
+            _broadcastRawTransaction(transaction, callback, nullptr, correlationId);
+
         }
 
         void TezosLikeAccount::broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
@@ -263,7 +271,9 @@ namespace ledger {
             if (tx->toReveal()) {
                 ++(*counter);
         }
-            _broadcastRawTransaction(transaction->serialize(), callback, counter);
+        logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
+            _broadcastRawTransaction(transaction->serialize(), callback, counter, transaction->getCorrelationId());
+            broadcastRawTransaction(transaction->serialize(), callback, transaction->getCorrelationId());
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder> TezosLikeAccount::buildTransaction() {

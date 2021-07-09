@@ -381,5 +381,11 @@ namespace ledger {
         int32_t RippleLikeTransactionApi::getStatus() {
             return _status;
         }
+
+        
+        std::string RippleLikeTransactionApi::getCorrelationId() {
+            return _correlationId;
+        }
+
     }
 }

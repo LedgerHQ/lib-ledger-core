@@ -122,6 +122,13 @@ public:
     virtual void reset() = 0;
 
     /**
+     * Set the correlation id which can be used to debug transaction errors
+     * through the full ledger stack 
+     * @return A reference on the same builder in order to chain calls.
+     */
+    virtual std::shared_ptr<BitcoinLikeTransactionBuilder> setCorrelationId(const std::string & correlationId) = 0;
+
+    /**
      * Parsing unsigned transaction.
      * parsing a tx might change depending on block height we are on (if an update is effective starting from a given hight)
      */

@@ -51,6 +51,7 @@ struct CosmosLikeTransactionBuildRequest {
     std::string accountNumber;
     std::string memo;
     std::string sequence;
+    std::string correlationId;
     std::vector<std::shared_ptr<api::CosmosLikeMessage>> messages;
 };
 
@@ -87,6 +88,9 @@ class CosmosLikeTransactionBuilder :
 
     std::shared_ptr<api::CosmosLikeTransactionBuilder> setFee(
         const std::shared_ptr<api::Amount> &fee) override;
+
+    std::shared_ptr<api::CosmosLikeTransactionBuilder> setCorrelationId(
+        const std::string &correlationId) override;
 
     void build(const std::shared_ptr<api::CosmosLikeTransactionCallback> &callback) override;
     Future<std::shared_ptr<api::CosmosLikeTransaction>> build();

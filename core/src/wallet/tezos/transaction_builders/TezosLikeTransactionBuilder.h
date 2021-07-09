@@ -63,6 +63,7 @@ namespace ledger {
             std::shared_ptr<BigInt> revealGasLimit;
             api::TezosOperationTag type;
             bool wipe;
+            std::string correlationId;
         };
 
         using TezosLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::TezosLikeTransaction>>(
@@ -103,6 +104,9 @@ namespace ledger {
 
             std::shared_ptr<api::TezosLikeTransactionBuilder>
             setStorageLimit(const std::shared_ptr<api::BigInt> & storageLimit) override;
+
+            std::shared_ptr<api::TezosLikeTransactionBuilder>
+            setCorrelationId(const std::string &correlationId) override;
 
             void build(const std::shared_ptr<api::TezosLikeTransactionCallback> &callback) override;
 

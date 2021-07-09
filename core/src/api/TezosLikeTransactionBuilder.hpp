@@ -83,6 +83,12 @@ public:
      */
     virtual std::shared_ptr<TezosLikeTransactionBuilder> setStorageLimit(const std::shared_ptr<BigInt> & storageLimit) = 0;
 
+    /**
+     * Set the correlation id (used to track a transaction)
+     * @return A reference on the same builder in order to chain calls.
+     */
+    virtual std::shared_ptr<TezosLikeTransactionBuilder> setCorrelationId(const std::string & correlationId) = 0;
+
     /** Build a transaction from the given builder parameters. */
     virtual void build(const std::shared_ptr<TezosLikeTransactionCallback> & callback) = 0;
 

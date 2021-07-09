@@ -118,7 +118,8 @@ namespace ledger {
 
             void _broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                          const std::shared_ptr<api::StringCallback> &callback,
-                                         const std::shared_ptr<BigInt>& counter) ;
+                                         const std::shared_ptr<BigInt>& counter,
+                                         const std::string& correlationId) ;
 
             void broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
                                       const std::shared_ptr<api::StringCallback> &callback) override;
@@ -158,6 +159,9 @@ namespace ledger {
             void getTokenBalance(const std::string& tokenAddress, const std::shared_ptr<api::BigIntCallback>& callback) override;
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
+            void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
+                                         const std::shared_ptr<api::StringCallback> &callback,
+                                         const std::string& correlationId);
 
             std::shared_ptr<TezosLikeKeychain> _keychain;
             std::string _accountAddress;

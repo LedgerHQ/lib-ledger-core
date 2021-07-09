@@ -83,6 +83,9 @@ public:
 
     /** Get status of transaction: equals to 1 if succeeded, 0 otherwise */
     virtual int32_t getStatus() = 0;
+
+    /** Get the correlation id */
+    virtual std::string getCorrelationId() = 0;
 };
 
 } } }  // namespace ledger::core::api
