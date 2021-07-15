@@ -1,3 +1,15 @@
+## 4.0.3
+> 2021/07/15
+
+- Add correlationId setters and getters
+  in TransactionBuilder and Transaction APIs
+- Update googletest dependency to compile with
+  recent compilers
+- Merge and reduce size of foreign outputs stored
+  after synchronization (mitigation against dust attacks that
+  inflate DB and reduce performance)
+- Add more balance cache invalidations
+
 ## 4.0.2
 > 2021/04/14
 
