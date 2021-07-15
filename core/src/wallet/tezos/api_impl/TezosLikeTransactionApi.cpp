@@ -699,5 +699,12 @@ namespace ledger {
         std::string TezosLikeTransactionApi::getCorrelationId() {
             return _correlationId;
         }
+
+        std::string TezosLikeTransactionApi::setCorrelationId(const std::string& newId)  {
+            auto oldId = _correlationId;
+            _correlationId = newId;
+            return oldId;
+        }
+
     }
 }

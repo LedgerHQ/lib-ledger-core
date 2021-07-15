@@ -224,7 +224,7 @@ namespace ledger {
                                                         const std::shared_ptr<BigInt>& counter,
                                                         const std::string& correlationId) {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
-            _explorer->pushTransaction(transaction)
+            _explorer->pushTransaction(transaction, correlationId)
                     .map<std::string>(getContext(),
                                       [self, counter](const String &seq) -> std::string {
                                             auto txHash = seq.str();
@@ -270,10 +270,9 @@ namespace ledger {
             auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(transaction);
             if (tx->toReveal()) {
                 ++(*counter);
-        }
-        logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
+            }
+            logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
             _broadcastRawTransaction(transaction->serialize(), callback, counter, transaction->getCorrelationId());
-            broadcastRawTransaction(transaction->serialize(), callback, transaction->getCorrelationId());
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder> TezosLikeAccount::buildTransaction() {

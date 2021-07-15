@@ -447,9 +447,17 @@ namespace ledger {
             broadcastRawTransaction(tx).callback(getMainExecutionContext(), callback);
         }
 
-
         Future<std::string> StellarLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &tx) {
-            return _params.explorer->postTransaction(tx);
+            return _params.explorer->postTransaction(tx, "");
+        }
+
+        void StellarLikeAccount::broadcastTransaction(const std::shared_ptr<api::StellarLikeTransaction> &tx,
+                                                         const std::shared_ptr<api::StringCallback> &callback) {
+            broadcastTransaction(tx).callback(getMainExecutionContext(), callback);
+        }
+
+        Future<std::string> StellarLikeAccount::broadcastTransaction(const std::shared_ptr<api::StellarLikeTransaction> &tx) {
+            return _params.explorer->postTransaction(tx->toRawTransaction(), tx->getCorrelationId());
         }
 
         Future<bool> StellarLikeAccount::exists() {

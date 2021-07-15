@@ -70,6 +70,9 @@ namespace ledger {
             std::shared_ptr<api::StellarLikeTransactionBuilder>
             setSequence(const std::shared_ptr<api::BigInt> &sequence) override;
 
+            std::shared_ptr<api::StellarLikeTransactionBuilder>
+            setCorrelationId(const std::string & correlationId) override;
+
             void build(const std::shared_ptr<api::StellarLikeTransactionCallback> &callback) override;
             FuturePtr<api::StellarLikeTransaction> build();
 
@@ -78,6 +81,7 @@ namespace ledger {
             stellar::xdr::TransactionV1Envelope _envelope;
             Option<uint64_t> _baseFee;
             BigInt _balanceChange;
+            std::string _correlationId;
 
         };
     }

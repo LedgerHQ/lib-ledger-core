@@ -8,6 +8,7 @@
 #include "Marshal.hpp"
 #include "StellarLikeAccountSignerListCallback.hpp"
 #include "StellarLikeFeeStatsCallback.hpp"
+#include "StellarLikeTransaction.hpp"
 #include "StellarLikeTransactionBuilder.hpp"
 #include "StringCallback.hpp"
 
@@ -52,6 +53,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeAccount_00024CppProxy_nat
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeAccount>(nativeRef);
         ref->broadcastRawTransaction(::djinni::Binary::toCpp(jniEnv, j_tx),
                                      ::djinni_generated::StringCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeAccount_00024CppProxy_native_1broadcastTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_tx, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeAccount>(nativeRef);
+        ref->broadcastTransaction(::djinni_generated::StellarLikeTransaction::toCpp(jniEnv, j_tx),
+                                  ::djinni_generated::StringCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

@@ -202,4 +202,14 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppProx
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppProxy_native_1setCorrelationId(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_correlationId)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransaction>(nativeRef);
+        auto r = ref->setCorrelationId(::djinni::String::toCpp(jniEnv, j_correlationId));
+        return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 }  // namespace djinni_generated
