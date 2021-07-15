@@ -143,11 +143,15 @@ namespace ledger {
                     });
         }
 
-        Future<std::string> HorizonBlockchainExplorer::postTransaction(const std::vector<uint8_t> &tx) {
+        Future<std::string> HorizonBlockchainExplorer::postTransaction(const std::vector<uint8_t> &tx, const std::string& correlationId) {
             std::stringstream body;
             body << "tx=" << url::encodeUrlQuery(BaseConverter::encode(tx, BaseConverter::BASE64_RFC4648));
             auto bodyString = body.str();
-            return http->POST("/transactions", std::vector<uint8_t>(bodyString.begin(), bodyString.end()), {{"Content-Type", "application/x-www-form-urlencoded"}})
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/x-www-form-urlencoded"}};
+            if(!correlationId.empty()) {
+                headers["X-Correlation-ID"] = correlationId;
+            }
+            return http->POST("/transactions", std::vector<uint8_t>(bodyString.begin(), bodyString.end()), headers)
             .json().template map<std::string>(getContext(), [] (const HttpRequest::JsonResult& result) -> std::string {
                 auto& json = *std::get<1>(result);
                 return json["hash"].GetString();

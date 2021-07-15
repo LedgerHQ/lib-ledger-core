@@ -100,6 +100,12 @@ namespace ledger {
             return shared_from_this();
         }
 
+        std::shared_ptr<api::StellarLikeTransactionBuilder>
+        StellarLikeTransactionBuilder::setCorrelationId(const std::string &id) {
+            _correlationId = id;
+            return shared_from_this();
+        }
+
         void
         StellarLikeTransactionBuilder::build(const std::shared_ptr<api::StellarLikeTransactionCallback> &callback) {
            build().callback(_account->getContext(), callback);
@@ -115,6 +121,7 @@ namespace ledger {
             auto pubKey = _account->params().keychain->getAddress()->toPublicKey();
             auto balanceChange = _balanceChange;
             auto baseFee = _baseFee.getValueOr(100);
+            auto correlationId = _correlationId;
             return account->getBalance().flatMap<Unit>(account->getContext(), [=] (const std::shared_ptr<Amount>& balance) {
                 return account->getBaseReserve().map<Unit>(account->getContext(), [=] (const std::shared_ptr<Amount> &reserve) -> Unit {
                     auto newBalance = *balance->value() - balanceChange;
@@ -129,7 +136,9 @@ namespace ledger {
                 }
                 envelope.tx.fee = envelope.tx.operations.size() * baseFee;
                 auto wrapped = stellar::xdr::wrap(envelope);
-                return std::make_shared<StellarLikeTransaction>(_account->getWallet()->getCurrency(), wrapped);
+                auto tx = std::make_shared<StellarLikeTransaction>(_account->getWallet()->getCurrency(), wrapped);
+                tx->setCorrelationId(correlationId);
+                return tx;
             });
         }
 

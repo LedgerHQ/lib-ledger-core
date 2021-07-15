@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" == "develop" ] || [ "$CIRCLE_BRANCH" == "nrt" ] || [ "$CIRCLE_BRANCH" == "nrt_jdk8" ] || [ "$CIRCLE_BRANCH" == "release/4.0.0" ] ; then
+if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" == "develop" ] || [ "$CIRCLE_BRANCH" == "nrt" ] || [ "$CIRCLE_BRANCH" == "nrt_jdk8" ] || [[ "$CIRCLE_BRANCH" == "release/"* ]] ; then
 	cd ../lib-ledger-core-artifacts
 	ls -la
 	aws s3 sync ./ s3://ledger-lib-ledger-core/$LIB_VERSION/ --acl public-read && \
