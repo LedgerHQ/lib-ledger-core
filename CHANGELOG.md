@@ -1,10 +1,18 @@
+## 4.0.4
+> 2021/07/15
+
+- Fix correlationId in Transaction API
+  (the TransactionAPI fix was forgotten in cherry-picking)
+- Update googletest dependency to compile with
+  recent compilers
+- Add broadcastTransaction API to StellarLikeAccount
+
+
 ## 4.0.3
 > 2021/07/15
 
 - Add correlationId setters and getters
   in TransactionBuilder and Transaction APIs
-- Update googletest dependency to compile with
-  recent compilers
 - Merge and reduce size of foreign outputs stored
   after synchronization (mitigation against dust attacks that
   inflate DB and reduce performance)
