@@ -58,6 +58,7 @@ namespace ledger {
             _observer = observer;
             _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
+            _mempoolGracePeriod = std::chrono::seconds(configuration->getInt(api::Configuration::MEMPOOL_GRACE_PERIOD_SECS).value_or(api::ConfigurationDefaults::DEFAULT_BTC_LIKE_MEMPOOL_GRACE));
         }
 
         bool BitcoinLikeWallet::isSynchronizing() {

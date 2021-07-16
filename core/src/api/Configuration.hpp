@@ -64,6 +64,12 @@ public:
 
     /** Syncronization token deactivation */
     static std::string const DEACTIVATE_SYNC_TOKEN;
+
+    /**
+     * Grace period (in seconds) during which no "missing" transactions on-chain should trigger
+     * deletion from database
+     */
+    static std::string const MEMPOOL_GRACE_PERIOD_SECS;
 };
 
 } } }  // namespace ledger::core::api
