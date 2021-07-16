@@ -80,7 +80,7 @@ namespace ledger {
                                                             "LEFT OUTER JOIN bitcoin_operations AS btc_op ON btc_op.uid = op.uid "
                                                             "WHERE op.block_uid IS NULL AND op.account_uid = :uid ", soci::use(accountUid));
             const auto OP_UID_COL = 0;
-            const auto OP_DATE_COL = 1; // TODO: Make sure that operations.date is filled correctly on optimistic updates
+            const auto OP_DATE_COL = 1;
             const auto TX_HASH_COL = 2;
 
             // Create predicate function that returns true if the transaction should be saved from `transactionsToDrop` pruning
@@ -100,7 +100,7 @@ namespace ledger {
 
             /* RBF specific code
              * This is left as commented code because the feature will need to be reinstated later
-            // Remove all mempool transaction
+             * // Remove all mempool transaction
              * BitcoinLikeTransactionDatabaseHelper::removeAllMempoolOperation(sql, accountUid);
              * auto btcBuddy = std::static_pointer_cast<BitcoinSynchronizationBuddy>(buddy);
              * // Get all operation in mempool (will be used to restore mempool in case of error)
@@ -109,14 +109,16 @@ namespace ledger {
 
             for (auto &row : rows) {
                 if (row.get_indicator(OP_UID_COL) == soci::i_null || row.get_indicator(TX_HASH_COL) == soci::i_null) {
-                    buddy->logger->warn("Cannot drop current tx as it lacks either operation_uid or transaction_hash.");
+                    buddy->logger->error("Cannot drop current 'without-block' tx as it lacks either operation_uid or transaction_hash.");
+                    continue;
                 }
 
                 const auto txHash = row.get<std::string>(TX_HASH_COL);
 
                 // Cannot use a "filter" with erase(remove_if) because soci::rowset lacks erase()
                 if (isGraced(row, OP_DATE_COL)) {
-                    buddy->logger->info("Gracing {} as it is too recent", txHash);
+                    const auto date = row.get<std::string>(OP_DATE_COL);
+                    buddy->logger->info("Gracing {} as it is too recent (from {}})", txHash, date);
                     continue;
                 }
                 if (row.get_indicator(0) != soci::i_null && row.get_indicator(1) != soci::i_null) {
