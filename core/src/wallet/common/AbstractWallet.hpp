@@ -157,6 +157,7 @@ namespace ledger {
             virtual std::string getWalletUid() const;
             virtual std::shared_ptr<DynamicObject> getConfig() const;
             virtual const DerivationScheme& getDerivationScheme() const;
+            virtual std::chrono::seconds getMempoolGracePeriod() const { return std::chrono::seconds(0); }
 
         protected:
             virtual std::shared_ptr<AbstractAccount> createAccountInstance(soci::session& sql, const std::string& accountUid) = 0;

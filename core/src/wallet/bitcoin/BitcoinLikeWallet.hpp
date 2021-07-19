@@ -74,6 +74,8 @@ namespace ledger {
 
             std::shared_ptr<BitcoinLikeBlockchainExplorer> getBlockchainExplorer();
 
+            std::chrono::seconds getMempoolGracePeriod() const override { return _mempoolGracePeriod; }
+
         protected:
             std::shared_ptr<AbstractAccount>
             createAccountInstance(soci::session &sql, const std::string &accountUid) override;
@@ -85,6 +87,7 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<BitcoinLikeKeychainFactory> _keychainFactory;
             BitcoinLikeAccountSynchronizerFactory _synchronizerFactory;
+            std::chrono::seconds _mempoolGracePeriod;
         };
     }
 }
