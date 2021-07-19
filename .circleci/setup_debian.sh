@@ -18,12 +18,12 @@ ls -la /usr/lib/jvm/java-8-openjdk || echo "!!!! java openjdk not found"
 
 apt-get install -y awscli
 echo "========> Install sbt"
-SBT_DEB="sbt-1.3.10.deb"
-curl -L -o $SBT_DEB https://dl.bintray.com/sbt/debian/$SBT_DEB
-dpkg -i $SBT_DEB
-rm $SBT_DEB
+echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | tee /etc/apt/sources.list.d/sbt.list
+echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | tee /etc/apt/sources.list.d/sbt_old.list
+curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | apt-key add
+apt-get update
+apt-get install -y sbt scala
 sbt sbtVersion
-apt-get install -y scala
 
 echo "========> Install C++ dependencies"
 apt-get install -y g++ make

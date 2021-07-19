@@ -44,6 +44,13 @@ public:
 
     /** Default connection pool size for PostgreSQL */
     static int32_t const DEFAULT_PG_CONNECTION_POOL_SIZE;
+
+    /**
+     * Default TTL for BTC-like mempool transactions
+     * A transaction that doesn't exist in the explorer is SAVED from being dropped
+     * if its age is less than that many seconds
+     */
+    static int32_t const DEFAULT_BTC_LIKE_MEMPOOL_GRACE;
 };
 
 } } }  // namespace ledger::core::api

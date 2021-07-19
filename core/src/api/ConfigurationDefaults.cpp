@@ -21,4 +21,6 @@ int32_t const ConfigurationDefaults::DEFAULT_TTL_CACHE = 30;
 
 int32_t const ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE = 25;
 
+int32_t const ConfigurationDefaults::DEFAULT_BTC_LIKE_MEMPOOL_GRACE = 900;
+
 } } }  // namespace ledger::core::api

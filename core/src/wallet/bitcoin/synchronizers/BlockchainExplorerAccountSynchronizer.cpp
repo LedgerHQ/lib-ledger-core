@@ -76,19 +76,53 @@ namespace ledger {
                                                                              std::shared_ptr<SynchronizationBuddy> &buddy,
                                                                              const std::string &accountUid) {
             //Get all transactions in DB that may be dropped (txs without block_uid)
-            soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, btc_op.transaction_hash FROM operations AS op "
+            soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.date, btc_op.transaction_hash FROM operations AS op "
                                                             "LEFT OUTER JOIN bitcoin_operations AS btc_op ON btc_op.uid = op.uid "
                                                             "WHERE op.block_uid IS NULL AND op.account_uid = :uid ", soci::use(accountUid));
+            const auto OP_UID_COL = 0;
+            const auto OP_DATE_COL = 1;
+            const auto TX_HASH_COL = 2;
 
-            // Remove all mempool transaction
-            BitcoinLikeTransactionDatabaseHelper::removeAllMempoolOperation(sql, accountUid);
-            auto btcBuddy = std::static_pointer_cast<BitcoinSynchronizationBuddy>(buddy);
-            // Get all operation in mempool (will be used to restore mempool in case of error)
-            BitcoinLikeTransactionDatabaseHelper::getMempoolTransactions(sql, accountUid, btcBuddy->previousMempool);
+            // Create predicate function that returns true if the transaction should be saved from `transactionsToDrop` pruning
+            auto gracePeriod = buddy->account->getWallet()->getMempoolGracePeriod();
+            auto isGraced = [gracePeriod, buddy](const auto &row, int date_col_index) -> bool {
+
+                if (row.get_indicator(date_col_index) == soci::i_null) {
+                    const auto txHash = row.template get<std::string>(date_col_index);
+                    buddy->logger->warn("Mempool transaction (or optimistic update) is missing a date : {}, it won't be graced.", txHash);
+                    return false;
+                }
+
+                const auto date = DateUtils::fromJSON(row.template get<std::string>(date_col_index));
+                const auto age = (std::chrono::system_clock::now() - date);
+                return age < gracePeriod;
+            };
+
+            /* RBF specific code
+             * This is left as commented code because the feature will need to be reinstated later
+             * // Remove all mempool transaction
+             * BitcoinLikeTransactionDatabaseHelper::removeAllMempoolOperation(sql, accountUid);
+             * auto btcBuddy = std::static_pointer_cast<BitcoinSynchronizationBuddy>(buddy);
+             * // Get all operation in mempool (will be used to restore mempool in case of error)
+             * BitcoinLikeTransactionDatabaseHelper::getMempoolTransactions(sql, accountUid, btcBuddy->previousMempool);
+             */
 
             for (auto &row : rows) {
+                if (row.get_indicator(OP_UID_COL) == soci::i_null || row.get_indicator(TX_HASH_COL) == soci::i_null) {
+                    buddy->logger->error("Cannot drop current 'without-block' tx as it lacks either operation_uid or transaction_hash.");
+                    continue;
+                }
+
+                const auto txHash = row.get<std::string>(TX_HASH_COL);
+
+                // Cannot use a "filter" with erase(remove_if) because soci::rowset lacks erase()
+                if (isGraced(row, OP_DATE_COL)) {
+                    const auto date = row.get<std::string>(OP_DATE_COL);
+                    buddy->logger->info("Gracing {} as it is too recent (from {}})", txHash, date);
+                    continue;
+                }
                 if (row.get_indicator(0) != soci::i_null && row.get_indicator(1) != soci::i_null) {
-                    buddy->transactionsToDrop.insert(std::pair<std::string, std::string>(row.get<std::string>(1), row.get<std::string>(0)));
+                    buddy->transactionsToDrop.insert(std::pair<std::string, std::string>(txHash, row.get<std::string>(OP_UID_COL)));
                 }
             }
 
