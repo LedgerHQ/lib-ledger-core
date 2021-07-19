@@ -66,6 +66,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
         configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, true);
+        configuration->putInt(api::Configuration::MEMPOOL_GRACE_PERIOD_SECS, 10);
         auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin",
                                               configuration));
         {

@@ -1,3 +1,14 @@
+## 4.0.5
+
+> Unreleased
+
+- Add `MEMPOOL_GRACE_PERIOD_SECS` configuration for BTC-like wallets
+  This protects transactions without blocks from being deleted from
+  database if they are too recent.
+  Currently defaults to 900 seconds, 1.5 mean BTC block
+- Remove RBF support, that was incompatible with the new Grace Period
+  for now
+
 ## 4.0.4
 > 2021/07/15
 
