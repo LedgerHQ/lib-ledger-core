@@ -42,7 +42,7 @@ TEST(QueryFilters, SimpleFilter) {
 
 TEST(QueryFilters, DoubleConditionFilter) {
     auto filter = api::QueryFilter::accountEq("my_account")->op_and(api::QueryFilter::blockHeightGt(12000));
-    EXPECT_EQ(std::dynamic_pointer_cast<QueryFilter>(filter)->getHead()->toString(), "o.account_uid = :account_uid AND b.block_height > :block_height");
+    EXPECT_EQ(std::dynamic_pointer_cast<QueryFilter>(filter)->getHead()->toString(), "o.account_uid = :account_uid AND b.height > :height");
 }
 
 TEST(QueryFilters, DoubleConditionWithCompoundFilter) {
@@ -50,5 +50,5 @@ TEST(QueryFilters, DoubleConditionWithCompoundFilter) {
             ->op_and(api::QueryFilter::blockHeightGt(12000))
             ->op_or_not(api::QueryFilter::trustEq(api::TrustLevel::TRUSTED)->op_and(api::QueryFilter::containsSender("toto")));
     EXPECT_EQ(std::dynamic_pointer_cast<QueryFilter>(filter)->getHead()->toString(),
-              "o.account_uid = :account_uid AND b.block_height > :block_height OR NOT (o.trust LIKE :trust AND o.senders LIKE :senders)");
+              "o.account_uid = :account_uid AND b.height > :height OR NOT (o.trust LIKE :trust AND o.senders LIKE :senders)");
 }
