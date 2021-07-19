@@ -151,7 +151,7 @@ add_test (NAME ledger-core-integration-BitcoinMakeP2WPKHTransaction.ParseSignedT
 add_test (NAME ledger-core-integration-BitcoinMakeP2WSHTransaction.CreateStandardP2WSHWithOneOutput COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2WSHTransaction.CreateStandardP2WSHWithOneOutput)
 add_test (NAME ledger-core-integration-BitcoinMakeP2WSHTransaction.ParseSignedTx COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2WSHTransaction.ParseSignedTx)
 add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickOneUTXOWithoutChange COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.PickOneUTXOWithoutChange)
-add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickOneUTXOWithChange COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.PickOneUTXOWithChange)
+# add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickOneUTXOWithChange COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.PickOneUTXOWithChange)
 add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickMultipleUTXO COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.PickMultipleUTXO)
 add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickAllUTXO COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.PickAllUTXO)
 add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickUTXOWithMergeOutputs COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.PickUTXOWithMergeOutputs)
