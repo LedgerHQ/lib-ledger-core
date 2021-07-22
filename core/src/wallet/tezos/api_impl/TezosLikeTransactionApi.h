@@ -95,6 +95,12 @@ namespace ledger {
 
             TezosLikeTransactionApi &setRevealFees(const std::shared_ptr<BigInt> &fees);
 
+            std::string getCorrelationId() override;
+
+            std::string setCorrelationId(const std::string& newId) override;
+
+            TezosLikeTransactionApi &setFees(const std::shared_ptr<BigInt> &fees);
+
             TezosLikeTransactionApi &setValue(const std::shared_ptr<BigInt> &value);
 
             TezosLikeTransactionApi &setSender(const std::shared_ptr<api::TezosLikeAddress> &sender, api::TezosCurve curve = api::TezosCurve::ED25519);
@@ -153,6 +159,7 @@ namespace ledger {
             int32_t _status;
             std::shared_ptr<api::Amount> _revealFees;
             std::shared_ptr<api::Amount> _revealGasLimit;
+            std::string _correlationId;
         };
     }
 }

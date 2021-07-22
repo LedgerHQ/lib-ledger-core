@@ -35,7 +35,7 @@
 #include <api/Configuration.hpp>
 #include <utils/Exception.hpp>
 #include <rapidjson/document.h>
-
+#include <wallet/common/api_impl/OperationApi.h>
 namespace ledger {
     namespace core {
         NodeTezosLikeBlockchainExplorer::NodeTezosLikeBlockchainExplorer(
@@ -104,17 +104,20 @@ namespace ledger {
         }
 
         Future<String>
-        NodeTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+        NodeTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
             // TODO: TBC with backend team
             std::stringstream body;
             body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
             auto bodyString = body.str();
+            
             return _http->POST(fmt::format("blockchain/{}/{}/broadcast_transaction", getExplorerVersion(), getNetworkParameters().Identifier),
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()))
-                    .json().template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
+                    .json().template map<String>(getExplorerContext(), [correlationId](const HttpRequest::JsonResult &result) -> String {
                         auto &json = *std::get<1>(result);
                         if (!json.IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to parse broadcast transaction response, missing transaction hash");
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, 
+                                fmt::format("{} Failed to parse broadcast transaction response, missing transaction hash", 
+                                CORRELATIONID_PREFIX(correlationId)));
                         }
                         return json.GetString();
                     });
@@ -133,8 +136,8 @@ namespace ledger {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Endpoint to get raw transactions is not implemented.");
         }
 
-        Future<String> NodeTezosLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
-            return pushLedgerApiTransaction(transaction);
+        Future<String> NodeTezosLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
+            return pushLedgerApiTransaction(transaction, correlationId);
         }
 
         FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>

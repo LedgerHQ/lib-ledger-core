@@ -59,6 +59,16 @@ public:
     /** Get status of transaction: equals to 1 if succeeded, 0 otherwise */
     virtual int32_t getStatus() = 0;
 
+    /** Get correlation id */
+    virtual std::string getCorrelationId() = 0;
+
+    /**
+     * Set the correlation id which can be used to debug transaction errors
+     * through the full ledger stack
+     * @return the OLD Correlation ID, if it was set (empty string if it was unset)
+     */
+    virtual std::string setCorrelationId(const std::string & correlationId) = 0;
+
     /** Serialize the transaction to its raw format. */
     virtual std::vector<uint8_t> serialize() = 0;
 

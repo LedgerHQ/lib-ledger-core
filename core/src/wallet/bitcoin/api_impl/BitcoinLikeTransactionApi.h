@@ -82,6 +82,7 @@ namespace ledger {
         class BitcoinLikeTransactionApi : public api::BitcoinLikeTransaction {
         public:
             explicit BitcoinLikeTransactionApi(const api::Currency &currency,
+                                               const std::string &correlationid = "",
                                                const std::string &keychainEngine = api::KeychainEngines::BIP32_P2PKH,
                                                uint64_t currentBlockHeight = 0);
 
@@ -110,6 +111,10 @@ namespace ledger {
             api::EstimatedSize getEstimatedSize() override;
 
             int64_t getDustAmount() override;
+
+            std::string getCorrelationId() override;
+
+            std::string setCorrelationId(const std::string& newId) override;
 
             std::vector<uint8_t> serializeOutputs() override;
 
@@ -177,6 +182,7 @@ namespace ledger {
             bool _writable;
             std::string _keychainEngine;
             uint64_t _currentBlockHeight;
+            std::string _correlationId;
         };
     }
 }

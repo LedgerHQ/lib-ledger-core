@@ -70,7 +70,7 @@ class CosmosLikeBlockchainExplorer : public ConfigurationMatchable {
     virtual Future<void *> startSession() = 0;
     virtual Future<Unit> killSession(void *session) = 0;
     virtual Future<Bytes> getRawTransaction(const String &transactionHash) = 0;
-    virtual Future<String> pushTransaction(const std::vector<uint8_t> &transaction) = 0;
+    virtual Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId="") = 0;
     virtual Future<int64_t> getTimestamp() const = 0;
     virtual FuturePtr<cosmos::Block> getCurrentBlock() const = 0;
     virtual FuturePtr<cosmos::Block> getCurrentBlock() = 0;

@@ -134,6 +134,13 @@ AlgorandTransaction = interface +c {
     const getSenderRewards(): string;
     const getReceiverRewards(): string;
     const getCloseRewards(): string;
+    const getCorrelationId(): string;
+    # Set the correlation id which can be used to debug transaction errors
+    # through the full ledger stack
+    # @return the OLD Correlation ID, if it was set (empty string if it was unset)
+    setCorrelationId(correlationId : string) : string;
+
+    
 
     setSender(sender: string);
     setFee(fee: string);

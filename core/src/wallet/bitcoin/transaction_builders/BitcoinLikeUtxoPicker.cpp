@@ -57,8 +57,8 @@ namespace ledger {
             logger->info("Get build function");
             return [=] (const BitcoinLikeTransactionBuildRequest& r) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
                 return self->async<std::shared_ptr<Buddy>>([=] () {
-                    logger->info("Constructing BitcoinLikeTransactionBuildFunction with blockHeight: {}", currentBlockHeight);
-                    auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency, keychain->getKeychainEngine(), currentBlockHeight);
+                    logger->info("{} Constructing BitcoinLikeTransactionBuildFunction with blockHeight: {}", CORRELATIONID_PREFIX(r.correlationId), currentBlockHeight);
+                    auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency, r.correlationId, keychain->getKeychainEngine(), currentBlockHeight);
                     auto filteredGetUtxo = createFilteredUtxoFunction(r, keychain, getUtxo);
                     return std::make_shared<Buddy>(r, filteredGetUtxo, getTransaction, explorer, keychain, logger, tx, partial);
                 }).flatMap<std::shared_ptr<api::BitcoinLikeTransaction>>(self->getContext(), [=] (const std::shared_ptr<Buddy>& buddy) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
@@ -192,9 +192,13 @@ namespace ledger {
                 .template flatMap<Unit>(getContext(), [self, buddy] (auto const& utxos) mutable {
                     auto const sequence = buddy->request.utxoPicker.getValue().sequence;
 
-                    std::for_each(utxos.cbegin(), utxos.cend(), [self, buddy, sequence] (auto const &utxo) {
+                    std::stringstream ss;
+                    for (auto const &utxo : utxos) {
                         self->fillInput(buddy, utxo, sequence);
-                    });
+                        ss << utxo.transactionHash << "/" << utxo.index << " ";
+                    };
+
+                    buddy->logger->info( "{} selected utxos: {}", CORRELATIONID_PREFIX(buddy->transaction->getCorrelationId()), ss.str());
 
                     return Future<Unit>::successful(unit);
                 });

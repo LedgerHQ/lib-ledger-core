@@ -25,6 +25,12 @@ CosmosLikeTransaction = interface +c {
         const getMessages(): list<CosmosLikeMessage>;
         # Get Signing public Key
         const getSigningPubKey(): binary;
+        # Get Signing public Key
+        const getCorrelationId(): string;
+        # Set the correlation id which can be used to debug transaction errors
+        # through the full ledger stack
+        # @return the OLD Correlation ID, if it was set (empty string if it was unset)
+        setCorrelationId(correlationId : string) : string;
 
         # Serialize the transaction to be signed
         serializeForSignature(): string;
@@ -95,6 +101,10 @@ CosmosLikeTransactionBuilder = interface +c {
         # Here the fee represents the gas price multiplied by the gas used
         # @param fee The fee to set
         setFee(fee: Amount): CosmosLikeTransactionBuilder;
+
+        # Set correlation id
+        # @param id to track transaction through ledger track
+        setCorrelationId(correlationId: string): CosmosLikeTransactionBuilder;
 
         # Build a transaction from the given builder parameters.
         build(callback: callback2<optional<CosmosLikeTransaction>>);
@@ -223,7 +233,7 @@ CosmosLikeRedelegationEntry = interface +c {
 }
 
 CosmosConfigurationDefaults = interface +c {
-        const COSMOS_DEFAULT_API_ENDPOINT: string = "https://cosmos.coin.ledger.com";
+        const COSMOS_DEFAULT_API_ENDPOINT: string = "https://cosmoshub4.coin.ledger.com";
         const COSMOS_OBSERVER_WS_ENDPOINT: string = "";
 }
 

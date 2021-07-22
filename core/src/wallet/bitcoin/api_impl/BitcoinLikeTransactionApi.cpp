@@ -46,9 +46,10 @@ namespace ledger {
 
 
         BitcoinLikeTransactionApi::BitcoinLikeTransactionApi(const api::Currency &currency,
+                                                             const std::string &correlationId,
                                                              const std::string &keychainEngine,
                                                              uint64_t currentBlockHeight) :
-                _currency(currency), _keychainEngine(keychainEngine), _currentBlockHeight(currentBlockHeight) {
+                _currency(currency), _correlationId(correlationId), _keychainEngine(keychainEngine), _currentBlockHeight(currentBlockHeight) {
             _version = 1;
             _params = currency.bitcoinLikeNetworkParameters.value();
             _writable = true;
@@ -123,6 +124,16 @@ namespace ledger {
 
         std::string BitcoinLikeTransactionApi::getHash() {
             return _hash;
+        }
+
+        std::string BitcoinLikeTransactionApi::getCorrelationId()  {
+            return _correlationId;
+        }
+
+        std::string BitcoinLikeTransactionApi::setCorrelationId(const std::string& newId)  {
+            auto oldId = _correlationId;
+            _correlationId = newId;
+            return oldId;
         }
 
         optional<int32_t> BitcoinLikeTransactionApi::getTimestamp() {
@@ -540,7 +551,7 @@ namespace ledger {
             }
 
             auto keychainEngine = isSegwit ? api::KeychainEngines::BIP49_P2SH : api::KeychainEngines::BIP32_P2PKH;
-            auto tx = std::make_shared<BitcoinLikeTransactionApi>(currency, keychainEngine, currentBlockHeight);
+            auto tx = std::make_shared<BitcoinLikeTransactionApi>(currency, "", keychainEngine, currentBlockHeight);
             tx->setVersion(version);
             if (usesTimeStamp) {
                 tx->setTimestamp(timeStamp);

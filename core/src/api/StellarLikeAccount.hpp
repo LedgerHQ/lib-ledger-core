@@ -22,6 +22,7 @@ class BigIntCallback;
 class BoolCallback;
 class StellarLikeAccountSignerListCallback;
 class StellarLikeFeeStatsCallback;
+class StellarLikeTransaction;
 class StellarLikeTransactionBuilder;
 class StringCallback;
 
@@ -44,6 +45,9 @@ public:
 
     /** Broadcast the given raw transaction to the network. */
     virtual void broadcastRawTransaction(const std::vector<uint8_t> & tx, const std::shared_ptr<StringCallback> & callback) = 0;
+
+    /** Broadcast the given raw transaction to the network. */
+    virtual void broadcastTransaction(const std::shared_ptr<StellarLikeTransaction> & tx, const std::shared_ptr<StringCallback> & callback) = 0;
 
     /** Get base reserve of the network */
     virtual void getBaseReserve(const std::shared_ptr<AmountCallback> & callback) = 0;

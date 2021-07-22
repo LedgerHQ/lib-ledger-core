@@ -450,6 +450,13 @@ std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder:
     return shared_from_this();
 }
 
+std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::setCorrelationId(
+    const std::string &correlationId) 
+{
+    _request.correlationId = correlationId;
+    return shared_from_this();
+}
+
 std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::addMessage(
     const std::shared_ptr<api::CosmosLikeMessage> &message)
 {

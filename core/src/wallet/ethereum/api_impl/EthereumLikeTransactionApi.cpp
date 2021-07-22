@@ -124,6 +124,16 @@ namespace ledger {
             return _block;
         }
 
+        std::string EthereumLikeTransactionApi::getCorrelationId() {
+            return _correlationId;
+        }
+
+        std::string EthereumLikeTransactionApi::setCorrelationId(const std::string& newId)  {
+            auto oldId = _correlationId;
+            _correlationId = newId;
+            return oldId;
+        }
+
         void EthereumLikeTransactionApi::setSignature(const std::vector<uint8_t> & vSignature, const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) {
             _vSignature = vSignature;
             _rSignature = rSignature;

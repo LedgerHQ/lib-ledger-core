@@ -59,6 +59,7 @@ namespace ledger {
             bool wipe;
             std::vector<api::RippleLikeMemo> memos;
             Option<int64_t> destinationTag;
+            std::string correlationId;
         };
 
         using RippleLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::RippleLikeTransaction>>(
@@ -87,6 +88,8 @@ namespace ledger {
             std::shared_ptr<api::RippleLikeTransactionBuilder> addMemo(const api::RippleLikeMemo& memo) override;
 
             std::shared_ptr<api::RippleLikeTransactionBuilder> setDestinationTag(int64_t tag) override;
+
+            std::shared_ptr<api::RippleLikeTransactionBuilder> setCorrelationId(const std::string &correlationId) override;        
 
             void build(const std::shared_ptr<api::RippleLikeTransactionCallback> &callback) override;
 

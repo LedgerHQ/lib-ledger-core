@@ -200,6 +200,17 @@ namespace algorand {
         return stxn.txn;
     }
 
+    std::string AlgorandTransactionImpl::getCorrelationId() const
+    {
+        return correlationId;
+    }
+
+    std::string AlgorandTransactionImpl::setCorrelationId(const std::string& newId)  {
+        auto oldId = correlationId;
+        correlationId = newId;
+        return oldId;
+    }
+
 } // namespace algorand
 } // namespace core
 } // namespace ledger

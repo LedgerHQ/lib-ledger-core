@@ -61,6 +61,8 @@ namespace algorand {
         std::string getSenderRewards() const override;
         std::string getReceiverRewards() const override;
         std::string getCloseRewards() const override;
+        std::string getCorrelationId() const override;
+        std::string setCorrelationId(const std::string& newId) override;
         void setSender(const std::string& sender) override;
         void setFee(const std::string& fee) override;
         void setNote(const std::string& note) override;
@@ -81,6 +83,7 @@ namespace algorand {
 
     private:
         model::SignedTransaction stxn;
+        std::string correlationId;
     };
 
 } // namespace algorand

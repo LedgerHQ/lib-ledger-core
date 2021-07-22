@@ -46,12 +46,17 @@ namespace ledger {
             _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v2");
         }
 
-        Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+        Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
             std::stringstream body;
             body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
             auto bodyString = body.str();
+            std::unordered_map<std::string, std::string> headers;
+            if(!correlationId.empty()) {
+                headers["X-Correlation-ID"] = correlationId;
+            }
             return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send", getExplorerVersion(), getNetworkParameters().Identifier),
-                               std::vector<uint8_t>(bodyString.begin(), bodyString.end())
+                               std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
+                               headers
             ).json().template map<String>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) -> String {
                 auto& json = *std::get<1>(result);
                 return json["result"].GetString();
@@ -66,8 +71,8 @@ namespace ledger {
             return killLedgerApiSession(session);
         }
 
-        Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
-            return pushLedgerApiTransaction(transaction);
+        Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
+            return pushLedgerApiTransaction(transaction, correlationId);
         }
 
         Future<Bytes> LedgerApiBitcoinLikeBlockchainExplorer::getRawTransaction(const String& transactionHash) {

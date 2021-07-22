@@ -110,6 +110,12 @@ namespace ledger {
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder>
+        TezosLikeTransactionBuilder::setCorrelationId(const std::string &correlationId) {
+            _request.correlationId = correlationId;
+            return shared_from_this();
+        }
+
+        std::shared_ptr<api::TezosLikeTransactionBuilder>
         TezosLikeTransactionBuilder::setGasLimit(const std::shared_ptr<api::Amount> & gasLimit) {
             _request.transactionGasLimit = std::make_shared<BigInt>(gasLimit->toString());
             _request.revealGasLimit = std::make_shared<BigInt>(gasLimit->toString());
