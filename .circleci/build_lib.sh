@@ -189,5 +189,5 @@ else
     # Using j4 because anyway the linux exec has only 2 CPUs for now, and the MacOS one 4
     make -j4 ledger-core || exit 1
     make -j4 ledger-core-static || exit 2
-    make -j3 || exit 3
+    make -j4 -l2 || exit 3
 fi
