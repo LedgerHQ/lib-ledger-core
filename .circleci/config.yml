@@ -160,7 +160,7 @@ jobs:
             command: |
                 cd ../lib-ledger-core-build
 
-                ~/cmake-3.16.5-Linux-x86_64/bin/ctest -VV -timeout 120
+                ~/cmake-3.16.5-Linux-x86_64/bin/ctest --output-on-failure -timeout 120
   build_macos_release:
     macos:
       xcode: "12.0.0"
@@ -299,7 +299,7 @@ jobs:
           name: Run_Tests
           command: |
               cd ../lib-ledger-core-build
-              ctest -VV -timeout 120
+              ctest --output-on-failure -timeout 120
   publish_jar:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
