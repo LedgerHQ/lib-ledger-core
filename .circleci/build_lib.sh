@@ -184,5 +184,10 @@ if [ "$1" == "ios" ]; then
     echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
     xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 4
 else
-    make -j4 -l2
+    # lib-ledger-core linking uses A LOT of RAM, so we build this in a step
+    # and the rest later
+    # Using j4 because anyway the linux exec has only 2 CPUs for now, and the MacOS one 4
+    make -j4 ledger-core || exit 1
+    make -j4 ledger-core-static || exit 2
+    make -j4 || exit 3
 fi
