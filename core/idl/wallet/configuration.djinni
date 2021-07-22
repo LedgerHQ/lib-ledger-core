@@ -66,6 +66,10 @@ ConfigurationDefaults = interface +c {
     const DEFAULT_TTL_CACHE : i32 = 30;
     # Default connection pool size for PostgreSQL
     const DEFAULT_PG_CONNECTION_POOL_SIZE: i32 = 25;
+    # Default TTL for BTC-like mempool transactions
+    # A transaction that doesn't exist in the explorer is SAVED from being dropped
+    # if its age is less than that many seconds
+    const DEFAULT_BTC_LIKE_MEMPOOL_GRACE: i32 = 900;
 }
 
 # Overall configuration.
@@ -109,6 +113,10 @@ Configuration = interface +c {
 
     # Syncronization token deactivation
     const DEACTIVATE_SYNC_TOKEN: string = "DEACTIVATE_SYNC_TOKEN";
+
+    # Grace period (in seconds) during which no "missing" transactions on-chain should trigger
+    # deletion from database
+    const MEMPOOL_GRACE_PERIOD_SECS: string = "MEMPOOL_GRACE_PERIOD_SECS";
 }
 
 # Configuration of wallet pools.
