@@ -77,7 +77,7 @@ namespace ledger {
 
             // Preferences management
             if (!_externalPreferencesBackend) {
-                logPrinter->printDebug("Use default LevelDB external preferences backend");
+                logPrinter->printDebug("Use default LevelDB external preferences backend\n");
                 _externalPreferencesBackend = std::make_shared<PreferencesBackend>(
                     fmt::format("/{}/preferences.db", _poolName),
                     getContext(),
@@ -85,7 +85,7 @@ namespace ledger {
                 );
             }
             if (!_internalPreferencesBackend) {
-                logPrinter->printDebug("Use default LevelDB internal preferences backend");
+                logPrinter->printDebug("Use default LevelDB internal preferences backend\n");
                 _internalPreferencesBackend = std::make_shared<PreferencesBackend>(
                     fmt::format("/{}/__preferences__.db", _poolName),
                     getContext(),
