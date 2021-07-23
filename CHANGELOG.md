@@ -7,6 +7,8 @@
   Currently defaults to 900 seconds, 1.5 mean BTC block
 - Remove RBF support, that was incompatible with the new Grace Period
   for now
+- Add correlationId setters and getters
+  in TransactionBuilder and Transaction APIs
 
 ## 4.1.0
 > 2021/03/25 Tezos for NRT
