@@ -311,10 +311,26 @@ namespace ledger {
                     inputStmt.bindings.update(input, inputUid, prevBtcTxUid, op.accountUid);
                     transactionInputStmt.bindings.update(txUid, tx.hash, inputUid, input.index);
                 }
+
                 // Upsert output
-                for (const auto& output : tx.outputs) {
-                    outputStmt.bindings.update(output, replaceable && tx.block.isEmpty(), txUid, tx.hash);
+                BitcoinLikeBlockchainExplorerOutput foreignOutput;
+                foreignOutput.index = 0;
+                foreignOutput.value = BigInt::ZERO;
+                if (tx.block.nonEmpty()) {
+                    foreignOutput.blockHeight = tx.block->height;
                 }
+                for (const auto& output : tx.outputs) {
+                    if (output.accountUid.hasValue() && output.accountUid.getValue() == op.accountUid) {
+                        outputStmt.bindings.update(output, replaceable && tx.block.isEmpty(), txUid, tx.hash);
+                    }
+                    else { //merge all foreign outputs on a single one
+                        foreignOutput += output;
+                    }
+                }
+                if(foreignOutput.value > BigInt::ZERO) {
+                    outputStmt.bindings.update(foreignOutput, replaceable && tx.block.isEmpty(), txUid, tx.hash);
+                }
+
                 // Bitcoin operation
                 bitcoinOpStmt.bindings.update(op.uid, txUid, tx.hash);
             }

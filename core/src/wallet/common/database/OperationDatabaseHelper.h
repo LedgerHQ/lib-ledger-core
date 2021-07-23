@@ -44,8 +44,6 @@ namespace ledger {
 
             static std::vector<std::string> fetchFromBlocks(soci::session &sql,
                                                             std::vector<std::string> const &blockUIDs);
-            static bool putOperation(soci::session& sql,
-                                     const Operation& operation);
             static std::string createUid(const std::string& accountUid,
                                          const std::string& txId,
                                          const api::OperationType type);
@@ -72,10 +70,6 @@ namespace ledger {
                                         const std::chrono::system_clock::time_point & date,
                                         const std::string &specificOperationsTableName,
                                         const std::string &specificTransactionsTableName);
-        private:
-            static void updateCurrencyOperation(soci::session& sql,
-                                                const Operation& operation,
-                                                bool insert);
         };
     }
 }
