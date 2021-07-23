@@ -74,6 +74,13 @@ namespace ledger {
 
             BitcoinLikeBlockchainExplorerOutput() = default;
             BitcoinLikeBlockchainExplorerOutput(BitcoinLikeBlockchainExplorerOutput const&) = default;
+            BitcoinLikeBlockchainExplorerOutput& operator+=(const BitcoinLikeBlockchainExplorerOutput& rhs){
+                if (rhs.index > index) {
+                    index = rhs.index;
+                }
+                value = value + rhs.value;
+                return *this;
+            }
         };
 
         struct BitcoinLikeBlockchainExplorerTransaction {

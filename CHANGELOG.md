@@ -9,6 +9,9 @@
   for now
 - Add correlationId setters and getters
   in TransactionBuilder and Transaction APIs
+- Merge and reduce size of foreign outputs stored
+  after synchronization (mitigation against dust attacks that
+  inflate DB and reduce performance)
 
 ## 4.1.0
 > 2021/03/25 Tezos for NRT
