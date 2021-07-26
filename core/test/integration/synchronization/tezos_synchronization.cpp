@@ -72,11 +72,12 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
-            const auto externalExplorerUrl = [](const string& address){
+            const auto externalExplorerUrl = [](const string& address) -> std::string {
                 return fmt::format("https://tzstats.com/{}", address);
             };
 
             auto account = createTezosLikeAccount(wallet, nextIndex, XTZ_KEYS_INFO);
+            const auto accountAddress = account->getKeychain()->getAddress()->toString();
 
             auto context = getTestExecutionContext();
 
@@ -92,7 +93,10 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
                 EXPECT_GT(balance->toLong(), 0L) << "The account should have a non-zero balance";
 
                 auto originatedAccounts = account->getOriginatedAccounts();
-                EXPECT_GE(originatedAccounts.size(), 2);
+                EXPECT_GE(originatedAccounts.size(), 2)
+                        << fmt::format("{} should have at least 2 originated accounts. Check {}#contracts to make sure",
+                                accountAddress,
+                                externalExplorerUrl(accountAddress));
 
                 for (auto &origAccount : originatedAccounts) {
                     const auto address = origAccount->getAddress();
@@ -133,7 +137,10 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
             std::cout<<">>> Nb of ops: "<<ops.size()<<std::endl;
-            EXPECT_GT(ops.size(), 0) << "Account should have a (strictly) positive count of operations";
+            EXPECT_GE(ops.size(), 5)
+                        << fmt::format("{} should have at least 5 operations (as of 2021-07-21). Check {} to make sure",
+                                accountAddress,
+                                externalExplorerUrl(accountAddress));
             
             EXPECT_EQ(std::dynamic_pointer_cast<OperationApi>(ops[0])->asTezosLikeOperation()->getTransaction()->getStatus(), 1);
             auto fees = uv::wait(account->getFees());
