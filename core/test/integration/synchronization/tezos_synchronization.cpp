@@ -66,10 +66,15 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
         configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, explorerURL);
+        configuration->putString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
         auto wallet = uv::wait(pool->createWallet(walletName, "tezos", configuration));
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
+
+            const auto externalExplorerUrl = [](const string& address){
+                return fmt::format("https://tzstats.com/{}", address);
+            };
 
             auto account = createTezosLikeAccount(wallet, nextIndex, XTZ_KEYS_INFO);
 
@@ -84,19 +89,20 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
                           api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                 auto balance = uv::wait(account->getBalance());
-                EXPECT_GT(balance->toLong(), 0L);
+                EXPECT_GT(balance->toLong(), 0L) << "The account should have a non-zero balance";
 
                 auto originatedAccounts = account->getOriginatedAccounts();
                 EXPECT_GE(originatedAccounts.size(), 2);
 
                 for (auto &origAccount : originatedAccounts) {
-                    std::cout << "Originated account: " << origAccount->getAddress() << std::endl;
+                    const auto address = origAccount->getAddress();
+                    std::cout << "Originated account: " << address << std::endl;
 
                     auto origOps = uv::wait(std::dynamic_pointer_cast<OperationQuery>(origAccount->queryOperations()->complete())->execute());
-                    EXPECT_GE(origOps.size(), 3);
+                    EXPECT_GE(origOps.size(), 3) << fmt::format("{} should have more than 3 ops. Check {} to make sure", address, externalExplorerUrl(address));
                     std::cout << ">>> Nb of originated ops: " << origOps.size() << std::endl;
                     auto origBalance = uv::wait(std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(origAccount)->getBalance(dispatcher->getMainExecutionContext()));
-                    EXPECT_GT(origBalance->toLong(), 0L);
+                    EXPECT_GT(origBalance->toLong(), 0L) << fmt::format("{} should have a non-zero balance. Check {} to make sure", address, externalExplorerUrl(address)) ;
                     std::cout << ">>> Originated Balance: " << origBalance->toString() << std::endl;
 
                     auto fromDate = DateUtils::fromJSON("2019-02-01T13:38:23Z");
@@ -117,6 +123,7 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
             
             // re-launch a synchronization if it’s the first time
             std::cout << "Running a second synchronization." << std::endl;
+            auto firstSyncOrigAccountsCount = account->getOriginatedAccounts().size();
             context = std::dynamic_pointer_cast<uv::SequentialExecutionContext>(
                 dispatcher->getSerialExecutionContext("__second__"));
             auto bus2 = account->synchronize();
@@ -126,17 +133,21 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
             std::cout<<">>> Nb of ops: "<<ops.size()<<std::endl;
-            EXPECT_GT(ops.size(), 0);
+            EXPECT_GT(ops.size(), 0) << "Account should have a (strictly) positive count of operations";
             
             EXPECT_EQ(std::dynamic_pointer_cast<OperationApi>(ops[0])->asTezosLikeOperation()->getTransaction()->getStatus(), 1);
             auto fees = uv::wait(account->getFees());
-            EXPECT_GT(fees->toUint64(), 0);
+            EXPECT_GT(fees->toUint64(), 0) << "Fees estimation should return a (strictly) positive number";
 
             auto storage = uv::wait(account->getStorage("tz1ZshTmtorFVkcZ7CpceCAxCn7HBJqTfmpk"));
-            EXPECT_GT(storage->toUint64(), 0);
+            EXPECT_GT(storage->toUint64(), 0) << "Storage estimation for the account should return a (strictly) positive number";
 
             auto gasLimit = uv::wait(account->getEstimatedGasLimit("tz1ZshTmtorFVkcZ7CpceCAxCn7HBJqTfmpk"));
-            EXPECT_GT(gasLimit->toUint64(), 0);
+            EXPECT_GT(gasLimit->toUint64(), 0) << "Gas limit estimation should return a (strictly) positive number";
+
+            // Making sure that both synchronizations found the same
+            EXPECT_EQ(account->getOriginatedAccounts().size(), firstSyncOrigAccountsCount)
+                    << "The account should have the same amount of originated accounts registered in 2 consecutive synchronizations";
         }
     };
     test("e847815f-488a-4301-b67c-378a5e9c8a61", kExplorerUrl);
