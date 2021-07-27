@@ -137,7 +137,7 @@ public:
     std::shared_ptr<GaiaCosmosLikeBlockchainExplorer> explorer;
 };
 
-TEST_F(CosmosLikeWalletSynchronization, GetAccountWithExplorer) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GetAccountWithExplorer) {
 
     auto account = uv::wait(explorer->getAccount(DEFAULT_ADDRESS));
     EXPECT_EQ(account->address, DEFAULT_ADDRESS);
@@ -147,7 +147,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetAccountWithExplorer) {
 }
 
 
-TEST_F(CosmosLikeWalletSynchronization, InternalFeesMessageInTransaction) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_InternalFeesMessageInTransaction) {
     /// This transaction contains 2 messages. One internal message to store fees
     /// is added after the transaction is retrieved from the network, hence the
     /// transaction should contain 3 messages, the last one being the one added
@@ -181,7 +181,7 @@ TEST_F(CosmosLikeWalletSynchronization, InternalFeesMessageInTransaction) {
 }
 
 
-TEST_F(CosmosLikeWalletSynchronization, GetWithdrawDelegationRewardWithExplorer) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GetWithdrawDelegationRewardWithExplorer) {
 
     auto filter = GaiaCosmosLikeBlockchainExplorer::fuseFilters({
         GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
@@ -223,7 +223,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetWithdrawDelegationRewardWithExplorer)
 }
 
 
-TEST_F(CosmosLikeWalletSynchronization, GetErrorTransaction) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GetErrorTransaction) {
     auto tx_hash = "4A7823F0F2899AA6EC1DCB2E242C541EDAF90419A3DE03ED885E438FEDB779D4";
     auto validator = "cosmosvaloper1clpqr4nrk4khgkxj78fcwwh6dl3uw4epsluffn";
     auto delegator = "cosmos1k3kg9w60dd5x56vve2s28v3xjp7fp2vn2hjjsa";
@@ -251,7 +251,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetErrorTransaction) {
 }
 
 
-TEST_F(CosmosLikeWalletSynchronization, GetSendWithExplorer) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GetSendWithExplorer) {
     auto tx_hash = "F4B8CB550B498F744CCC420907B80D0B068250972F975354A873CD1CCF9B000A";
     auto receiver = "cosmos1xxkueklal9vejv9unqu80w9vptyepfa95pd53u";
     // Note : the sender of the message is also the sender of the funds in this transaction.
@@ -275,7 +275,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetSendWithExplorer) {
     EXPECT_EQ(tx->gasUsed, Option<std::string>("41014"));
 }
 
-TEST_F(CosmosLikeWalletSynchronization, GetDelegateWithExplorer) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GetDelegateWithExplorer) {
     auto delegator = "cosmos1ytpz9gt59hssp5m5sknuzrwse88glqhgcrypxj";
     auto validator = "cosmosvaloper1ey69r37gfxvxg62sh4r0ktpuc46pzjrm873ae8";
 
@@ -315,7 +315,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetDelegateWithExplorer) {
     ASSERT_TRUE(foundTx);
 }
 
-TEST_F(CosmosLikeWalletSynchronization, GetCurrentBlockWithExplorer) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GetCurrentBlockWithExplorer) {
     std::string address = "cosmos16xkkyj97z7r83sx45xwk9uwq0mj0zszlf6c6mq";
 
     auto block = uv::wait(explorer->getCurrentBlock());
@@ -521,7 +521,7 @@ TEST_F(CosmosLikeWalletSynchronization, DISABLED_AllTransactionsSynchronization)
     // EXPECT_TRUE(foundMsgUnjail);
 }
 
-TEST_F(CosmosLikeWalletSynchronization, ValidatorSet) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_ValidatorSet) {
     // This test assumes that HuobiPool and BinanceStaking are always in the validator set
     const auto huobi_pool_address = "cosmosvaloper1kn3wugetjuy4zetlq6wadchfhvu3x740ae6z6x";
     bool foundHuobi = false;
@@ -676,7 +676,7 @@ void GenericGasLimitEstimationTest(const std::string& strTx, CosmosLikeWalletSyn
 
 } // namespace
 
-TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForTransfer) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GasLimitEstimationForTransfer) {
     const auto strTx = "{\"account_number\":\"6571\","
         "\"chain_id\":\"cosmoshub-3\","
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
@@ -692,7 +692,7 @@ TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForTransfer) {
     GenericGasLimitEstimationTest(strTx, *this);
 }
 
-TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForWithdrawingRewards) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GasLimitEstimationForWithdrawingRewards) {
     const auto strTx = "{\"account_number\":\"6571\","
         "\"chain_id\":\"cosmoshub-3\","
         "\"fee\":{\"amount\":[{\"amount\":\"5001\",\"denom\":\"uatom\"}],\"gas\":\"200020\"},"
@@ -707,7 +707,7 @@ TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForWithdrawingRewards)
     GenericGasLimitEstimationTest(strTx, *this);
 }
 
-TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForDelegation) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GasLimitEstimationForDelegation) {
     const auto strTx = "{\"account_number\":\"6571\","
         "\"chain_id\":\"cosmoshub-3\","
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
@@ -723,7 +723,7 @@ TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForDelegation) {
     GenericGasLimitEstimationTest(strTx, *this);
 }
 
-TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForUnDelegation) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GasLimitEstimationForUnDelegation) {
     const auto strTx = "{\"account_number\":\"6571\","
         "\"chain_id\":\"cosmoshub-3\","
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
@@ -739,7 +739,7 @@ TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForUnDelegation) {
     GenericGasLimitEstimationTest(strTx, *this);
 }
 
-TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForRedelegation) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GasLimitEstimationForRedelegation) {
     const auto strTx = "{\"account_number\":\"6571\","
         "\"chain_id\":\"cosmoshub-3\","
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
