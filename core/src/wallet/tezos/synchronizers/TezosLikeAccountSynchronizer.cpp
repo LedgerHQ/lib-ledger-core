@@ -466,6 +466,14 @@ Future<bool> TezosLikeAccountSynchronizer::synchronizeBatch(
                         lastBlock = tx.block;
                     }
 
+                    /*
+                     * This call goes to TezosLikeAccount::interpretTransaction, which might add new originatedAccounts
+                     * through updateOriginatedAccounts. This might be an issue because at that point the buddy won't check
+                     * the rest of this batch for other transactions associated to its originated account.
+                     * I.e., if the TransactionBulk that contains the originated account goes from block 800 to block 900,
+                     * in block 840 for example, then all operations for that originated account between 841 and 900 would be missed, as
+                     * the synchronizer buddy would only synchronize starting at 90 afterwards
+                     */
                     buddy->account->interpretTransaction(tx, operations);
 
                     //Update first pendingTxHash in savedState
