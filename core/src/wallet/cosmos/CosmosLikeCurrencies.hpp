@@ -32,7 +32,7 @@
 
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
-        #include <core/LibCoreExport.hpp>
+        #include <libcore_export.h>
     #else
         #define LIBCORE_EXPORT
     #endif
@@ -46,6 +46,7 @@ namespace ledger {
 namespace core {
 namespace currencies {
 extern LIBCORE_EXPORT const api::Currency ATOM;
+extern LIBCORE_EXPORT const api::Currency MUON;
 }
 }  // namespace core
 }  // namespace ledger

@@ -47,6 +47,7 @@
 #include <api/TezosCurve.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <api/BoolCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -154,6 +155,20 @@ namespace ledger {
 
         std::shared_ptr<TezosLikeBlockchainExplorer> TezosLikeWallet::getBlockchainExplorer() {
             return _explorer;
+        }
+
+        void TezosLikeWallet::isDelegate(const std::string &address, const std::shared_ptr<api::BoolCallback> &callback) {
+            isDelegate(address).onComplete(getContext(), [=] (const Try<bool>& result) {
+                if (result.isFailure()) {
+                    callback->onCallback(optional<bool>(), optional<api::Error>(api::Error(result.getFailure().getErrorCode(), result.getFailure().getMessage())));
+                } else {
+                    callback->onCallback(optional<bool>(result.getValue()), optional<api::Error>());
+                }
+            });
+        }
+
+        Future<bool> TezosLikeWallet::isDelegate(const std::string& address) {
+            return _explorer->isDelegate(address);
         }
 
     }

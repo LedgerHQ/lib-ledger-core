@@ -21,6 +21,7 @@ add_executable(${COSMOS_TESTS_NAME}
   transactions_test.cpp
   AccountTests.cpp
   parsers_test.cpp
+  stargate_parsers_test.cpp
   ${ledger-core-fixtures-srcs}
   ../integration/BaseFixture.cpp
   ../integration/IntegrationEnvironment.cpp

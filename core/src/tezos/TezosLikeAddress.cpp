@@ -30,6 +30,7 @@
  */
 
 #include "TezosLikeAddress.h"
+#include "TezosKey.h"
 #include <utils/Exception.hpp>
 #include <math/Base58.hpp>
 #include <collections/vector.hpp>
@@ -87,10 +88,19 @@ namespace ledger {
             return toBase58();
         }
 
+        const std::vector<std::string> TEZOS_PREFIXES = {"tz1", "tz2", "tz3", "KT1"};
+
         std::shared_ptr<AbstractAddress>
         TezosLikeAddress::parse(const std::string &address,
                                 const api::Currency &currency,
                                 const Option<std::string> &derivationPath) {
+
+            auto hasValidPrefix = [address](std::string prefix) {
+                return address.rfind(prefix, 0) == 0;
+            };
+            if (std::none_of(std::begin(TEZOS_PREFIXES), std::end(TEZOS_PREFIXES), hasValidPrefix)) {
+                return nullptr;
+            }
             auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&]() {
                 return fromBase58(address, currency, derivationPath);
             });
@@ -127,27 +137,75 @@ namespace ledger {
             const std::vector<uint8_t> &pubKey,
             api::TezosCurve curve
         ) {
+            // std::string out;
+            // out.assign(pubKey.begin(), pubKey.end());
+            // auto out = std::string str(pubKey.begin(), pubKey.end());
             switch (curve) {
                 case api::TezosCurve::ED25519 : {
-                    if (pubKey.size() != 33) {
-                        throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid ED25519 public key: should be 33 bytes.");
+                    if (pubKey.size() == TezosKeyType::EDPK.length) {
+                        return BLAKE::blake2b(pubKey, 20);
                     }
-
-                    return BLAKE::blake2b(std::vector<uint8_t>{pubKey.begin() + 1, pubKey.end()}, 20);
+					else if (pubKey.size() == TezosKeyType::XPUB.length) {
+						return BLAKE::blake2b(std::vector<uint8_t>{pubKey.begin() + 1, pubKey.end()}, 20);
+					}
+                    std::string msg = "Invalid ED25519 public key: should be "
+                        + std::to_string(TezosKeyType::EDPK.length)
+                        + " or " + std::to_string(TezosKeyType::XPUB.length)
+                        + " bytes.";
+                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, msg);
                 }
 
-                default : {
-                    if (pubKey.size() != 65) {
-                        throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid SECP256k1 or P256 public key: should be 65 bytes.");
+                case api::TezosCurve::SECP256K1: {
+                    if (pubKey.size() == TezosKeyType::SPPK.length) {
+                        return BLAKE::blake2b(
+                            vector::concat(
+                                std::vector<uint8_t>{static_cast<uint8_t>(pubKey[00])},
+                                std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}
+                            ),
+                            20
+                        );
                     }
-
-                    return BLAKE::blake2b(
+                    else if (pubKey.size() == 65) {
+                        return BLAKE::blake2b(
                             vector::concat(
                                     std::vector<uint8_t>{static_cast<uint8_t>(0x02 + (pubKey[64] & 0x01))},
                                     std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}
                             ),
                             20
-                    );
+                        );
+                    }
+
+                    std::string msg = "Invalid SECP256K1 public key: should be ";
+                    msg += std::to_string(TezosKeyType::SPPK.length);
+                    msg += " or 65 bytes.";
+                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, msg);
+                }
+                case api::TezosCurve::P256: {
+                    if (pubKey.size() == TezosKeyType::P2PK.length) {
+                        return BLAKE::blake2b(
+                            vector::concat(
+                                std::vector<uint8_t>{static_cast<uint8_t>(pubKey[00])},
+                                std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}
+                            ),
+                            20
+                        );
+                    }
+                    else if (pubKey.size() == 65) {
+                        return BLAKE::blake2b(
+                            vector::concat(
+                                    std::vector<uint8_t>{static_cast<uint8_t>(0x02 + (pubKey[64] & 0x01))},
+                                    std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}
+                            ),
+                            20
+                        );
+                    }
+                    std::string msg = "Invalid P256 public key: should be ";
+                    msg += std::to_string(TezosKeyType::P2PK.length);
+                    msg += " or 65 bytes.";
+                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, msg);
+                }
+                default : {
+                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid public key type.");
                 }
             }
         }

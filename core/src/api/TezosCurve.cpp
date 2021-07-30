@@ -11,6 +11,7 @@ std::string to_string(const TezosCurve& tezosCurve) {
         case TezosCurve::ED25519: return "ED25519";
         case TezosCurve::SECP256K1: return "SECP256K1";
         case TezosCurve::P256: return "P256";
+        default: return "UNKNOWN";
     };
 };
 template <>

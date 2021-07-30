@@ -28,6 +28,7 @@
  *
  */
 
+#include "wallet/cosmos/CosmosLikeCurrencies.hpp"
 #include <api/BlockchainExplorerEngines.hpp>
 #include <api/ConfigurationDefaults.hpp>
 #include <api/CosmosConfigurationDefaults.hpp>
@@ -37,6 +38,7 @@
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/cosmos/CosmosNetworks.hpp>
 #include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/explorers/StargateGaiaCosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/factories/CosmosLikeKeychainFactory.hpp>
 #include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
 
@@ -144,19 +146,28 @@ std::shared_ptr<CosmosLikeBlockchainExplorer> CosmosLikeWalletFactory::getExplor
 
     auto pool = getPool();
     auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
-                      .value_or(api::BlockchainExplorerEngines::COSMOS_NODE);
+                      .value_or(api::BlockchainExplorerEngines::STARGATE_NODE);
     std::shared_ptr<CosmosLikeBlockchainExplorer> explorer = nullptr;
-    if (engine == api::BlockchainExplorerEngines::COSMOS_NODE) {
+    if (engine == api::BlockchainExplorerEngines::STARGATE_NODE) {
+        auto http = pool->getHttpClient(fmt::format(
+            "{}",
+            configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
+                .value_or(api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT)));
+        auto context = pool->getDispatcher()->getSerialExecutionContext(
+            api::BlockchainExplorerEngines::STARGATE_NODE);
+
+        explorer = std::make_shared<StargateGaiaCosmosLikeBlockchainExplorer>(
+            context, http, getCurrency(), std::dynamic_pointer_cast<DynamicObject>(configuration));
+    } else if (engine == api::BlockchainExplorerEngines::COSMOS_NODE) {
         auto http = pool->getHttpClient(fmt::format(
             "{}",
             configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
                 .value_or(api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT)));
         auto context = pool->getDispatcher()->getSerialExecutionContext(
             api::BlockchainExplorerEngines::COSMOS_NODE);
-        auto &networkParams = getCurrency().cosmosLikeNetworkParameters.value();
 
         explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
-            context, http, networkParams, std::dynamic_pointer_cast<DynamicObject>(configuration));
+            context, http, getCurrency(), std::dynamic_pointer_cast<DynamicObject>(configuration));
     }
     else {
         throw Exception(
@@ -171,6 +182,7 @@ std::shared_ptr<CosmosLikeBlockchainExplorer> CosmosLikeWalletFactory::getExplor
         api::ErrorCode::IMPLEMENTATION_IS_MISSING,
         "CosmosLikeWalletFactory using non supported explorer");
 }
+
 
 }  // namespace core
 }  // namespace ledger

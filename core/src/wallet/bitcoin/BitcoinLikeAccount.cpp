@@ -116,7 +116,7 @@ namespace ledger {
             auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
             std::list<std::pair<BitcoinLikeBlockchainExplorerInput *, DerivationPath>> accountInputs;
             std::list<std::pair<BitcoinLikeBlockchainExplorerOutput *, DerivationPath>> accountOutputs;
-            uint64_t fees = transaction.fees.getValue().toUint64();
+            uint64_t fees = 0L;
             uint64_t sentAmount = 0L;
             uint64_t receivedAmount = 0L;
             std::vector<std::string> senders;
@@ -124,7 +124,6 @@ namespace ledger {
             std::vector<std::string> recipients;
             recipients.reserve(transaction.outputs.size());
             int result = FLAG_TRANSACTION_IGNORED;
-
             // Find inputs
             for (auto& input : transaction.inputs) {
 
@@ -146,8 +145,10 @@ namespace ledger {
                         }
                     }
                 }
+                if (input.value.nonEmpty()) {
+                    fees += input.value.getValue().toUint64();
+                }
             }
-
             // Find outputs
             auto hasSpentNothing = sentAmount == 0L;
             auto outputCount = transaction.outputs.size();
@@ -178,10 +179,10 @@ namespace ledger {
                         recipients.push_back(output.address.getValue());
                     }
                 }
+                fees = fees - output.value.toUint64();
             }
             std::stringstream snds;
             strings::join(senders, snds, ",");
-
             Operation operation;
             inflateOperation(operation, transaction);
             operation.senders = std::move(senders);
@@ -189,10 +190,8 @@ namespace ledger {
             operation.fees = std::move(BigInt().assignI64(fees));
             operation.trust = std::make_shared<TrustIndicator>();
             operation.date = transaction.receivedAt;
-
             // Compute trust
             computeOperationTrust(operation, transaction);
-
             if (accountInputs.size() > 0) {
                 // Create a send operation
                 result = result | FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
@@ -208,7 +207,6 @@ namespace ledger {
                 operation.refreshUid();
                 out.push_back(operation);
             }
-
             if (accountOutputs.size() > 0) {
                 // Receive
                 BigInt amount;
@@ -611,7 +609,6 @@ namespace ledger {
                     } else {
                         lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
                     }
-
                     auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, lastBlockHeight);
 
                     //Get a BitcoinLikeBlockchainExplorerTransaction from a BitcoinLikeTransaction
@@ -621,7 +618,6 @@ namespace ledger {
                     txExplorer.receivedAt = std::chrono::system_clock::now();
                     txExplorer.version = tx->getVersion();
                     txExplorer.confirmations = 0;
-
                     //Inputs
                     auto inputCount = tx->getInputs().size();
                     for (auto index = 0; index < inputCount; index++) {
@@ -642,7 +638,6 @@ namespace ledger {
                         in.address = prevTx.outputs[prevTxOutputIndex].address.getValueOr("");
                         txExplorer.inputs.push_back(in);
                     }
-
                     //Outputs
                     auto keychain = self->getKeychain();
                     auto outputCount = tx->getOutputs().size();
@@ -657,12 +652,13 @@ namespace ledger {
                         out.address = output->getAddress().value_or("");
                         txExplorer.outputs.push_back(out);
                     }
-
                     //Store in DB
+
                     std::vector<Operation> operations;
                     self->interpretTransaction(txExplorer, operations);
                     self->bulkInsert(operations);
                     self->emitEventsNow();
+
                     return unit;
                 });
 
@@ -673,7 +669,6 @@ namespace ledger {
                 if (optimisticUpdate.isFailure()) {
                     self->logger()->warn(" Optimistic update failed for broadcasted transaction : {}", txHash);
                 }
-
                 return txHash;
             }).callback(getMainExecutionContext(), callback);
         }

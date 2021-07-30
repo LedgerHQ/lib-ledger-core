@@ -5,10 +5,16 @@
 
 namespace ledger { namespace core { namespace api {
 
+std::string const TezosConfiguration::BCD_API = {"BCD_API"};
+
 std::string const TezosConfiguration::TEZOS_XPUB_CURVE = {"TEZOS_XPUB_CURVE"};
 
 std::string const TezosConfiguration::TEZOS_PROTOCOL_UPDATE = {"TEZOS_PROTOCOL_UPDATE"};
 
 std::string const TezosConfiguration::TEZOS_NODE = {"TEZOS_NODE"};
+
+std::string const TezosConfiguration::TEZOS_COUNTER_STRATEGY = {"TEZOS_COUNTER_STRATEGY"};
+
+std::string const TezosConfiguration::TEZOS_OPTIMISTIC_COUNTER_TIMEOUT = {"TEZOS_OPTIMISTIC_COUNTER_TIMEOUT"};
 
 } } }  // namespace ledger::core::api

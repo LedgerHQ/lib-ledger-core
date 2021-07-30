@@ -299,7 +299,7 @@ TEST_F(AlgorandAccountTest, assetBalanceHistory)
     }
 }
 
-TEST_F(AlgorandAccountTest, validAmount)
+TEST_F(AlgorandAccountTest, DISABLED_validAmount)
 {
     const auto valid = uv::wait(account->isAmountValid(EMPTY_ADDR, "100000"));
     EXPECT_TRUE(valid);

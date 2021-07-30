@@ -89,6 +89,13 @@ class CosmosLikeExtendedPublicKey :
         const Option<std::string> &path,
         api::CosmosBech32Type type = api::CosmosBech32Type::PUBLIC_KEY_VAL);
 
+    static std::shared_ptr<CosmosLikeExtendedPublicKey> fromBase64(
+        const api::Currency &currency,
+        const std::string &xpub,
+        const Option<std::string> &path,
+        api::CosmosCurve curve = api::CosmosCurve::SECP256K1,
+        api::CosmosBech32Type type = api::CosmosBech32Type::PUBLIC_KEY_VAL);
+
     static std::shared_ptr<CosmosLikeExtendedPublicKey> fromBech32(
         const api::Currency &currency,
         const std::string &bech32PubKey,

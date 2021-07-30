@@ -195,13 +195,30 @@ namespace ledger {
         template <> void migrate<23>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<23>(soci::session& sql, api::DatabaseBackendType type);
 
-        // Ripple memo primary key
+       
         template <> void migrate<24>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<24>(soci::session& sql, api::DatabaseBackendType type);
 
-        // Add bitcoin dust policy
+        
         template <> void migrate<25>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<25>(soci::session& sql, api::DatabaseBackendType type);
+
+        
+        template <> void migrate<26>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<26>(soci::session& sql, api::DatabaseBackendType type);
+
+        // Ripple memo primary key
+        void migrate_23_26_step1(soci::session& sql, api::DatabaseBackendType type);
+        void rollback_23_26_step1(soci::session& sql, api::DatabaseBackendType type);
+
+        // Add bitcoin dust policy
+        void migrate_23_26_step2(soci::session& sql, api::DatabaseBackendType type);
+        void rollback_23_26_step2(soci::session& sql, api::DatabaseBackendType type);
+
+        // Backup and clear Cosmos (ATOM) transactions
+        void migrate_23_26_step3(soci::session& sql, api::DatabaseBackendType type);
+        void rollback_23_26_step3(soci::session& sql, api::DatabaseBackendType type);
+
     }
 }
 

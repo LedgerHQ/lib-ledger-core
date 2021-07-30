@@ -10,6 +10,7 @@ std::string to_string(const CosmosCurve& cosmosCurve) {
     switch (cosmosCurve) {
         case CosmosCurve::ED25519: return "ED25519";
         case CosmosCurve::SECP256K1: return "SECP256K1";
+        default: return "UNKNOWN";
     };
 };
 template <>

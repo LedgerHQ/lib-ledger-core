@@ -52,9 +52,23 @@ public:
 
     /**
      * Set fees (in drop) the originator is willing to pay
+     * Set transaction and (if needed) reveal fees with 'fees'
+     * equivalent to call both functions setTransactionFees(fees) and setRevealFees(fees)
      * @return A reference on the same builder in order to chain calls.
      */
     virtual std::shared_ptr<TezosLikeTransactionBuilder> setFees(const std::shared_ptr<Amount> & fees) = 0;
+
+    /**
+     * Set transaction fees (in drop) the originator is willing to pay (reveal is not included)
+     * @return A reference on the same builder in order to chain calls.
+     */
+    virtual std::shared_ptr<TezosLikeTransactionBuilder> setTransactionFees(const std::shared_ptr<Amount> & transactionFees) = 0;
+
+    /**
+     * Set reveal fees (in drop) the originator is willing to pay 
+     * @return A reference on the same builder in order to chain calls.
+     */
+    virtual std::shared_ptr<TezosLikeTransactionBuilder> setRevealFees(const std::shared_ptr<Amount> & revealFees) = 0;
 
     /**
      * Set gas limit the originator is not willing to exceed.
@@ -81,9 +95,9 @@ public:
     /** Reset the current instance to its initial state */
     virtual void reset() = 0;
 
-    static std::shared_ptr<TezosLikeTransaction> parseRawUnsignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction);
+    static std::shared_ptr<TezosLikeTransaction> parseRawUnsignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction, const std::string & protocolUpdate);
 
-    static std::shared_ptr<TezosLikeTransaction> parseRawSignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction);
+    static std::shared_ptr<TezosLikeTransaction> parseRawSignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction, const std::string & protocolUpdate);
 };
 
 } } }  // namespace ledger::core::api

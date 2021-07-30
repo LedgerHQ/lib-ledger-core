@@ -51,7 +51,7 @@ class GaiaCosmosLikeBlockchainExplorer :
     GaiaCosmosLikeBlockchainExplorer(
         const std::shared_ptr<api::ExecutionContext> &context,
         const std::shared_ptr<HttpClient> &http,
-        const api::CosmosLikeNetworkParameters &parameters,
+        const api::Currency currency,
         const std::shared_ptr<api::DynamicObject> &configuration);
 
     // Build a URL encoded filter for gaia REST event-like filters
@@ -187,7 +187,10 @@ class GaiaCosmosLikeBlockchainExplorer :
 
    private:
     std::shared_ptr<HttpClient> _http;
-    api::CosmosLikeNetworkParameters _parameters;
+    api::Currency _currency;
+    /// Add a fees message to a transaction for internal purpose
+    template <typename T>
+    void addMsgFeesTo(cosmos::Transaction &transaction, const T &node) const;
 };
 
 }  // namespace core

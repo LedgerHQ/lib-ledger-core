@@ -40,7 +40,7 @@
 #endif
 
 #include <api/Currency.hpp>
-#include <wallet/cosmos/CosmosLikeCurrencies.hpp>  // Declares ATOM
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>  // Declares ATOM, MUON
 #include <wallet/algorand/AlgorandLikeCurrencies.hpp>  // Declares ALGO
 
 namespace ledger {

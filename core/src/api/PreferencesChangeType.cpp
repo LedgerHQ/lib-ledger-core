@@ -10,6 +10,7 @@ std::string to_string(const PreferencesChangeType& preferencesChangeType) {
     switch (preferencesChangeType) {
         case PreferencesChangeType::PUT_TYPE: return "PUT_TYPE";
         case PreferencesChangeType::DELETE_TYPE: return "DELETE_TYPE";
+        default: return "UNKNOWN";
     };
 };
 template <>

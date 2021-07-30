@@ -35,6 +35,7 @@
 #include <wallet/tezos/explorers/api/TezosLikeTransactionsBulkParser.h>
 #include <wallet/tezos/explorers/api/TezosLikeBlockParser.h>
 #include <api/TezosLikeNetworkParameters.hpp>
+#include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
 
 namespace ledger {
     namespace core {
@@ -61,6 +62,9 @@ namespace ledger {
 
             Future<std::shared_ptr<BigInt>>
             getFees() override;
+
+            Future<std::shared_ptr<BigInt>>
+            getGasPrice() override;
 
             Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
 
@@ -93,6 +97,9 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getEstimatedGasLimit(const std::string &address) override;
 
+            Future<std::shared_ptr<GasLimit>>
+            getEstimatedGasLimit(const std::shared_ptr<TezosLikeTransactionApi> &transaction) override;
+
             Future<std::shared_ptr<BigInt>>
             getStorage(const std::string &address) override;
 
@@ -104,7 +111,14 @@ namespace ledger {
 
             Future<bool> isAllocated(const std::string &address) override;
 
+            Future<std::string> getCurrentDelegate(const std::string &address) override;
+
             Future<bool> isFunded(const std::string &address) override;
+
+            Future<std::shared_ptr<BigInt>>
+            getTokenBalance(const std::string& accountAddress, const std::string& tokenAddress) const override;
+
+            Future<bool> isDelegate(const std::string &address) override;
 
         private:
             /*
@@ -125,6 +139,7 @@ namespace ledger {
 
             api::TezosLikeNetworkParameters _parameters;
             std::unordered_map<std::string, uint64_t> _sessions;
+            std::string _bcd;
         };
     }
 }

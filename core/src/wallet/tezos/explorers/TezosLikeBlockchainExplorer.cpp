@@ -33,6 +33,11 @@
 #include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
+#include <api/BigInt.hpp>
+#include <unordered_map>
 
 namespace ledger {
     namespace core {
@@ -126,11 +131,13 @@ namespace ledger {
                     .map<std::string>(context, [](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         if (!json.IsString()) {
+                        std::cout << "getManagerKey: not a string" << std::endl;
                             // Possible if address was not revealed yet
                             return "";
                         }
                         return json.GetString();
                     }).recover(context, [] (const Exception &exception) {
+                        std::cout << "getManagerKey exception" << std::endl;
                         // for KT we got an 404 instead of just a null value as we would expect
                         return "";
                     });
@@ -152,5 +159,251 @@ namespace ledger {
                         return false;
                     });
         }
+
+        Future<std::string> TezosLikeBlockchainExplorer::getCurrentDelegate(const std::string &address,
+                                                                           const std::shared_ptr<api::ExecutionContext> &context,
+                                                                           const std::shared_ptr<HttpClient> &http,
+                                                                           const std::string &rpcNode) {
+            const bool parseNumbersAsString = true;
+
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return http->GET(fmt::format("/chains/main/blocks/head/context/contracts/{}/delegate", address),
+                             std::unordered_map<std::string, std::string>{},
+                             rpcNode)
+                    .json(parseNumbersAsString)
+                    .map<std::string>(context, [](const HttpRequest::JsonResult &result) {
+                        auto &json = *std::get<1>(result);
+                        if (!json.IsString()) {
+                            return "";
+                        }
+                        return json.GetString();
+                    }).recover(context, [] (const Exception &exception) {
+                        // FIXME: throw exception to signal errors (i.e: network error)
+                        return "";
+                    });
+        }
+
+        Future<std::string> TezosLikeBlockchainExplorer::getChainId(const std::shared_ptr<api::ExecutionContext> &context,
+                                                              const std::shared_ptr<HttpClient> &http) {
+            const bool parseNumbersAsString = true;
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return http->GET(fmt::format("/chains/main/chain_id"),
+                             std::unordered_map<std::string, std::string>{},
+                             getRPCNodeEndpoint())
+                    .json(parseNumbersAsString)
+                    .map<std::string>(context, [](const HttpRequest::JsonResult &result) {
+                        auto &json = *std::get<1>(result);
+                        if (!json.IsString()) {
+                            // Possible if address was not revealed yet
+                            return "";
+                        }
+                        return json.GetString();
+                    }).recover(context, [] (const Exception &exception) {
+                        return "";
+                    });
+        }
+
+        Future<std::shared_ptr<GasLimit>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
+            const std::shared_ptr<HttpClient> &http,
+            const std::shared_ptr<api::ExecutionContext> &context,
+            const std::shared_ptr<TezosLikeTransactionApi> &tx)
+        {
+            return getChainId(context, http).flatMapPtr<GasLimit>(context, [=](const std::string& result)-> FuturePtr<GasLimit> {
+                return getEstimatedGasLimit(http, context, tx, result);
+            });
+        }
+
+        Future<std::shared_ptr<GasLimit>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
+            const std::shared_ptr<HttpClient> &http,
+            const std::shared_ptr<api::ExecutionContext> &context,
+            const std::shared_ptr<TezosLikeTransactionApi> &tx, 
+            const std::string& strChainID)
+        {
+            const auto postPath =
+                fmt::format("/chains/{}/blocks/head/helpers/scripts/run_operation", strChainID);
+            const auto payload = tx->serializeJsonForDryRun(strChainID);
+
+            const std::unordered_map<std::string, std::string> postHeaders{
+                {"Accept", "application/json"}, {"Content-Type", "application/json"}};
+
+            const bool parseNumbersAsString = true;
+            return http
+                ->POST(
+                    postPath,
+                    std::vector<uint8_t>(payload.cbegin(), payload.cend()),
+                    postHeaders,
+                    getRPCNodeEndpoint())
+                .json(parseNumbersAsString)
+                .flatMapPtr<GasLimit>(
+                    context,
+                    [](const HttpRequest::JsonResult &result) -> FuturePtr<GasLimit> {
+                        const auto &json = std::get<1>(result)->GetObject();
+                        if (json.HasMember("kind")) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR,
+                                std::make_shared<HttpRequest::JsonResult>(result),
+                                "failed to simulate operation: {}",
+                                json["kind"].GetString());
+                        }
+
+                        if (!json["contents"].IsArray() || !(json["contents"].Size() > 0)) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR,
+                                std::make_shared<HttpRequest::JsonResult>(result),
+                                "failed to get operation_result in simulation");
+                        }
+
+                        auto gas = std::make_shared<GasLimit>();
+
+                        for (auto& content : json["contents"].GetArray()) {
+                            if (!content.IsObject() ||
+                                !content.GetObject().HasMember("kind") ||
+                                !content.GetObject().HasMember("metadata") ||
+                                !content.GetObject()["metadata"].HasMember("operation_result")) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR,
+                                std::make_shared<HttpRequest::JsonResult>(result),
+                                "failed to get operation_result in simulation");
+                            }                           
+
+                            auto &operationResult = content.GetObject()["metadata"]
+                                                    .GetObject()["operation_result"];
+
+                            // Fail if operation_result is not .status == "applied"
+                            if (!operationResult.HasMember("status") ||
+                                operationResult["status"].GetString() != std::string("applied")) {
+                                throw make_exception(
+                                    api::ErrorCode::HTTP_ERROR,
+                                    std::make_shared<HttpRequest::JsonResult>(result),
+                                    "failed to simulate the operation on the Node");
+                            }
+
+                            const auto operationKind = content.GetObject()["kind"].GetString();
+                            if (operationKind == std::string("transaction")) {
+                                gas->transaction = BigInt::fromString(operationResult["consumed_gas"].GetString());
+                            }
+                            else if (operationKind == std::string("reveal")) {
+                                gas->reveal = BigInt::fromString(operationResult["consumed_gas"].GetString());
+                            }
+                        }
+
+                        if (!gas->transaction.isZero()) {
+                            return FuturePtr<GasLimit>::successful(gas);
+                        }
+                        else {
+                            throw make_exception(
+                                    api::ErrorCode::HTTP_ERROR,
+                                    std::make_shared<HttpRequest::JsonResult>(result),
+                                    "failed to get transaction kind in simulation");
+                        }
+                    })
+                .recover(context, [](const Exception &exception) {
+                    auto ecode = exception.getErrorCode();
+                    // Tezos RPC returns a 500 when the transaction is not valid (bad counter, no
+                    // balance, etc.) so we rethrow the tezos node error for easier debugging
+                    auto body = std::static_pointer_cast<HttpRequest::JsonResult>(
+                        exception.getUserData().getValue());
+                    const auto &json = *std::get<1>(*body);
+                    rapidjson::StringBuffer buffer;
+                    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                    json.Accept(writer);
+                    throw make_exception(
+                        api::ErrorCode::HTTP_ERROR,
+                        "failed to simulate operation: {}",
+                        buffer.GetString());
+
+                    // lambda is [noreturn], this is just left so type deduction succeeds and
+                    // compiles
+                    return std::make_shared<GasLimit>();
+                });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

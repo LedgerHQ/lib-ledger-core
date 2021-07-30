@@ -128,8 +128,8 @@ namespace ledger {
                 // UPDATE (we only update block information)
                 if (tx.block.nonEmpty()) {
                     auto type = api::to_string(tx.type);
-                    sql << "UPDATE tezos_transactions SET block_uid = :uid, status = :code WHERE hash = :tx_hash AND type = :type",
-                            use(blockUid), use(tx.status), use(tx.hash), use(type);
+                    sql << "UPDATE tezos_transactions SET block_uid = :uid, status = :code WHERE hash = :tx_hash AND type = :type AND confirmations = :confirmations",
+                            use(blockUid), use(tx.status), use(tx.hash), use(type), use(tx.confirmations);
                 }
                 return tezosTxUid;
             } else {

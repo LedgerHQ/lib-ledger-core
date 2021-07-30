@@ -30,9 +30,12 @@
 
 
 #include "NodeTezosLikeBlockchainExplorer.h"
+#include <api/ErrorCode.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/Configuration.hpp>
+#include <utils/Exception.hpp>
 #include <rapidjson/document.h>
+
 namespace ledger {
     namespace core {
         NodeTezosLikeBlockchainExplorer::NodeTezosLikeBlockchainExplorer(
@@ -92,6 +95,12 @@ namespace ledger {
                         }
                         return std::make_shared<BigInt>(fees);
                     });
+        }
+
+        Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getGasPrice() {
+            throw make_exception(
+                api::ErrorCode::RUNTIME_ERROR,
+                "getGasPrice is unimplemented for NodeTezosLikeExplorer");
         }
 
         Future<String>
@@ -250,7 +259,16 @@ namespace ledger {
             );
         }
 
-        Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getStorage(const std::string &address) {
+        Future<std::shared_ptr<GasLimit>>
+        NodeTezosLikeBlockchainExplorer::getEstimatedGasLimit(
+            const std::shared_ptr<TezosLikeTransactionApi> &tx)
+        {
+            return TezosLikeBlockchainExplorer::getEstimatedGasLimit(_http, getContext(), tx);
+        }
+
+        Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getStorage(
+            const std::string &address)
+        {
             return getHelper(fmt::format("blockchain/{}/{}/estimate_storage",
                                          getExplorerVersion(),
                                          getNetworkParameters().Identifier),
@@ -290,19 +308,26 @@ namespace ledger {
                                                             getRPCNodeEndpoint());
         }
 
+        Future<std::string> NodeTezosLikeBlockchainExplorer::getCurrentDelegate(const std::string &address) {
+            return TezosLikeBlockchainExplorer::getCurrentDelegate(address,
+                                                                   getExplorerContext(),
+                                                                   _http,
+                                                                   getRPCNodeEndpoint());
+        }
+
         Future<bool> NodeTezosLikeBlockchainExplorer::isFunded(const std::string &address) {
             return
                 _http->GET(fmt::format("blockchain/{}/{}/account/{}", address))
                     .json(false, true).map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
                         auto& connection = *std::get<0>(result);
                         if (connection.getStatusCode() == 404) {
-                            //an empty account 
+                            //an empty account
                             return false;
                         }
                         else if (connection.getStatusCode() < 200 || connection.getStatusCode() >= 300) {
                             throw Exception(api::ErrorCode::HTTP_ERROR, connection.getStatusText());
                         }
-                        else {   
+                        else {
                             auto& json = *std::get<1>(result);
 
                             // look for the is_funded field
@@ -316,6 +341,33 @@ namespace ledger {
                             return json[field].GetBool();
                         }
                     });
+        }
+
+        Future<bool> NodeTezosLikeBlockchainExplorer::isDelegate(const std::string &address) {
+                return _http->GET(fmt::format("blockchain/{}/{}/account/{}",
+                                         getExplorerVersion(),
+                                         getNetworkParameters().Identifier,
+                                         address))
+                    .json(false).map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
+                        auto& json = *std::get<1>(result);
+                        // look for the is_active_delegate field
+                        const auto field = "is_active_delegate";
+                        if (!json.IsObject() || !json.HasMember(field) ||
+                            !json[field].IsBool()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                "Failed to get is_active_delegate from network, no (or malformed) field in response");
+                        }
+                        return json[field].GetBool();
+                    });
+        }
+
+        Future<std::shared_ptr<BigInt>>
+        NodeTezosLikeBlockchainExplorer::getTokenBalance(const std::string& accountAddress,
+                                                         const std::string& tokenAddress) const {
+            return Future<std::shared_ptr<BigInt>>::failure(
+                Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING,
+                          "Endpoint to get token balance is not implemented."
+                ));
         }
     }
 }

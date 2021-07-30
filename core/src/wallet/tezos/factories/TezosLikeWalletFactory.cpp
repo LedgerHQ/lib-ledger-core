@@ -39,7 +39,7 @@
 #include <wallet/tezos/explorers/ExternalTezosLikeBlockchainExplorer.h>
 #include <wallet/tezos/TezosLikeWallet.h>
 #include <wallet/pool/WalletPool.hpp>
-#include <wallet/tezos/synchronizers/TezosLikeBlockchainExplorerAccountSynchronizer.h>
+#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -83,7 +83,7 @@ namespace ledger {
                     std::weak_ptr<WalletPool> p = pool;
                     synchronizerFactory = Option<TezosLikeAccountSynchronizerFactory>([p, explorer]() {
                         auto pool = p.lock();
-                        return std::make_shared<TezosLikeBlockchainExplorerAccountSynchronizer>(pool, explorer);
+                        return std::make_shared<TezosLikeAccountSynchronizer>(pool, explorer);
                     });
                 }
             }

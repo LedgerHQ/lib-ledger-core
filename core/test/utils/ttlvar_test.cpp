@@ -1,12 +1,13 @@
 /*
  *
- * TezosLikeAccountSynchronizer
+ * ttlvar_test
+ * ledger-core
  *
- * Created by El Khalil Bellakrid on 27/04/2019.
+ * Created by Rémi Barjon on 05/02/2021.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Ledger
+ * Copyright (c) 2021 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,15 +28,34 @@
  * SOFTWARE.
  *
  */
+#include <gtest/gtest.h>
+#include <ledger/core/utils/TTLVar.hpp>
+#include <chrono>
+#include <thread>
 
+using namespace ledger::core;
 
-#ifndef LEDGER_CORE_TEZOSLIKEACCOUNTSYNCHRONIZER_H
-#define LEDGER_CORE_TEZOSLIKEACCOUNTSYNCHRONIZER_H
-#include <wallet/common/synchronizers/AbstractAccountSynchronizer.h>
-namespace ledger {
-    namespace core {
-        class TezosLikeAccount;
-        class TezosLikeAccountSynchronizer : public AbstractAccountSynchronizer<TezosLikeAccount> {};
-    }
+TEST(TTLVar, GetAlive) {
+    const TTLVar<int> ttlvar(4, std::chrono::seconds(5));
+    const auto var = ttlvar.get();
+
+    EXPECT_TRUE(var.hasValue());
+    EXPECT_EQ(var.getValue(), 4);
 }
-#endif //LEDGER_CORE_TEZOSLIKEACCOUNTSYNCHRONIZER_H
+
+TEST(TTLVar, GetNotAlive) {
+    const TTLVar<int> ttlvar(4, std::chrono::seconds(0));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    const auto var = ttlvar.get();
+
+    EXPECT_TRUE(var.isEmpty());
+}
+
+TEST(TTLVar, Update) {
+    const TTLVar<int> ttlvar(0, std::chrono::seconds(5));
+    ttlvar.update(4);
+    const auto var = ttlvar.get();
+
+    EXPECT_TRUE(var.hasValue());
+    EXPECT_EQ(var.getValue(), 4);
+}

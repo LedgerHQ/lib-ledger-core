@@ -14,6 +14,7 @@ std::string to_string(const OperationType& operationType) {
         case OperationType::UNDELEGATE: return "UNDELEGATE";
         case OperationType::REWARDS: return "REWARDS";
         case OperationType::NONE: return "NONE";
+        default: return "UNKNOWN";
     };
 };
 template <>

@@ -19,6 +19,7 @@ std::string to_string(const EventCode& eventCode) {
         case EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT: return "SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT";
         case EventCode::NEW_ERC20_OPERATION: return "NEW_ERC20_OPERATION";
         case EventCode::UPDATE_ERC20_OPERATIONS: return "UPDATE_ERC20_OPERATIONS";
+        default: return "UNKNOWN";
     };
 };
 template <>

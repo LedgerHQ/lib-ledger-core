@@ -458,7 +458,7 @@ namespace ledger {
                 auto benchmark = NEW_BENCHMARK("explorer_calls");
                 benchmark->start();
                 return _explorer->getTransactions(batch, blockHash, optional<void*>())
-                    .template flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions, benchmark] (const std::shared_ptr<typename Explorer::TransactionsBulk>& bulk) -> Future<bool> {
+                    .template flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions, benchmark, blockHash] (const std::shared_ptr<typename Explorer::TransactionsBulk>& bulk) -> Future<bool> {
                         benchmark->stop();
 
                         auto interpretBenchmark = NEW_BENCHMARK("interpret_operations");

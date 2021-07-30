@@ -395,7 +395,6 @@ namespace ledger {
                     account->getIndex(),
                     account->getKeychain()->getRestoreKey(),
                     account->getWallet()->getName(), DateUtils::toJSON(buddy->startDate));
-
             //Check if reorganization happened
             soci::session sql(buddy->wallet->getDatabase()->getPool());
             if (buddy->savedState.nonEmpty()) {
@@ -428,11 +427,8 @@ namespace ledger {
                     }
                 }
             }
-
             initializeSavedState(buddy->savedState, buddy->halfBatchSize);
-
             updateTransactionsToDrop(sql, buddy, account->getAccountUid());
-
             auto self = getSharedFromThis();
             self->_addresses.clear();
             self->_cachedTransactionBulks.clear();
@@ -456,7 +452,7 @@ namespace ledger {
                     self->_explorerBenchmark->stop();
                     for (int i = 0; i < txBulks.size(); i++) {
                         self->_cachedTransactionBulks.insert(std::make_pair(self->_hashkeys[i], txBulks[i]));
-                    }                    
+                    }
                     return self->synchronizeBatches(0, buddy);
                 }).template flatMap<Unit>(account->getContext(), [self, buddy](auto) {
                     return self->synchronizeMempool(buddy);
@@ -465,7 +461,6 @@ namespace ledger {
                             (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
                         buddy->logger->info("End synchronization for account#{} of wallet {} in {}", buddy->account->getIndex(),
                             buddy->account->getWallet()->getName(), DurationUtils::formatDuration(duration));
-
                         auto const& batches = buddy->savedState.getValue().batches;
 
                         // get the last block height treated during the synchronization
@@ -482,7 +477,6 @@ namespace ledger {
                             buddy->wallet->getCurrency().name).template map<uint64_t>([](const Block& block) {
                                 return block.height;
                                 }).getValueOr(0);
-
                                 self->_currentAccount = nullptr;
                                 return buddy->context;
                         }).recover(ImmediateExecutionContext::INSTANCE, [self, buddy](const Exception& ex) {
@@ -695,13 +689,10 @@ namespace ledger {
                 // Interpret transactions to operations and update last block
                 for (const auto& tx : bulk->transactions) {
                     // Update last block to chain query
-                    if (lastBlock.isEmpty() ||
-                        lastBlock.getValue().height < tx.block.getValue().height) {
+                    if (!tx.block.isEmpty() && (lastBlock.isEmpty() || lastBlock.getValue().height < tx.block.getValue().height)) {
                         lastBlock = tx.block;
                     }
-
                     self->interpretTransaction(tx, buddy, operations);
-
                     //Update first pendingTxHash in savedState
                     auto it = buddy->transactionsToDrop.find(tx.hash);
                     if (it != buddy->transactionsToDrop.end()) {
@@ -728,7 +719,6 @@ namespace ledger {
                 else {
                     count += tryPutTx.getValue();
                 }
-
                 buddy->logger->info("Succeeded to insert {} txs on {} for account {}", count, bulk->transactions.size(), buddy->account->getAccountUid());
                 buddy->account->emitEventsNow();
 

@@ -1,0 +1,14 @@
+.vscode/
+.idea/
+.DS_Store
+.circleci/
+build/
+**/*.md
+**/*.yml
+*.a
+playground/
+.git/
+ledger-core-sample/
+Dockerfile*
+CMakeCache.txt
+Testing/

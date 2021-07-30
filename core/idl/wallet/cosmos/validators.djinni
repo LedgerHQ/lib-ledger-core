@@ -11,6 +11,7 @@ CosmosLikeValidatorDescription = record {
         moniker: string;
         identity: optional<string>;
         website: optional<string>;
+        securityContact: optional<string>;
         details: optional<string>;
 }
 
@@ -63,5 +64,6 @@ CosmosLikeValidator = record {
     # Consensus public key (cosmosvalconspub)
     consensusPubkey: string;
     # Status (Unbonded - Unbonding - Bonded) Goes from 0 to 2 or 1 to 3 depending on API (see https://github.com/cosmos/cosmos-sdk/commit/53bf2271d5bac054a8f74723732f21055c1b72d4#diff-f54554903608b8b89649f532c8f1a78cL43)
-    activeStatus: i32;
+    # For Stargate, the string is an UPPERCASE_CONSTANT
+    activeStatus: string;
 }

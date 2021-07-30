@@ -293,14 +293,14 @@ namespace {
             ":uid, :account_uid, :wallet_uid, :type, :date, :senders, :recipients, :amount,"
             ":fees, :block_uid, :currency_name, :trust"
             ") ON CONFLICT(uid) DO UPDATE SET block_uid = :block_uid, trust = :trust,"
-            " amount = :amount, fees = :fees ", [] (auto& s, auto& b) {
+            " amount = :amount, fees = :fees", [] (auto& s, auto& b) {
                 s, use(b.uid, "uid"), use(b.accountUid, "account_uid"),
-                    use(b.walletUid, "wallet_uid"), use(b.type, "type"),
-                    use(b.date, "date"), use(b.senders, "senders"),
-                    use(b.receivers, "recipients"), use(b.amount, "amount"),
-                    use(b.fees, "fees"), use(b.blockUid, "block_uid"),
-                    use(b.currencyName, "currency_name"),
-                    use(b.serializedTrust, "trust");
+                        use(b.walletUid, "wallet_uid"), use(b.type, "type"),
+                        use(b.date, "date"), use(b.senders, "senders"),
+                        use(b.receivers, "recipients"), use(b.amount, "amount"),
+                        use(b.fees, "fees"), use(b.blockUid, "block_uid"),
+                        use(b.currencyName, "currency_name"),
+                        use(b.serializedTrust, "trust");
             });
 }
 

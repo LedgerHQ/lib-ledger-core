@@ -83,6 +83,15 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
+CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getGasPrice(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeAccount>(nativeRef);
+        ref->getGasPrice(::djinni_generated::BigIntCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getOriginatedAccounts(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
@@ -91,6 +100,25 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_na
         auto r = ref->getOriginatedAccounts();
         return ::djinni::release(::djinni::List<::djinni_generated::TezosLikeOriginatedAccount>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getCurrentDelegate(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeAccount>(nativeRef);
+        ref->getCurrentDelegate(::djinni_generated::StringCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getTokenBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tokenAddress, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeAccount>(nativeRef);
+        ref->getTokenBalance(::djinni::String::toCpp(jniEnv, j_tokenAddress),
+                             ::djinni_generated::BigIntCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 }  // namespace djinni_generated

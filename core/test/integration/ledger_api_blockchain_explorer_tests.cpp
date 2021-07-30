@@ -45,7 +45,9 @@ public:
         auto worker = dispatcher->getSerialExecutionContext("worker");
         auto threadpoolWorker = dispatcher->getThreadPoolExecutionContext("threadpoolWorker");
         auto client = std::make_shared<HttpClient>(explorerEndpoint, http, worker, threadpoolWorker);
-        explorer = std::make_shared<CurrencyExplorer>(worker, client, params, api::DynamicObject::newInstance());
+        auto configuration = DynamicObject::newInstance();
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
+        explorer = std::make_shared<CurrencyExplorer>(worker, client, params, configuration);
         logger = ledger::core::logger::create("test_logs",
                                               dispatcher->getSerialExecutionContext("logger"),
                                               resolver,
@@ -114,12 +116,18 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash_3) {
     EXPECT_EQ(tx.hash, "8d2a0ccbe3a71f3e505be1557995c57f2a26f1951a72931f23a61f18fa4b3d2d");
     EXPECT_EQ(tx.inputs.size(), 8);
     EXPECT_EQ(tx.outputs.size(), 2);
-    EXPECT_EQ(tx.inputs[5].value.getValue().toString(), "270000");
-    EXPECT_EQ(tx.inputs[5].index, 5);
-    EXPECT_EQ(tx.inputs[5].address.getValue(), "1BEG75jXGZgH7QsSNjmm9RGJ2fgWcXVbxm");
-    EXPECT_EQ(tx.inputs[5].signatureScript.getValue(), "483045022100b21b21023b15be3d71fc660513adc4ef1aaa299ee58b9a5c1b8401015d045622022031847f047494c83b199a743d5edd5dbeb33b2dae03dcdff12485b212061d0463012102a7e1245393aa50cf6e08077ac5f4460c2db9c54858f6b0958d91b8d62f39c3bb");
-    EXPECT_EQ(tx.inputs[5].previousTxHash.getValue(), "64717373eef15249771032b0153daae92d18ea63e997c1c70a33879698b43329");
-    EXPECT_EQ(tx.inputs[5].previousTxOutputIndex.getValue(), 9);
+    bool inputFound = false;
+    for(const auto& input : tx.inputs) {
+        if (input.previousTxHash.getValue() == "64717373eef15249771032b0153daae92d18ea63e997c1c70a33879698b43329") {
+            EXPECT_EQ(input.value.getValue().toString(), "270000");
+            EXPECT_EQ(input.address.getValue(), "1BEG75jXGZgH7QsSNjmm9RGJ2fgWcXVbxm");
+            EXPECT_EQ(input.signatureScript.getValue(), "483045022100b21b21023b15be3d71fc660513adc4ef1aaa299ee58b9a5c1b8401015d045622022031847f047494c83b199a743d5edd5dbeb33b2dae03dcdff12485b212061d0463012102a7e1245393aa50cf6e08077ac5f4460c2db9c54858f6b0958d91b8d62f39c3bb");
+            EXPECT_EQ(input.previousTxOutputIndex.getValue(), 9);
+            inputFound = true;
+            break;
+        }
+    }
+    EXPECT_EQ(inputFound, true);
     EXPECT_EQ(tx.outputs[0].address.getValue(), "14w1wdDMV5uSnBd92yf3N9LfgS6TKVzyYr");
     EXPECT_EQ(tx.outputs[1].address.getValue(), "1pCL4HJ3wbNXKiDde8eNmu9uMs1Tkd9hD");
 }

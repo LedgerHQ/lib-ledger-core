@@ -17,6 +17,7 @@ auto CosmosLikeNetworkParameters::fromCpp(JNIEnv* jniEnv, const CppType& c) -> :
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.MessagePrefix)),
                                                            ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c.XPUBVersion)),
                                                            ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c.PubKeyPrefix)),
+                                                           ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c.Ed25519PubKeyPrefix)),
                                                            ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c.AddressPrefix)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.ChainId)),
                                                            ::djinni::get(::djinni::List<::djinni::String>::fromCpp(jniEnv, c.AdditionalCIPs)))};
@@ -25,13 +26,14 @@ auto CosmosLikeNetworkParameters::fromCpp(JNIEnv* jniEnv, const CppType& c) -> :
 }
 
 auto CosmosLikeNetworkParameters::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
-    ::djinni::JniLocalScope jscope(jniEnv, 8);
+    ::djinni::JniLocalScope jscope(jniEnv, 9);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<CosmosLikeNetworkParameters>::get();
     return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_Identifier)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_MessagePrefix)),
             ::djinni::Binary::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_XPUBVersion)),
             ::djinni::Binary::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_PubKeyPrefix)),
+            ::djinni::Binary::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_Ed25519PubKeyPrefix)),
             ::djinni::Binary::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_AddressPrefix)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_ChainId)),
             ::djinni::List<::djinni::String>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_AdditionalCIPs))};

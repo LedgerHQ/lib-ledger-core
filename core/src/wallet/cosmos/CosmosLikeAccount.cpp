@@ -28,6 +28,8 @@
  *
  */
 
+#include "api/Logger.hpp"
+#include "wallet/cosmos/CosmosLikeCurrencies.hpp"
 #include <api/BigIntCallback.hpp>
 #include <api/CosmosLikeAddress.hpp>
 #include <api/CosmosLikeValidatorListCallback.hpp>
@@ -101,11 +103,11 @@ void CosmosLikeAccount::updateFromDb()
     }
 }
 
-void CosmosLikeAccount::updateAccountDataFromNetwork()
+FuturePtr<cosmos::Account> CosmosLikeAccount::updateAccountDataFromNetwork()
 {
     auto self = std::static_pointer_cast<CosmosLikeAccount>(shared_from_this());
-    _explorer->getAccount(getAddress())
-        .onComplete(getContext(), [self](const TryPtr<cosmos::Account> &accountData) mutable {
+    return _explorer->getAccount(getAddress())
+        .mapPtr<cosmos::Account>(getContext(), [self](const TryPtr<cosmos::Account> &accountData) mutable {
             if (accountData.isSuccess()) {
                 self->_accountData = accountData.getValue();
                 const CosmosLikeAccountDatabaseEntry update = {
@@ -118,6 +120,7 @@ void CosmosLikeAccount::updateAccountDataFromNetwork()
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 CosmosLikeAccountDatabaseHelper::updateAccount(sql, self->getAccountUid(), update);
             }
+            return self->_accountData;
         });
 }
 
@@ -313,17 +316,21 @@ void CosmosLikeAccount::setOperationTypeAndAmount(
     }
 }
 
-uint32_t CosmosLikeAccount::computeFeesForTransaction(const cosmos::Transaction &tx)
+uint32_t CosmosLikeAccount::computeFeesForTransaction(const cosmos::Transaction &tx) const
 {
-    // Get the maximum fees advertised on transaction (if all of "GasWanted" is used)
+    // If there are more than 1 element in the array, the code below
+    // is very likely to be wrong. Warn the users
+    if (tx.fee.amount.size() > 1) {
+        // const_cast necessary because getLogger() is not const
+        const_cast<CosmosLikeAccount*>(this)->getLogger()->w("cosmosFees", "There is more than 1 entry in tx.fee.amount, fee computation might be wrong");
+    }
+
+    // Get the maximum fees advertised on transaction
     auto fees = std::accumulate(
         std::begin(tx.fee.amount),
         std::end(tx.fee.amount),
         0,
         [](uint32_t sum, const cosmos::Coin &subamount) {
-            // FIXME This locks the CosmosLikeAccount code in cosmoshub chains on debug builds.
-            // And it also serves as reminder that most code in this module assumes cosmoshub.
-            assert((subamount.denom == "uatom"));
             return sum + BigInt::fromDecimal(subamount.amount).toInt();
         });
 
@@ -620,7 +627,7 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
             }
         });
 
-    updateAccountDataFromNetwork();
+    (void) updateAccountDataFromNetwork();
 
     auto startTime = DateUtils::now();
     eventPublisher->postSticky(
@@ -706,12 +713,12 @@ std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeAccount::buildTrans
         auto currency = self->getWallet()->getCurrency();
         auto tx = std::make_shared<CosmosLikeTransactionApi>();
         tx->setAccountNumber(self->_accountData->accountNumber);
-        tx->setCurrency(self->getWallet()->getCurrency());
+        tx->setCurrency(currency);
         tx->setFee(request.fee);
         tx->setMemo(request.memo);
         tx->setMessages(request.messages);
         tx->setSequence(
-            request.sequence.empty() ? std::to_string(std::stoi(self->_accountData->sequence) + 1)
+            request.sequence.empty() ? self->_accountData->sequence
                                      : request.sequence);
         tx->setSigningPubKey(self->getKeychain()->getPublicKey());
         if (request.gas && !(request.gas->isZero())) {
@@ -736,29 +743,39 @@ void CosmosLikeAccount::estimateGas(
     tx->setAccountNumber(_accountData->accountNumber);
     tx->setCurrency(getWallet()->getCurrency());
     tx->setMessages(request.messages);
-    // Sequence needs to be set or explorer might return an error.
-    // The value here doesn't matter at all.
-    tx->setSequence("0");
+
     if (request.memo) {
         tx->setMemo(request.memo.value());
     }
-    return _explorer->getEstimatedGasLimit(tx, request.amplifier.value_or("1.0"))
+    // We need to update the sequence number to have the correct sequence number
+    // at time of simulation
+    return updateAccountDataFromNetwork()
+        .flatMapPtr<api::BigInt>(
+            getContext(),
+            [this, tx, request](
+                const std::shared_ptr<cosmos::Account> &currentAccountData)
+                -> FuturePtr<api::BigInt> {
+              tx->setSequence(currentAccountData->sequence);
+              return _explorer
+                  ->getEstimatedGasLimit(tx, request.amplifier.value_or("1.0"))
         .mapPtr<api::BigInt>(
             getContext(),
-            [](const std::shared_ptr<BigInt> &gasLimit) -> std::shared_ptr<api::BigInt> {
+                      [](const std::shared_ptr<BigInt> &gasLimit)
+                          -> std::shared_ptr<api::BigInt> {
                 return std::make_shared<api::BigIntImpl>(*gasLimit);
+                      });
             })
         .callback(getContext(), callback);
 }
 
 void CosmosLikeAccount::getSequence(const std::shared_ptr<api::StringCallback> &callback)
 {
-    updateAccountDataFromNetwork();
-    if (!_accountData) {
-        throw make_exception(api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
+    return updateAccountDataFromNetwork().map<std::string>(
+        getContext(),
+        [](const std::shared_ptr<cosmos::Account> &currentAccountData) -> std::string {
+            return currentAccountData->sequence;
+        }).callback(getContext(), callback);
     }
-    return Future<std::string>::successful(_accountData->sequence).callback(getContext(), callback);
-}
 
 void CosmosLikeAccount::getAccountNumber(const std::shared_ptr<api::StringCallback> &callback)
 {

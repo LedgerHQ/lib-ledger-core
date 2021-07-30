@@ -68,6 +68,8 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::INVALID_BECH32_FORMAT: return "INVALID_BECH32_FORMAT";
         case ErrorCode::INVALID_STELLAR_ADDRESS_FORMAT: return "INVALID_STELLAR_ADDRESS_FORMAT";
         case ErrorCode::INVALID_STELLAR_MEMO_TYPE: return "INVALID_STELLAR_MEMO_TYPE";
+        case ErrorCode::INVALID_SELF_TX: return "INVALID_SELF_TX";
+        default: return "UNKNOWN";
     };
 };
 template <>
@@ -131,7 +133,8 @@ ErrorCode from_string(const std::string& errorCode) {
     else if (errorCode == "LINK_NON_TAIL_FILTER") return ErrorCode::LINK_NON_TAIL_FILTER;
     else if (errorCode == "INVALID_BECH32_FORMAT") return ErrorCode::INVALID_BECH32_FORMAT;
     else if (errorCode == "INVALID_STELLAR_ADDRESS_FORMAT") return ErrorCode::INVALID_STELLAR_ADDRESS_FORMAT;
-    else return ErrorCode::INVALID_STELLAR_MEMO_TYPE;
+    else if (errorCode == "INVALID_STELLAR_MEMO_TYPE") return ErrorCode::INVALID_STELLAR_MEMO_TYPE;
+    else return ErrorCode::INVALID_SELF_TX;
 };
 
 std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
@@ -197,6 +200,7 @@ std::ostream &operator<<(std::ostream &os, const ErrorCode &o)
         case ErrorCode::INVALID_BECH32_FORMAT:  return os << "INVALID_BECH32_FORMAT";
         case ErrorCode::INVALID_STELLAR_ADDRESS_FORMAT:  return os << "INVALID_STELLAR_ADDRESS_FORMAT";
         case ErrorCode::INVALID_STELLAR_MEMO_TYPE:  return os << "INVALID_STELLAR_MEMO_TYPE";
+        case ErrorCode::INVALID_SELF_TX:  return os << "INVALID_SELF_TX";
     }
 }
 

@@ -544,10 +544,6 @@ std::shared_ptr<api::CosmosLikeTransaction> CosmosLikeTransactionBuilder::parseR
                         return unit.name == denom;
                     });
 
-                // NOTE until other units are wanted, we assume only uatom is used.
-                // This will only fail in debug builds.
-                assert(unit->name == "uatom");
-
                 if (unit == currency.units.end()) {
                     throw Exception(
                         api::ErrorCode::INVALID_ARGUMENT, "Unknown unit while parsing transaction");

@@ -124,6 +124,7 @@ void parseDescription(const T &descriptionNode, cosmos::ValidatorDescription &ou
 {
     assert((descriptionNode.HasMember(kMoniker)));
     out.moniker = descriptionNode[kMoniker].GetString();
+    out.securityContact = optional<std::string>("Unavailble pre-Stargate");
     if (descriptionNode.HasMember(kWebsite) && descriptionNode[kWebsite].IsString()) {
         out.website = optional<std::string>(descriptionNode[kWebsite].GetString());
     }
@@ -179,9 +180,9 @@ void parseReward(const T &rewardNode, cosmos::Reward &out)
 }
 
 template <class T>
-void parseBlock(const T &node, const std::string &currencyName, cosmos::Block &out)
+void parseBlock(const T &node, const api::Currency &currency, cosmos::Block &out)
 {
-    out.currencyName = currencyName;
+    out.currencyName = currency.name;
     out.hash = node[kBlockMeta].GetObject()[kBlockId].GetObject()[kHash].GetString();
     out.height =
         BigInt::fromString(node[kBlockMeta].GetObject()[kHeader].GetObject()[kHeight].GetString())
@@ -498,14 +499,14 @@ void parseSignerPubKey(const T &node, std::string &pubkey)
 }
 
 template <class T>
-void parseTransaction(const T &node, cosmos::Transaction &transaction)
+void parseTransaction(const T &node, cosmos::Transaction &transaction, const api::Currency &currency)
 {
     assert((node.HasMember(kTxHash)));
     transaction.hash = node[kTxHash].GetString();
     if (node.HasMember(kHeight)) {
         cosmos::Block block;
         block.height = BigInt::fromString(node[kHeight].GetString()).toUint64();
-        block.currencyName = currencies::ATOM.name;
+        block.currencyName = currency.name;
         transaction.block = block;
     }
     if (node.HasMember(kGasUsed)) {
@@ -591,7 +592,7 @@ void parseValidatorSetEntry(const T &n, cosmos::Validator &out)
     out.consensusPubkey = n[kConsensusPubkey].GetString();
 
     assert((n.HasMember(kStatus)));
-    out.activeStatus = BigInt::fromString(n[kStatus].GetString()).toInt();
+    out.activeStatus = n[kStatus].GetString();
 }
 
 //  Parse an unbonding entry from (/staking/delegators/{address}/unbonding_delegations)

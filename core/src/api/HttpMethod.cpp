@@ -12,6 +12,7 @@ std::string to_string(const HttpMethod& httpMethod) {
         case HttpMethod::POST: return "POST";
         case HttpMethod::PUT: return "PUT";
         case HttpMethod::DEL: return "DEL";
+        default: return "UNKNOWN";
     };
 };
 template <>

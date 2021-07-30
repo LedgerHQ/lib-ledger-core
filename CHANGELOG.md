@@ -1,3 +1,12 @@
+## 4.2.0
+> 2021/04/19
+
+- Algorand update
+- Stargate protocol update for cosmos
+
+## 4.1.0
+> 2021/02/26 Tezos for NRT
+
 ## 4.0.0
 > 2021/02/12 NRT
 
@@ -17,6 +26,18 @@
 - Fix XRP incremental synchronization
 - Improve runtime performances by splitting db connections between Write pool and Read pool
 - use of tx "id" field (if present) instead of "hash" for btc explorers
+## 3.5.2
+
+> 2021/02/03
+
+- Add AddERC20Accounts API
+
+## 3.5.1
+
+> 2021/01/29
+
+- Remove ERC20 balance check on libcore side
+
 
 ## 3.5.0
 

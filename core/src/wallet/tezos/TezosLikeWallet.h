@@ -31,15 +31,16 @@
 
 #ifndef LEDGER_CORE_TEZOSLIKEWALLET_H
 #define LEDGER_CORE_TEZOSLIKEWALLET_H
+#include <api/TezosLikeWallet.hpp>
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
-#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.h>
+#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.hpp>
 #include <wallet/tezos/factories/TezosLikeWalletFactory.h>
 #include <wallet/tezos/factories/TezosLikeKeychainFactory.h>
 
 namespace ledger {
     namespace core {
-        class TezosLikeWallet : public AbstractWallet {
+        class TezosLikeWallet : public api::TezosLikeWallet, public AbstractWallet {
         public:
             static const api::WalletType type;
 
@@ -70,6 +71,10 @@ namespace ledger {
             Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
 
             std::shared_ptr<TezosLikeBlockchainExplorer> getBlockchainExplorer();
+
+            Future<bool> isDelegate(const std::string& address);
+
+            void isDelegate(const std::string &address, const std::shared_ptr<api::BoolCallback> &callback) override;
 
         protected:
             std::shared_ptr<AbstractAccount>
