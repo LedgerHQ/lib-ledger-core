@@ -81,8 +81,17 @@ namespace ledger {
             return _key.getPublicKeyBlake2b(_curve == api::TezosCurve::ED25519);
         }
 
-        std::string TezosLikeExtendedPublicKey::toBase58() {
-            return TezosExtendedPublicKey::toBase58();
+        std::string TezosLikeExtendedPublicKey::toBase58()
+        {
+            auto config = std::make_shared<DynamicObject>();
+            config->putString("networkIdentifier", "xtz");
+            // FIXME: The key is 33bytes long even for ed25519, need to manually remove the leading byte
+            std::vector<uint8_t> key = _key.getPublicKey();
+            key.erase(key.begin());
+            // FIXME: Hardcoded to the edpk (ed25519 public key) prefix. It should be stored elsewhere
+            std::vector<uint8_t> payload = vector::concat({0x0D, 0x0F, 0x25, 0xD9}, key);
+            auto b58encoded = Base58::encodeWithChecksum(payload, config);
+            return b58encoded;
         }
 
         std::string TezosLikeExtendedPublicKey::getRootPath() {

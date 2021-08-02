@@ -137,6 +137,11 @@ namespace ledger {
             void getFees(const std::shared_ptr<api::BigIntCallback> & callback) override;
             FuturePtr<BigInt> getFees();
 
+            void getGasPrice(const std::shared_ptr<api::BigIntCallback> & callback) override;
+            FuturePtr<BigInt> getGasPrice();
+
+            FuturePtr<BigInt> estimateGasLimit(const std::shared_ptr<TezosLikeTransactionApi>& tx, double adjustment_factor = 1.1);
+
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
         private:

@@ -359,15 +359,34 @@ namespace ledger {
                                                 // We should increment current counter
                                                 tx->setCounter(std::make_shared<BigInt>(++(*counter)));
                                                 return explorer->getCurrentBlock();
-                                            }).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
+                                            }).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
                                                 tx->setBlockHash(block->hash);
                                                 if (senderAddress.find("KT1") == 0) {
                                                     // HACK: KT Operation we use forge endpoint
-                                                    return explorer->forgeKTOperation(tx).mapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [tx] (const std::vector<uint8_t> &rawTx) {
+                                                    return explorer->forgeKTOperation(tx).mapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [tx] (const std::vector<uint8_t> &rawTx) {
                                                         tx->setRawTx(rawTx);
                                                         return tx;
                                                     });
                                                 }
+                                                return FuturePtr<TezosLikeTransactionApi>::successful(tx);
+                                                }).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, request] (const std::shared_ptr<TezosLikeTransactionApi> &tx) {
+                                                        if (request.gasLimit->toInt() == 0) {
+                                                            auto filledTx = tx;
+                                                            auto gasPriceFut = request.fees->toInt() == 0 ?
+                                                                self->getGasPrice()
+                                                                :
+                                                                FuturePtr<BigInt>::successful(request.fees);
+
+                                                            return gasPriceFut.flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, filledTx] (const std::shared_ptr<BigInt>&gasPrice) -> FuturePtr<api::TezosLikeTransaction> {
+                                                                return self->estimateGasLimit(filledTx).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [filledTx, gasPrice] (const std::shared_ptr<BigInt> &gas) -> FuturePtr<api::TezosLikeTransaction> {
+                                                                    // 0.000001 comes from the gasPrice->toInt64 being in picoTez
+                                                                    const auto fees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));
+                                                                    filledTx->setGasLimit(gas);
+                                                                    filledTx->setFees(fees);
+                                                                    return FuturePtr<api::TezosLikeTransaction>::successful(filledTx);
+                                                                });
+                                                            });
+                                                        }
                                                 return FuturePtr<api::TezosLikeTransaction>::successful(tx);
                                             });
                                         });
@@ -410,6 +429,30 @@ namespace ledger {
 
         FuturePtr<BigInt> TezosLikeAccount::getFees() {
             return _explorer->getFees();
+        }
+
+        void TezosLikeAccount::getGasPrice(const std::shared_ptr<api::BigIntCallback> & callback) {
+            getGasPrice().mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &gasPrice) -> std::shared_ptr<api::BigInt>
+            {
+                if (!gasPrice) {
+                    throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve gasPrice from network");
+                }
+                return std::make_shared<api::BigIntImpl>(*gasPrice);
+            }).callback(getMainExecutionContext(), callback);
+        }
+
+        FuturePtr<BigInt> TezosLikeAccount::getGasPrice() {
+            return _explorer->getGasPrice();
+        }
+
+        FuturePtr<BigInt> TezosLikeAccount::estimateGasLimit(const std::shared_ptr<TezosLikeTransactionApi>& tx, double adjustmentFactor) {
+            return _explorer->getEstimatedGasLimit(tx).flatMapPtr<BigInt>(
+                getMainExecutionContext(),
+                [adjustmentFactor](const std::shared_ptr<BigInt>& consumedGas){
+                    auto adjustedGas = static_cast<int64_t>(1 + consumedGas->toInt64() * adjustmentFactor);
+                    return Future<std::shared_ptr<BigInt>>::successful(
+                        std::make_shared<BigInt>(adjustedGas));
+                });
         }
 
         std::shared_ptr<api::Keychain> TezosLikeAccount::getAccountKeychain() {
