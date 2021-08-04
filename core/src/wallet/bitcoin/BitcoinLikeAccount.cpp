@@ -35,6 +35,8 @@
 
 #include <collections/functional.hpp>
 
+#include <algorithm>
+
 #include <memory>
 #include <utils/DateUtils.hpp>
 
@@ -640,12 +642,27 @@ namespace ledger {
                         if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, prevTxHash, self->getAccountUid(), prevTx) || prevTxOutputIndex >= prevTx.outputs.size()) {
                             throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found while broadcasting", prevTxHash);
                         }
-                        in.value = prevTx.outputs[prevTxOutputIndex].value;
+
+                        // With the "foreign outputs" being merged in database,
+                        // we MUST manually scan the "prevTx" to find the output with the matching index.
+                        //
+                        // It should not affect performance too much, as prevTx.outputs has (n_keychain_in_tx+1) elements,
+                        // where n_keychain_in_tx is the number of _owned_ addresses in the outputs of prevTx.
+                        // This assertion is true because of the "foreign outputs" merging feature.
+                        auto isSameIndex = [prevTxOutputIndex](const BitcoinLikeBlockchainExplorerOutput& output) {
+                            return output.index == prevTxOutputIndex;
+                        };
+                        auto prevTxOutput = std::find_if(prevTx.outputs.cbegin(), prevTx.outputs.cend(), isSameIndex);
+                        if (prevTxOutput == std::end(prevTx.outputs)) {
+                            throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Output {}/{} not found in database", prevTxHash, prevTxOutputIndex);
+                        }
+
+                        in.value = prevTxOutput->value;
                         in.signatureScript = hex::toString(input->getScriptSig());
                         in.previousTxHash = prevTxHash;
                         in.previousTxOutputIndex = prevTxOutputIndex;
                         in.sequence = input->getSequence();
-                        in.address = prevTx.outputs[prevTxOutputIndex].address.getValueOr("");
+                        in.address = prevTxOutput->address.getValueOr("");
                         txExplorer.inputs.push_back(in);
                     }
 
