@@ -457,6 +457,7 @@ Future<bool> TezosLikeAccountSynchronizer::synchronizeBatch(
                 // NEW CODE
                 Option<Block> lastBlock = Option<Block>::NONE;
                 std::vector<Operation> operations;
+                bool addedNewAddressInBatch = false;
                 interpretBenchmark->start();
                 // Interpret transactions to operations and update last block
                 for (const auto& tx : bulk->transactions) {
@@ -474,7 +475,7 @@ Future<bool> TezosLikeAccountSynchronizer::synchronizeBatch(
                      * in block 840 for example, then all operations for that originated account between 841 and 900 would be missed, as
                      * the synchronizer buddy would only synchronize starting at 90 afterwards
                      */
-                    buddy->account->interpretTransaction(tx, operations);
+                    addedNewAddressInBatch = buddy->account->interpretTransaction(tx, operations);
 
                     //Update first pendingTxHash in savedState
                     auto it = buddy->transactionsToDrop.find(tx.hash);
@@ -515,15 +516,19 @@ Future<bool> TezosLikeAccountSynchronizer::synchronizeBatch(
 
                 // END NEW CODE
 
-                if (bulk->transactions.size() > 0 && lastBlock.nonEmpty()) {
-                    batchState.blockHeight = static_cast<uint32_t>(lastBlock.getValue().height);
-                    batchState.blockHash = lastBlock.getValue().hash;
-                    buddy->preferences->editor()->putObject<tezos::AccountSynchronizationSavedState>(
-                        "state", buddy->savedState.getValue())->commit();
+                // if an address has been added to the keychain during this batch, we skip buddy state update
+                // The goal is to restart the synchronization of the same batch with the extra knowledge of the address
+                if (!addedNewAddressInBatch) {
+                    if (bulk->transactions.size() > 0 && lastBlock.nonEmpty()) {
+                        batchState.blockHeight = static_cast<uint32_t>(lastBlock.getValue().height);
+                        batchState.blockHash = lastBlock.getValue().hash;
+                        buddy->preferences->editor()->putObject<tezos::AccountSynchronizationSavedState>(
+                            "state", buddy->savedState.getValue())->commit();
+                    }
                 }
 
                 auto hadTX = hadTransactions || bulk->transactions.size() > 0;
-                if (bulk->hasNext) {
+                if (bulk->hasNext || addedNewAddressInBatch) {
                     return self->synchronizeBatch(currentBatchIndex, buddy, hadTX);
                 } else {
                     return Future<bool>::successful(hadTX);
