@@ -161,6 +161,10 @@ namespace ledger {
             Future<std::string> getCurrentDelegate();
 
             void getTokenBalance(const std::string& tokenAddress, const std::shared_ptr<api::BigIntCallback>& callback) override;
+
+            /// Return a common trace prefix for logs
+            /// TODO: Upstream tracePrefix() to AbstractAccount and use that everywhere
+            std::string tracePrefix() const;
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
             void broadcastRawTransaction(const std::vector<uint8_t> &transaction,

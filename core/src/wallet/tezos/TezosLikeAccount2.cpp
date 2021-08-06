@@ -35,6 +35,7 @@
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <debug/Benchmarker.h>
 #include <api/TezosLikeAddress.hpp>
 #include <api/TezosOperationTag.hpp>
 #include <async/Future.hpp>
@@ -65,7 +66,11 @@ namespace ledger {
     namespace core {
         Future<api::ErrorCode> TezosLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point &date) {
             auto log = logger();
-            log->debug(" Start erasing data of account : {}", getAccountUid());
+
+            auto eraseDataBenchmarker = std::make_shared<Benchmarker>(
+                fmt::format("erase_data_since/{}", tracePrefix()), log);
+            eraseDataBenchmarker->start();
+            log->debug("[{}] Start erasing data of account : {}", tracePrefix(), getAccountUid());
 
             std::lock_guard<std::mutex> lock(_synchronizationLock);
             _currentSyncEventBus = nullptr;
@@ -79,7 +84,8 @@ namespace ledger {
             auto accountUid = getAccountUid();
             TezosLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
 
-            log->debug(" Finish erasing data of account : {}", accountUid);
+            log->debug("[{}] Finish erasing data of account : {}", tracePrefix(), accountUid);
+            eraseDataBenchmarker->stop();
             return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
         }
@@ -162,6 +168,10 @@ namespace ledger {
                                                         }
 
                                                         if (id == account->_originatedAccounts.size() - 1) {
+                                                            account->logger()->info("[{}] Stopping synchronization at originatedAccount index {} ({} originated account detected)",
+                                                                    account->tracePrefix(),
+                                                                    id,
+                                                                    id + 1);
                                                             return Future<tezos::AccountSynchronizationContext>::successful(result);
                                                         }
                                                         return getTxs(account, id + 1, nullptr, result);
@@ -271,7 +281,7 @@ namespace ledger {
             if (tx->toReveal()) {
                 ++(*counter);
             }
-            logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
+            logger()->info("[{}] {} receiving transaction", tracePrefix(), CORRELATIONID_PREFIX(transaction->getCorrelationId()));
             _broadcastRawTransaction(transaction->serialize(), callback, counter, transaction->getCorrelationId());
         }
 
@@ -583,7 +593,7 @@ namespace ledger {
                         std::make_shared<GasLimit>(adjustedGasReveal, adjustedGasTransaction));
                 })
                 .recover(getMainExecutionContext(), [=](const Exception &exception) {
-                    logger()->info("unable to estimate gas limit dynamically: {} ==> using default gas limit", exception.getMessage());
+                    logger()->info("[{}] unable to estimate gas limit dynamically: {} ==> using default gas limit", tracePrefix(), exception.getMessage());
                     return std::make_shared<GasLimit>(
                         api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT, api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT);
             });
@@ -591,6 +601,10 @@ namespace ledger {
 
         std::shared_ptr<api::Keychain> TezosLikeAccount::getAccountKeychain() {
             return _keychain;
+        }
+
+        std::string TezosLikeAccount::tracePrefix() const {
+            return fmt::format("{}/{}/{}", getWallet()->getPool()->getName(), getWallet()->getName(), getIndex());
         }
     }
 }

@@ -85,7 +85,7 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
-                EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED) << event->getPayload()->dump();
                 EXPECT_EQ(event->getCode(),
                           api::EventCode::SYNCHRONIZATION_SUCCEED);
 

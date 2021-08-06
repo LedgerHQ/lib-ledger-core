@@ -59,6 +59,7 @@ namespace ledger {
             using AddressList = std::vector<std::shared_ptr<api::Address>>;
 
             AbstractAccount(const std::shared_ptr<AbstractWallet>& wallet, int32_t index);
+            int32_t getIndex() const;
             int32_t getIndex() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
             std::shared_ptr<api::Logger> getLogger() override;

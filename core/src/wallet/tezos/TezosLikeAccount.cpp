@@ -178,6 +178,10 @@ namespace ledger {
                                                                      origAccount.spendable,
                                                                      origAccount.delegatable)
                 );
+                logger()->info("[{}] Detected a new originated address from {}: {}",
+                        tracePrefix(),
+                        self->getKeychain()->getAddress()->toString(),
+                        origAccount.address);
                 return true;
             }
             return false;

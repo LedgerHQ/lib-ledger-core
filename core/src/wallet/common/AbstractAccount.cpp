@@ -63,6 +63,10 @@ namespace ledger {
             return _index;
         }
 
+        int32_t AbstractAccount::getIndex() const {
+            return _index;
+        }
+
         std::shared_ptr<api::Preferences> AbstractAccount::getPreferences() {
             return _externalPreferences;
         }

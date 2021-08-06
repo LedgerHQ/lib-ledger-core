@@ -127,11 +127,7 @@ TezosLikeAccountSynchronizer::performSynchronization(const std::shared_ptr<Tezos
         ->getInternalPreferences()
         ->getSubPreferences("TezosLikeAccountSynchronizer");
     auto loggerPurpose = fmt::format("synchronize_{}", account->getAccountUid());
-    auto tracePrefix = fmt::format(
-        "{}/{}/{}",
-        account->getWallet()->getPool()->getName(),
-        account->getWallet()->getName(),
-        account->getIndex());
+    auto tracePrefix = account->tracePrefix();
     buddy->synchronizationTag = tracePrefix;
     buddy->logger = logger::trace(loggerPurpose, tracePrefix, account->logger());
     buddy->startDate = DateUtils::now();
@@ -469,11 +465,13 @@ Future<bool> TezosLikeAccountSynchronizer::synchronizeBatch(
 
                     /*
                      * This call goes to TezosLikeAccount::interpretTransaction, which might add new originatedAccounts
-                     * through updateOriginatedAccounts. This might be an issue because at that point the buddy won't check
-                     * the rest of this batch for other transactions associated to its originated account.
-                     * I.e., if the TransactionBulk that contains the originated account goes from block 800 to block 900,
-                     * in block 840 for example, then all operations for that originated account between 841 and 900 would be missed, as
-                     * the synchronizer buddy would only synchronize starting at 90 afterwards
+                     * through updateOriginatedAccounts.
+                     * BUT
+                     * synchronizeBatch is called before TezosLikeAccount::_originatedAccounts is looped over
+                     * in TezosLikeAccount::synchronize(). So it should be fine.
+                     * Fine meaning "all originated accounts added by this interpretTransaction
+                     * call will get their own syncHeight (from an OperationQuery db request), and be properly
+                     * resynchronized from their start by TezosLikeAccount::synchronize method."
                      */
                     addedNewAddressInBatch = buddy->account->interpretTransaction(tx, operations);
 
@@ -516,19 +514,15 @@ Future<bool> TezosLikeAccountSynchronizer::synchronizeBatch(
 
                 // END NEW CODE
 
-                // if an address has been added to the keychain during this batch, we skip buddy state update
-                // The goal is to restart the synchronization of the same batch with the extra knowledge of the address
-                if (!addedNewAddressInBatch) {
-                    if (bulk->transactions.size() > 0 && lastBlock.nonEmpty()) {
-                        batchState.blockHeight = static_cast<uint32_t>(lastBlock.getValue().height);
-                        batchState.blockHash = lastBlock.getValue().hash;
-                        buddy->preferences->editor()->putObject<tezos::AccountSynchronizationSavedState>(
-                            "state", buddy->savedState.getValue())->commit();
-                    }
+                if (bulk->transactions.size() > 0 && lastBlock.nonEmpty()) {
+                    batchState.blockHeight = static_cast<uint32_t>(lastBlock.getValue().height);
+                    batchState.blockHash = lastBlock.getValue().hash;
+                    buddy->preferences->editor()->putObject<tezos::AccountSynchronizationSavedState>(
+                        "state", buddy->savedState.getValue())->commit();
                 }
 
                 auto hadTX = hadTransactions || bulk->transactions.size() > 0;
-                if (bulk->hasNext || addedNewAddressInBatch) {
+                if (bulk->hasNext) {
                     return self->synchronizeBatch(currentBatchIndex, buddy, hadTX);
                 } else {
                     return Future<bool>::successful(hadTX);
