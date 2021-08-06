@@ -85,12 +85,16 @@ namespace ledger {
                                   const std::shared_ptr<const AbstractWallet> &wallet,
                                   const TezosLikeBlockchainExplorerTransaction &tx);
 
-            void interpretTransaction(const TezosLikeBlockchainExplorerTransaction& transaction,
+            /// Return "true" if interpreting this Transaction added a new address in the keychain.
+            /// Most common case is if the Transaction is a contract origination.
+            bool interpretTransaction(const TezosLikeBlockchainExplorerTransaction& transaction,
                                       std::vector<Operation>& out);
 
             Try<int> bulkInsert(const std::vector<Operation>& operations);
 
-            void updateOriginatedAccounts(const Operation &operation);
+            /// Return "true" if interpreting this operation added a new address in the keychain.
+            /// Most common case is if the Transaction is a contract origination.
+            bool updateOriginatedAccounts(const Operation &operation);
 
             bool putBlock(soci::session& sql, const TezosLikeBlockchainExplorer::Block &block);
 
@@ -157,6 +161,10 @@ namespace ledger {
             Future<std::string> getCurrentDelegate();
 
             void getTokenBalance(const std::string& tokenAddress, const std::shared_ptr<api::BigIntCallback>& callback) override;
+
+            /// Return a common trace prefix for logs
+            /// TODO: Upstream tracePrefix() to AbstractAccount and use that everywhere
+            std::string tracePrefix() const;
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
             void broadcastRawTransaction(const std::vector<uint8_t> &transaction,

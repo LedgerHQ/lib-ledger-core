@@ -127,11 +127,7 @@ TezosLikeAccountSynchronizer::performSynchronization(const std::shared_ptr<Tezos
         ->getInternalPreferences()
         ->getSubPreferences("TezosLikeAccountSynchronizer");
     auto loggerPurpose = fmt::format("synchronize_{}", account->getAccountUid());
-    auto tracePrefix = fmt::format(
-        "{}/{}/{}",
-        account->getWallet()->getPool()->getName(),
-        account->getWallet()->getName(),
-        account->getIndex());
+    auto tracePrefix = account->tracePrefix();
     buddy->synchronizationTag = tracePrefix;
     buddy->logger = logger::trace(loggerPurpose, tracePrefix, account->logger());
     buddy->startDate = DateUtils::now();
@@ -457,6 +453,7 @@ Future<bool> TezosLikeAccountSynchronizer::synchronizeBatch(
                 // NEW CODE
                 Option<Block> lastBlock = Option<Block>::NONE;
                 std::vector<Operation> operations;
+                bool addedNewAddressInBatch = false;
                 interpretBenchmark->start();
                 // Interpret transactions to operations and update last block
                 for (const auto& tx : bulk->transactions) {
@@ -466,7 +463,17 @@ Future<bool> TezosLikeAccountSynchronizer::synchronizeBatch(
                         lastBlock = tx.block;
                     }
 
-                    buddy->account->interpretTransaction(tx, operations);
+                    /*
+                     * This call goes to TezosLikeAccount::interpretTransaction, which might add new originatedAccounts
+                     * through updateOriginatedAccounts.
+                     * BUT
+                     * synchronizeBatch is called before TezosLikeAccount::_originatedAccounts is looped over
+                     * in TezosLikeAccount::synchronize(). So it should be fine.
+                     * Fine meaning "all originated accounts added by this interpretTransaction
+                     * call will get their own syncHeight (from an OperationQuery db request), and be properly
+                     * resynchronized from their start by TezosLikeAccount::synchronize method."
+                     */
+                    addedNewAddressInBatch = buddy->account->interpretTransaction(tx, operations);
 
                     //Update first pendingTxHash in savedState
                     auto it = buddy->transactionsToDrop.find(tx.hash);

@@ -89,9 +89,10 @@ namespace ledger {
             out.tezosTransaction.getValue().block = out.block;
         }
 
-        void TezosLikeAccount::interpretTransaction(
+        bool TezosLikeAccount::interpretTransaction(
                 const ledger::core::TezosLikeBlockchainExplorerTransaction &transaction, std::vector<Operation> &out) {
             auto wallet = getWallet();
+            bool addedAddressToKeychain = false;
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
             }
@@ -117,7 +118,7 @@ namespace ledger {
                 operation.refreshUid(transaction.originatedAccountUid);
                 out.push_back(operation);
                 result = static_cast<int>(transaction.type);
-                return ;
+                return addedAddressToKeychain;
             }
 
             if (_accountAddress == transaction.sender) {
@@ -125,7 +126,7 @@ namespace ledger {
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
                 if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1) {
-                    updateOriginatedAccounts(operation);
+                    addedAddressToKeychain = updateOriginatedAccounts(operation);
                 }
                 out.push_back(operation);
                 result = static_cast<int>(transaction.type);
@@ -138,6 +139,7 @@ namespace ledger {
                 out.push_back(operation);
                 result = static_cast<int>(transaction.type);
             }
+            return addedAddressToKeychain;
         }
 
         Try<int> TezosLikeAccount::bulkInsert(const std::vector<Operation> &operations) {
@@ -154,7 +156,7 @@ namespace ledger {
             });
         }
 
-        void TezosLikeAccount::updateOriginatedAccounts(const Operation &operation) {
+        bool TezosLikeAccount::updateOriginatedAccounts(const Operation &operation) {
             auto transaction = operation.tezosTransaction.getValue();
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             auto origAccount = transaction.originatedAccount.getValue();
@@ -176,7 +178,13 @@ namespace ledger {
                                                                      origAccount.spendable,
                                                                      origAccount.delegatable)
                 );
+                logger()->info("[{}] Detected a new originated address from {}: {}",
+                        tracePrefix(),
+                        self->getKeychain()->getAddress()->toString(),
+                        origAccount.address);
+                return true;
             }
+            return false;
         }
 
         bool TezosLikeAccount::putBlock(soci::session& sql, const TezosLikeBlockchainExplorer::Block &block) {
