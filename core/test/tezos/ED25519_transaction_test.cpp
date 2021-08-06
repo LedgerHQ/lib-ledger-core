@@ -54,7 +54,7 @@ struct ED25519TezosMakeTransaction : public TezosMakeBaseTransaction {
         configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
         configuration->putString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
         testData.configuration = configuration;
-        testData.walletName = "my_wallet";
+        testData.walletName = "my_wallet_ed25519tezos";
         testData.currencyName = "tezos";
         testData.inflate_xtz = inflate_ED25519;
     }

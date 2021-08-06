@@ -46,7 +46,7 @@ TEST_F(CosmosAccounts, DISABLED_FirstATOMAccountInfo) {
     auto pool = newDefaultPool();
     backend->enableQueryLogging(true);
 
-    auto wallet = uv::wait(pool->createWallet("my_wallet", currency.name, api::DynamicObject::newInstance()));
+    auto wallet = uv::wait(pool->createWallet(randomWalletName(), currency.name, api::DynamicObject::newInstance()));
     auto info = uv::wait(wallet->getNextAccountCreationInfo());
 
     EXPECT_EQ(info.index, 0);

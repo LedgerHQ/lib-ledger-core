@@ -1,0 +1,99 @@
+name: "Nix Release builds"
+on:
+  pull_request:
+    branches:
+      - release/4.0.0
+      - release/4.1.0
+      - release/4.2.0
+      - develop
+  push:
+    branches:
+      - release/4.0.0
+      - release/4.1.0
+      - release/4.2.0
+      - develop
+jobs:
+  libcore_version:
+    runs-on: ubuntu-latest
+    outputs:
+      lib_version: ${{ steps.lib_version.outputs.lib_version }}
+      deploy_jar: ${{ steps.lib_version.outputs.deploy_jar }}
+      deploy_dynlibs: ${{ steps.lib_version.outputs.deploy_dynlibs }}
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Set version slug and push_to_S3 flags
+        id: lib_version
+        run: bash nix/scripts/export_libcore_version.sh
+  Ubuntu_jni:
+    needs: libcore_version
+    runs-on: ubuntu-latest
+    steps:
+    - name: Cancel Previous Runs
+      uses: styfle/cancel-workflow-action@0.9.1
+      with:
+        access_token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/checkout@v2.3.4
+      with:
+        submodules: 'recursive'
+    - uses: cachix/install-nix-action@v13
+      with:
+        nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/5f746317f10f7206f1dbb8dfcfc2257b04507eee.tar.gz
+    - run: nix-build
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ needs.libcore_version.outputs.lib_version }}-linux-libledgercore
+        path: result/lib/libledger-core.so
+        retention-days: 5
+  MacOS_jni:
+    needs: libcore_version
+    runs-on: macos-latest
+    steps:
+    - name: Cancel Previous Runs
+      uses: styfle/cancel-workflow-action@0.9.1
+      with:
+        access_token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/checkout@v2.3.4
+      with:
+        submodules: 'recursive'
+    - uses: cachix/install-nix-action@v13
+      with:
+        nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/5f746317f10f7206f1dbb8dfcfc2257b04507eee.tar.gz
+    - run: nix-build
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ needs.libcore_version.outputs.lib_version }}-macos-libledgercore
+        path: result/lib/libledger-core.dylib
+        retention-days: 5
+  JAR:
+    needs: [Ubuntu_jni, MacOS_jni, libcore_version]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Cancel Previous Runs
+      uses: styfle/cancel-workflow-action@0.9.1
+      with:
+        access_token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/checkout@v2.3.4
+      with:
+        submodules: 'recursive'
+    - uses: cachix/install-nix-action@v13
+      with:
+        nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/5f746317f10f7206f1dbb8dfcfc2257b04507eee.tar.gz
+    - run: mkdir -p jar_build/src/main/resources/resources/djinni_native_libs
+    - name: Fetch Linux so
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ needs.libcore_version.outputs.lib_version }}-linux-libledgercore
+        path: jar_build/src/main/resources/resources/djinni_native_libs
+    - name: Fetch MacOS dylib
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ needs.libcore_version.outputs.lib_version }}-macos-libledgercore
+        path: jar_build/src/main/resources/resources/djinni_native_libs
+    - run: nix-shell --run "bash nix/scripts/build_jar_on_gha.sh" nix/gha-libcore-jar.nix
+      env:
+        LIB_VERSION: ${{ needs.libcore_version.outputs.lib_version }}
+        DEPLOY_JAR: ${{ needs.libcore_version.outputs.deploy_jar }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ needs.libcore_version.outputs.lib_version }}-ledger-lib-core.jar
+        path: jar_build/artifact/ledger-lib-core.jar

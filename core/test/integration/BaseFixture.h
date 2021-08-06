@@ -100,7 +100,7 @@ class BaseFixture : public ::testing::Test {
 public:
     virtual void SetUp() override;
     virtual void TearDown() override;
-    std::shared_ptr<WalletPool> newDefaultPool(const std::string &poolName = "my_ppol",
+    std::shared_ptr<WalletPool> newDefaultPool(const std::string &poolName = "",
                                                const std::string &password = "test",
                                                const std::shared_ptr<api::DynamicObject> &configuration = api::DynamicObject::newInstance(),
                                                bool usePostgreSQL = false, bool httpclientMultiThread = false);
@@ -154,6 +154,13 @@ public:
     std::shared_ptr<ProxyHttpClient> http;
     std::shared_ptr<FakeWebSocketClient> ws;
     std::shared_ptr<OpenSSLRandomNumberGenerator> rng;
+
+    protected:
+    std::string randomWalletName() const;
+    std::string randomDBName() const;
+
+    private:
+    std::string randomName(const std::string& prefix, uint suffix_length = 10) const;
 };
 
 #endif //LEDGER_CORE_BASEFIXTURE_H

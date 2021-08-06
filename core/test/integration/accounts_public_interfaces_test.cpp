@@ -41,23 +41,25 @@ class AccountsPublicInterfaceTest : public BaseFixture {
 public:
     void SetUp() override {
         BaseFixture::SetUp();
+        walletName = randomWalletName();
         recreate();
     }
 
     void recreate() {
         pool = newDefaultPool();
-        wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
+        wallet = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
     }
 
     void TearDown() override {
         BaseFixture::TearDown();
-        uv::wait(pool->deleteWallet("my_wallet"));
+        uv::wait(pool->deleteWallet(walletName));
         pool = nullptr;
         wallet = nullptr;
     }
 
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<AbstractWallet> wallet;
+    std::string walletName;
 };
 
 TEST_F(AccountsPublicInterfaceTest, GetAddressOnEmptyAccount) {

@@ -116,8 +116,9 @@ TEST_P(AddressTest, AddressValidation) {
 TEST_F(AddressFeaturesTest, isDelegate) {
     auto pool = newDefaultPool();
     auto configuration = DynamicObject::newInstance();
-    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);    
-    auto wallet = std::dynamic_pointer_cast<TezosLikeWallet>(uv::wait(pool->createWallet("my_wallet", "tezos", configuration)));
+    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
+    const auto walletName = "my_wallet_isDelegate";
+    auto wallet = std::dynamic_pointer_cast<TezosLikeWallet>(uv::wait(pool->createWallet(walletName, "tezos", configuration)));
     EXPECT_EQ(uv::wait(wallet->isDelegate("tz3bnhbn7uYfL43zfXtBvCYoq6DW743mRWvc")), false);
     EXPECT_EQ(uv::wait(wallet->isDelegate("tz1PWCDnz783NNGGQjEFFsHtrcK5yBW4E2rm")), true);
     EXPECT_ANY_THROW(uv::wait(wallet->isDelegate("tz2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")));

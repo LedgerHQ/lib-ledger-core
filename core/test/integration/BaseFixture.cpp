@@ -30,6 +30,7 @@
  */
 
 #include <api/ConfigurationDefaults.hpp>
+#include <api/PoolConfiguration.hpp>
 #include "BaseFixture.h"
 #include "IntegrationEnvironment.h"
 #include <utils/hex.h>
@@ -162,19 +163,55 @@ void BaseFixture::TearDown() {
     resolver->clean();
 }
 
+std::string BaseFixture::randomWalletName() const {
+    return randomName("wallet-", 20);
+}
+
+std::string BaseFixture::randomDBName() const {
+    return randomName("pool-", 10);
+}
+
+std::string BaseFixture::randomName(const std::string& prefix, uint suffix_length) const {
+    static const char alphanum[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+
+    std::stringstream randName;
+    randName << prefix;
+    for (auto i = 0; i < suffix_length; ++i) {
+        randName << alphanum[rng->getRandomLong() % (sizeof(alphanum) - 1)];
+    }
+
+    return randName.str();
+}
+
 std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolName,
                                                         const std::string &password,
                                                         const std::shared_ptr<api::DynamicObject> &configuration,
                                                         bool usePostgreSQL, bool httpclientMultiThread) {
-
-    backend = std::static_pointer_cast<DatabaseBackend>(usePostgreSQL ?
+    // If poolName has the sentinel value "", build a default pool with specific settings according to
+    // compilation flags.
+    auto actualPoolName = poolName;
+    auto wantPostgreSQL = usePostgreSQL;
+    if (actualPoolName == "") {
+#ifdef PG_SUPPORT
+        const bool usePostgreSQL = true;
+        configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+        actualPoolName = randomDBName();
+        wantPostgreSQL = true;
+#else
+        actualPoolName = "my_ppol";
+#endif
+    }
+    backend = std::static_pointer_cast<DatabaseBackend>(wantPostgreSQL ?
             DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE) : DatabaseBackend::getSqlite3Backend()
     );
     if (httpclientMultiThread) {
         http = std::make_shared<ProxyHttpClient>(std::make_shared<CppHttpLibClient>(dispatcher->getThreadPoolExecutionContext("test_threadpool_http")));
     }
     return WalletPool::newInstance(
-            poolName,
+            actualPoolName,
             password,
             http,
             ws,

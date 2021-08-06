@@ -156,6 +156,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, SynchronizeFromLastBlock) {
 
 TEST_F(BitcoinLikeWalletP2SHSynchronization, EraseDataSinceAfterSynchronization) {
     auto pool = newDefaultPool();
+    const auto walletName = randomWalletName();
     {
         //Set configuration
         auto configuration = DynamicObject::newInstance();
@@ -163,7 +164,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, EraseDataSinceAfterSynchronization)
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
                                  "49'/<coin_type>'/<account>'/<node>/<address>");
         //Create wallet
-        auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a63", "bitcoin_testnet", configuration));
+        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin_testnet", configuration));
         //Create account
         auto account = createBitcoinLikeAccount(wallet, 0, P2SH_XPUB_INFO);
         //Sync account

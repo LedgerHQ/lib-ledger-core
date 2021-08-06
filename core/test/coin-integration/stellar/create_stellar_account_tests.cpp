@@ -33,7 +33,7 @@
 
 TEST_F(StellarFixture, CreateAccountWithPubKey) {
     auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
+    auto wallet = newWallet(pool, "stellar_wallet", "stellar", api::DynamicObject::newInstance());
     auto info = uv::wait(wallet->getNextAccountCreationInfo());
     auto a = newAccount(wallet, 0, defaultAccount());
     auto account = std::static_pointer_cast<AbstractAccount>(uv::wait(wallet->getAccount(0)));

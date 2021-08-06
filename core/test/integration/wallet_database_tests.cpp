@@ -39,28 +39,40 @@ static const std::string SAMPLE_TRANSACTION_3 = "{\"hash\":\"5d0fcab290dac66ee9d
 
 
 class BitcoinWalletDatabaseTests : public BaseFixture {
+    public:
+    std::shared_ptr<WalletPool> pool;
+    void SetUp() override {
+        BaseFixture::SetUp();
+        pool = newDefaultPool();
+    }
+    void TearDown() override {
+        auto date = "1980-01-01T08:00:00Z";
+        auto formatedDate = DateUtils::fromJSON(date);
+        uv::wait(pool->eraseDataSince(formatedDate));
+        BaseFixture::TearDown();
+    }
 
 };
 
 TEST_F(BitcoinWalletDatabaseTests, EmptyWallet) {
-    auto pool = newDefaultPool();
-    BitcoinLikeWalletDatabase db(pool, "my_wallet", "bitcoin");
+    const auto walletName = randomWalletName();
+    BitcoinLikeWalletDatabase db(pool, walletName, "bitcoin");
 
     EXPECT_EQ(db.getAccountsCount(), 0);
     EXPECT_FALSE(db.accountExists(255));
 }
 
 TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithOneAccount) {
-    auto pool = newDefaultPool();
+    const auto walletName = randomWalletName();
 
-    BitcoinLikeWalletDatabase db(pool, "my_wallet", "bitcoin");
+    BitcoinLikeWalletDatabase db(pool, walletName, "bitcoin");
 
     EXPECT_EQ(db.getAccountsCount(), 0);
     EXPECT_FALSE(db.accountExists(0));
 
     // We need to create the abstract entry first to satisfy the foreign key constraint
-    createWallet(pool, "my_wallet", "bitcoin", DynamicObject::newInstance());
-    createAccount(pool, "my_wallet", 0);
+    createWallet(pool, walletName, "bitcoin", DynamicObject::newInstance());
+    createAccount(pool, walletName, 0);
 
     db.createAccount(0, XPUB_1);
 
@@ -69,16 +81,16 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithOneAccount) {
 }
 
 TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithMultipleAccountAndDelete) {
-    auto pool = newDefaultPool();
 
     auto currencyName = "bitcoin";
     auto configuration = DynamicObject::newInstance();
-    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", currencyName, configuration, 0, XPUB_1);
+    const auto walletName = randomWalletName();
+    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, walletName, currencyName, configuration, 0, XPUB_1);
 
     EXPECT_EQ(db.getAccountsCount(), 1);
     EXPECT_EQ(db.getNextAccountIndex(), 1);
     for (auto i = 1; i < 100; i++) {
-        newBitcoinAccount(pool, "my_wallet", currencyName, configuration, i, XPUB_1);
+        newBitcoinAccount(pool, walletName, currencyName, configuration, i, XPUB_1);
     }
     EXPECT_EQ(db.getAccountsCount(), 100);
 
@@ -86,7 +98,7 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithMultipleAccountAndDelete) {
         auto database = pool->getDatabaseSessionPool();
         soci::session sql(database->getPool());
 
-        auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), "my_wallet");
+        auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), walletName);
         EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 100);
         AccountDatabaseHelper::removeAccount(sql, walletUid, 0);
         EXPECT_EQ(AccountDatabaseHelper::getAccountsCount(sql, walletUid), 99);
@@ -97,8 +109,8 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithMultipleAccountAndDelete) {
 }
 
 TEST_F(BitcoinWalletDatabaseTests, PutOperations) {
-    auto pool = newDefaultPool();
-    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    const auto walletName = randomWalletName();
+    auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", api::DynamicObject::newInstance()));
     auto nextIndex = uv::wait(wallet->getNextAccountIndex());
     EXPECT_EQ(nextIndex, 0);
     auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(P2PKH_MEDIUM_XPUB_INFO)));
@@ -114,6 +126,13 @@ TEST_F(BitcoinWalletDatabaseTests, PutOperations) {
     {
         std::vector<ledger::core::Operation> ops;
         for (auto& tx : transactions) {
+            if (tx.hash == "666613fd82459f94c74211974e74ffcb4a4b96b62980a6ecaee16af7702bbbe5") {
+                EXPECT_EQ(tx.inputs.size(), 15)
+                        << "The parsed transaction does not have the expected inputs!";
+            } else {
+                EXPECT_EQ(tx.inputs.size(), 1)
+                        << "The parsed transaction does not have the expected inputs!";
+            }
             account->interpretTransaction(tx, ops, true);
         }
         account->bulkInsert(ops);

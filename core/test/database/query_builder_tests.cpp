@@ -58,7 +58,8 @@ class QueryBuilderTest : public BaseFixture {
 TEST_F(QueryBuilderTest, SimpleOperationQuery) {
     auto pool = newDefaultPool();
     {
-        auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+        const auto walletName = "my_wallet";
+        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", api::DynamicObject::newInstance()));
         auto nextIndex = uv::wait(wallet->getNextAccountIndex());
         EXPECT_EQ(nextIndex, 0);
         auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
