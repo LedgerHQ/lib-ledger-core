@@ -283,7 +283,12 @@ namespace ledger {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             auto buildFunction = [self, senderAddress](const TezosLikeTransactionBuildRequest &request,
                                                        const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer) {
-
+                // XTZ self-transactions seems to always fail and existing wallet forbid self-transactions
+                // So that's why we prevent user from creating a self-transaction
+                // TODO: Get reference to confirm this
+                if (request.toAddress == senderAddress) {
+                    throw make_exception(api::ErrorCode::INVALID_SELF_TX, "Cannot send funds to sending address!");
+                }
                 // Check if balance is sufficient
                 auto currency = self->getWallet()->getCurrency();
                 auto accountAddress = TezosLikeAddress::fromBase58(senderAddress, currency);

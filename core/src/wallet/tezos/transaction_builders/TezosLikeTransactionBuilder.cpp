@@ -72,12 +72,6 @@ namespace ledger {
         std::shared_ptr<api::TezosLikeTransactionBuilder>
         TezosLikeTransactionBuilder::sendToAddress(const std::shared_ptr<api::Amount> &amount,
                                                    const std::string &address) {
-            // XTZ self-transactions seems to always fail and existing wallet forbid self-transactions
-            // So that's why we prevent user from creating a self-transaction
-            // TODO: Get reference to confirm this
-            if (address == _senderAddress) {
-                throw make_exception(api::ErrorCode::INVALID_SELF_TX, "Can not send funds to sending address !");
-            }
             _request.value = std::make_shared<BigInt>(amount->toString());
             _request.toAddress = address;
             return shared_from_this();
