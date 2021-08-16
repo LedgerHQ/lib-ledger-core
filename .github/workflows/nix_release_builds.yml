@@ -12,6 +12,8 @@ on:
       - release/4.1.0
       - release/4.2.0
       - develop
+    tags:
+      - '*'
 jobs:
   libcore_version:
     runs-on: ubuntu-latest
