@@ -25,9 +25,9 @@ if [[ "${DEPLOY_JAR:-NO}" == "YES" ]]; then
   echo "======= Pushing to S3 =========="
   cd artifact
   ls -la
-  aws s3 sync ./ s3://ledger-lib-ledger-core/$LIB_VERSION/ --acl public-read --exclude "*" --include "*.jar" && \
-  aws s3 ls s3://ledger-lib-ledger-core/$LIB_VERSION;
-  cd -
+  aws s3 sync ./ s3://ledger-lib-ledger-core/$LIB_VERSION/ --acl public-read --exclude "*" --include "*.jar"
+  echo "======= Listing S3 artifacts =========="
+  aws s3 ls s3://ledger-lib-ledger-core/$LIB_VERSION
 else
   printf "\n============ Skip pushing to S3\n"
 fi
