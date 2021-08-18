@@ -20,7 +20,6 @@ ls -la artifact
 
 if [[ "${DEPLOY_JAR:-NO}" == "YES" ]]; then
   printf "\n============ We push to S3\n"
-  cd -
   echo "=====> Libcore version : $LIB_VERSION"
 
   echo "======= Pushing to S3 =========="
