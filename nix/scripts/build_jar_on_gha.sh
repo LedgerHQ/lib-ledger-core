@@ -24,7 +24,7 @@ if [[ "${DEPLOY_JAR:-NO}" == "YES" ]]; then
   echo "=====> Libcore version : $LIB_VERSION"
 
   echo "======= Pushing to S3 =========="
-  cd jar
+  cd artifact
   ls -la
   aws s3 sync ./ s3://ledger-lib-ledger-core/$LIB_VERSION/ --acl public-read --exclude "*" --include "*.jar" && \
   aws s3 ls s3://ledger-lib-ledger-core/$LIB_VERSION;
