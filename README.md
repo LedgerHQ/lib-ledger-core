@@ -86,7 +86,7 @@ nix-build
 Otherwise to run tests locally against your changes
 
 ``` sh
-nix-build --arg runTests true
+nix-build --arg runTests true --arg jni false
 ```
 
 ### Non nix builds
@@ -254,7 +254,13 @@ Libcore can be built for following OSes:
 
 ### Local tests
 
-The best way to run tests locally is to use Nix. If you don't want to, you can also provision the postgres
+The best way to run tests locally is to use Nix:
+
+``` sh
+nix-build --arg runTests true --arg jni false
+```
+
+If you don't want to, you can also provision the postgres
 test database if necessary, and then run `ctest`.
 
 ### CI
