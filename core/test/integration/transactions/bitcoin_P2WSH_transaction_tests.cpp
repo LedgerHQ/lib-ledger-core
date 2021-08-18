@@ -40,7 +40,7 @@ struct BitcoinMakeP2WSHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
         testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WSH);
-        testData.walletName = "my_wallet";
+        testData.walletName = randomWalletName();
         testData.currencyName = "bitcoin";
         testData.inflate_btc = ledger::testing::medium_xpub::inflate;
     }

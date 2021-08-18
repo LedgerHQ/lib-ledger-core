@@ -44,7 +44,7 @@ struct RippleMakeTransaction : public RippleMakeBaseTransaction {
     void SetUpConfig() override {
         auto configuration = DynamicObject::newInstance();
         testData.configuration = configuration;
-        testData.walletName = "my_wallet";
+        testData.walletName = randomWalletName();
         testData.currencyName = "ripple";
         testData.inflate_xrp = ledger::testing::xrp::inflate;
     }

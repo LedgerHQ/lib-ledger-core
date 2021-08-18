@@ -42,7 +42,7 @@ struct BitcoinMakeP2WPKHTransaction : public BitcoinMakeBaseTransaction {
         testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
         //https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
         testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"84'/<coin_type>'/<account>'/<node>/<address>");
-        testData.walletName = "my_wallet";
+        testData.walletName = randomWalletName();
         testData.currencyName = "bitcoin";
         testData.inflate_btc = ledger::testing::medium_xpub::inflate;
     }

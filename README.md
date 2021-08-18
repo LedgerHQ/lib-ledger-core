@@ -1,29 +1,31 @@
 # Ledger Core Library
 
-* [Clone project](#clone-project)
-* [Dependencies](#dependencies)
-    * [Build](#build)
-    * [External dependencies:](#external-dependencies)
-* [Build of C++ library](#build-of-c-library)
-    * [Building for JNI](#building-for-jni)
-    * [Build library with PostgreSQL](#build-library-with-postgresql)
-* [Documentation](#documentation)
-* [Binding to node.js](#binding-to-nodejs)
-    * [Using the node module](#using-the-node-module)
-    * [Generating a new node module for your system](#generating-a-new-node-module-for-your-system)
-* [Support](#support)
-    * [Libcore:](#libcore)
-    * [Bindings:](#bindings)
-* [Developement guidelines](#developement-guidelines)
-    * [CI](#ci)
-* [Q/A and troubleshooting](#qa-and-troubleshooting)
-    * [I have updated an include file and test code doesn’t see the changes!](#i-have-updated-an-include-file-and-test-code-doesnt-see-the-changes)
-    * [I have upgraded my macOSX system and now I can’t compile anymore.](#i-have-upgraded-my-macosx-system-and-now-i-cant-compile-anymore)
-
 Core library which will be used by Ledger applications.
 
-> If you’re a developer and want to contribute, please refer to our [contribution guidelines]
-> specific documentation.
+> This project is considered "legacy", and no new coin support will arrive in the repo;
+> only updates related to currently supported protocols.
+
+  - [Clone project](#clone-project)
+  - [Dependencies](#dependencies)
+    - [Build](#build)
+    - [External dependencies:](#external-dependencies)
+  - [Build of C++ library](#build-of-c-library)
+    - [Nix build](#nix-build)
+    - [Non nix builds](#non-nix-builds)
+    - [Build library with PostgreSQL](#build-library-with-postgresql)
+  - [Documentation](#documentation)
+  - [Binding to node.js](#binding-to-nodejs)
+    - [Using the node module](#using-the-node-module)
+    - [Generating a new node module for your system](#generating-a-new-node-module-for-your-system)
+  - [Support](#support)
+    - [Libcore:](#libcore)
+    - [Bindings:](#bindings)
+  - [Developement guidelines](#developement-guidelines)
+    - [Local tests](#local-tests)
+    - [CI](#ci)
+  - [Q/A and troubleshooting](#qa-and-troubleshooting)
+    - [I have updated an include file and test code doesn’t see the changes!](#i-have-updated-an-include-file-and-test-code-doesnt-see-the-changes)
+    - [I have upgraded my macOSX system and now I can’t compile anymore.](#i-have-upgraded-my-macosx-system-and-now-i-cant-compile-anymore)
 
 ## Clone project
 
@@ -42,6 +44,8 @@ git submodule update
 
 ## Dependencies
 
+You can skip this dependencies step if you have [nix](https://nixos.org) installed.
+
 ### Build
 
 This project is based on **_cmake_** as a build system so you should install it before starting (at least version 3.7).
@@ -53,6 +57,39 @@ This project is based on **_cmake_** as a build system so you should install it 
 * Build on multiple Operating Systems is based on [polly](https://github.com/ruslo/polly) toolchains.
 
 ## Build of C++ library
+
+### Nix build
+
+If you have remote builders you can use them with the nix derivation [bundled in the repo](./default.nix)
+
+#### Using `nix-shell`
+
+The repository provides a [shell.nix](./shell.nix) that allows to get into an environment
+ready for build.
+
+``` sh
+nix-shell
+mkdir _build
+cd _build
+cmake .. -DSYS_OPENSSL=ON -DSYS_SECP256K1=ON -DPG_SUPPORT=ON
+make
+```
+
+#### Using `nix-build`
+
+If you just need the artifact you can build the derivation directly
+
+``` sh
+nix-build
+```
+
+Otherwise to run tests locally against your changes
+
+``` sh
+nix-build --arg runTests true --arg jni false
+```
+
+### Non nix builds
 
 **_cmake_** is building out of source, you should create a build directory (e.g. `lib-ledger-core-build`):
 
@@ -95,7 +132,7 @@ Several CMake arguments might interest you there:
   - `-G Xcode`: build libcore with Xcode on Mac
   - `-DBUILD_TESTS=OFF`: build libcore without unit tests. In this case, openssl arguments are not needed
 
-### Building for JNI
+#### Building for JNI
 
 Building with JNI (Java Native Interface), allows you to use the library with Java based software. In order to enable JNI mode use
 
@@ -112,6 +149,8 @@ This will add JNI files to the library compilation and remove tests. You need at
 Make sure that your have `PostgreSQL` installed on your machine, otherwise the `CMake` 
 command `find_package(PostgreSQL REQUIRED)` will fail during configuration.
 
+All Nix builds currently build with Postgres support by default.
+
 #### Build
 
 To compile libcore with PostgreSQL support, you should add `-DPG_SUPPORT=ON` to your 
@@ -119,6 +158,8 @@ To compile libcore with PostgreSQL support, you should add `-DPG_SUPPORT=ON` to 
 
 You also need to add `-DPostgreSQL_INCLUDE_DIR=path/to/include/dir` in your configuration
 as a hint for headers' location (e.g. `/usr/include/postgresql`).
+
+All Nix builds currently build with Postgres support by default.
 
 #### Wallet Pool Configuration
 
@@ -211,7 +252,20 @@ Libcore can be built for following OSes:
 
 ## Developement guidelines
 
+### Local tests
+
+The best way to run tests locally is to use Nix:
+
+``` sh
+nix-build --arg runTests true --arg jni false
+```
+
+If you don't want to, you can also provision the postgres
+test database if necessary, and then run `ctest`.
+
 ### CI
+
+#### Appveyor
 
 You are advised to link your GitHub account to both [CircleCI] and [Appveyor] by signing-in. Because
 we are using shared runners and resources, we have to share CI power with other teams. It’s
@@ -230,6 +284,8 @@ title**. You could tempted to put it in the body of your message but that will n
 Finally, it’s advised to put it on every commit and rebase at the end to remove the `[skip ci]` tag
 from your commits’ messags to have the CI re-enabled, but some runners might be smart enough to do
 it for all commits in the PR.
+
+#### Rebasing
 
 Rebasing is done easily. If your PR wants to merge `feature/stuff -> develop`, you can do something
 like this — assuming you have cloned the repository with a correctly set `origin` remote:

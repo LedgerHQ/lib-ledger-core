@@ -35,31 +35,34 @@ class AccountCreationTest : public BaseFixture {};
 
 TEST_F(AccountCreationTest, CreateBitcoinAccountWithInfo) {
     auto pool = newDefaultPool();
-    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
+    const auto walletName = "my_wallet_createbtcaccountwithinfo";
+    auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
     auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithInfo(P2PKH_MEDIUM_KEYS_INFO)));
     auto address = uv::wait(account->getFreshPublicAddresses())[0]->toString();
     EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
-    uv::wait(pool->deleteWallet("my_wallet"));
+    uv::wait(pool->deleteWallet(walletName));
 }
 
 TEST_F(AccountCreationTest, CreateBitcoinAccountWithInfoOnExistingWallet) {
+    const auto walletName = "my_wallet_createbtcaccountwithinfo_existingwallet";
+    auto pool = newDefaultPool();
     {
-        auto pool = newDefaultPool();
-        auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
+        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
     }
     {
-        auto pool = newDefaultPool();
-        EXPECT_THROW(uv::wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance())), Exception);
-        auto wallet = uv::wait(pool->getWallet("my_wallet"));
+        EXPECT_THROW(uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance())), Exception);
+        auto wallet = uv::wait(pool->getWallet(walletName));
         auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithInfo(P2PKH_MEDIUM_KEYS_INFO)));
         auto address = uv::wait(account->getFreshPublicAddresses())[0]->toString();
         EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
-        uv::wait(pool->deleteWallet("my_wallet"));
+        uv::wait(pool->deleteWallet(walletName));
     }
 }
 
 #ifdef _WIN32
 TEST_F(AccountCreationTest, DISABLED_ChangePassword) { // Change password of DB file doesn't work in windows
+#elif PG_SUPPORT
+TEST_F(AccountCreationTest, DISABLED_ChangePassword) { // Change password of DB doesn't work with Postgres
 #else
 TEST_F(AccountCreationTest, ChangePassword) {
 #endif
@@ -68,17 +71,18 @@ TEST_F(AccountCreationTest, ChangePassword) {
 
     // Create wallet, account ... in plain DB
     auto pool = newDefaultPool("my_pool", oldPassword);
+    const auto walletName = "my_wallet_changepassword";
     {
-        auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
+        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
         auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithInfo(P2PKH_MEDIUM_KEYS_INFO)));
         auto address = uv::wait(account->getFreshPublicAddresses())[0]->toString();
         EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
     }
 
-    auto changePasswordAndGetInfos = [] (const std::shared_ptr<WalletPool> &walletPool, const std::string &oldPassword, const std::string &newPassword) {
+    auto changePasswordAndGetInfos = [walletName] (const std::shared_ptr<WalletPool> &walletPool, const std::string &oldPassword, const std::string &newPassword) {
         uv::wait(walletPool->changePassword(oldPassword, newPassword));
         {
-            auto wallet = uv::wait(walletPool->getWallet("my_wallet"));
+            auto wallet = uv::wait(walletPool->getWallet(walletName));
             auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->getAccount(0)));
             auto address = uv::wait(account->getFreshPublicAddresses())[0]->toString();
             EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
@@ -88,5 +92,5 @@ TEST_F(AccountCreationTest, ChangePassword) {
     changePasswordAndGetInfos(pool, "", "new_test");
     changePasswordAndGetInfos(pool, "new_test", "new_test_0");
     changePasswordAndGetInfos(pool, "new_test_0", "");
-    uv::wait(pool->deleteWallet("my_wallet"));
+    uv::wait(pool->deleteWallet(walletName));
 }

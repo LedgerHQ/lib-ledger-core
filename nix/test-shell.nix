@@ -3,10 +3,10 @@
 
 with pkgs;
 let
-  secp256k1-chfast = import ./nix/secp256k1.nix { inherit pkgs; };
+  secp256k1-chfast = import ./secp256k1.nix { inherit pkgs; };
 in
 mkShell {
-  nativeBuildInputs = [ 
+  nativeBuildInputs = [
     pkg-config
     cmake
   ];
@@ -16,7 +16,6 @@ mkShell {
     openssl_1_1
     gcc11
     sqlite
-    cmake
     libkrb5
     cryptopp
     secp256k1-chfast
@@ -28,6 +27,7 @@ mkShell {
     libsForQt515.qt5.qtbase
     libsForQt515.qt5.qtconnectivity
     libsForQt515.qt5.qtwebsockets
+    libuv
 
     # keep this line if you use bash
     bashInteractive

@@ -48,7 +48,7 @@ struct BitcoinMakeP2PKHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
         testData.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
-        testData.walletName = "my_wallet";
+        testData.walletName = randomWalletName();
         testData.currencyName = "bitcoin";
         testData.inflate_btc = ledger::testing::medium_xpub::inflate;
     }
@@ -81,7 +81,7 @@ struct BitcoinStardustTransaction : public BitcoinMakeBaseTransaction {
 
         testData.configuration = DynamicObject::newInstance();
         testData.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
-        testData.walletName = "my_wallet";
+        testData.walletName = randomWalletName();
         testData.currencyName = "bitcoin_stardust";
         testData.inflate_btc = ledger::testing::medium_xpub::inflate;
     }
@@ -181,7 +181,7 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithMultipleInputs) {
 }
 
 TEST_F(BitcoinMakeP2PKHTransaction, Toto) {
-    std::shared_ptr<AbstractWallet> w = uv::wait(pool->createWallet("my_btc_wallet", "bitcoin_testnet", DynamicObject::newInstance()));
+    std::shared_ptr<AbstractWallet> w = uv::wait(pool->createWallet("my_btc_wallet_toto", "bitcoin_testnet", DynamicObject::newInstance()));
     api::ExtendedKeyAccountCreationInfo info = uv::wait(w->getNextExtendedKeyAccountCreationInfo());
     info.extendedKeys.push_back("tpubDCJarhe7f951cUufTWeGKh1w6hDgdBcJfvQgyMczbxWvwvLdryxZuchuNK3KmTKXwBNH6Ze6tHGrUqvKGJd1VvSZUhTVx58DrLn9hR16DVr");
     std::shared_ptr<AbstractAccount> account = std::dynamic_pointer_cast<AbstractAccount>(uv::wait(w->newAccountWithExtendedKeyInfo(info)));
@@ -219,7 +219,7 @@ TEST_F(BitcoinMakeP2PKHTransaction, Toto) {
 struct BCHMakeP2PKHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
-        testData.walletName = "my_wallet";
+        testData.walletName = randomWalletName();
         testData.currencyName = "bitcoin_cash";
         testData.inflate_btc = ledger::testing::bch_xpub::inflate;
     }
@@ -248,7 +248,7 @@ TEST_F(BCHMakeP2PKHTransaction, CreateStandardP2SHWithOneOutput) {
 struct ZCASHMakeP2PKHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
-        testData.walletName = "my_wallet";
+        testData.walletName = randomWalletName();
         testData.currencyName = "zcash";
         testData.inflate_btc = ledger::testing::zec_xpub::inflate;
     }

@@ -77,7 +77,7 @@ TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction)
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
                                  "44'/<coin_type>'/<account>'/<node>/<address>");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "http://test.test");
-        auto wallet = uv::wait(pool->createWallet("my_wallet", "ripple", configuration));
+        auto wallet = uv::wait(pool->createWallet(randomWalletName(), "ripple", configuration));
         {
             auto account = createRippleLikeAccount(wallet, 0, XRP_KEYS_INFO);
             auto waiter = createSyncReceiver();

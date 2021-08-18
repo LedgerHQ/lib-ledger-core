@@ -1,8 +1,9 @@
 set( TEZOS_TESTS_NAME "ledger-core-tezos-tests" )
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.15)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
+include(GoogleTest)
 
 if (APPLE)
     add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
@@ -41,4 +42,5 @@ if (SYS_OPENSSL)
 else()
     copy_install_imported_targets(ledger-core-tezos-tests crypto ledger-core)
 endif()
-add_test (NAME ${TEZOS_TESTS_NAME} COMMAND ${TEZOS_TESTS_NAME})
+
+gtest_discover_tests(${TEZOS_TESTS_NAME})

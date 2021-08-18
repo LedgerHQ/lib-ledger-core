@@ -97,10 +97,10 @@ namespace ledger {
             }
             // Fetch inputs
             rowset<soci::row> inputRows = (sql.prepare <<
-                "SELECT  ti.input_idx, i.previous_output_idx, i.previous_tx_hash, i.amount, i.address, i.coinbase,"
+                "SELECT DISTINCT ON(ti.input_idx) ti.input_idx, i.previous_output_idx, i.previous_tx_hash, i.amount, i.address, i.coinbase,"
                         "i.sequence "
                 "FROM bitcoin_transaction_inputs AS ti "
-                "JOIN bitcoin_inputs AS i ON ti.input_uid = i.uid "
+                "INNER JOIN bitcoin_inputs AS i ON ti.input_uid = i.uid "
                 "WHERE ti.transaction_hash = :hash ORDER BY ti.input_idx", use(out.hash)
             );
             for (auto& inputRow : inputRows) {

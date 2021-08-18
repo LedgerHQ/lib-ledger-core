@@ -55,7 +55,7 @@ struct SECP256K1TezosMakeTransaction : public TezosMakeBaseTransaction {
         configuration->putString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
         configuration->putString(api::TezosConfiguration::TEZOS_COUNTER_STRATEGY, "OPTIMISTIC");
         testData.configuration = configuration;
-        testData.walletName = "my_wallet";
+        testData.walletName = randomWalletName();
         testData.currencyName = "tezos";
         testData.inflate_xtz = inflate_SECP256K1;
     }

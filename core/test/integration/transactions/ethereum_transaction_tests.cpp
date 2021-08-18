@@ -45,7 +45,7 @@ struct EthereumMakeTransaction : public EthereumMakeBaseTransaction {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
         testData.configuration = configuration;
-        testData.walletName = "my_wallet";
+        testData.walletName = randomWalletName();
         testData.currencyName = "ethereum";
         testData.inflate_eth = ledger::testing::eth_xpub::inflate;
     }
