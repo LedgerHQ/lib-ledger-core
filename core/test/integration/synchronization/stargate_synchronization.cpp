@@ -84,7 +84,7 @@ public:
 #endif
 
     explorer = std::make_shared<StargateGaiaCosmosLikeBlockchainExplorer>(
-        worker, client, currencies::MUON, std::make_shared<DynamicObject>());
+        worker, client, currencies::ATOM, std::make_shared<DynamicObject>());
   }
 
   void setupTest(std::shared_ptr<CosmosLikeAccount> &account,
@@ -101,7 +101,7 @@ public:
     configuration->putString(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE,
                              api::BlockchainObserverEngines::STARGATE_NODE);
     wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61",
-                                     "cosmos_stargate_testnet", configuration));
+                                     "cosmos", configuration));
 
     auto accountInfo = wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(accountInfo.index, 0);
@@ -121,7 +121,7 @@ public:
           ASSERT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
 
           auto balance = wait(account->getBalance());
-          fmt::print("Balance: {} umuon\n", balance->toString());
+          fmt::print("Balance: {} uatom\n", balance->toString());
 
           auto block = wait(account->getLastBlock());
           fmt::print("Block height: {}\n", block.height);
@@ -148,7 +148,7 @@ TEST_F(CosmosStargateWalletSynchronization, GetAccountWithExplorer) {
 
   auto account = ::wait(explorer->getAccount(STARGATE_DEFAULT_ADDRESS));
   EXPECT_EQ(account->address, STARGATE_DEFAULT_ADDRESS);
-  EXPECT_EQ(account->accountNumber, "22");
+  EXPECT_EQ(account->accountNumber, "31094");
   EXPECT_EQ(account->withdrawAddress, STARGATE_DEFAULT_ADDRESS)
       << "Withdraw address has not been modified on this address";
 }
@@ -159,7 +159,7 @@ TEST_F(CosmosStargateWalletSynchronization, InternalFeesMessageInTransaction) {
   /// transaction should contain 2 messages, the last one being the one added
   /// specifically for the fees.
   const auto transaction = ::wait(explorer->getTransactionByHash(
-      "51509BD81B03FBE706D528C664AA23905B993834ECCC05045A421CAFAC563E60"));
+      "88AF1F6010CE8C8BBBF4247B8AB723C469022F7329CAB906CB783C3377ECB005"));
 
   ASSERT_NE(transaction, nullptr);
   EXPECT_EQ(transaction->messages.size(), 2);
@@ -217,9 +217,9 @@ TEST_F(CosmosStargateWalletSynchronization, GetErrorTransaction) {
   EXPECT_EQ(msg.validatorSourceAddress, validator_src);
   EXPECT_EQ(msg.validatorDestinationAddress, validator_dst);
   EXPECT_EQ(msg.amount.amount, "100000");
-  EXPECT_EQ(msg.amount.denom, "umuon");
+  EXPECT_EQ(msg.amount.denom, "uatom");
   EXPECT_EQ(tx->fee.gas.toInt64(), 200000);
-  EXPECT_EQ(tx->fee.amount[0].denom, "umuon");
+  EXPECT_EQ(tx->fee.amount[0].denom, "uatom");
   EXPECT_EQ(tx->fee.amount[0].amount, "0");
   EXPECT_EQ(tx->gasUsed, Option<std::string>("201836"));
 }
@@ -227,16 +227,16 @@ TEST_F(CosmosStargateWalletSynchronization, GetErrorTransaction) {
 
 TEST_F(CosmosStargateWalletSynchronization, GetSendWithExplorer) {
   auto tx_hash =
-      "C6B492851403B92B849672DD15A849A7F1A173AA6DE159B6E3691385E9907B33";
+      "67400F958D93D17E940013916E58EFAA53CA6642C51F663D5ED6E6C84F715C04";
 
-  auto receiver = "cosmos108uy5q9jt59gwugq5yrdhkzcd9jryslmpcstk5";
+  auto receiver = "cosmos1s38sxqxdhc4r2vxk039zwjufeezvcr4w7r7rwf";
   // Note : the sender of the message is also the sender of the funds in this
   // transaction.
-  auto sender = "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl";
+  auto sender = "cosmos1xxkueklal9vejv9unqu80w9vptyepfa95pd53u";
 
   auto tx = ::wait(explorer->getTransactionByHash(tx_hash));
   ASSERT_EQ(tx->hash, tx_hash);
-  EXPECT_EQ(tx->block->height, 267373);
+  EXPECT_EQ(tx->block->height, 5369093);
   EXPECT_EQ(tx->logs.size(), 2) << "There should be the SEND message and the FEES message.";
   EXPECT_TRUE(tx->logs[0].success);
   EXPECT_TRUE(tx->messages[0].log.success);
@@ -245,17 +245,17 @@ TEST_F(CosmosStargateWalletSynchronization, GetSendWithExplorer) {
       boost::get<cosmos::MsgSend>(tx->messages[0].content);
   EXPECT_EQ(msg.fromAddress, sender);
   EXPECT_EQ(msg.toAddress, receiver);
-  EXPECT_EQ(msg.amount[0].amount, "1000000");
-  EXPECT_EQ(msg.amount[0].denom, "umuon");
-  EXPECT_EQ(tx->fee.gas.toInt64(), 200000);
-  EXPECT_EQ(tx->fee.amount[0].denom, "umuon");
-  EXPECT_EQ(tx->fee.amount[0].amount, "0");
-  EXPECT_EQ(tx->gasUsed, Option<std::string>("64177"));
+  EXPECT_EQ(msg.amount[0].amount, "55411729");
+  EXPECT_EQ(msg.amount[0].denom, "uatom");
+  EXPECT_EQ(tx->fee.gas.toInt64(), 105130);
+  EXPECT_EQ(tx->fee.amount[0].denom, "uatom");
+  EXPECT_EQ(tx->fee.amount[0].amount, "2629");
+  EXPECT_EQ(tx->gasUsed, Option<std::string>("62369"));
 }
 
 TEST_F(CosmosStargateWalletSynchronization, GetDelegateWithExplorer) {
-  auto delegator = "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl";
-  auto validator = "cosmosvaloper1x5wgh6vwye60wv3dtshs9dmqggwfx2ldk5cvqu";
+  auto delegator = "cosmos1tx4p5axt22vx20f8ssqz4ys6sk3zg9jvx5rf35";
+  auto validator = "cosmosvaloper1sjllsnramtg3ewxqwwrwjxfgc4n4ef9u2lcnj0";
 
   auto filter = StargateGaiaCosmosLikeBlockchainExplorer::fuseFilters(
       {StargateGaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
@@ -271,9 +271,9 @@ TEST_F(CosmosStargateWalletSynchronization, GetDelegateWithExplorer) {
   bool foundTx = false;
   for (const auto &tx : transactions) {
     if (tx.hash ==
-        "48E1978EF1B35A217348DFEDEABBB48B69914F4E3C8F8EF6102E654C9F64C1FB") {
+        "0BFBE51C87E46A5DCFED803315D323A55101EC98DB0EDDB369F770FF2765172A") {
       foundTx = true;
-      EXPECT_EQ(tx.block->height, 491024);
+      EXPECT_EQ(tx.block->height, 5368645);
       EXPECT_EQ(tx.logs.size(), 2);
       EXPECT_TRUE(tx.logs[0].success);
       EXPECT_TRUE(tx.messages[0].log.success);
@@ -282,12 +282,12 @@ TEST_F(CosmosStargateWalletSynchronization, GetDelegateWithExplorer) {
           boost::get<cosmos::MsgDelegate>(tx.messages[0].content);
       EXPECT_EQ(msg.delegatorAddress, delegator);
       EXPECT_EQ(msg.validatorAddress, validator);
-      EXPECT_EQ(msg.amount.amount, "5000000");
-      EXPECT_EQ(msg.amount.denom, "umuon");
+      EXPECT_EQ(msg.amount.amount, "4000000");
+      EXPECT_EQ(msg.amount.denom, "uatom");
       EXPECT_EQ(tx.fee.gas.toInt64(), 200000);
-      EXPECT_EQ(tx.fee.amount[0].denom, "umuon");
-      EXPECT_EQ(tx.fee.amount[0].amount, "0");
-      EXPECT_EQ(tx.gasUsed, Option<std::string>("104887"));
+      EXPECT_EQ(tx.fee.amount[0].denom, "uatom");
+      EXPECT_EQ(tx.fee.amount[0].amount, "5000");
+      EXPECT_EQ(tx.gasUsed, Option<std::string>("147387"));
       break;
     }
   }
@@ -316,7 +316,7 @@ TEST_F(CosmosStargateWalletSynchronization, MediumXpubSynchronization) {
     configuration->putString(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE,
                              api::BlockchainObserverEngines::STARGATE_NODE);
     auto wallet = wait(
-        pool->createWallet(walletName, currencies::MUON.name, configuration));
+        pool->createWallet(walletName, currencies::ATOM.name, configuration));
     std::set<std::string> emittedOperations;
     {
       auto accountInfo = wait(wallet->getNextAccountCreationInfo());
@@ -350,7 +350,7 @@ TEST_F(CosmosStargateWalletSynchronization, MediumXpubSynchronization) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
 
         auto balance = wait(account->getBalance());
-        fmt::print("Balance: {} umuon\n", balance->toString());
+        fmt::print("Balance: {} uatom\n", balance->toString());
         auto txBuilder =
             std::dynamic_pointer_cast<CosmosLikeTransactionBuilder>(
                 account->buildTransaction());
@@ -385,7 +385,7 @@ TEST_F(CosmosStargateWalletSynchronization, MediumXpubSynchronization) {
       EXPECT_GE(sequence, 0) << "Sequence was at 0 on 2020-11-27";
 
       const auto accountNumber = account->getInfo().accountNumber;
-      EXPECT_EQ(accountNumber, "22")
+      EXPECT_EQ(accountNumber, "31094")
           << "Account number is a network constant for a given address";
     }
   }
@@ -402,7 +402,7 @@ TEST_F(CosmosStargateWalletSynchronization, Balances) {
 
   const std::string address = account->getKeychain()->getAddress()->toBech32();
   const std::string mintscanExplorer =
-      fmt::format("https://testnet.mintscan.io/account/{}", address);
+      fmt::format("https://mintscan.io/account/{}", address);
 
   const auto totalBalance = wait(account->getTotalBalance())->toLong();
   const auto delegatedBalance = wait(account->getDelegatedBalance())->toLong();
@@ -428,17 +428,17 @@ TEST_F(CosmosStargateWalletSynchronization, Balances) {
          "totalBalance";
 
   EXPECT_GE(pendingRewards, 1) << fmt::format(
-      "Check {}  to see if the account really has <1 umuon of pending rewards",
+      "Check {}  to see if the account really has <1 uatom of pending rewards",
       mintscanExplorer);
   EXPECT_GE(totalBalance, 1000000) << fmt::format(
-      "Check {}  to see if the account really has <1 MUON of total balance",
+      "Check {}  to see if the account really has <1 ATOM of total balance",
       mintscanExplorer);
   EXPECT_GE(delegatedBalance, 2800)
       << fmt::format("Check {}  to see if the account really has <0.002800 "
-                     "MUON of total delegations",
+                     "ATOM of total delegations",
                      mintscanExplorer);
   EXPECT_GE(spendableBalance, 1000)
-      << fmt::format("Check {}  to see if the account really has <0.001 MUON "
+      << fmt::format("Check {}  to see if the account really has <0.001 ATOM "
                      "of available (spendable) balance",
                      mintscanExplorer);
   // Unbondings are moving too much to assert the amount.
@@ -446,8 +446,9 @@ TEST_F(CosmosStargateWalletSynchronization, Balances) {
 
 TEST_F(CosmosStargateWalletSynchronization, AllTransactionsSynchronization) {
   // FIXME Use an account that has all expected types of transactions
-  std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d4"
-                          "23a5cc3c21d89a"; // Obelix
+
+  // cosmos184p7cfk3x455h0ym0rfj5jx0nprftdfdehschd One of Silicium accounts
+  std::string hexPubKey = "03223f5343fcf72480a80688f372565469158c7c94a731b1367cc2ea93a9bcdf90";
 
   std::shared_ptr<CosmosLikeAccount> account;
   std::shared_ptr<AbstractWallet> wallet;
@@ -531,6 +532,7 @@ TEST_F(CosmosStargateWalletSynchronization, AllTransactionsSynchronization) {
       foundMsgUnjail = true;
       break;
     case api::CosmosLikeMsgType::UNSUPPORTED:
+    case api::CosmosLikeMsgType::MSGFEES:
       break;
     }
   }
@@ -566,35 +568,34 @@ TEST_F(CosmosStargateWalletSynchronization, AllTransactionsSynchronization) {
 TEST_F(CosmosStargateWalletSynchronization, ValidatorSet) {
   auto set = ::wait(explorer->getActiveValidatorSet());
 
-  EXPECT_EQ(set.size(), 3)
-      << "currently stargate-6 has 3 active validators";
+  EXPECT_EQ(set.size(), 125)
+      << "currently cosmoshub-4 has 125 active validators";
 }
 
 TEST_F(CosmosStargateWalletSynchronization, ValidatorInfo) {
-  const auto stargateTestNetAddress =
-      "cosmosvaloper1x5wgh6vwye60wv3dtshs9dmqggwfx2ldk5cvqu";
-  const auto stargateTestNetValConsPubAddress =
-      "cosmosvalconspub1zcjduepqgfqrnadqk7rf57f52w56ckn89ne75d3xqqwvq7pj7q7elt0"
-      "ftczsph4r26";
+  const auto stargateAddress =
+      "cosmosvaloper1sjllsnramtg3ewxqwwrwjxfgc4n4ef9u2lcnj0";
+  const auto stargateValConsPubAddress =
+      "cosmosvalconspub1zcjduepq6fpkt3qn9xd7u44478ypkhrvtx45uhfj3uhdny420hzgsssrvh3qnzwdpe";
   const auto mintscanAddress = fmt::format(
-      "https://testnet.mintscan.io/validators/{}", stargateTestNetAddress);
+      "https://mintscan.io/validators/{}", stargateAddress);
 
-  auto valInfo = ::wait(explorer->getValidatorInfo(stargateTestNetAddress));
-  ASSERT_EQ(valInfo.operatorAddress, stargateTestNetAddress)
+  auto valInfo = ::wait(explorer->getValidatorInfo(stargateAddress));
+  ASSERT_EQ(valInfo.operatorAddress, stargateAddress)
       << "We should fetch the expected validator";
-  ASSERT_EQ(valInfo.consensusPubkey, stargateTestNetValConsPubAddress)
+  ASSERT_EQ(valInfo.consensusPubkey, stargateValConsPubAddress)
       << "We should fetch the expected validator";
 
-  EXPECT_EQ(valInfo.validatorDetails.moniker, "Cosmostation");
+  EXPECT_EQ(valInfo.validatorDetails.moniker, "🐠stake.fish");
   ASSERT_TRUE(valInfo.validatorDetails.identity);
-  EXPECT_EQ(valInfo.validatorDetails.identity.value(), "AE4C403A6E7AA1AC");
+  EXPECT_EQ(valInfo.validatorDetails.identity.value(), "90B597A673FC950E");
   ASSERT_TRUE(valInfo.validatorDetails.website);
-  EXPECT_EQ(valInfo.validatorDetails.website.value(), "https://www.cosmostation.io");
+  EXPECT_EQ(valInfo.validatorDetails.website.value(), "stake.fish");
   ASSERT_TRUE(valInfo.validatorDetails.details);
   EXPECT_EQ(valInfo.validatorDetails.details.value(),
-            "CØSMOSTATION Validator. Delegate your tokens and Start Earning Staking Rewards");
+            "We are the leading staking service provider for blockchain projects. Join our community to help secure networks and earn rewards. We know staking.");
 
-  EXPECT_EQ(valInfo.commission.rates.maxRate, "0.200000000000000000");
+  EXPECT_EQ(valInfo.commission.rates.maxRate, "1.000000000000000000");
   EXPECT_EQ(valInfo.commission.rates.maxChangeRate, "0.010000000000000000");
   EXPECT_GE(valInfo.commission.updateTime,
             DateUtils::fromJSON("2019-03-13T23:00:00Z"))
@@ -607,28 +608,28 @@ TEST_F(CosmosStargateWalletSynchronization, ValidatorInfo) {
             std::stof(valInfo.commission.rates.maxRate));
 
   EXPECT_EQ(valInfo.unbondingHeight, 0)
-      << fmt::format("Expecting Cosmostation to never have been jailed. Check "
+      << fmt::format("Expecting Stake Fish to never have been jailed. Check "
                      "{} to see if the assertion holds",
                      mintscanAddress);
   EXPECT_FALSE(valInfo.unbondingTime)
-      << fmt::format("Expecting Cosmostation to never have been jailed. Check "
+      << fmt::format("Expecting Stake Fish to never have been jailed. Check "
                      "{} to see if the assertion holds",
                      mintscanAddress);
   EXPECT_EQ(valInfo.minSelfDelegation, "1")
-      << fmt::format("Expecting Cosmostation to have '1' minimum self "
+      << fmt::format("Expecting Stake Fish to have '1' minimum self "
                      "delegation. Check {} to see if the assertion holds",
                      mintscanAddress);
   EXPECT_FALSE(valInfo.jailed)
-      << fmt::format("Expecting Cosmostation to never have been jailed. Check "
+      << fmt::format("Expecting Stake Fish to never have been jailed. Check "
                      "{} to see if the assertion holds",
                      mintscanAddress);
   EXPECT_GE(BigInt::fromString(valInfo.votingPower).toUint64(),
             BigInt::fromString("200000000").toUint64())
-      << fmt::format("Expecting Cosmostation voting power to be > 400_000 MUON. "
+      << fmt::format("Expecting Stake Fish voting power to be > 400_000 ATOM. "
                      "Check {} to see if the assertion holds",
                      mintscanAddress);
   EXPECT_EQ(valInfo.activeStatus, "BOND_STATUS_BONDED") << fmt::format(
-      "Expecting Cosmostation to be active (and that currently the explorer "
+      "Expecting Stake Fish to be active (and that currently the explorer "
       "returns BOND_STATUS_BONDED for this status). Check {} to see if the assertion holds",
       mintscanAddress);
 
@@ -672,8 +673,8 @@ TEST_F(CosmosStargateWalletSynchronization, BalanceHistoryOperationQuery) {
   CosmosLikeOperationDatabaseHelper::queryOperations(sql, uid, operations,
                                                      filter);
 
-  ASSERT_GE(operations.size(), 3)
-      << "As of 2020-12-10, there are 3 operations picked up by the query";
+  ASSERT_GE(operations.size(), 2)
+      << "As of 2021-03-04, there are 2 operations picked up by the query";
 }
 
 TEST_F(CosmosStargateWalletSynchronization, GetAccountDelegations) {
@@ -727,37 +728,40 @@ namespace {
 void GenericGasLimitEstimationTest(const std::string &strTx,
                                    CosmosStargateWalletSynchronization &t) {
   const auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(
-      ledger::core::currencies::MUON, strTx);
-  const auto estimatedGasLimit = ::wait(t.explorer->getEstimatedGasLimit(tx));
-  EXPECT_GT(estimatedGasLimit->toUint64(), 0);
+      ledger::core::currencies::ATOM, strTx);
+  const auto estimatedGasLimit = ::wait(t.explorer->getEstimatedGasLimit(tx, "1.0"));
+  EXPECT_GT(estimatedGasLimit->toUint64(), 0)
+      << "This test failing probably means that the payload in the gas "
+         "estimation call needs to update the sequence number or the amount, "
+         "to make the transaction valid again.";
 }
 
 } // namespace
 
 TEST_F(CosmosStargateWalletSynchronization, GasLimitEstimationForTransfer) {
   const auto strTx =
-      "{\"account_number\":\"6571\","
-      "\"chain_id\":\"stargate-6\","
-      "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"umuon\"}],\"gas\":"
+      "{\"account_number\":\"31094\","
+      "\"chain_id\":\"cosmoshub-4\","
+      "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":"
       "\"200000\"},"
       "\"memo\":\"Sent from Ledger\","
       "\"msgs\":["
       "{\"type\":\"cosmos-sdk/MsgSend\","
       "\"value\":{"
-      "\"amount\":{\"amount\":\"1000000\",\"denom\":\"umuon\"},"
+      "\"amount\":{\"amount\":\"10\",\"denom\":\"uatom\"},"
       "\"from_address\":\"cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl\","
       "\"to_address\":\"cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv\""
       "}}],"
-      "\"sequence\":\"0\"}";
+      "\"sequence\":\"63\"}";
   GenericGasLimitEstimationTest(strTx, *this);
 }
 
 TEST_F(CosmosStargateWalletSynchronization,
        GasLimitEstimationForWithdrawingRewards) {
   const auto strTx =
-      "{\"account_number\":\"6571\","
-      "\"chain_id\":\"stargate-6\","
-      "\"fee\":{\"amount\":[{\"amount\":\"5001\",\"denom\":\"umuon\"}],\"gas\":"
+      "{\"account_number\":\"31094\","
+      "\"chain_id\":\"cosmoshub-4\","
+      "\"fee\":{\"amount\":[{\"amount\":\"5001\",\"denom\":\"uatom\"}],\"gas\":"
       "\"200020\"},"
       "\"memo\":\"Sent from Ledger\","
       "\"msgs\":["
@@ -773,34 +777,34 @@ TEST_F(CosmosStargateWalletSynchronization,
 
 TEST_F(CosmosStargateWalletSynchronization, GasLimitEstimationForDelegation) {
   const auto strTx =
-      "{\"account_number\":\"6571\","
-      "\"chain_id\":\"stargate-6\","
-      "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"umuon\"}],\"gas\":"
+      "{\"account_number\":\"31094\","
+      "\"chain_id\":\"cosmoshub-4\","
+      "\"fee\":{\"amount\":[{\"amount\":\"500\",\"denom\":\"uatom\"}],\"gas\":"
       "\"200000\"},"
       "\"memo\":\"Sent from Ledger\","
       "\"msgs\":["
       "{\"type\":\"cosmos-sdk/MsgDelegate\","
       "\"value\":{"
-      "\"amount\":{\"amount\":\"1000000\",\"denom\":\"umuon\"},"
+      "\"amount\":{\"amount\":\"10\",\"denom\":\"uatom\"},"
       "\"delegator_address\":\"cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl\","
       "\"validator_address\":"
-      "\"cosmosvaloper1x5wgh6vwye60wv3dtshs9dmqggwfx2ldk5cvqu\""
+      "\"cosmosvaloper1sjllsnramtg3ewxqwwrwjxfgc4n4ef9u2lcnj0\""
       "}}],"
-      "\"sequence\":\"0\"}";
+      "\"sequence\":\"63\"}";
   GenericGasLimitEstimationTest(strTx, *this);
 }
 
 TEST_F(CosmosStargateWalletSynchronization, GasLimitEstimationForUnDelegation) {
   const auto strTx =
-      "{\"account_number\":\"6571\","
-      "\"chain_id\":\"stargate-6\","
-      "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"umuon\"}],\"gas\":"
+      "{\"account_number\":\"31094\","
+      "\"chain_id\":\"cosmoshub-4\","
+      "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":"
       "\"200000\"},"
       "\"memo\":\"Sent from Ledger\","
       "\"msgs\":["
       "{\"type\":\"cosmos-sdk/MsgUndelegate\","
       "\"value\":{"
-      "\"amount\":{\"amount\":\"1000000\",\"denom\":\"umuon\"},"
+      "\"amount\":{\"amount\":\"1000000\",\"denom\":\"uatom\"},"
       "\"delegator_address\":\"cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl\","
       "\"validator_address\":"
       "\"cosmosvaloper1x5wgh6vwye60wv3dtshs9dmqggwfx2ldk5cvqu\""
@@ -811,14 +815,14 @@ TEST_F(CosmosStargateWalletSynchronization, GasLimitEstimationForUnDelegation) {
 
 TEST_F(CosmosStargateWalletSynchronization, GasLimitEstimationForRedelegation) {
   const auto strTx =
-      "{\"account_number\":\"6571\","
-      "\"chain_id\":\"stargate-6\","
-      "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"umuon\"}],\"gas\":"
+      "{\"account_number\":\"31094\","
+      "\"chain_id\":\"cosmoshub-4\","
+      "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":"
       "\"200000\"},"
       "\"memo\":\"Sent from Ledger\","
       "\"msgs\":["
       "{\"type\":\"cosmos-sdk/MsgBeginRedelegate\","
-      "\"value\":{\"amount\":{\"amount\":\"1000000\",\"denom\":\"umuon\"},"
+      "\"value\":{\"amount\":{\"amount\":\"1000000\",\"denom\":\"uatom\"},"
       "\"delegator_address\":\"cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl\","
       "\"validator_dst_address\":"
       "\"cosmosvaloper1x5wgh6vwye60wv3dtshs9dmqggwfx2ldk5cvqu\","
@@ -839,7 +843,7 @@ TEST_F(CosmosStargateWalletSynchronization, PendingUnbondings) {
   setupTest(account, wallet, hexPubKey);
   const std::string address = account->getKeychain()->getAddress()->toBech32();
   const std::string mintscanExplorer =
-      fmt::format("https://testnet.mintscan.io/account/{}", address);
+      fmt::format("https://mintscan.io/account/{}", address);
 
   // First synchro
   performSynchro(account);
@@ -860,7 +864,7 @@ TEST_F(CosmosStargateWalletSynchronization, PendingRedelegations) {
   setupTest(account, wallet, hexPubKey);
   const std::string address = account->getKeychain()->getAddress()->toBech32();
   const std::string mintscanExplorer =
-      fmt::format("https://testnet.mintscan.io/account/{}", address);
+      fmt::format("https://mintscan.io/account/{}", address);
 
   // First synchro
   performSynchro(account);
