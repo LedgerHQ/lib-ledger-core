@@ -96,6 +96,7 @@ jobs:
         LIB_VERSION: ${{ needs.libcore_version.outputs.lib_version }}
         DEPLOY_JAR: ${{ needs.libcore_version.outputs.deploy_jar }}
     - uses: actions/upload-artifact@v2
+      if: ${{ always() }}
       with:
         name: ${{ needs.libcore_version.outputs.lib_version }}-ledger-lib-core.jar
         path: jar_build/artifact/ledger-lib-core.jar
