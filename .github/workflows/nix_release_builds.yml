@@ -39,7 +39,7 @@ jobs:
         submodules: 'recursive'
     - uses: cachix/install-nix-action@v13
       with:
-        nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/2d9193f9f032c52594d90eb64b8c4ffa8c615354.tar.gz
+        nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/5f746317f10f7206f1dbb8dfcfc2257b04507eee.tar.gz
     - run: nix-build
     - uses: actions/upload-artifact@v2
       with:
@@ -59,7 +59,7 @@ jobs:
         submodules: 'recursive'
     - uses: cachix/install-nix-action@v13
       with:
-        nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/2d9193f9f032c52594d90eb64b8c4ffa8c615354.tar.gz
+        nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/5f746317f10f7206f1dbb8dfcfc2257b04507eee.tar.gz
     - run: nix-build
     - uses: actions/upload-artifact@v2
       with:
@@ -79,7 +79,7 @@ jobs:
         submodules: 'recursive'
     - uses: cachix/install-nix-action@v13
       with:
-        nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/2d9193f9f032c52594d90eb64b8c4ffa8c615354.tar.gz
+        nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/5f746317f10f7206f1dbb8dfcfc2257b04507eee.tar.gz
     - run: mkdir -p jar_build/src/main/resources/resources/djinni_native_libs
     - name: Fetch Linux so
       uses: actions/download-artifact@v2
