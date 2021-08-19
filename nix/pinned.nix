@@ -5,7 +5,7 @@
     sha256 = "sha256:1wx5g7a5bxa01pz7c5fdp5xk1gsj7dv6xwm1a17g6a8s2a2c05x3";
   };
 
-  gitignoreSrc = pkgs: pkgs.fetchFromGitHub {
+  gitignoreSrc = {fetchFromGitHub}: fetchFromGitHub {
     owner = "hercules-ci";
     repo = "gitignore.nix";
     rev = "211907489e9f198594c0eb0ca9256a1949c9d412";

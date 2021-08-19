@@ -3,7 +3,7 @@
 let
   pkgs = import ./nix/pkgs.nix { jdk = "jdk8"; };
   pinned = import ./nix/pinned.nix;
-  inherit (import (pinned.gitignoreSrc { inherit pkgs; }) { inherit (pkgs) lib; }) gitignoreSource;
+  inherit (import (pinned.gitignoreSrc { inherit (pkgs) fetchFromGitHub; }) { inherit (pkgs) lib; }) gitignoreSource;
   secp256k1-chfast = import ./nix/secp256k1.nix { inherit pkgs; };
   buildTypeFlag = if release
   then [

@@ -3,7 +3,7 @@
 let
   pkgs = import ./pkgs.nix { inherit jdk; };
   pinned = import ./pinned.nix;
-  inherit (import (pinned.gitignoreSrc { inherit pkgs; }) { inherit (pkgs) lib; }) gitignoreFilter;
+  inherit (import (pinned.gitignoreSrc { inherit (pkgs) fetchFromGitHub; }) { inherit (pkgs) lib; }) gitignoreFilter;
 
   # the `build/` in djinni/.gitignore gets badly interpreted by gitignore, so we rebuild a
   # proper filter.

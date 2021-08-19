@@ -1,13 +1,9 @@
-{ pkgs ? import <nixpkgs> {}, jdk ? "jdk8" }:
+{ jdk ? "jdk8" }:
 
 let
-  gitignoreSrc = pkgs.fetchFromGitHub {
-    owner = "hercules-ci";
-    repo = "gitignore.nix";
-    rev = "211907489e9f198594c0eb0ca9256a1949c9d412";
-    sha256 = "sha256:06j7wpvj54khw0z10fjyi31kpafkr6hi1k0di13k1xp8kywvfyx8";
-  };
-  inherit (import gitignoreSrc { inherit (pkgs) lib; }) gitignoreFilter;
+  pkgs = import ./pkgs.nix { inherit jdk; };
+  pinned = import ./pinned.nix;
+  inherit (import (pinned.gitignoreSrc { inherit (pkgs) fetchFromGitHub; }) { inherit (pkgs) lib; }) gitignoreFilter;
 
   # the `build/` in djinni/.gitignore gets badly interpreted by gitignore, so we rebuild a
   # proper filter.
