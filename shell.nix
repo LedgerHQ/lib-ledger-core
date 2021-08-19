@@ -14,8 +14,7 @@ mkShell {
     # Common build deps
     postgresql_12
     openssl_1_1
-    gcc11
-    gcc11.cc.lib
+    gcc10
     sqlite
     cmake
     libkrb5

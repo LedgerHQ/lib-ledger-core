@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {}, release ? true, jni ? true, pushS3 ? false, runTests ? false }:
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/5f746317f10f7206f1dbb8dfcfc2257b04507eee.tar.gz") {}, release ? true, jni ? true, pushS3 ? false, runTests ? false }:
 
 with pkgs;
 let
@@ -40,8 +40,7 @@ stdenv.mkDerivation {
     # Common build deps
     postgresql_12
     openssl_1_1
-    gcc11
-    gcc11.cc.lib
+    gcc10
     sqlite
     cmake
     libkrb5

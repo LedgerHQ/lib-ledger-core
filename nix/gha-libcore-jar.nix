@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {}, jdk ? "jdk8" }:
+{ jdk ? "jdk8" }:
 
 let
   gitignoreSrc = pkgs.fetchFromGitHub {
@@ -21,6 +21,16 @@ let
            || builtins.baseNameOf path == "djinni/src/build";
 
   name = "libledger-core-jar";
+
+  config = {
+    packageOverrides = p: {
+      sbt = p.sbt.override {
+        jre = p.${jdk};
+      };
+    };
+  };
+
+  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/5f746317f10f7206f1dbb8dfcfc2257b04507eee.tar.gz") { inherit config; };
 in
 pkgs.stdenv.mkDerivation {
   inherit name;
