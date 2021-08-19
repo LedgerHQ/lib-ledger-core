@@ -15,6 +15,7 @@ mkShell {
     postgresql_12
     openssl_1_1
     gcc11
+    gcc11.cc.lib
     sqlite
     cmake
     libkrb5
