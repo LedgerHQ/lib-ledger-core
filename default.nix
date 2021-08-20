@@ -1,14 +1,9 @@
-{ pkgs ? import <nixpkgs> {}, release ? true, jni ? true, pushS3 ? false, runTests ? false }:
+{ release ? true, jni ? true, pushS3 ? false, runTests ? false }:
 
-with pkgs;
 let
-  gitignoreSrc = fetchFromGitHub {
-    owner = "hercules-ci";
-    repo = "gitignore.nix";
-    rev = "211907489e9f198594c0eb0ca9256a1949c9d412";
-    sha256 = "sha256:06j7wpvj54khw0z10fjyi31kpafkr6hi1k0di13k1xp8kywvfyx8";
-  };
-  inherit (import gitignoreSrc { inherit (pkgs) lib; }) gitignoreSource;
+  pkgs = import ./nix/pkgs.nix { jdk = "jdk8"; };
+  pinned = import ./nix/pinned.nix;
+  inherit (import (pinned.gitignoreSrc { inherit (pkgs) fetchFromGitHub; }) { inherit (pkgs) lib; }) gitignoreSource;
   secp256k1-chfast = import ./nix/secp256k1.nix { inherit pkgs; };
   buildTypeFlag = if release
   then [
@@ -22,42 +17,35 @@ let
   else if runTests
   then [ "-DBUILD_TESTS=ON" ]
   else [ "-DBUILD_TESTS=OFF" ];
-  jniFlag = [ (lib.optionalString jni "-DTARGET_JNI=ON") ];
+  jniFlag = [ (pkgs.lib.optionalString jni "-DTARGET_JNI=ON") ];
 in
 
-stdenv.mkDerivation {
+pkgs.stdenv.mkDerivation {
   name = "libledger-core";
   version = "4.1.1";
   src = gitignoreSource ./.;
 
-  nativeBuildInputs = [
-    pkg-config
-    cmake
-    aws
-  ];
+  nativeBuildInputs = (pkgs.lib.attrVals [
+    "pkg-config"
+    "cmake"
+    "aws"
+  ] pkgs);
 
-  buildInputs = [
+  buildInputs = (pkgs.lib.attrVals [
     # Common build deps
-    postgresql_12
-    openssl_1_1
-    gcc11
-    sqlite
-    cmake
-    libkrb5
-    cryptopp
-    secp256k1-chfast
+    "postgresql_12"
+    "openssl_1_1"
+    "gcc10"
+    "sqlite"
+    "cmake"
+    "libkrb5"
+    "cryptopp"
 
     # JNI bindings deps
-    jdk8
-  ]
-  ++ lib.optionals stdenv.isLinux [ libselinux ] ;
-
-  checkInputs = [
-    libsForQt515.qt5.qtbase
-    libsForQt515.qt5.qtconnectivity
-    libsForQt515.qt5.qtwebsockets
-    libsForQt515.qt5.wrapQtAppsHook
-  ];
+    "jdk8"
+  ] pkgs)
+  ++ [ secp256k1-chfast ]
+  ++ pkgs.lib.optionals pkgs.stdenv.isLinux [ pkgs.libselinux ] ;
 
   cmakeFlags = buildTypeFlag
   ++ testFlag

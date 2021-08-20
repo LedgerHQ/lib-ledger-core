@@ -62,6 +62,29 @@ This project is based on **_cmake_** as a build system so you should install it 
 
 If you have remote builders you can use them with the nix derivation [bundled in the repo](./default.nix)
 
+#### Architecture
+
+##### Utilities/Libraries
+
+- [`pkgs.nix`](./nix/pkgs.nix) holds the packages to use in all the other functions
+- [`pinned.nix`](./nix/pinned.nix) controls the pins of nixpkgs and
+  gitignoreSrc to clean the tree
+- [`config.nix`](./nix/config.nix) controls the overrides for packages, most notably `sbt`
+- [`secp256k1.nix`](./nix/secp256k1.nix) is a function to build the fork of SECP256K1 used
+  in libcore
+
+##### Shells
+
+- [`test-shell.nix`](./nix/test-shell.nix) builds the shell used in CI
+- [`gha-libcore-jar.nix`](./nix/gha-libcore-jar.nix) is a shell used to build and
+  deploy a JAR on GitHub Actions
+- [`libcore-jar.nix`](./nix/libcore-jar.nix) is a shell used to build the JAR locally.
+
+##### Local development
+
+- [`shell.nix`](./shell.nix) is the local development shell
+- [`default.nix`](./default.nix) holds the function to build libcore derivation
+
 #### Using `nix-shell`
 
 The repository provides a [shell.nix](./shell.nix) that allows to get into an environment
