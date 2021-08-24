@@ -1,3 +1,9 @@
+## 3.5.101
+
+> 2020/08/24
+
+- Hotfix unknown Stellar transactions operaiton type
+
 ## 3.5.0
 
 > 2020/08/06
