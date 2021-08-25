@@ -13,7 +13,7 @@ brew install wget
 
 echo "========> Install Java"
 
-brew cask install adoptopenjdk/openjdk/adoptopenjdk8
+brew install --cask adoptopenjdk/openjdk/adoptopenjdk8
 
 echo "========> Java Installed"
 echo "$(/usr/libexec/java_home -v 1.8)"
