@@ -108,7 +108,7 @@ namespace ledger {
                 // Cannot use a "filter" with erase(remove_if) because soci::rowset lacks erase()
                 if (isGraced(row, OP_DATE_COL)) {
                     const auto date = row.get<std::string>(OP_DATE_COL);
-                    buddy->logger->info("Gracing {} as it is too recent (from {}})", txHash, date);
+                    buddy->logger->info("Gracing {} as it is too recent (from {})", txHash, date);
                     continue;
                 }
                 if (row.get_indicator(0) != soci::i_null && row.get_indicator(1) != soci::i_null) {
