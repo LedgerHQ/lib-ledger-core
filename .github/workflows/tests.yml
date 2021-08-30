@@ -13,8 +13,11 @@ on:
       - release/4.2.0
       - develop
 jobs:
-  Ubuntu:
-    runs-on: ubuntu-latest
+  Linux:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04, [self-hosted, linux, X64]]
     steps:
     - name: Cancel Previous Runs
       uses: styfle/cancel-workflow-action@0.9.1
