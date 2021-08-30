@@ -35,6 +35,8 @@
 
 #include <collections/functional.hpp>
 
+#include <algorithm>
+
 #include <memory>
 #include <utils/DateUtils.hpp>
 
@@ -70,6 +72,98 @@
 #include <wallet/bitcoin/database/BitcoinLikeOperationDatabaseHelper.hpp>
 #include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
 
+namespace {
+using namespace ledger::core;
+/// Constructor of BitcoinLikeBlockchainExplorerTransaction that initializes some fields
+/// with a just signed transaction.
+///
+/// This is used for optimistic updates
+BitcoinLikeBlockchainExplorerTransaction initOptimisticUpdate(
+    const std::string &txHash,
+    const std::shared_ptr<api::BitcoinLikeTransaction> &justSentTx) {
+
+  BitcoinLikeBlockchainExplorerTransaction txExplorer;
+  txExplorer.hash = txHash;
+  txExplorer.lockTime = justSentTx->getLockTime();
+  txExplorer.receivedAt = std::chrono::system_clock::now();
+  txExplorer.version = justSentTx->getVersion();
+  txExplorer.confirmations = 0;
+  return txExplorer;
+}
+
+/// Fill the inputs of an optimistic update transaction before it is inserted in
+/// database
+///
+/// Throw if the previous inputs cannot be found.
+void inflateOptimisticUpdateInputs(
+    BitcoinLikeBlockchainExplorerTransaction &toFillTx,
+    const std::shared_ptr<api::BitcoinLikeTransaction> &justSentTx,
+    const std::string &accountUid, soci::session &sql) {
+  auto inputCount = justSentTx->getInputs().size();
+  for (auto index = 0; index < inputCount; index++) {
+    auto input = justSentTx->getInputs()[index];
+    BitcoinLikeBlockchainExplorerInput in;
+    in.index = index;
+    auto prevTxHash = input->getPreviousTxHash().value_or("");
+    auto prevTxOutputIndex = input->getPreviousOutputIndex().value_or(0);
+    BitcoinLikeBlockchainExplorerTransaction prevTx;
+    if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(
+            sql, prevTxHash, accountUid, prevTx) ||
+        prevTxOutputIndex >= prevTx.outputs.size()) {
+      throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND,
+                           "Transaction {} not found while broadcasting",
+                           prevTxHash);
+    }
+
+    // With the "foreign outputs" being merged in database,
+    // we MUST manually scan the "prevTx" to find the output with the matching
+    // index.
+    //
+    // It should not affect performance too much, as prevTx.outputs has
+    // (n_keychain_in_tx+1) elements, where n_keychain_in_tx is the number of
+    // _owned_ addresses in the outputs of prevTx. This assertion is true
+    // because of the "foreign outputs" merging feature.
+    auto isSameIndex =
+        [prevTxOutputIndex](const BitcoinLikeBlockchainExplorerOutput &output) {
+          return output.index == prevTxOutputIndex;
+        };
+    auto prevTxOutput = std::find_if(prevTx.outputs.cbegin(),
+                                     prevTx.outputs.cend(), isSameIndex);
+    if (prevTxOutput == std::end(prevTx.outputs)) {
+      throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND,
+                           "Output {}/{} not found in database", prevTxHash,
+                           prevTxOutputIndex);
+    }
+
+    in.value = prevTxOutput->value;
+    in.signatureScript = hex::toString(input->getScriptSig());
+    in.previousTxHash = prevTxHash;
+    in.previousTxOutputIndex = prevTxOutputIndex;
+    in.sequence = input->getSequence();
+    in.address = prevTxOutput->address.getValueOr("");
+    toFillTx.inputs.push_back(in);
+  }
+}
+
+/// Fill the outputs of an optimistic update transaction before it is inserted
+/// in database
+void inflateOptimisticUpdateOutputs(
+    BitcoinLikeBlockchainExplorerTransaction &toFillTx,
+    const std::shared_ptr<api::BitcoinLikeTransaction> &justSentTx) {
+  auto outputCount = justSentTx->getOutputs().size();
+  for (auto index = 0; index < outputCount; index++) {
+    auto output = justSentTx->getOutputs()[index];
+    BitcoinLikeBlockchainExplorerOutput out;
+    out.value = BigInt(output->getValue()->toString());
+    out.time = DateUtils::toJSON(std::chrono::system_clock::now());
+    out.transactionHash = output->getTransactionHash();
+    out.index = output->getOutputIndex();
+    out.script = hex::toString(output->getScript());
+    out.address = output->getAddress().value_or("");
+    toFillTx.outputs.push_back(out);
+  }
+}
+} // namespace
 
 namespace ledger {
     namespace core {
@@ -553,6 +647,7 @@ namespace ledger {
                                 break;
                             }
                             case api::OperationType::NONE:
+                            default:
                                 break;
                         }
                     }
@@ -609,6 +704,7 @@ namespace ledger {
                 auto txHash = seq.str();
                 auto optimisticUpdate = Try<Unit>::from([&] () -> Unit {
                     //Get last block from DB or cache
+                    self->logger()->debug("{} getting last block from DB or cache", CORRELATIONID_PREFIX(correlationId));
                     uint64_t lastBlockHeight = 0;
                     soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                     auto cachedBlock = self->getWallet()->getPool()->getBlockFromCache(self->getWallet()->getCurrency().name);
@@ -618,55 +714,24 @@ namespace ledger {
                         lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
                     }
 
+                    self->logger()->debug("{} reparsing broadcasted transaction", CORRELATIONID_PREFIX(correlationId));
                     auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, lastBlockHeight);
 
+                    self->logger()->debug("{} creating the optimistic update transaction", CORRELATIONID_PREFIX(correlationId));
                     //Get a BitcoinLikeBlockchainExplorerTransaction from a BitcoinLikeTransaction
-                    BitcoinLikeBlockchainExplorerTransaction txExplorer;
-                    txExplorer.hash = txHash;
-                    txExplorer.lockTime = tx->getLockTime();
-                    txExplorer.receivedAt = std::chrono::system_clock::now();
-                    txExplorer.version = tx->getVersion();
-                    txExplorer.confirmations = 0;
+                    auto txExplorer = initOptimisticUpdate(txHash, tx);
 
                     //Inputs
-                    auto inputCount = tx->getInputs().size();
-                    for (auto index = 0; index < inputCount; index++) {
-                        auto input = tx->getInputs()[index];
-                        BitcoinLikeBlockchainExplorerInput in;
-                        in.index = index;
-                        auto prevTxHash = input->getPreviousTxHash().value_or("");
-                        auto prevTxOutputIndex = input->getPreviousOutputIndex().value_or(0);
-                        BitcoinLikeBlockchainExplorerTransaction prevTx;
-                        if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, prevTxHash, self->getAccountUid(), prevTx) || prevTxOutputIndex >= prevTx.outputs.size()) {
-                            throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found while broadcasting", prevTxHash);
-                        }
-                        in.value = prevTx.outputs[prevTxOutputIndex].value;
-                        in.signatureScript = hex::toString(input->getScriptSig());
-                        in.previousTxHash = prevTxHash;
-                        in.previousTxOutputIndex = prevTxOutputIndex;
-                        in.sequence = input->getSequence();
-                        in.address = prevTx.outputs[prevTxOutputIndex].address.getValueOr("");
-                        txExplorer.inputs.push_back(in);
-                    }
+                    inflateOptimisticUpdateInputs(txExplorer, tx, self->getAccountUid(), sql);
 
                     //Outputs
-                    auto keychain = self->getKeychain();
-                    auto outputCount = tx->getOutputs().size();
-                    for (auto index = 0; index < outputCount; index++) {
-                        auto output = tx->getOutputs()[index];
-                        BitcoinLikeBlockchainExplorerOutput out;
-                        out.value = BigInt(output->getValue()->toString());
-                        out.time = DateUtils::toJSON(std::chrono::system_clock::now());
-                        out.transactionHash = output->getTransactionHash();
-                        out.index = output->getOutputIndex();
-                        out.script = hex::toString(output->getScript());
-                        out.address = output->getAddress().value_or("");
-                        txExplorer.outputs.push_back(out);
-                    }
+                    inflateOptimisticUpdateOutputs(txExplorer, tx);
 
                     //Store in DB
+                    self->logger()->debug("{} storing the optimistic update transaction", CORRELATIONID_PREFIX(correlationId));
                     std::vector<Operation> operations;
                     self->interpretTransaction(txExplorer, operations);
+                    self->logger()->debug("{} inserting the associated operations", CORRELATIONID_PREFIX(correlationId));
                     self->bulkInsert(operations);
                     self->emitEventsNow();
                     return unit;
@@ -688,7 +753,7 @@ namespace ledger {
         void BitcoinLikeAccount::broadcastTransaction(const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
                                                       const std::shared_ptr<api::StringCallback> &callback) {
             
-        logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
+        logger()->info("{} received raw transaction to broadcast", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
             broadcastRawTransaction(transaction->serialize(), callback, transaction->getCorrelationId());
         }
 
