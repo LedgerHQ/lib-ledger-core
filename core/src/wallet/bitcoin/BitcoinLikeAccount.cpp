@@ -704,6 +704,7 @@ namespace ledger {
                 auto txHash = seq.str();
                 auto optimisticUpdate = Try<Unit>::from([&] () -> Unit {
                     //Get last block from DB or cache
+                    self->logger()->debug("{} getting last block from DB or cache", CORRELATIONID_PREFIX(correlationId));
                     uint64_t lastBlockHeight = 0;
                     soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                     auto cachedBlock = self->getWallet()->getPool()->getBlockFromCache(self->getWallet()->getCurrency().name);
@@ -713,8 +714,10 @@ namespace ledger {
                         lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
                     }
 
+                    self->logger()->debug("{} reparsing broadcasted transaction", CORRELATIONID_PREFIX(correlationId));
                     auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, lastBlockHeight);
 
+                    self->logger()->debug("{} creating the optimistic update transaction", CORRELATIONID_PREFIX(correlationId));
                     //Get a BitcoinLikeBlockchainExplorerTransaction from a BitcoinLikeTransaction
                     auto txExplorer = initOptimisticUpdate(txHash, tx);
 
@@ -725,8 +728,10 @@ namespace ledger {
                     inflateOptimisticUpdateOutputs(txExplorer, tx);
 
                     //Store in DB
+                    self->logger()->debug("{} storing the optimistic update transaction", CORRELATIONID_PREFIX(correlationId));
                     std::vector<Operation> operations;
                     self->interpretTransaction(txExplorer, operations);
+                    self->logger()->debug("{} inserting the associated operations", CORRELATIONID_PREFIX(correlationId));
                     self->bulkInsert(operations);
                     self->emitEventsNow();
                     return unit;
@@ -748,7 +753,7 @@ namespace ledger {
         void BitcoinLikeAccount::broadcastTransaction(const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
                                                       const std::shared_ptr<api::StringCallback> &callback) {
             
-        logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
+        logger()->info("{} received raw transaction to broadcast", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
             broadcastRawTransaction(transaction->serialize(), callback, transaction->getCorrelationId());
         }
 
