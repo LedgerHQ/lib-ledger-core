@@ -738,7 +738,7 @@ namespace ledger {
                 // But still let's log that !
                 if (optimisticUpdate.isFailure()) {
                     self->logger()->warn("{} Optimistic update failed for broadcasted transaction [hash: {}] with errcode {}: {}",
-                        CORRELATIONID_PREFIX(correlationId), txHash, optimisticUpdate.getFailure().getErrorCode(), optimisticUpdate.getFailure().getMessage());
+                        CORRELATIONID_PREFIX(correlationId), txHash, api::to_string(optimisticUpdate.getFailure().getErrorCode()), optimisticUpdate.getFailure().getMessage());
                 }
                 else {
                     self->getWallet()->invalidateBalanceCache(self->getIndex());
