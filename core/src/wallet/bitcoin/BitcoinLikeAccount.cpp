@@ -737,8 +737,8 @@ namespace ledger {
                 // and the update will occur at next synchro ...
                 // But still let's log that !
                 if (optimisticUpdate.isFailure()) {
-                    self->logger()->warn("{} Optimistic update failed for broadcasted transaction : {}", 
-                        CORRELATIONID_PREFIX(correlationId), txHash);
+                    self->logger()->warn("{} Optimistic update failed for broadcasted transaction [hash: {}] with errcode {}: {}",
+                        CORRELATIONID_PREFIX(correlationId), txHash, optimisticUpdate.getFailure().getErrorCode(), optimisticUpdate.getFailure().getMessage());
                 }
                 else {
                     self->getWallet()->invalidateBalanceCache(self->getIndex());
