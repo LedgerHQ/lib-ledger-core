@@ -36,6 +36,7 @@
 #include <collections/functional.hpp>
 
 #include <algorithm>
+#include <numeric>
 
 #include <memory>
 #include <utils/DateUtils.hpp>
@@ -162,6 +163,27 @@ void inflateOptimisticUpdateOutputs(
     out.address = output->getAddress().value_or("");
     toFillTx.outputs.push_back(out);
   }
+}
+
+/// Fill the fees of an optimistic update transaction
+/// from its current inputs and outputs
+void inflateOptimisticUpdateFees(
+    BitcoinLikeBlockchainExplorerTransaction &toFillTx) {
+    auto outputValue = std::accumulate(
+        toFillTx.outputs.cbegin(),
+        toFillTx.outputs.cend(),
+        BigInt::ZERO,
+        [](BigInt acc, BitcoinLikeBlockchainExplorerOutput new_val) {
+            return std::move(acc) + new_val.value;
+        });
+    auto inputValue = std::accumulate(
+        toFillTx.inputs.cbegin(),
+        toFillTx.inputs.cend(),
+        BigInt::ZERO,
+        [](BigInt acc, BitcoinLikeBlockchainExplorerInput new_val) {
+            return std::move(acc) + new_val.value.getValueOr(BigInt::ZERO);
+        });
+    toFillTx.fees = inputValue - outputValue;
 }
 } // namespace
 
@@ -726,6 +748,9 @@ namespace ledger {
 
                     //Outputs
                     inflateOptimisticUpdateOutputs(txExplorer, tx);
+
+                    // Fees
+                    inflateOptimisticUpdateFees(txExplorer);
 
                     //Store in DB
                     self->logger()->debug("{} storing the optimistic update transaction", CORRELATIONID_PREFIX(correlationId));
