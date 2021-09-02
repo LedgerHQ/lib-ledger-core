@@ -13,19 +13,26 @@ on:
       - release/4.2.0
       - develop
 jobs:
-  Linux:
+  Unixes:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04, [self-hosted, linux, X64]]
+        os: [ubuntu-18.04, ubuntu-20.04, [self-hosted, linux, X64, Coin-Integration], macos-latest]
     steps:
     - name: Cancel Previous Runs
       uses: styfle/cancel-workflow-action@0.9.1
       with:
         access_token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Disable TCP/UDP offload
+    - name: Disable Linux TCP/UDP offload
+      if: ${{ startsWith(matrix.os, 'ubuntu') }}
       run: |
         sudo ethtool -K eth0 tx off rx off
+    - name: Disable MacOS TCP/UDP offload
+      if: ${{ startsWith(matrix.os, 'macos') }}
+      run: |
+        sudo sysctl -w net.link.generic.system.hwcksum_tx=0
+        sudo sysctl -w net.link.generic.system.hwcksum_rx=0
     - uses: actions/checkout@v2.3.4
       with:
         submodules: 'recursive'

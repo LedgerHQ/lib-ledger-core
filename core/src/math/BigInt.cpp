@@ -34,6 +34,7 @@
 #include <iostream>
 #include <algorithm>
 #include "../collections/collections.hpp"
+#include <boost/serialization/nvp.hpp>
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <boost/multiprecision/cpp_int.hpp>
 #include <cstdlib>

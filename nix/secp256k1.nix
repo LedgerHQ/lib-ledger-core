@@ -4,9 +4,7 @@ with pkgs;
 stdenv.mkDerivation {
   pname = "secp256k1-chfast";
 
-  # I can't find any version numbers, so we're just using the date of the
-  # last commit.
-  version = "ac8ccf29b8c6b2b793bc734661ce43d1f952977a";
+  version = "unstable-20170313";
 
   src = fetchFromGitHub {
     owner = "chfast";

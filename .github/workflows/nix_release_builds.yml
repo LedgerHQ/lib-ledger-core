@@ -91,7 +91,7 @@ jobs:
       with:
         name: ${{ needs.libcore_version.outputs.lib_version }}-macos-libledgercore
         path: jar_build/src/main/resources/resources/djinni_native_libs
-    - run: nix-shell --run "bash nix/scripts/build_jar_on_gha.sh" nix/gha-libcore-jar.nix
+    - run: nix-shell --run "bash nix/scripts/build_jar.sh" nix/libcore-jar.nix
       env:
         LIB_VERSION: ${{ needs.libcore_version.outputs.lib_version }}
         DEPLOY_JAR: ${{ needs.libcore_version.outputs.deploy_jar }}

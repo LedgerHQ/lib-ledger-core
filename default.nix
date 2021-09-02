@@ -18,9 +18,17 @@ let
   then [ "-DBUILD_TESTS=ON" ]
   else [ "-DBUILD_TESTS=OFF" ];
   jniFlag = [ (pkgs.lib.optionalString jni "-DTARGET_JNI=ON") ];
+  cmakeFlags = buildTypeFlag
+  ++ testFlag
+  ++ jniFlag
+  ++ [
+    "-DPG_SUPPORT=ON"
+    "-DSYS_OPENSSL=ON"
+    "-DSYS_SECP256K1=ON"
+  ];
 in
 
-pkgs.stdenv.mkDerivation {
+pkgs.compilationStdenv.mkDerivation {
   name = "libledger-core";
   version = "4.1.1";
   src = gitignoreSource ./.;
@@ -35,7 +43,6 @@ pkgs.stdenv.mkDerivation {
     # Common build deps
     "postgresql_12"
     "openssl_1_1"
-    "gcc10"
     "sqlite"
     "cmake"
     "libkrb5"
@@ -47,14 +54,11 @@ pkgs.stdenv.mkDerivation {
   ++ [ secp256k1-chfast ]
   ++ pkgs.lib.optionals pkgs.stdenv.isLinux [ pkgs.libselinux ] ;
 
-  cmakeFlags = buildTypeFlag
-  ++ testFlag
-  ++ jniFlag
-  ++ [
-    "-DPG_SUPPORT=ON"
-    "-DSYS_OPENSSL=ON"
-    "-DSYS_SECP256K1=ON"
-  ];
+  inherit cmakeFlags;
+
+  shellHook = ''
+  export CMAKE_LIBCORE_FLAGS="${(toString cmakeFlags)}"
+  '';
 
   doInstallCheck = runTests;
   installCheckPhase = ''

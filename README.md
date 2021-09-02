@@ -76,26 +76,31 @@ If you have remote builders you can use them with the nix derivation [bundled in
 ##### Shells
 
 - [`test-shell.nix`](./nix/test-shell.nix) builds the shell used in CI
-- [`gha-libcore-jar.nix`](./nix/gha-libcore-jar.nix) is a shell used to build and
-  deploy a JAR on GitHub Actions
-- [`libcore-jar.nix`](./nix/libcore-jar.nix) is a shell used to build the JAR locally.
+- [`libcore-jar.nix`](./nix/libcore-jar.nix) is a shell used to build the JAR locally,
+  or in github actions
 
 ##### Local development
 
-- [`shell.nix`](./shell.nix) is the local development shell
-- [`default.nix`](./default.nix) holds the function to build libcore derivation
+- [`default.nix`](./default.nix) holds the function to build libcore derivation, and allows
+  to enter a shell for development
 
 #### Using `nix-shell`
 
-The repository provides a [shell.nix](./shell.nix) that allows to get into an environment
-ready for build.
+The repository provides a [default.nix](./default.nix) that allows to get into an environment
+ready for build. A hook sets the `CMAKE_LIBCORE_FLAGS` environment variable in the shell that
+has all the CMake flags you need to build libcore
 
 ``` sh
+# To be able to run tests
+nix-shell --arg runTests true --arg jni false
+# To be able to build a JAR from your local build
 nix-shell
+
 mkdir _build
 cd _build
-cmake .. -DSYS_OPENSSL=ON -DSYS_SECP256K1=ON -DPG_SUPPORT=ON
+cmake .. $CMAKE_LIBCORE_FLAGS
 make
+ctest
 ```
 
 #### Using `nix-build`
@@ -110,6 +115,13 @@ Otherwise to run tests locally against your changes
 
 ``` sh
 nix-build --arg runTests true --arg jni false
+```
+
+#### Building a JAR locally
+
+You can always build the JAR using this command
+``` sh
+nix-shell --run "bash nix/scripts/build_jar.sh" nix/libcore-jar.nix --arg useLibcoreDerivation true
 ```
 
 ### Non nix builds
