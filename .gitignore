@@ -26,3 +26,8 @@ tags
 *.a
 .ccls-cache/
 .dir-locals.el
+
+# Nix outputs
+result/
+jar_build/
+artifact/

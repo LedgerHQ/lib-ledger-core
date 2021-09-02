@@ -5,5 +5,8 @@ let
   pinned = import ./pinned.nix;
   config = import ./config.nix { inherit jdk; };
   pkgs   = import pinned.nixpkgs { inherit config; };
+  compilationStdenv = if pkgs.stdenv.isLinux
+           then pkgs.gcc11Stdenv
+           else pkgs.llvmPackages_7.stdenv;
 in
-  pkgs
+pkgs // { inherit compilationStdenv; }

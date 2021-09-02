@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -e
 
 printf "\n============ Generate Java/Scala interface files\n"
 bash tools/generate_interfaces.sh
-printf "\n============ Moving interface files\n"
+printf "\n============ Moving native libraries (from ${LIBCORE_LIB_DIR})\n"
 ls -la ${LIBCORE_LIB_DIR}
+mkdir -p jar_build/src/main/resources/resources/djinni_native_libs
+# We allow the cp to fail with '||:'. For local builds, only one of .so or .dylib will exist,
+# and we do not want the cp to break execution
+cp -v ${LIBCORE_LIB_DIR}*.{so,dylib} jar_build/src/main/resources/resources/djinni_native_libs || :
+printf "\n============ Moving interface files\n"
 cp -v ./api/core/java/* jar_build
 cp -v ./api/core/scala/* jar_build
 printf "============ Checking libs in djinni native libs dir\n"

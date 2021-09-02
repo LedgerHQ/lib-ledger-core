@@ -1,4 +1,4 @@
-{ jdk ? "jdk8" }:
+{ jdk ? "jdk8", useLibcoreDerivation ? false }:
 
 let
   pkgs = import ./pkgs.nix { inherit jdk; };
@@ -16,10 +16,13 @@ let
          srcIgnored path type
            || builtins.baseNameOf path == "djinni/src/build";
 
-  libledger-core = import ../default.nix { inherit pkgs; jni = true; release = true; pushS3 = false; runTests = false; };
+  libledger-core = import ../default.nix { jni = true; release = true; pushS3 = false; runTests = false; };
+  libcore_lib_dir = if useLibcoreDerivation
+                    then "${libledger-core.out}/lib/"
+                    else "jar_build/src/main/resources/resources/djinni_native_libs/";
   name = "libledger-core-jar";
 in
-pkgs.stdenv.mkDerivation {
+pkgs.compilationStdenv.mkDerivation {
   inherit name;
   version = "4.1.1";
   src = pkgs.lib.cleanSourceWith {
@@ -33,14 +36,12 @@ pkgs.stdenv.mkDerivation {
       "${jdk}"
       "sbt"
 
-      # Djinni command dependencies
-      "gcc11"
       "bashInteractive"
   ] pkgs)
   ++ [ libledger-core ];
 
   shellHook = ''
-  export LIBCORE_LIB=${libledger-core.out}/lib/${if pkgs.stdenv.isLinux then "*.so" else "*.dylib"}
+  export LIBCORE_LIB_DIR=${libcore_lib_dir}
   '';
 
   doCheck = false;
