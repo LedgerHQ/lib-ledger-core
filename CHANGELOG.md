@@ -2,6 +2,8 @@
 
 > Unreleased
 
+- Hotfix unknown Stellar transactions operation type
+
 ## 4.0.5
 
 > 2021/08/04
