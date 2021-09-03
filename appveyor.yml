@@ -57,7 +57,7 @@ install:
 - ssh-keygen -y -f c:\users\appveyor\.ssh\id_rsa > c:\users\appveyor\.ssh\id_rsa.pub
 
 #Install openssl
-- ps: Start-FileDownload 'http://slproweb.com/download/Win64OpenSSL-1_1_1L.exe'
+- ps: Start-FileDownload 'https://slproweb.com/download/Win64OpenSSL-1_1_1L.exe'
 - ps: Start-Process "Win64OpenSSL-1_1_1L.exe" -ArgumentList "/silent /verysilent /sp- /suppressmsgboxes" -Wait
 
 #Install Node
