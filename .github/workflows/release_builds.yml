@@ -100,3 +100,52 @@ jobs:
       with:
         name: ${{ needs.libcore_version.outputs.lib_version }}-ledger-lib-core.jar
         path: jar_build/artifact/ledger-lib-core.jar
+  Windows_no_jni:
+    needs: libcore_version
+    runs-on: [self-hosted, windows, X64, Coin-Integration]
+    env:
+      source_path: 'libcore_source'
+      build_path: 'libcore_build'
+    steps:
+      - name: Check runner environment
+        run: |
+          git --version
+          cmake --version
+          msbuild /help
+          cl
+          ctest --version
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          path: ${{env.source_path}}
+          clean: true
+          submodules: true
+      - name: Build - Cmake
+        run: |
+          Remove-Item -LiteralPath "${{env.build_path}}" -Force -Recurse -ErrorAction Ignore
+          mkdir ${{env.build_path}}
+          cd ${{env.build_path}}
+          cmake `
+            -DBUILD_TESTS=OFF `
+            -DSYS_OPENSSL=ON `
+            -DOPENSSL_USE_STATIC_LIBS=TRUE `
+            ..\${{env.source_path}}
+      - name: Build - Make
+        run: |
+          cmake `
+            --build . `
+            --config Release `
+            -- /m:1
+        working-directory: ${{env.build_path}}
+      - name : Upload build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ needs.libcore_version.outputs.lib_version }}-windows-nojni-libledgercore
+          path: |
+            ${{env.build_path}}\core\src\build\Release\ledger-core.dll
+      - name: Clean workspace
+        if: ${{ always() }}
+        run: |
+          echo "Cleaning up previous run"
+          Remove-Item -LiteralPath "${{github.workspace}}\${{env.build_path}}" -Force -Recurse
+        continue-on-error: true

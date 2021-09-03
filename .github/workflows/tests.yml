@@ -43,3 +43,103 @@ jobs:
       run: nix-shell --run "bash nix/scripts/build_run_tests.sh" nix/test-shell.nix
       env:
         BUILD_LOAD_LIMIT: 3
+  windows:
+    name: Debug
+    runs-on: [self-hosted, windows, x64, Coin-Integration]
+    strategy:
+      fail-fast: false
+    env:
+      source_path: 'libcore_source'
+      build_path: 'libcore_build'
+    steps:
+      - name: Check runner environment
+        run: |
+          git --version
+          cmake --version
+          msbuild /help
+          cl
+          ctest --version
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          path: ${{env.source_path}}
+          clean: true
+          submodules: true
+      - name: Build - Cmake
+        run: |
+          Remove-Item -LiteralPath "${{env.build_path}}" -Force -Recurse -ErrorAction Ignore
+          mkdir ${{env.build_path}}
+          cd ${{env.build_path}}
+          cmake `
+            -DBUILD_TESTS=ON `
+            -DSYS_OPENSSL=ON `
+            -DOPENSSL_USE_STATIC_LIBS=TRUE `
+            ..\${{env.source_path}}
+      - name: Build - Make
+        run: |
+          cmake `
+            --build . `
+            --config Debug `
+            -- `
+              /m:1
+        working-directory: ${{env.build_path}}
+      - name : Upload build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-debug-build-files
+          path: |
+            ${{env.build_path}}\core\src\build\Debug\ledger-core.dll
+            ${{env.build_path}}\core\src\build\Debug\ledger-core.pdb
+      - name: Run Unit Tests
+        id: unittest
+        run: |
+            setx MOCK_HTTP_FOLDER "${{github.workspace}}/${{env.source_path}}/core/test/fixtures/mocked_http/"
+            $cs = Get-WmiObject -class Win32_ComputerSystem
+            $Cores=$cs.NumberOfLogicalProcessors
+            ctest `
+              --interactive-debug-mode 0 `
+              --timeout 120 `
+              -C Debug `
+              --output-on-failure `
+              -j $Cores
+      #   # Needed because if one test fail, then Github Actions will stop the entire step... 
+      #   continue-on-error: true
+      #   working-directory: ${{env.build_path}}
+      # - # Needed because continue-on-error makes step output green, even if the step failed...
+      #   name: Check on failures
+      #   if: steps.unittest.outcome != 'success'
+      #   run: exit 1
+      #- 
+      #  name: Run Unit Tests with coverage
+      #  run: |
+      #     OpenCppCoverage.exe `
+      #      --cover_children `
+      #      --sources ${{ github.workspace }}\${{env.source_path}}\core\src\* `
+      #      --excluded_modules *:\Windows\Sys*\* `
+      #      --export_type html:Windows_coverage_report `
+      #      -- `
+      #        (get-command ctest).path `
+      #        --interactive-debug-mode 0 `
+      #       --timeout 180 `
+      #        -C Debug `
+      #        -VV
+      #  continue-on-error: true
+      #  working-directory: ${{env.build_path}}
+      #- 
+      #  name: Compress coverage report
+      #  run: |
+      #    tar -cvzf Windows_coverage_report.tar.gz Windows_coverage_report
+      #  working-directory: ${{env.build_path}}
+      #- 
+      #  name: Upload coverage report
+      #  uses: actions/upload-artifact@v2
+      #  with:
+      #    name: Windows_coverage_report
+      #    path: |
+      #        ${{env.build_path}}\Windows_coverage_report.tar.gz
+      - name: Clean workspace
+        if: ${{ always() }}
+        run: |
+          echo "Cleaning up previous run"
+          Remove-Item -LiteralPath "${{github.workspace}}\${{env.build_path}}" -Force -Recurse
+        continue-on-error: true
