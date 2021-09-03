@@ -1,6 +1,7 @@
 ## 4.1.1
 > Unreleased
 
+- Hotfix unknown Stellar transactions operation type
 - Add `MEMPOOL_GRACE_PERIOD_SECS` configuration for BTC-like wallets
   This protects transactions without blocks from being deleted from
   database if they are too recent.
