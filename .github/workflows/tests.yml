@@ -44,7 +44,7 @@ jobs:
       env:
         BUILD_LOAD_LIMIT: 3
   windows:
-    name: Debug
+    name: Windows
     runs-on: [self-hosted, windows, x64, Coin-Integration]
     strategy:
       fail-fast: false
