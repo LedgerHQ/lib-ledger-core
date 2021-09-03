@@ -95,6 +95,38 @@ struct BitcoinStardustTransaction : public BitcoinMakeBaseTransaction {
     }
 };
 
+TEST_F(BitcoinMakeP2PKHTransaction, TestSpecificChangeAddress) {
+    auto builder_1 = tx_builder();
+
+    auto balance = wait(account->getBalance());
+    builder_1->sendToAddress(api::Amount::fromLong(currency, 20000000), "36v1GRar68bBEyvGxi9RQvdP6Rgvdwn2C2");
+    builder_1->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder_1->setFeesPerByte(api::Amount::fromLong(currency, 61));
+
+    // Let's ask for the specific change address whose derivation path is 44'/0'/0'/1/260 
+    builder_1->addChangePath("260");
+
+    auto f_1 = builder_1->build();
+    auto tx_1 = ::wait(f_1);
+
+    auto change_address_1 = tx_1->getOutputs()[1]->getAddress().value();
+
+    auto account_keychain = std::static_pointer_cast<BitcoinLikeKeychain>(account->getAccountKeychain());
+    ASSERT_TRUE(account_keychain->getAddressPurpose(change_address_1).getValue() == BitcoinLikeKeychain::KeyPurpose::CHANGE);
+    ASSERT_EQ(account_keychain->getAddressDerivationPath(change_address_1).getValue(), "44'/0'/0'/1/260");
+
+    builder_1->addChangePath("m44'/0'/0'/1/260");
+    f_1 = builder_1->build();
+
+    try {
+        tx_1 = ::wait(f_1);
+        FAIL() << "Should throw a \"Private derivation is not supported\" exception when trying to build the transaction";
+    } catch (const Exception &err) {
+        ASSERT_EQ(err.getErrorCode(), api::ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED);
+        ASSERT_STREQ("Private derivation is not supported by DeterministicPublicKey", err.what());
+    }
+}
+
 TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
     auto builder = tx_builder();
 

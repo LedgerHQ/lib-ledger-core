@@ -121,8 +121,20 @@ namespace ledger {
             BigInt dustAmount(BitcoinLikeTransactionApi::computeDustAmount(getCurrency(), sizeWithChange.Max)); 
             if (buddy->changeAmount > dustAmount) {
                 // TODO implement multi change
-                // TODO implement use specific change address
-                auto changeAddress = buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE)->toString();
+                std::string changeAddress;
+                if (buddy->request.changePaths.size() != 0)
+                {
+                    auto changePath = buddy->request.changePaths.back();
+                    std::shared_ptr<const CommonBitcoinLikeKeychains> buddy_keychain = std::static_pointer_cast<CommonBitcoinLikeKeychains>(buddy->keychain);
+                    auto localPath = buddy_keychain->getDerivationScheme().getSchemeTo(DerivationSchemeLevel::NODE)
+                        .setAccountIndex(buddy_keychain->getAccountIndex())
+                        .setCoinType(getCurrency().bip44CoinType)
+                        .setNode(BitcoinLikeKeychain::CHANGE).getPath();
+                    auto internalNodeXpub = std::static_pointer_cast<BitcoinLikeExtendedPublicKey>(buddy_keychain->getExtendedPublicKey())->derive(localPath);
+                    changeAddress = BitcoinLikeAddress::fromPublicKey(internalNodeXpub, _currency, changePath, buddy_keychain->getKeychainEngine());
+                }
+                else
+                    changeAddress = buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE)->toString();
 
                 auto amount = buddy->changeAmount;
                 auto script = BitcoinLikeScript::fromAddress(changeAddress, _currency);
