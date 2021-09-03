@@ -8,9 +8,9 @@ function match {
   fi
 }
 
-LIB_VERSION_MAJOR=$(cat CMakeLists.txt | match 's/set\(VERSION_MAJOR.*([0-9]+).*\)/\1/p')
-LIB_VERSION_MINOR=$(cat CMakeLists.txt | match 's/set\(VERSION_MINOR.*([0-9]+).*\)/\1/p')
-LIB_VERSION_PATCH=$(cat CMakeLists.txt | match 's/set\(VERSION_PATCH.*([0-9]+).*\)/\1/p')
+LIB_VERSION_MAJOR=$(cat CMakeLists.txt | match 's/set\(VERSION_MAJOR[^0-9]*([0-9]+).*\)/\1/p')
+LIB_VERSION_MINOR=$(cat CMakeLists.txt | match 's/set\(VERSION_MINOR[^0-9]*([0-9]+).*\)/\1/p')
+LIB_VERSION_PATCH=$(cat CMakeLists.txt | match 's/set\(VERSION_PATCH[^0-9]*([0-9]+).*\)/\1/p')
 LIB_VERSION=$LIB_VERSION_MAJOR.$LIB_VERSION_MINOR.$LIB_VERSION_PATCH
 
 if [[ -z "$CIRCLE_TAG" ]]; then
