@@ -25,7 +25,8 @@ let
     "-DPG_SUPPORT=ON"
     "-DSYS_OPENSSL=ON"
     "-DSYS_SECP256K1=ON"
-  ];
+  ]
+  ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [ "-Wl,-lc++abi" ];
 in
 
 pkgs.compilationStdenv.mkDerivation {
