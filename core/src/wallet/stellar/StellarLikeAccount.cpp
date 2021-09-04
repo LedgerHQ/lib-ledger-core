@@ -253,10 +253,19 @@ namespace ledger {
         }
 
         void StellarLikeAccount::interpretTransaction(const stellar::Transaction &tx, std::vector<Operation> &out) {
+            auto log = logger();
             if (tx.envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX_V0 &&
                 tx.envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX) {
                 // Ignore transaction with unhandled envelope types.
                 return;
+            }
+            // Ignore transaction if at least one operation has an unsupported type
+            const auto& operations = stellar::xdr::getOperations(tx.envelope);
+            for (const auto& op : operations) {
+                if (!(op.type < stellar::OperationType::num_types)) {
+                    log->warn("Unsupported operation type {}, skipping transaction!", static_cast<int>(op.type));
+                    return;
+                }
             }
             int createdOperations = 0;
             //StellarLikeTransactionDatabaseHelper::putTransaction(sql, getWallet()->getCurrency(), tx);
@@ -302,7 +311,6 @@ namespace ledger {
             };
 
             auto opIndex = 0;
-            const auto& operations = stellar::xdr::getOperations(tx.envelope);
             for (const auto& op : operations) {
                 stellar::Operation stellarOperation;
                 stellarOperation.createdAt = tx.createdAt;
