@@ -18,7 +18,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04, [self-hosted, linux, X64, Coin-Integration], macos-latest]
+        # Deactivated on self runners are forbidden
+        # - No self-hosted runner available
+        os: [ubuntu-18.04, ubuntu-20.04, macos-latest]
     steps:
     - name: Cancel Previous Runs
       uses: styfle/cancel-workflow-action@0.9.1
@@ -44,6 +46,10 @@ jobs:
       env:
         BUILD_LOAD_LIMIT: 3
   windows:
+    # Deactivated as Windows runs fail currently
+    # - No MSBuild on GH runners, even after choco install...
+    # - No self-hosted runner available
+    if: false
     name: Windows
     runs-on: ${{ matrix.os }}
     strategy:
@@ -59,7 +65,6 @@ jobs:
         run: |
           choco install openssl
           choco install microsoft-build-tools
-          choco install visualstudio2019buildtools
       - name: Check runner environment
         run: |
           git --version
