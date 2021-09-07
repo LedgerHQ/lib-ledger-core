@@ -107,11 +107,21 @@ jobs:
   Windows_no_jni:
     name: Windows (no JNI)
     needs: libcore_version
-    runs-on: [self-hosted, windows, X64, Coin-Integration]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [[self-hosted, windows, x64, Coin-Integration], windows-latest]
     env:
       source_path: 'libcore_source'
       build_path: 'libcore_build'
     steps:
+      - name: Add dependencies
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          choco install openssl
+          choco install microsoft-build-tools
+          choco install visualstudio2019buildtools
       - name: Check runner environment
         run: |
           git --version
@@ -143,6 +153,7 @@ jobs:
             -- /m:1
         working-directory: ${{env.build_path}}
       - name : Upload build files
+        if: ${{ matrix.os == 'windows-latest' }}
         uses: actions/upload-artifact@v2
         with:
           name: ${{ needs.libcore_version.outputs.lib_version }}-windows-nojni-libledgercore

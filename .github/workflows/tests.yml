@@ -45,13 +45,21 @@ jobs:
         BUILD_LOAD_LIMIT: 3
   windows:
     name: Windows
-    runs-on: [self-hosted, windows, x64, Coin-Integration]
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
+      matrix:
+        os: [[self-hosted, windows, x64, Coin-Integration], windows-latest]
     env:
       source_path: 'libcore_source'
       build_path: 'libcore_build'
     steps:
+      - name: Add dependencies
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          choco install openssl
+          choco install microsoft-build-tools
+          choco install visualstudio2019buildtools
       - name: Check runner environment
         run: |
           git --version
