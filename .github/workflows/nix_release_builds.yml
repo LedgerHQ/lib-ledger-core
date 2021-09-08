@@ -16,6 +16,7 @@ on:
       - '*'
 jobs:
   libcore_version:
+    name: Compute libcore version
     runs-on: ubuntu-latest
     outputs:
       lib_version: ${{ steps.lib_version.outputs.lib_version }}
@@ -27,6 +28,7 @@ jobs:
         id: lib_version
         run: bash nix/scripts/export_libcore_version.sh
   Ubuntu_jni:
+    name: Linux (with JNI)
     needs: libcore_version
     runs-on: ubuntu-latest
     steps:
@@ -47,6 +49,7 @@ jobs:
         path: result/lib/libledger-core.so
         retention-days: 5
   MacOS_jni:
+    name: MacOS (with JNI)
     needs: libcore_version
     runs-on: macos-latest
     steps:
@@ -67,6 +70,7 @@ jobs:
         path: result/lib/libledger-core.dylib
         retention-days: 5
   JAR:
+    name: Jar build (MacOS + Linux)
     needs: [Ubuntu_jni, MacOS_jni, libcore_version]
     runs-on: ubuntu-latest
     steps:
