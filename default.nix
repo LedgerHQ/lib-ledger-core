@@ -26,7 +26,12 @@ let
     "-DSYS_OPENSSL=ON"
     "-DSYS_SECP256K1=ON"
   ]
-  ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [ "-Wl,-lc++abi" ];
+  ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+    "-DCMAKE_CXX_COMPILER=clang++"
+    "-DCMAKE_MODULE_LINKER_FLAGS='-lc++abi'"
+    "-DCMAKE_EXE_LINKER_FLAGS='-lc++abi'"
+    "-DCMAKE_SHARED_LINKER_FLAGS='-lc++abi'"
+  ];
 in
 
 pkgs.compilationStdenv.mkDerivation {
