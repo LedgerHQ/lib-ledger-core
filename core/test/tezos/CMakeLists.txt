@@ -7,7 +7,6 @@ include(GoogleTest)
 
 if (APPLE)
     add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-    add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
 add_executable(${TEZOS_TESTS_NAME}

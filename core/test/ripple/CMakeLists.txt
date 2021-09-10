@@ -4,7 +4,6 @@ include_directories(${CMAKE_BINARY_DIR}/include)
 
 if (APPLE)
     add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-    add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
 add_executable(ledger-core-ripple-tests main.cpp address_test.cpp)
