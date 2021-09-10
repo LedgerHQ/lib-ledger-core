@@ -4,6 +4,15 @@ project(ledger-core)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 option(TARGET_JNI "Indicates wheter or not the toolchain must build for JNI or not" OFF)
 option(BUILD_TESTS "Indicates wheter or not the toolchain must build the test or not" ON)
+option(NIX_BUILD "Indicates whether this build is using nix dependencies." OFF)
+option(SYS_LIBUV "Indicates whether this build is using system libuv." OFF)
+option(SYS_SECP256K1 "Indicates whether this build is using system libsecp256k1." OFF)
+option(SYS_OPENSSL "Indicates whether this build is using system openssl." OFF)
+if(NIX_BUILD)
+    set(SYS_LIBUV ON CACHE BOOL "Building with Nix implies using system UV" FORCE)
+    set(SYS_SECP256K1 ON CACHE BOOL "Building with Nix implies using system secp256k1" FORCE)
+    set(SYS_OPENSSL ON CACHE BOOL "Building with Nix implies using system openssl" FORCE)
+endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(UseBackportedModules)
@@ -52,10 +61,6 @@ add_subdirectory(core)
 # Notes:
 # > This is a "blind" fix, no available 10.10.x macOS machine,
 # > Issue is specific to 10.10.x, 10.9.5 and > 10.10.x are fine
-# if (BUILD_TESTS)
-#     set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X version to target for deployment: 10.15" FORCE)
-# else()
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Minimum OS X version to target for deployment: 10.9" FORCE)
-# endif()
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X version to target for deployment: 10.9" FORCE)
 
 enable_testing()

@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 3.0)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
 
-if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-endif (APPLE)
-
 add_executable(ledger-core-bitcoin-tests main.cpp address_test.cpp bitcoin_helper_tests.cpp script_tests.cpp bitcoin_utxo_picket_tests.cpp)
 
 target_link_libraries(ledger-core-bitcoin-tests gtest gtest_main)

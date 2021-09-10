@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 3.0)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
 
-if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-endif (APPLE)
-
 add_executable(ledger-core-crypto-tests main.cpp digest_test.cpp encryption_test.cpp deterministic_public_key_test.cpp secp256k1_test.cpp)
 
 target_link_libraries(ledger-core-crypto-tests gtest gtest_main)

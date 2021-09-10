@@ -3,10 +3,6 @@ set( COSMOS_TESTS_NAME "ledger-core-cosmos-tests" )
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
 
-if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-endif (APPLE)
-
 file(GLOB ledger-core-fixtures-srcs
         "../fixtures/*.cpp"
         "../fixtures/*.h"

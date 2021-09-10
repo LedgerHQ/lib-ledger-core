@@ -23,8 +23,7 @@ let
   ++ jniFlag
   ++ [
     "-DPG_SUPPORT=ON"
-    "-DSYS_OPENSSL=ON"
-    "-DSYS_SECP256K1=ON"
+    "-DNIX_BUILD=ON"
   ]
   ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
     "-DCMAKE_CXX_COMPILER=clang++"
@@ -53,6 +52,7 @@ pkgs.compilationStdenv.mkDerivation {
     "cmake"
     "libkrb5"
     "cryptopp"
+    "libuv"
 
     # JNI bindings deps
     "jdk8"

@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 3.0)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
 
-if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-endif (APPLE)
-
 add_executable(ledger-core-common-tests main.cpp balance_history.cpp)
 
 target_link_libraries(ledger-core-common-tests gtest gtest_main)

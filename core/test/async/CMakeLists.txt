@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
-if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-endif (APPLE)
 
 add_executable(ledger-core-async-tests main.cpp future_test.cpp promise_test.cpp threading_tests.cpp)
 

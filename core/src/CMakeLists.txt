@@ -107,11 +107,6 @@ else()
     install(TARGETS ledger-core-static DESTINATION "lib")
 endif()
 
-if(UNIX AND NOT APPLE AND NOT ANDROID)
-    target_link_libraries(ledger-core-interface INTERFACE -static-libstdc++)
-    target_link_options(ledger-core-interface INTERFACE -Wl,--exclude-libs,libcrypto.a)
-endif()
-
 # Portably get access to memset_s, required by sha512256
 target_link_libraries(ledger-core-interface INTERFACE sha512256)
 
@@ -204,6 +199,17 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/CRCpp/inc)
 
 # msgpack Algorand
 target_include_directories(ledger-core-interface INTERFACE wallet/algorand/thirdparty/msgpack-c/include)
+
+if(UNIX AND NOT APPLE AND NOT ANDROID)
+    target_link_libraries(ledger-core-interface INTERFACE -static-libstdc++)
+    target_link_options(ledger-core-interface INTERFACE -Wl,--exclude-libs,libcrypto.a)
+endif()
+
+if(APPLE)
+    target_compile_options(ledger-core-interface INTERFACE -fPIC -pthread)
+    target_link_libraries(ledger-core-interface INTERFACE -static -lc++abi -lpthread)
+    target_link_options(ledger-core-interface INTERFACE -Wl,-read_only_relocs,suppress)
+endif()
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

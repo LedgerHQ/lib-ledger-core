@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 3.0)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
 
-if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-endif (APPLE)
-
 add_executable(ledger-core-ripple-tests main.cpp address_test.cpp)
 
 target_link_libraries(ledger-core-ripple-tests gtest gtest_main)

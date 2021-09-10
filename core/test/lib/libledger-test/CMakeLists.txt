@@ -31,7 +31,11 @@ if (MSVC)
     target_compile_definitions(ledger-test PUBLIC WIN32_LEAN_AND_MEAN)
 endif ()
 
-target_link_libraries(ledger-test PUBLIC uv)
+if (SYS_LIBUV)
+  target_link_libraries(ledger-test PUBLIC PkgConfig::UV)
+else()
+  target_link_libraries(ledger-test PUBLIC uv)
+endif()
 
 if (SYS_OPENSSL)
     find_package(OpenSSL)
@@ -48,6 +52,10 @@ endif()
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
     target_link_libraries(ledger-test PUBLIC stdc++fs)
+endif()
+
+if(APPLE)
+    target_link_libraries(ledger-test PUBLIC -lc++fs)
 endif()
 
 target_link_libraries(ledger-test PUBLIC ledger-core-static)

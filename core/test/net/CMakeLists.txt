@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.0)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${gmock_SOURCE_DIR}/include ${gmock_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
-if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-endif (APPLE)
 
 include_directories(../lib/libledger-test/)
 
