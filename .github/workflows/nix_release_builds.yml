@@ -95,6 +95,7 @@ jobs:
       env:
         LIB_VERSION: ${{ needs.libcore_version.outputs.lib_version }}
         DEPLOY_JAR: ${{ needs.libcore_version.outputs.deploy_jar }}
+        GITHUB_TOKEN: ${{ secrets.CI_BOT_TOKEN }}
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
       with:
