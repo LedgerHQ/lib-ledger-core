@@ -103,6 +103,7 @@ else()
     endif()
     if(APPLE)
         target_link_libraries(ledger-core-obj PRIVATE -static -lc++abi -lpthread)
+        target_compile_options(ledger-core-obj PRIVATE -fPIC -pthread)
     endif()
 
     # shared and static libraries built from the same object files
@@ -213,7 +214,7 @@ if(UNIX AND NOT APPLE AND NOT ANDROID)
 endif()
 
 if(APPLE)
-    target_compile_options(ledger-core-interface INTERFACE -fPIC -pthread)
+    # target_compile_options(ledger-core-interface INTERFACE -fPIC -pthread)
     target_link_libraries(ledger-core-interface INTERFACE -static -lc++abi)
     # target_link_libraries(ledger-core-interface INTERFACE -static -lc++abi -lpthread)
     # target_link_options(ledger-core-interface INTERFACE -Wl,-read_only_relocs,suppress)
