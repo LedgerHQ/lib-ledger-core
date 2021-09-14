@@ -207,8 +207,9 @@ endif()
 
 if(APPLE)
     target_compile_options(ledger-core-interface INTERFACE -fPIC -pthread)
-    target_link_libraries(ledger-core-interface INTERFACE -static -lc++abi -lpthread)
-    target_link_options(ledger-core-interface INTERFACE -Wl,-read_only_relocs,suppress)
+    target_link_libraries(ledger-core-interface INTERFACE -static -lc++abi)
+    # target_link_libraries(ledger-core-interface INTERFACE -static -lc++abi -lpthread)
+    # target_link_options(ledger-core-interface INTERFACE -Wl,-read_only_relocs,suppress)
 endif()
 
 install(TARGETS ledger-core DESTINATION "lib")
