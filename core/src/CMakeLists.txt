@@ -98,6 +98,13 @@ else()
     target_link_libraries(ledger-core-obj PUBLIC ledger-core-interface)
     target_compile_options(ledger-core-obj PRIVATE $<$<CXX_COMPILER_ID:MSVC>: /bigobj>)
 
+    if(UNIX AND NOT APPLE AND NOT ANDROID)
+        target_link_libraries(ledger-core-obj PRIVATE -static-libstdc++)
+    endif()
+    if(APPLE)
+        target_link_libraries(ledger-core-obj PRIVATE -static -lc++abi -lpthread)
+    endif()
+
     # shared and static libraries built from the same object files
     add_library(ledger-core SHARED)
     target_link_libraries(ledger-core PUBLIC ledger-core-obj)
@@ -207,8 +214,8 @@ endif()
 
 if(APPLE)
     target_compile_options(ledger-core-interface INTERFACE -fPIC -pthread)
-    target_link_libraries(ledger-core-interface INTERFACE -static -lc++abi)
-    # target_link_libraries(ledger-core-interface INTERFACE -static -lc++abi -lpthread)
+    # target_link_libraries(ledger-core-interface INTERFACE -static -lc++abi)
+    target_link_libraries(ledger-core-interface INTERFACE -static -lc++abi -lpthread)
     # target_link_options(ledger-core-interface INTERFACE -Wl,-read_only_relocs,suppress)
 endif()
 
