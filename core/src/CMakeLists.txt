@@ -202,7 +202,9 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/boost)
 target_include_directories(ledger-core-interface INTERFACE ../lib/cereal/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/date/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/secp256k1)
-target_include_directories(ledger-core-interface INTERFACE ../lib/ethash/src)
+if (NOT SYS_ETHASH)
+    target_include_directories(ledger-core-interface INTERFACE ../lib/ethash/src)
+endif()
 target_include_directories(ledger-core-interface INTERFACE ../lib/CRCpp/inc)
 
 # msgpack Algorand
