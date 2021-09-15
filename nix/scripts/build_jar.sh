@@ -25,16 +25,3 @@ mkdir -p artifact
 mv target/scala-2.12/*.jar artifact/ledger-lib-core.jar
 ls -la artifact
 
-if [[ "${DEPLOY_JAR:-NO}" == "YES" ]]; then
-  printf "\n============ We push to S3\n"
-  echo "=====> Libcore version : $LIB_VERSION"
-
-  echo "======= Pushing to S3 =========="
-  cd artifact
-  ls -la
-  aws s3 sync ./ s3://ledger-lib-ledger-core/$LIB_VERSION/ --acl public-read --exclude "*" --include "*.jar"
-  echo "======= Listing S3 artifacts =========="
-  aws s3 ls s3://ledger-lib-ledger-core/$LIB_VERSION
-else
-  printf "\n============ Skip pushing to S3\n"
-fi

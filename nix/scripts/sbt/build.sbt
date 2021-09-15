@@ -10,8 +10,3 @@ ThisBuild / githubOwner := "LedgerHQ"
 ThisBuild / githubRepository := "lib-ledger-core"
 ThisBuild / githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
 ThisBuild / versionScheme := Some("strict")
-
-lazy val core = project.settings(
-    name := "ledger-lib-core",
-)
-
