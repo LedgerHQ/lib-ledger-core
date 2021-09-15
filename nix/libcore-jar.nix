@@ -38,7 +38,7 @@ pkgs.compilationStdenv.mkDerivation {
 
       "bashInteractive"
   ] pkgs)
-  ++ [ libledger-core ];
+  ++ pkgs.lib.optional useLibcoreDerivation [ libledger-core ];
 
   shellHook = ''
   export LIBCORE_LIB_DIR=${libcore_lib_dir}
