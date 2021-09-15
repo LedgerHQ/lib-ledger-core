@@ -102,7 +102,7 @@ else()
         target_link_libraries(ledger-core-obj PRIVATE -static-libstdc++)
     endif()
     if(APPLE)
-        target_link_libraries(ledger-core-obj PRIVATE -static -lc++abi -lpthread)
+        target_link_libraries(ledger-core-obj PRIVATE -static -lc++abi)
         target_compile_options(ledger-core-obj PRIVATE -fPIC -pthread)
     endif()
 
