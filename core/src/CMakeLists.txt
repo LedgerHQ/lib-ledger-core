@@ -98,6 +98,14 @@ else()
     target_link_libraries(ledger-core-obj PUBLIC ledger-core-interface)
     target_compile_options(ledger-core-obj PRIVATE $<$<CXX_COMPILER_ID:MSVC>: /bigobj>)
 
+    if(UNIX AND NOT APPLE AND NOT ANDROID)
+        target_link_libraries(ledger-core-obj PRIVATE -static-libstdc++)
+    endif()
+    if(APPLE)
+        target_link_libraries(ledger-core-obj PRIVATE -static -lc++abi -lpthread)
+        target_compile_options(ledger-core-obj PRIVATE -fPIC -pthread)
+    endif()
+
     # shared and static libraries built from the same object files
     add_library(ledger-core SHARED)
     target_link_libraries(ledger-core PUBLIC ledger-core-obj)
@@ -105,11 +113,6 @@ else()
     add_library(ledger-core-static STATIC)
     target_link_libraries(ledger-core-static PUBLIC ledger-core-obj)
     install(TARGETS ledger-core-static DESTINATION "lib")
-endif()
-
-if(UNIX AND NOT APPLE AND NOT ANDROID)
-    target_link_libraries(ledger-core-interface INTERFACE -static-libstdc++)
-    target_link_options(ledger-core-interface INTERFACE -Wl,--exclude-libs,libcrypto.a)
 endif()
 
 # Portably get access to memset_s, required by sha512256
@@ -204,6 +207,18 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/CRCpp/inc)
 
 # msgpack Algorand
 target_include_directories(ledger-core-interface INTERFACE wallet/algorand/thirdparty/msgpack-c/include)
+
+if(UNIX AND NOT APPLE AND NOT ANDROID)
+    target_link_libraries(ledger-core-interface INTERFACE -static-libstdc++)
+    target_link_options(ledger-core-interface INTERFACE -Wl,--exclude-libs,libcrypto.a)
+endif()
+
+if(APPLE)
+    # target_compile_options(ledger-core-interface INTERFACE -fPIC -pthread)
+    target_link_libraries(ledger-core-interface INTERFACE -static -lc++abi)
+    # target_link_libraries(ledger-core-interface INTERFACE -static -lc++abi -lpthread)
+    # target_link_options(ledger-core-interface INTERFACE -Wl,-read_only_relocs,suppress)
+endif()
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

@@ -3,11 +3,6 @@ set( COSMOS_TESTS_NAME "ledger-core-cosmos-tests" )
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
 
-if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-    add_definitions(-D__GLIBCXX__)
-endif (APPLE)
-
 file(GLOB ledger-core-fixtures-srcs
         "../fixtures/*.cpp"
         "../fixtures/*.h"
@@ -40,8 +35,14 @@ if (SYS_OPENSSL)
     if(WIN32)
         target_link_libraries( ${COSMOS_TESTS_NAME} ws2_32 crypt32 )
     endif()	
-    copy_install_imported_targets(${COSMOS_TESTS_NAME} OpenSSL::Crypto uv)
+    copy_install_imported_targets(${COSMOS_TESTS_NAME} OpenSSL::Crypto)
 else()
-    copy_install_imported_targets(${COSMOS_TESTS_NAME} crypto uv)
+    copy_install_imported_targets(${COSMOS_TESTS_NAME} crypto)
+endif()
+
+if (SYS_LIBUV)
+    copy_install_imported_targets(${COSMOS_TESTS_NAME} PkgConfig::UV)
+else()
+    copy_install_imported_targets(${COSMOS_TESTS_NAME} uv)
 endif()
 add_test (NAME ledger-core-cosmos-tests COMMAND ledger-core-cosmos-tests)

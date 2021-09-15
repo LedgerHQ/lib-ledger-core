@@ -2,11 +2,6 @@ cmake_minimum_required(VERSION 3.0)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
 
-if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-    add_definitions(-D__GLIBCXX__)
-endif (APPLE)
-
 add_executable(ledger-core-algorand-tests
     main.cpp
     MsgpackHelpersTests.cpp
@@ -37,9 +32,16 @@ if (SYS_OPENSSL)
     if(WIN32)
         target_link_libraries( ledger-core-algorand-tests ws2_32 crypt32 )
     endif()
-    copy_install_imported_targets(ledger-core-algorand-tests OpenSSL::Crypto ledger-core uv)
+    copy_install_imported_targets(ledger-core-algorand-tests OpenSSL::Crypto ledger-core)
 else()
-    copy_install_imported_targets(ledger-core-algorand-tests crypto ledger-core uv)
+    copy_install_imported_targets(ledger-core-algorand-tests crypto ledger-core)
 endif()
+
+if (SYS_LIBUV)
+    copy_install_imported_targets(ledger-core-algorand-tests PkgConfig::UV)
+else()
+    copy_install_imported_targets(ledger-core-algorand-tests uv)
+endif()
+
 add_test (NAME ledger-core-algorand-tests COMMAND ledger-core-algorand-tests)
 

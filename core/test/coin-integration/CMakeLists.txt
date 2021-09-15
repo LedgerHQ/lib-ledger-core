@@ -2,10 +2,6 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
-if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-    add_definitions(-D__GLIBCXX__)
-endif (APPLE)
 
 include_directories(../lib/libledger-test/)
 
@@ -42,8 +38,14 @@ target_include_directories(ledger-core-coin-integration-tests PUBLIC ../../../co
 include(CopyAndInstallImportedTargets)
 if (SYS_OPENSSL)
     find_package(OpenSSL)
-    copy_install_imported_targets(ledger-core-coin-integration-tests OpenSSL::Crypto uv)
+    copy_install_imported_targets(ledger-core-coin-integration-tests OpenSSL::Crypto)
 else()
-    copy_install_imported_targets(ledger-core-coin-integration-tests crypto uv)
+    copy_install_imported_targets(ledger-core-coin-integration-tests crypto)
+endif()
+
+if (SYS_LIBUV)
+    copy_install_imported_targets(ledger-core-coin-integration-tests PkgConfig::UV)
+else()
+    copy_install_imported_targets(ledger-core-coin-integration-tests uv)
 endif()
 add_test (NAME ledger-core-coin-integration COMMAND ledger-core-coin-integration-tests)

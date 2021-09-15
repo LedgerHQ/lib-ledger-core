@@ -5,7 +5,19 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(gtest_force_shared_crt ON CACHE BOOL "Build gtest with shared runtime" FORCE)
 add_subdirectory(lib/googletest)
 
-add_subdirectory(lib/libuv)
+
+if (SYS_LIBUV)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(UV REQUIRED IMPORTED_TARGET GLOBAL libuv)
+    # Manually set the target's properties to use the static lib and tweak the include directory
+    set_property(TARGET PkgConfig::UV PROPERTY IMPORTED_CONFIGURATIONS Release)
+    set_property(TARGET PkgConfig::UV PROPERTY IMPORTED_LOCATION_RELEASE "${UV_STATIC_LIBRARIES}")
+    # Have to add '/..'
+    set_property(TARGET PkgConfig::UV PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${UV_INCLUDEDIR}/..")
+else()
+    add_subdirectory(lib/libuv)
+endif()
+
 add_subdirectory(lib/libledger-test)
 add_subdirectory(common)
 add_subdirectory(bytes)
