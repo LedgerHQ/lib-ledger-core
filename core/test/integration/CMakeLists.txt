@@ -48,9 +48,15 @@ target_include_directories(ledger-core-integration-tests PUBLIC ../../../core/sr
 include(CopyAndInstallImportedTargets)
 if (SYS_OPENSSL)
     find_package(OpenSSL)
-    copy_install_imported_targets(ledger-core-integration-tests OpenSSL::Crypto uv)
+    copy_install_imported_targets(ledger-core-integration-tests OpenSSL::Crypto)
 else()
-    copy_install_imported_targets(ledger-core-integration-tests crypto uv)
+    copy_install_imported_targets(ledger-core-integration-tests crypto)
+endif()
+
+if (SYS_LIBUV)
+    copy_install_imported_targets(ledger-core-integration-tests PkgConfig::UV)
+else()
+    copy_install_imported_targets(ledger-core-integration-tests uv)
 endif()
 #add_test (NAME ledger-core-integration-tests COMMAND ledger-core-integration-tests)
 

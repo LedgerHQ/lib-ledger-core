@@ -32,9 +32,16 @@ if (SYS_OPENSSL)
     if(WIN32)
         target_link_libraries( ledger-core-algorand-tests ws2_32 crypt32 )
     endif()
-    copy_install_imported_targets(ledger-core-algorand-tests OpenSSL::Crypto ledger-core uv)
+    copy_install_imported_targets(ledger-core-algorand-tests OpenSSL::Crypto ledger-core)
 else()
-    copy_install_imported_targets(ledger-core-algorand-tests crypto ledger-core uv)
+    copy_install_imported_targets(ledger-core-algorand-tests crypto ledger-core)
 endif()
+
+if (SYS_LIBUV)
+    copy_install_imported_targets(ledger-core-algorand-tests PkgConfig::UV)
+else()
+    copy_install_imported_targets(ledger-core-algorand-tests uv)
+endif()
+
 add_test (NAME ledger-core-algorand-tests COMMAND ledger-core-algorand-tests)
 
