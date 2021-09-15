@@ -50,12 +50,8 @@ else()
     target_link_libraries(ledger-test PUBLIC crypto)
 endif()
 
-if(UNIX AND NOT APPLE AND NOT ANDROID)
-    target_link_libraries(ledger-test PUBLIC stdc++fs)
-endif()
-
-if(APPLE)
-    target_link_libraries(ledger-test PUBLIC -lc++fs)
+if(UNIX AND NOT ANDROID)
+    target_link_libraries(ledger-test PUBLIC $<$<CXX_COMPILER_ID:GNU>: stdc++fs> )
 endif()
 
 target_link_libraries(ledger-test PUBLIC ledger-core-static)

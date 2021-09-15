@@ -1,8 +1,8 @@
 # Holds pinned versions of packages
 {
   nixpkgs = fetchTarball {
-    url    = "https://github.com/NixOS/nixpkgs/archive/5f746317f10f7206f1dbb8dfcfc2257b04507eee.tar.gz";
-    sha256 = "sha256:1wx5g7a5bxa01pz7c5fdp5xk1gsj7dv6xwm1a17g6a8s2a2c05x3";
+    url    = "https://github.com/NixOS/nixpkgs/archive/7e9b0dff974c89e070da1ad85713ff3c20b0ca97.tar.gz";
+    sha256 = "sha256:1ckzhh24mgz6jd1xhfgx0i9mijk6xjqxwsshnvq789xsavrmsc36";
   };
 
   gitignoreSrc = {fetchFromGitHub}: fetchFromGitHub {

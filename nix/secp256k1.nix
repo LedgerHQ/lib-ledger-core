@@ -1,12 +1,11 @@
 { pkgs ? import <nixpkgs> {} }:
 
-with pkgs;
-stdenv.mkDerivation {
+pkgs.compilationStdenv.mkDerivation {
   pname = "secp256k1-chfast";
 
   version = "unstable-20170313";
 
-  src = fetchFromGitHub {
+  src = pkgs.fetchFromGitHub {
     owner = "chfast";
     repo = "secp256k1";
     rev = "ac8ccf29b8c6b2b793bc734661ce43d1f952977a";
@@ -14,8 +13,8 @@ stdenv.mkDerivation {
   };
 
   nativeBuildInputs = [ 
-    autoreconfHook
-    pkg-config
+    pkgs.autoreconfHook
+    pkgs.pkg-config
   ];
 
   configureFlags = [
@@ -33,7 +32,7 @@ stdenv.mkDerivation {
 
   checkPhase = "./tests";
 
-  meta = with lib; {
+  meta = with pkgs.lib; {
     description = "Optimized C library for EC operations on curve secp256k1";
     longDescription = ''
       Optimized C library for EC operations on curve secp256k1. Part of

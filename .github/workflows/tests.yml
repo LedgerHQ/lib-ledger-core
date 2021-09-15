@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04]
+        os: [ubuntu-18.04, ubuntu-20.04, macos-latest]
     steps:
     - name: Cancel Previous Runs
       uses: styfle/cancel-workflow-action@0.9.1
@@ -40,6 +40,6 @@ jobs:
       with:
         nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/5f746317f10f7206f1dbb8dfcfc2257b04507eee.tar.gz
     - name: Build and run tests
-      run: nix-shell --run "bash nix/scripts/build_run_tests.sh" nix/test-shell.nix
+      run: nix-shell --run "bash nix/scripts/build_run_tests.sh" default.nix
       env:
         BUILD_LOAD_LIMIT: 3

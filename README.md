@@ -75,14 +75,13 @@ If you have remote builders you can use them with the nix derivation [bundled in
 
 ##### Shells
 
-- [`test-shell.nix`](./nix/test-shell.nix) builds the shell used in CI
 - [`libcore-jar.nix`](./nix/libcore-jar.nix) is a shell used to build the JAR locally,
   or in github actions
 
 ##### Local development
 
 - [`default.nix`](./default.nix) holds the function to build libcore derivation, and allows
-  to enter a shell for development
+  to enter a shell for development or running tests
 
 #### Using `nix-shell`
 
