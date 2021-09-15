@@ -47,7 +47,7 @@ jobs:
       with:
         name: ${{ needs.libcore_version.outputs.lib_version }}-linux-libledgercore
         path: result/lib/libledger-core.so
-        retention-days: 5
+        retention-days: 30
   MacOS_jni:
     name: MacOS (with JNI)
     needs: libcore_version
@@ -68,7 +68,7 @@ jobs:
       with:
         name: ${{ needs.libcore_version.outputs.lib_version }}-macos-libledgercore
         path: result/lib/libledger-core.dylib
-        retention-days: 5
+        retention-days: 30
   JAR:
     name: Jar build (MacOS + Linux)
     needs: [Ubuntu_jni, MacOS_jni, libcore_version]
@@ -104,3 +104,4 @@ jobs:
       with:
         name: ${{ needs.libcore_version.outputs.lib_version }}-ledger-lib-core.jar
         path: jar_build/artifact/ledger-lib-core.jar
+        retention-days: 90
