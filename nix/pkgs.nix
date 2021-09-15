@@ -7,6 +7,6 @@ let
   pkgs   = import pinned.nixpkgs { inherit config; };
   compilationStdenv = if pkgs.stdenv.isLinux
            then pkgs.gcc11Stdenv
-           else pkgs.llvmPackages_12.stdenv;
+           else pkgs.llvmPackages_11.stdenv;
 in
 pkgs // { inherit compilationStdenv; }

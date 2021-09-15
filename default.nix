@@ -24,12 +24,6 @@ let
   ++ [
     "-DPG_SUPPORT=ON"
     "-DNIX_BUILD=ON"
-  ]
-  ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
-    "-DCMAKE_CXX_COMPILER=clang++"
-    "-DCMAKE_MODULE_LINKER_FLAGS='-lc++abi'"
-    "-DCMAKE_EXE_LINKER_FLAGS='-lc++abi'"
-    "-DCMAKE_SHARED_LINKER_FLAGS='-lc++abi'"
   ];
 in
 
