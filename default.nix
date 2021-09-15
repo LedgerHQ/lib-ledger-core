@@ -53,7 +53,7 @@ pkgs.compilationStdenv.mkDerivation {
     "libkrb5"
     "cryptopp"
     "libuv"
-    "ethash"
+    "ethash-ledgerhq"
 
     # JNI bindings deps
     "jdk8"
