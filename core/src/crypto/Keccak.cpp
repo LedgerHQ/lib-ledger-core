@@ -30,6 +30,23 @@
  */
 
 #include "Keccak.h"
+#ifdef CHFAST_ETHASH
+#include <ethash/keccak.hpp>
+namespace ledger {
+    namespace core {
+
+        std::vector<uint8_t> Keccak::keccak256(const std::vector<uint8_t> &input) {
+            auto result = ethash::keccak256(input.data(), input.size());
+            return std::vector<uint8_t>{result.bytes, result.bytes + 32};
+        }
+
+        std::vector<uint8_t> Keccak::keccak256(const std::string &input) {
+            return Keccak::keccak256(std::vector<uint8_t>(input.begin(), input.end()));
+        }
+
+    }
+}
+#else
 #include <libethash/sha3.h>
 #include <libethash/ethash.h>
 namespace ledger {
@@ -47,3 +64,4 @@ namespace ledger {
 
     }
 }
+#endif

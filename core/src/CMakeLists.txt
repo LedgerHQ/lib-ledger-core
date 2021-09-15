@@ -155,6 +155,9 @@ else()
   add_dependencies(ledger-core-interface INTERFACE secp256k1)
 endif()
 
+if (SYS_ETHASH)
+    target_compile_definitions(ledger-core-interface INTERFACE CHFAST_ETHASH)
+endif()
 target_link_libraries(ledger-core-interface INTERFACE ethash)
 
 target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
