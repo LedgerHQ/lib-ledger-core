@@ -22,5 +22,5 @@ if [[ -z "$CIRCLE_TAG" ]]; then
   LIB_VERSION="$LIB_VERSION-rc-$COMMIT_HASH"
 fi
 
-echo "export LIB_VERSION=$LIB_VERSION" >> $"BASH_ENV"
+echo "export LIB_VERSION=$LIB_VERSION" >> $BASH_ENV
 echo "$LIB_VERSION"
