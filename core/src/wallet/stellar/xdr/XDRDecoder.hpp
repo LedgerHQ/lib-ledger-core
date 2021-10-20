@@ -43,6 +43,15 @@ namespace ledger {
     namespace core {
         namespace stellar {
             namespace xdr {
+
+                struct UnsupportedObjectException : public std::exception
+                {
+                    const char * what () const throw ()
+                    {
+                        return "XDR decoder has met an unsupported object during XDR parsing.";
+                    }
+                };
+
                 class Decoder;
 
                 using ObjectDecoder = std::function<void(Decoder &)>;

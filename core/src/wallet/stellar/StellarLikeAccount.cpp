@@ -254,21 +254,19 @@ namespace ledger {
 
         void StellarLikeAccount::interpretTransaction(const stellar::Transaction &tx, std::vector<Operation> &out) {
             auto log = logger();
-            if (tx.envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX_V0 &&
-                tx.envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX) {
+            if (tx.envelope.isEmpty()) {
+                log->warn("Failed to decode transaction {}, skipping transaction!", tx.hash);
+                return ;
+            }
+            auto& envelope = tx.envelope.getValue();
+            if (envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX_V0 &&
+                envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX) {
                 // Ignore transaction with unhandled envelope types.
+                log->warn("Unsupported transaction envelope type {}, skipping transaction!", static_cast<int>(envelope.type));
                 return;
             }
-            // Ignore transaction if at least one operation has an unsupported type
-            const auto& operations = stellar::xdr::getOperations(tx.envelope);
-            for (const auto& op : operations) {
-                if (!(op.type < stellar::OperationType::num_types)) {
-                    log->warn("Unsupported operation type {}, skipping transaction!", static_cast<int>(op.type));
-                    return;
-                }
-            }
+            const auto& operations = stellar::xdr::getOperations(envelope);
             int createdOperations = 0;
-            //StellarLikeTransactionDatabaseHelper::putTransaction(sql, getWallet()->getCurrency(), tx);
             Operation operation;
             operation.accountUid = getAccountUid();
             operation.currencyName = getWallet()->getCurrency().name;
