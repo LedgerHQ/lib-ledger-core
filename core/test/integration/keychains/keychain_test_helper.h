@@ -126,6 +126,10 @@ public:
                 dispatcher->getMainExecutionContext(),
                 resolver
         );
+        testKeychain(data, std::move(backend), f);
+    };
+
+    void testKeychain(const KeychainTestData &data, std::shared_ptr<api::PreferencesBackend> backend, std::function<void (Keychain&)> f) {
         auto configuration = std::make_shared<DynamicObject>();
         dispatcher->getMainExecutionContext()->execute(ledger::core::make_runnable([=]() {
             Keychain keychain(
