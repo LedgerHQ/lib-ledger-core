@@ -45,7 +45,7 @@ else()
     target_link_libraries(ledger-core-integration-tests ledger-core-static)
 endif()
 
-
+target_link_libraries(ledger-core-integration-tests gmock)
 target_link_libraries(ledger-core-integration-tests ledger-test)
 target_include_directories(ledger-core-integration-tests PUBLIC ../../../core/src)
 
