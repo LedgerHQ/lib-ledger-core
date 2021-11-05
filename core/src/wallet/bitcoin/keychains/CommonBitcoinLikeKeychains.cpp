@@ -72,15 +72,7 @@ namespace ledger {
                         .setNode(CHANGE).getPath();
                 _internalNodeXpub = std::static_pointer_cast<BitcoinLikeExtendedPublicKey>(_xpub)->derive(localPath);
             }
-
-            // Try to restore the state from preferences
-            auto state = preferences->getData("state", {});
-            if (!state.empty()) {
-                boost::iostreams::array_source my_vec_source(reinterpret_cast<char*>(&state[0]), state.size());
-                boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
-                ::cereal::BinaryInputArchive archive(is);
-                archive(_state);
-            } else {
+            if(! softSyncState()) {
                 _state.maxConsecutiveReceiveIndex = 0;
                 _state.maxConsecutiveChangeIndex = 0;
                 _state.empty = true;
@@ -89,8 +81,32 @@ namespace ledger {
                     .value_or(api::ConfigurationDefaults::KEYCHAIN_DEFAULT_OBSERVABLE_RANGE);
         }
 
+        bool CommonBitcoinLikeKeychains::softSyncState() {
+            // Try to restore the state from preferences
+            auto preferences = getPreferences();
+            if(preferences == nullptr) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Preferences is null.");
+            }
+            auto state = preferences->getData("state", {});
+            if (!state.empty()) {
+                boost::iostreams::array_source my_vec_source(reinterpret_cast<char*>(&state[0]), state.size());
+                boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
+                ::cereal::BinaryInputArchive archive(is);
+                archive(_state);
+                return true;
+            } 
+
+            return false;
+        }
+
+        const KeychainPersistentState& CommonBitcoinLikeKeychains::getState() const noexcept {
+            return _state;
+        }
+
         bool CommonBitcoinLikeKeychains::markPathAsUsed(const DerivationPath &p, bool needExtendKeychain) {
             DerivationPath path(p);
+            // VG-1975: Make sure the state is up to date before editing it 
+            softSyncState();
             if (path.getParent().getLastChildNum() == 0) {
                 if (path.getLastChildNum() < _state.maxConsecutiveReceiveIndex ||
                     _state.nonConsecutiveReceiveIndexes.find(path.getLastChildNum()) != _state.nonConsecutiveReceiveIndexes.end()) {
@@ -257,6 +273,8 @@ namespace ledger {
         }
 
         void CommonBitcoinLikeKeychains::saveState() {
+            // VG-1975: Make sure the state is up to date before editing it 
+            softSyncState();
             while (_state.nonConsecutiveReceiveIndexes.find(_state.maxConsecutiveReceiveIndex) != _state.nonConsecutiveReceiveIndexes.end()) {
                 _state.nonConsecutiveReceiveIndexes.erase(_state.maxConsecutiveReceiveIndex);
                 _state.maxConsecutiveReceiveIndex += 1;
