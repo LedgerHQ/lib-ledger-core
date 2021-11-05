@@ -87,6 +87,8 @@ namespace ledger {
 
             Option<std::vector<uint8_t>> getPublicKey(const std::string &address) const override;
 
+            const KeychainPersistentState& getState() const noexcept;
+
         protected:
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _internalNodeXpub;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _publicNodeXpub;
@@ -96,6 +98,14 @@ namespace ledger {
         private:
             BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index);
             void saveState();
+            
+            /**
+             * @brief Load persistent state from preferences if any
+             * 
+             * @return true if the state has been loaded, false otherwise
+             */
+            bool softSyncState();
+            
             KeychainPersistentState _state;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;
         };
