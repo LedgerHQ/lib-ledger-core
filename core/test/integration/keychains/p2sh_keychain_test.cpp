@@ -30,15 +30,11 @@
  */
 
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include <iostream>
 #include <src/wallet/bitcoin/keychains/P2SHBitcoinLikeKeychain.hpp>
-#include <src/api/PreferencesChange.hpp>
 #include "keychain_test_helper.h"
 
 using namespace std;
-using ::testing::_;
-using ::testing::Return;
 
 class BitcoinP2SHKeychains : public KeychainFixture<P2SHBitcoinLikeKeychain> {
 
@@ -151,72 +147,3 @@ TEST_F(BitcoinP2SHKeychains, CheckIfEmpty) {
     });
 }
 
-
-class MockPreferencesBackend: public api::PreferencesBackend {
- public:
-    //MockPreferencesBackend(const string&, const std::shared_ptr<ledger::core::api::ExecutionContext>&, const std::shared_ptr<ledger::core::api::PathResolver>&) {}
-    MOCK_METHOD(std::experimental::optional<std::vector<uint8_t>>, get, (const std::vector<uint8_t> &));
-    MOCK_METHOD(bool, commit, (const std::vector<api::PreferencesChange> &));
-    MOCK_METHOD(void, setEncryption, (const std::shared_ptr<api::RandomNumberGenerator> &, const std::string &));
-    MOCK_METHOD(void, unsetEncryption, ());
-    MOCK_METHOD(bool, resetEncryption, (const std::shared_ptr<api::RandomNumberGenerator> &, const std::string &, const std::string &));
-    MOCK_METHOD(std::string, getEncryptionSalt, ());
-    MOCK_METHOD(void, clear, ());
-
-};
-
-
-class ConcreteCommonBitcoinLikeKeychains: public CommonBitcoinLikeKeychains {
-public:
-    ConcreteCommonBitcoinLikeKeychains(const std::shared_ptr<api::DynamicObject> &configuration,
-                                                           const api::Currency &params,
-                                                           int account,
-                                                           const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                                                           const std::shared_ptr<Preferences> &preferences) 
-                                                           : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences)
-                                                           {}
-    int32_t getOutputSizeAsSignedTxInput() const override { return 0; }
-};
-
-class CommonBitcoinKeychains : public KeychainFixture<ConcreteCommonBitcoinLikeKeychains> {
-};
-
-template <typename T>
-std::vector<T> string2vector(const std::string& s) {
-    return std::vector<T>(s.begin(), s.end());
-} 
-
-std::vector<uint8_t> serializeState(const KeychainPersistentState& state) {
-    std::stringstream is;
-    ::cereal::BinaryOutputArchive archive(is);
-    archive(state);
-    auto savedState = is.str();
-    return std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data() + savedState.size());
-}
-
-TEST_F(CommonBitcoinKeychains, UpdatesInternalStateAtInitialization) {
-
-    auto backend = std::make_shared<MockPreferencesBackend>(); 
-
-    KeychainPersistentState mockState;
-    mockState.maxConsecutiveChangeIndex = 4;
-    mockState.nonConsecutiveChangeIndexes.emplace(1);
-    mockState.nonConsecutiveChangeIndexes.emplace(2);
-    mockState.nonConsecutiveChangeIndexes.emplace(3);
-    mockState.maxConsecutiveReceiveIndex = 4;
-    mockState.nonConsecutiveReceiveIndexes.emplace(1);
-    mockState.nonConsecutiveReceiveIndexes.emplace(2);
-    mockState.nonConsecutiveReceiveIndexes.emplace(3);
-
-    EXPECT_CALL(*backend, get(string2vector<uint8_t>("keychainstate")))
-        .Times(1)
-        .WillOnce(Return(serializeState(mockState)));
-
-    testKeychain(BTC_TESTNET_DATA, backend, [&backend, &mockState] (CommonBitcoinLikeKeychains& keychain) {
-        const KeychainPersistentState& state = keychain.getState();
-        EXPECT_EQ(mockState.maxConsecutiveChangeIndex, state.maxConsecutiveChangeIndex);
-        EXPECT_EQ(mockState.maxConsecutiveReceiveIndex, state.maxConsecutiveReceiveIndex);
-        EXPECT_EQ(mockState.nonConsecutiveChangeIndexes.size(), state.nonConsecutiveChangeIndexes.size());
-        EXPECT_EQ(mockState.nonConsecutiveReceiveIndexes.size(), state.nonConsecutiveReceiveIndexes.size());
-    });
-}
