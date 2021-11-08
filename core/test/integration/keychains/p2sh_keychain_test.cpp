@@ -146,3 +146,4 @@ TEST_F(BitcoinP2SHKeychains, CheckIfEmpty) {
         EXPECT_FALSE(keychain.isEmpty());
     });
 }
+

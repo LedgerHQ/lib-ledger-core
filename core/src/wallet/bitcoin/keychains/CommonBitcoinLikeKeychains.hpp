@@ -40,11 +40,11 @@ namespace ledger {
     namespace core {
 
         struct KeychainPersistentState {
-            uint32_t maxConsecutiveChangeIndex;
-            uint32_t maxConsecutiveReceiveIndex;
+            uint32_t maxConsecutiveChangeIndex {0};
+            uint32_t maxConsecutiveReceiveIndex {0};
             std::set<uint32_t> nonConsecutiveChangeIndexes;
             std::set<uint32_t> nonConsecutiveReceiveIndexes;
-            bool empty;
+            bool empty {true};
 
             template <class Archive>
             void serialize(Archive& archive, std::uint32_t const version) {
@@ -87,6 +87,14 @@ namespace ledger {
 
             Option<std::vector<uint8_t>> getPublicKey(const std::string &address) const override;
 
+
+            /**
+             * @brief Get the State object from user preferences
+             * 
+             * @return persisted state
+             */
+            KeychainPersistentState getState() const;
+
         protected:
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _internalNodeXpub;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _publicNodeXpub;
@@ -95,8 +103,8 @@ namespace ledger {
 
         private:
             BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index);
-            void saveState();
-            KeychainPersistentState _state;
+            void saveState(KeychainPersistentState state) const;
+            
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;
         };
     }
