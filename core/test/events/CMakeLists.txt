@@ -28,4 +28,6 @@ if (SYS_LIBUV)
 else()
     copy_install_imported_targets(ledger-core-events-tests uv)
 endif()
-add_test (NAME ledger-core-events-tests COMMAND ledger-core-events-tests)
+
+include(GoogleTest)
+gtest_discover_tests(ledger-core-events-tests PROPERTIES "LABELS;unit")

@@ -8,4 +8,5 @@ add_executable(ledger-core-bytes-tests main.cpp bytesreader_tests.cpp byteswrite
 target_link_libraries(ledger-core-bytes-tests gtest gtest_main)
 target_link_libraries(ledger-core-bytes-tests ledger-core-static)
 
-add_test (NAME ledger-core-bytes-tests COMMAND ledger-core-bytes-tests)
+include(GoogleTest)
+gtest_discover_tests(ledger-core-bytes-tests PROPERTIES "LABELS;unit")

@@ -20,4 +20,6 @@ if (SYS_OPENSSL)
 else()
     copy_install_imported_targets(ledger-core-debug-tests crypto)
 endif()
-add_test (NAME ledger-core-debug-tests COMMAND ledger-core-debug-tests)
+
+include(GoogleTest)
+gtest_discover_tests(ledger-core-debug-tests PROPERTIES "LABELS;unit")

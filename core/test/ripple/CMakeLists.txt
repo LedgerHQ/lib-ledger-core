@@ -27,4 +27,6 @@ if (SYS_LIBUV)
 else()
     copy_install_imported_targets(ledger-core-ripple-tests uv)
 endif()
-add_test (NAME ledger-core-ripple-tests COMMAND ledger-core-ripple-tests)
+
+include(GoogleTest)
+gtest_discover_tests(ledger-core-ripple-tests PROPERTIES "LABELS;unit")

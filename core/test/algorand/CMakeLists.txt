@@ -43,5 +43,5 @@ else()
     copy_install_imported_targets(ledger-core-algorand-tests uv)
 endif()
 
-add_test (NAME ledger-core-algorand-tests COMMAND ledger-core-algorand-tests)
-
+include(GoogleTest)
+gtest_discover_tests(ledger-core-algorand-tests PROPERTIES "LABELS;unit")

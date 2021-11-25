@@ -232,6 +232,17 @@ if you want to run only one specific unit test. (e.g. the test case `BitcoinLike
 You can generate the Doxygen documentation by running the `doc` target (for instance, `make doc`
 with makefiles).
 
+## Use Code Coverage
+:warning: Only available on Linux for now.
+
+0. Make sure to have `lcov` installed
+    ```sh
+    sudo apt-get install -y lcov
+    ```
+1. Set the `USE_CODE_COVERAGE` cache option to `ON`
+2. Compute the coverage `cmake --build . --config Debug --target coverage`
+
+
 ## Binding to node.js
 
 The library can be compiled and integrated as an node module in a pretty straightforward way. You

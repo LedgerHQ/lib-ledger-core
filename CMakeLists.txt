@@ -14,9 +14,10 @@ if(NIX_BUILD)
     set(SYS_OPENSSL ON CACHE BOOL "Building with Nix implies using system openssl" FORCE)
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake-modules")
 include(UseBackportedModules)
 
+include("cmake/Coverage.cmake")
 
 # The project version number.
 set(VERSION_MAJOR   4   CACHE STRING "Project major version number.")
@@ -53,6 +54,8 @@ if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)
     set(BUILD_TESTS OFF CACHE BOOL "Cannot run tests for these options" FORCE)
 endif()
 
+enable_testing()
+
 add_subdirectory(doc)
 add_subdirectory(core)
 
@@ -63,4 +66,3 @@ add_subdirectory(core)
 # > Issue is specific to 10.10.x, 10.9.5 and > 10.10.x are fine
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X version to target for deployment: 10.9" FORCE)
 
-enable_testing()
