@@ -240,7 +240,9 @@ with makefiles).
     sudo apt-get install -y lcov
     ```
 1. Set the `USE_CODE_COVERAGE` cache option to `ON`
-2. Compute the coverage `cmake --build . --config Debug --target coverage`
+2. Compute the coverage
+  * Based on unit tests only: `cmake --build . --config Debug --target coverage_unit`
+  * Based on all tests: `cmake --build . --config Debug --target coverage_all`
 
 
 ## Binding to node.js
