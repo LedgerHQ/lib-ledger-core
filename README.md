@@ -1,3 +1,5 @@
+a few ridiculously changes
+
 # Ledger Core Library
 
 Core library which will be used by Ledger applications.
