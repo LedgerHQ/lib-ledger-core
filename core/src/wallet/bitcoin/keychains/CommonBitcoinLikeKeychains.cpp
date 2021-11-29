@@ -72,58 +72,71 @@ namespace ledger {
                         .setNode(CHANGE).getPath();
                 _internalNodeXpub = std::static_pointer_cast<BitcoinLikeExtendedPublicKey>(_xpub)->derive(localPath);
             }
-
-            // Try to restore the state from preferences
-            auto state = preferences->getData("state", {});
-            if (!state.empty()) {
-                boost::iostreams::array_source my_vec_source(reinterpret_cast<char*>(&state[0]), state.size());
-                boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
-                ::cereal::BinaryInputArchive archive(is);
-                archive(_state);
-            } else {
-                _state.maxConsecutiveReceiveIndex = 0;
-                _state.maxConsecutiveChangeIndex = 0;
-                _state.empty = true;
-            }
             _observableRange = (uint32_t) configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE)
                     .value_or(api::ConfigurationDefaults::KEYCHAIN_DEFAULT_OBSERVABLE_RANGE);
         }
 
+        KeychainPersistentState CommonBitcoinLikeKeychains::getState() const {
+            // Try to get the state from preferences
+            auto preferences = getPreferences();
+            if(preferences == nullptr) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Preferences is null.");
+            }
+            KeychainPersistentState state;
+            auto rawState = preferences->getData("state", {});
+            if (!rawState.empty()) {
+                
+                boost::iostreams::array_source my_vec_source(reinterpret_cast<char*>(&rawState[0]), rawState.size());
+                boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
+                ::cereal::BinaryInputArchive archive(is);
+                archive(state);
+            } 
+            return state;
+        }
+
         bool CommonBitcoinLikeKeychains::markPathAsUsed(const DerivationPath &p, bool needExtendKeychain) {
+            KeychainPersistentState state = getState();
             DerivationPath path(p);
+
+            auto isToUpdate = [&path](const uint32_t& maxConsecutiveIndex, const std::set<uint32_t>& nonConsecutiveIndexes) {
+                return path.getLastChildNum() >= maxConsecutiveIndex && nonConsecutiveIndexes.find(path.getLastChildNum()) == nonConsecutiveIndexes.end();
+            };
+
+            auto updateState = [&path](uint32_t& maxConsecutiveIndex, std::set<uint32_t>& nonConsecutiveIndexes, bool& empty) {
+                if (path.getLastChildNum() == maxConsecutiveIndex)
+                    maxConsecutiveIndex += 1;
+                else
+                    nonConsecutiveIndexes.insert(path.getLastChildNum());
+                empty = false;
+            };
+
+
             if (path.getParent().getLastChildNum() == 0) {
-                if (path.getLastChildNum() < _state.maxConsecutiveReceiveIndex ||
-                    _state.nonConsecutiveReceiveIndexes.find(path.getLastChildNum()) != _state.nonConsecutiveReceiveIndexes.end()) {
+
+                if (!isToUpdate(state.maxConsecutiveReceiveIndex, state.nonConsecutiveReceiveIndexes)) {
                     return false;
-                } else {
-                    if (path.getLastChildNum() == _state.maxConsecutiveReceiveIndex)
-                        _state.maxConsecutiveReceiveIndex += 1;
-                    else
-                        _state.nonConsecutiveReceiveIndexes.insert(path.getLastChildNum());
-                    _state.empty = false;
-                    saveState();
-                    if (needExtendKeychain) {
-                        getAllObservableAddresses(path.getLastChildNum(), path.getLastChildNum() + _observableRange);
-                    }
-                    return true;
                 }
+
+                updateState(state.maxConsecutiveReceiveIndex, state.nonConsecutiveReceiveIndexes, state.empty);
+                saveState(std::move(state));
+                if (needExtendKeychain) {
+                    getAllObservableAddresses(path.getLastChildNum(), path.getLastChildNum() + _observableRange);
+                }
+
             } else {
-                if (path.getLastChildNum() < _state.maxConsecutiveChangeIndex ||
-                    _state.nonConsecutiveChangeIndexes.find(path.getLastChildNum()) != _state.nonConsecutiveChangeIndexes.end()) {
+
+                if (!isToUpdate(state.maxConsecutiveChangeIndex, state.nonConsecutiveChangeIndexes)) {
                     return false;
-                } else {
-                    if (path.getLastChildNum() == _state.maxConsecutiveChangeIndex)
-                        _state.maxConsecutiveChangeIndex += 1;
-                    else
-                        _state.nonConsecutiveChangeIndexes.insert(path.getLastChildNum());
-                    _state.empty = false;
-                    saveState();
-                    if (needExtendKeychain) {
-                        getAllObservableAddresses(path.getLastChildNum(), path.getLastChildNum() + _observableRange);
-                    }
-                    return true;
+                }
+
+                updateState(state.maxConsecutiveChangeIndex, state.nonConsecutiveChangeIndexes, state.empty);
+                saveState(std::move(state));
+                if (needExtendKeychain) {
+                    getAllObservableAddresses(path.getLastChildNum(), path.getLastChildNum() + _observableRange);
                 }
             }
+
+            return true;
         }
 
         //TODO the two following methods are similar. Merge them if possible
@@ -200,16 +213,18 @@ namespace ledger {
         }
 
         BitcoinLikeKeychain::Address CommonBitcoinLikeKeychains::getFreshAddress(BitcoinLikeKeychain::KeyPurpose purpose) {
-            return derive(purpose, (purpose == KeyPurpose::RECEIVE ? _state.maxConsecutiveReceiveIndex : _state.maxConsecutiveChangeIndex));
+            KeychainPersistentState state = getState();
+            return derive(purpose, (purpose == KeyPurpose::RECEIVE ? state.maxConsecutiveReceiveIndex : state.maxConsecutiveChangeIndex));
         }
 
         bool CommonBitcoinLikeKeychains::isEmpty() const {
-            return _state.empty;
+            return getState().empty;
         }
 
         std::vector<BitcoinLikeKeychain::Address>
         CommonBitcoinLikeKeychains::getFreshAddresses(BitcoinLikeKeychain::KeyPurpose purpose, size_t n) {
-            auto startOffset = (purpose == KeyPurpose::RECEIVE) ? _state.maxConsecutiveReceiveIndex : _state.maxConsecutiveChangeIndex;
+            KeychainPersistentState state = getState();
+            auto startOffset = (purpose == KeyPurpose::RECEIVE) ? state.maxConsecutiveReceiveIndex : state.maxConsecutiveChangeIndex;
             std::vector<BitcoinLikeKeychain::Address> result(n);
             for (auto i = 0; i < n; i++) {
                 result[i] = derive(purpose, startOffset + i);
@@ -242,7 +257,8 @@ namespace ledger {
         std::vector<BitcoinLikeKeychain::Address>
         CommonBitcoinLikeKeychains::getAllObservableAddresses(BitcoinLikeKeychain::KeyPurpose purpose, uint32_t from,
                                                             uint32_t to) {
-            auto maxObservableIndex = (purpose == KeyPurpose::CHANGE ? _state.maxConsecutiveChangeIndex + _state.nonConsecutiveChangeIndexes.size() : _state.maxConsecutiveReceiveIndex + _state.nonConsecutiveReceiveIndexes.size()) + _observableRange;
+            KeychainPersistentState state = getState();                                         
+            auto maxObservableIndex = (purpose == KeyPurpose::CHANGE ? state.maxConsecutiveChangeIndex + state.nonConsecutiveChangeIndexes.size() : state.maxConsecutiveReceiveIndex + state.nonConsecutiveReceiveIndexes.size()) + _observableRange;
             auto length = std::min<size_t >(to - from, maxObservableIndex - from);
             std::vector<BitcoinLikeKeychain::Address> result;
             result.reserve(length + 1);
@@ -256,18 +272,18 @@ namespace ledger {
             return result;
         }
 
-        void CommonBitcoinLikeKeychains::saveState() {
-            while (_state.nonConsecutiveReceiveIndexes.find(_state.maxConsecutiveReceiveIndex) != _state.nonConsecutiveReceiveIndexes.end()) {
-                _state.nonConsecutiveReceiveIndexes.erase(_state.maxConsecutiveReceiveIndex);
-                _state.maxConsecutiveReceiveIndex += 1;
+        void CommonBitcoinLikeKeychains::saveState(KeychainPersistentState state) const {
+            while (state.nonConsecutiveReceiveIndexes.find(state.maxConsecutiveReceiveIndex) != state.nonConsecutiveReceiveIndexes.end()) {
+                state.nonConsecutiveReceiveIndexes.erase(state.maxConsecutiveReceiveIndex);
+                state.maxConsecutiveReceiveIndex += 1;
             }
-            while (_state.nonConsecutiveChangeIndexes.find(_state.maxConsecutiveChangeIndex) != _state.nonConsecutiveChangeIndexes.end()) {
-                _state.nonConsecutiveChangeIndexes.erase(_state.maxConsecutiveChangeIndex);
-                _state.maxConsecutiveChangeIndex += 1;
+            while (state.nonConsecutiveChangeIndexes.find(state.maxConsecutiveChangeIndex) != state.nonConsecutiveChangeIndexes.end()) {
+                state.nonConsecutiveChangeIndexes.erase(state.maxConsecutiveChangeIndex);
+                state.maxConsecutiveChangeIndex += 1;
             }
             std::stringstream is;
             ::cereal::BinaryOutputArchive archive(is);
-            archive(_state);
+            archive(state);
             auto savedState = is.str();
             getPreferences()->edit()->putData("state", std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data() + savedState.size()))->commit();
         }
@@ -289,8 +305,9 @@ namespace ledger {
         }
 
         std::vector<BitcoinLikeKeychain::Address> CommonBitcoinLikeKeychains::getAllAddresses() {
+            KeychainPersistentState state = getState();
             std::vector<BitcoinLikeKeychain::Address> addresses;
-            addresses.reserve(_state.maxConsecutiveChangeIndex + 1 + _state.maxConsecutiveReceiveIndex + 1);
+            addresses.reserve(state.maxConsecutiveChangeIndex + 1 + state.maxConsecutiveReceiveIndex + 1);
 
             auto fetchAddressesFrom = [&](auto const keyPurpose, auto const maxIndex) {
                   for (auto i = 0; i <= maxIndex; ++i) {
@@ -298,8 +315,8 @@ namespace ledger {
                   }
             };
 
-            fetchAddressesFrom(KeyPurpose::CHANGE, _state.maxConsecutiveChangeIndex);
-            fetchAddressesFrom(KeyPurpose::RECEIVE, _state.maxConsecutiveReceiveIndex);
+            fetchAddressesFrom(KeyPurpose::CHANGE, state.maxConsecutiveChangeIndex);
+            fetchAddressesFrom(KeyPurpose::RECEIVE, state.maxConsecutiveReceiveIndex);
 
             return addresses;
         }
