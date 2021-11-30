@@ -175,7 +175,7 @@ std::string BaseFixture::randomKeychainName() const {
     return randomName("keychain-", 10);
 }
 
-std::string BaseFixture::randomName(const std::string& prefix, uint suffix_length) const {
+std::string BaseFixture::randomName(const std::string& prefix, unsigned int suffix_length) const {
     static const char alphanum[] =
         "0123456789"
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -183,7 +183,7 @@ std::string BaseFixture::randomName(const std::string& prefix, uint suffix_lengt
 
     std::stringstream randName;
     randName << prefix;
-    for (auto i = 0; i < suffix_length; ++i) {
+    for (unsigned int i = 0; i < suffix_length; ++i) {
         randName << alphanum[rng->getRandomLong() % (sizeof(alphanum) - 1)];
     }
 
