@@ -140,7 +140,7 @@ public:
                                                                            data.xpub,
                                                                            optional<std::string>(data.derivationPath),
                                                                            configuration),
-                    std::make_shared<ledger::core::Preferences>(*backend, "keychain")
+                    std::make_shared<ledger::core::Preferences>(*backend, randomKeychainName())
             );
             f(keychain);
             dispatcher->stop();
