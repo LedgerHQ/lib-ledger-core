@@ -171,6 +171,10 @@ std::string BaseFixture::randomDBName() const {
     return randomName("pool-", 10);
 }
 
+std::string BaseFixture::randomKeychainName() const {
+    return randomName("keychain-", 10);
+}
+
 std::string BaseFixture::randomName(const std::string& prefix, uint suffix_length) const {
     static const char alphanum[] =
         "0123456789"

@@ -158,6 +158,7 @@ public:
     protected:
     std::string randomWalletName() const;
     std::string randomDBName() const;
+    std::string randomKeychainName() const;
 
     private:
     std::string randomName(const std::string& prefix, uint suffix_length = 10) const;
