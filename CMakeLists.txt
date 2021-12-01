@@ -14,10 +14,30 @@ if(NIX_BUILD)
     set(SYS_OPENSSL ON CACHE BOOL "Building with Nix implies using system openssl" FORCE)
 endif()
 
+# Update Cmake Module Path
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake-modules")
 include(UseBackportedModules)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake-scripts")
 
-include("cmake/Coverage.cmake")
+# General internal functions
+function (unsetListOfVarsStartingWith _prefix)
+    get_cmake_property(_vars VARIABLES)
+    string (REGEX MATCHALL "(^|;)${_prefix}[A-Za-z0-9_]*" _matchedVars "${_vars}")
+	FOREACH(var ${_matchedVars})
+		unset (${var} CACHE)
+	ENDFOREACH()
+endfunction()
+
+# Include cmake scripts
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/CCache.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Coverage.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Cotire.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake-scripts/c++-standards.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake-scripts/tools.cmake")
+
+cxx_14()
+clang_tidy("-checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus*,cppcoreguidelines-*,modernize-*")            # add cmake conf option CLANG_TIDY=ON to activate
+include_what_you_use()  # add cmake conf option IWYU=ON to activate
 
 # The project version number.
 set(VERSION_MAJOR   4   CACHE STRING "Project major version number.")
@@ -27,9 +47,6 @@ mark_as_advanced(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY build)
 list(APPEND INCLUDE_DIRECTORIES core/test/include/)
-
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Setup BOOST
 set(BOOST_INCLUDEDIR "${CMAKE_CURRENT_SOURCE_DIR}/core/lib/boost/")

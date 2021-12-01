@@ -233,17 +233,26 @@ You can generate the Doxygen documentation by running the `doc` target (for inst
 with makefiles).
 
 ## Use Code Coverage
-:warning: Only available on Linux for now.
+:warning: Only available on Linux for now (with gcc).
 
 0. Make sure to have `lcov` installed
     ```sh
     sudo apt-get install -y lcov
     ```
-1. Set the `USE_CODE_COVERAGE` cache option to `ON`
+1. Set the `CODE_COVERAGE` cmake option to `ON`
 2. Compute the coverage, in build directory:
   * Based on unit tests only: `cmake --build . --config Debug --target coverage_unit`
   * Based on all tests: `cmake --build . --config Debug --target coverage_all`
 3. Open the report: `./coverage/index.html`
+
+## Use optional compilation checks
+
+* [clang-tidy](https://releases.llvm.org/10.0.0/tools/clang/tools/extra/docs/clang-tidy/index.html) checks can be activated by setting `CLANG_TIDY` cmake option to `ON`
+* [include-what-you-use](https://github.com/include-what-you-use/include-what-you-use) checks can be activated by setting `IWYU` cmake option to `ON`
+
+## Use optional compilation optimization
+
+* [ccache](https://github.com/ccache/ccache) compilation optimization can be activated by setting `CCACHE` cmake option to `ON`
 
 ## Binding to node.js
 

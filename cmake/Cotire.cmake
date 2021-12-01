@@ -1,0 +1,8 @@
+option (COTIRE "Use Cotire compilation optimization" OFF)
+if(COTIRE)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cotire")
+    set (COTIRE_MAXIMUM_NUMBER_OF_UNITY_INCLUDES "-j")
+    include(cotire)
+else()
+	unsetListOfVarsStartingWith("COTIRE_")
+endif()

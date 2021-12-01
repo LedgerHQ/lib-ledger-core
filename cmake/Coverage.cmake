@@ -1,6 +1,6 @@
-option (USE_CODE_COVERAGE "Enable profiling and coverage report analysis" OFF)
+option (CODE_COVERAGE "Enable profiling and coverage report analysis" OFF)
 
-if(USE_CODE_COVERAGE)
+if(CODE_COVERAGE)
     if(CMAKE_COMPILER_IS_GNUCXX) # NOT WIN32
         list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/codecoverage")
         include(CodeCoverage)
