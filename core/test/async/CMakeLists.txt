@@ -14,4 +14,6 @@ if (SYS_LIBUV)
 else()
     copy_install_imported_targets(ledger-core-async-tests uv)
 endif()
-add_test (NAME ledger-core-async-tests COMMAND ledger-core-async-tests)
+
+include(GoogleTest)
+gtest_discover_tests(ledger-core-async-tests PROPERTIES "LABELS;unit")

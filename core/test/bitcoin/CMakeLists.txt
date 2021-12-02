@@ -22,4 +22,6 @@ if (SYS_OPENSSL)
 else()
     copy_install_imported_targets(ledger-core-bitcoin-tests crypto)
 endif()
-add_test (NAME ledger-core-bitcoin-tests COMMAND ledger-core-bitcoin-tests)
+
+include(GoogleTest)
+gtest_discover_tests(ledger-core-bitcoin-tests PROPERTIES "LABELS;unit;LABELS;bitcoin")

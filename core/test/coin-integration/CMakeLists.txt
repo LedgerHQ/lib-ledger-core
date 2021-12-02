@@ -48,4 +48,6 @@ if (SYS_LIBUV)
 else()
     copy_install_imported_targets(ledger-core-coin-integration-tests uv)
 endif()
-add_test (NAME ledger-core-coin-integration COMMAND ledger-core-coin-integration-tests)
+
+include(GoogleTest)
+gtest_discover_tests(ledger-core-coin-integration-tests PROPERTIES "LABELS;unit")

@@ -38,4 +38,4 @@ else()
     copy_install_imported_targets(ledger-core-tezos-tests crypto ledger-core)
 endif()
 
-gtest_discover_tests(${TEZOS_TESTS_NAME})
+gtest_discover_tests(${TEZOS_TESTS_NAME} PROPERTIES "LABELS;unit")

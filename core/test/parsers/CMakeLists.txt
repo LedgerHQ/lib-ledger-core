@@ -27,4 +27,6 @@ if (SYS_OPENSSL)
 else()
     copy_install_imported_targets(ledger-core-parser-tests crypto)
 endif()
-add_test (NAME ledger-core-parser-tests COMMAND ledger-core-parser-tests)
+
+include(GoogleTest)
+gtest_discover_tests(ledger-core-parser-tests PROPERTIES "LABELS;unit")

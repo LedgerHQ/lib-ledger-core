@@ -31,3 +31,6 @@
 [submodule "core/src/wallet/algorand/thirdparty/msgpack-c"]
 	path = core/src/wallet/algorand/thirdparty/msgpack-c
 	url = https://github.com/ledgerHQ/msgpack-c.git
+[submodule "cmake/cmake-scripts"]
+	path = cmake/cmake-scripts
+	url = https://github.com/StableCoder/cmake-scripts

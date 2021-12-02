@@ -32,4 +32,6 @@ if (SYS_LIBUV)
 else()
     copy_install_imported_targets(ledger-core-database-tests uv)
 endif()
-add_test(NAME ledger-core-database-tests COMMAND ledger-core-database-tests)
+
+include(GoogleTest)
+gtest_discover_tests(ledger-core-database-tests PROPERTIES "LABELS;unit")

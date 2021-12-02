@@ -31,4 +31,6 @@ if (SYS_OPENSSL)
 else()
     copy_install_imported_targets(ledger-core-utils-tests crypto)
 endif()
-add_test (NAME ledger-core-utils-tests COMMAND ledger-core-utils-tests)
+
+include(GoogleTest)
+gtest_discover_tests(ledger-core-utils-tests PROPERTIES "LABELS;unit")

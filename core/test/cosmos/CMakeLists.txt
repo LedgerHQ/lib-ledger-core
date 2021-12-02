@@ -45,4 +45,6 @@ if (SYS_LIBUV)
 else()
     copy_install_imported_targets(${COSMOS_TESTS_NAME} uv)
 endif()
-add_test (NAME ledger-core-cosmos-tests COMMAND ledger-core-cosmos-tests)
+
+include(GoogleTest)
+gtest_discover_tests(ledger-core-cosmos-tests PROPERTIES "LABELS;unit")
