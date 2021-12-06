@@ -12,7 +12,7 @@ git submodule sync
 #Otherwise can't init submodules
 echo "========> Update all submodules "
 #No need for those
-git submodule update -- cmake-scripts || echo "===========Cmake-scripts submodule already updated"
+git submodule update -- cmake/cmake-scripts || echo "===========Cmake-scripts submodule already updated"
 git submodule update -- djinni || echo "===========Djinni submodule already updated"
 git submodule update -- toolchains/polly || echo "===========Polly submodule already updated"
 #git submodule update -- tools/gyp || echo "===========gyp submodule already updated"
