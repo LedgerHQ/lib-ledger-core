@@ -61,3 +61,4 @@ endif()
 
 include(GoogleTest)
 gtest_discover_tests(ledger-core-integration-tests PROPERTIES "LABELS;integration")
+

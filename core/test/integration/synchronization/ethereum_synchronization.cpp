@@ -169,7 +169,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
     }
 }
 
-TEST_F(EthereumLikeWalletSynchronization, BalanceHistory) {
+TEST_F(EthereumLikeWalletSynchronization, DISABLED_BalanceHistory) {
     auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
     auto erc20Count = 0;
     {

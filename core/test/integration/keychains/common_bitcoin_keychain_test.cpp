@@ -87,7 +87,7 @@ std::vector<uint8_t> serializeStateToVector(const KeychainPersistentState& state
     return std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data() + savedState.size());
 }
 
-TEST_F(CommonBitcoinKeychains, CorrectStateAtInitialization) {
+TEST_F(CommonBitcoinKeychains, DISABLED_CorrectStateAtInitialization) {
 
     KeychainPersistentState mockState;
     mockState.maxConsecutiveChangeIndex = 4;

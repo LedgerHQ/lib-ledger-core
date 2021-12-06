@@ -51,7 +51,7 @@ TEST_F(BitcoinP2WPKHKeychains, BTCKeychainDerivation) {
     });
 }
 
-TEST_F(BitcoinP2WPKHKeychains, BCHKeychainDerivation) {
+TEST_F(BitcoinP2WPKHKeychains, DISABLED_BCHKeychainDerivation) {
     testKeychain(BCH_DATA, [] (P2WPKHBitcoinLikeKeychain& keychain) {
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBech32(), "bitcoincash:qpenyye7dhp9wgugtsh9t3ukdvrnpwyvqyafwfxe0w");
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBech32(), "bitcoincash:qzf6rezvt9agmmwnca4ykj74kppr4dx2hvm6f8kzqr");
