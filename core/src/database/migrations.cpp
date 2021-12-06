@@ -1191,5 +1191,19 @@ namespace ledger {
             // Do nothing
         }
 
+        template <> void migrate<28>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "CREATE INDEX bitcoin_transactions_inputs_input_uid_index ON bitcoin_transaction_inputs(input_uid);";
+            sql << "CREATE INDEX bitcoin_transactions_inputs_transaction_uid_index ON bitcoin_transaction_inputs(transaction_uid);";
+            sql << "CREATE INDEX bitcoin_transactions_outputs_transaction_uid_index ON bitcoin_outputs(transaction_uid);";
+            sql << "CREATE INDEX bitcoin_operations_transaction_uid_index ON bitcoin_operations(transaction_uid);";
+        }
+
+        template <> void rollback<28>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "DROP INDEX bitcoin_transactions_inputs_input_uid_index ;";
+            sql << "DROP INDEX bitcoin_transactions_inputs_transaction_uid_index ;";
+            sql << "DROP INDEX bitcoin_transactions_outputs_transaction_uid_index ;";
+            sql << "DROP INDEX bitcoin_operations_transaction_uid_index ;";
+        }
+
     }
 }
