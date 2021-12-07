@@ -59,8 +59,8 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
     auto pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);
 #else
     auto pool = newDefaultPool();
-    const auto walletName = randomWalletName();
 #endif
+    const auto walletName = randomWalletName();
 
     {
         //configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
