@@ -594,7 +594,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnFakeExplorer) {
     }
 }
 
-TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFilterOperationsByBlockHeight) {
+TEST_F(BitcoinLikeWalletSynchronization, DISABLED_SynchronizeAndFilterOperationsByBlockHeight) {
     auto pool = newDefaultPool();
     auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin",
                                           api::DynamicObject::newInstance()));
