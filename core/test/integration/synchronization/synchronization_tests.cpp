@@ -78,39 +78,50 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
 
             bool synchronizationDone = false;
             auto receiver = make_receiver([=, &synchronizationDone](const std::shared_ptr<api::Event> &event) {
-                fmt::print("Received event {}\n", api::to_string(event->getCode()));
-                switch (event->getCode())
-                {
-                case api::EventCode::SYNCHRONIZATION_STARTED:
-                    return;
-                case api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT:
-                    synchronizationDone = true;
-                    break;
-                default:
-                    dispatcher->stop();
-                    return;
-                }
-                auto balance = uv::wait(account->getBalance())->toString();
-                auto destination = "bc1qh4kl0a0a3d7su8udc2rn62f8w939prqpl34z86";
-                auto txBuilder = account->buildTransaction(false);
-                auto tx = uv::wait(std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(txBuilder->sendToAddress(api::Amount::fromLong(wallet->getCurrency(), 2000), destination)
-                                                                                                    ->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>())
-                                                                                                    ->setFeesPerByte(api::Amount::fromLong(wallet->getCurrency(), 50)))
-                                       ->build());
-                EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), destination);
+                try {
+                    fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                    switch (event->getCode())
+                    {
+                    case api::EventCode::SYNCHRONIZATION_STARTED:
+                        return;
+                    case api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT:
+                        synchronizationDone = true;
+                        break;
+                    default:
+                        dispatcher->stop();
+                        return;
+                    }
+                    auto balance = uv::wait(account->getBalance())->toString();
+                    auto destination = "bc1qh4kl0a0a3d7su8udc2rn62f8w939prqpl34z86";
+                    auto txBuilder = account->buildTransaction(false);
+                    auto tx = uv::wait(std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(txBuilder->sendToAddress(api::Amount::fromLong(wallet->getCurrency(), 2000), destination)
+                                                                                                        ->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>())
+                                                                                                        ->setFeesPerByte(api::Amount::fromLong(wallet->getCurrency(), 50)))
+                                           ->build());
+                    EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), destination);
 
-                auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
-                std::cout << "Balance: " << uv::wait(account->getBalance())->toString() << std::endl;
-                std::cout << "Ops: " << ops.size() << std::endl;
-                for (auto& op : ops) {
-                    std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
-                    std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
-                    std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
-                }
-                ops.clear();
-                auto metrics = api::AllocationMetrics::getObjectAllocations();
-                for (const auto& metric : metrics) {
-                    std::cout << metric.first << ": " << metric.second << std::endl;
+                    auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+                    std::cout << "Balance: " << uv::wait(account->getBalance())->toString() << std::endl;
+                    std::cout << "Ops: " << ops.size() << std::endl;
+                    for (auto& op : ops) {
+                        std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
+                        std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
+                        std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
+                    }
+                    ops.clear();
+
+                    auto metrics = api::AllocationMetrics::getObjectAllocations();
+                    for (const auto& metric : metrics) {
+                        std::cout << metric.first << ": " << metric.second << std::endl;
+                    }
+                } catch (const std::exception& e) {
+                    std::cerr << "Exception caught: " << e.what() << std::endl;
+                    dispatcher->stop();
+                    GTEST_FAIL();
+                } catch (...) {
+                    std::cerr << "Exception caught." << std::endl;
+                    dispatcher->stop();
+                    GTEST_FAIL();
                 }
                 dispatcher->stop();
             });
