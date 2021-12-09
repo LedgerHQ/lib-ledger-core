@@ -26,7 +26,6 @@ endif()
 add_subdirectory(blake)
 add_subdirectory(ethash)
 add_subdirectory(snappy)
-add_subdirectory(leveldb)
 add_subdirectory(sha512256)
 
 add_subdirectory(spdlog)

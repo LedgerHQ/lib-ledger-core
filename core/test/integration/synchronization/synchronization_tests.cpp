@@ -41,6 +41,7 @@
 #include "../../fixtures/http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_1.h"
 #include "../../fixtures/http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_2.h"
 #include <api/AllocationMetrics.hpp>
+#include "MemPreferencesBackend.hpp"
 
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 
@@ -424,7 +425,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizationAfterErase) {
             auto date = "2000-03-27T09:10:22Z";
             auto formatedDate = DateUtils::fromJSON(date);
 
-            static std::function<void (std::shared_ptr<uv::SequentialExecutionContext>)> syncAccount = 
+            static std::function<void (std::shared_ptr<uv::SequentialExecutionContext>)> syncAccount =
             [formatedDate, account, this](std::shared_ptr<uv::SequentialExecutionContext> context) {
                 auto localReceiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                     fmt::print("Received event {}\n", api::to_string(event->getCode()));
@@ -446,13 +447,13 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizationAfterErase) {
                     context->stop();
                 });
 
-                auto bus = account->synchronize();               
-                bus->subscribe(context, localReceiver);              
+                auto bus = account->synchronize();
+                bus->subscribe(context, localReceiver);
                 context->waitUntilStopped();
 
                 return Future<Unit>::successful(unit);
             };
-            
+
             syncAccount(std::dynamic_pointer_cast<uv::SequentialExecutionContext>(
                 getTestExecutionContext()));
 
@@ -572,8 +573,8 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnFakeExplorer) {
         rng,
         backend,
         api::DynamicObject::newInstance(),
-        nullptr,
-        nullptr
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        std::make_shared<ledger::core::test::MemPreferencesBackend>()
     );
     {
         const auto walletName = randomWalletName();

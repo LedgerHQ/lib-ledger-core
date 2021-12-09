@@ -37,6 +37,7 @@
 #include <src/wallet/pool/WalletPool.hpp>
 #include <CoutLogPrinter.hpp>
 #include <src/api/DynamicObject.hpp>
+#include "MemPreferencesBackend.hpp"
 
 using namespace ledger::core;
 
@@ -101,8 +102,8 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
             nullptr,
             backend,
             api::DynamicObject::newInstance(),
-            nullptr,
-            nullptr
+            std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+            std::make_shared<ledger::core::test::MemPreferencesBackend>()
     );
 
     api::Currency bitcoin;

@@ -147,7 +147,6 @@ if (PG_SUPPORT)
 endif()
 
 target_link_libraries(ledger-core-interface INTERFACE soci_core_static)
-target_link_libraries(ledger-core-interface INTERFACE leveldb)
 
 target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
 target_link_libraries(ledger-core-interface INTERFACE spdlog)
@@ -204,7 +203,6 @@ else()
     target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/include)
 endif()
 
-target_include_directories(ledger-core-interface INTERFACE ../lib/leveldb/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/boost)
 target_include_directories(ledger-core-interface INTERFACE ../lib/cereal/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/date/)

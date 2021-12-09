@@ -35,15 +35,13 @@
 #include <src/utils/optional.hpp>
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"
+#include "MemPreferencesBackend.hpp"
+
 using namespace std;
 class RippleKeychains : public BaseFixture {
 public:
     void testXrpKeychain(const KeychainTestData &data, std::function<void (RippleLikeKeychain&)> f) {
-        auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-                "/preferences/tests.db",
-                dispatcher->getMainExecutionContext(),
-                resolver
-        );
+        auto backend = std::make_shared<ledger::core::test::MemPreferencesBackend>();
         auto configuration = std::make_shared<DynamicObject>();
         dispatcher->getMainExecutionContext()->execute(ledger::core::make_runnable([=]() {
             RippleLikeKeychain keychain(

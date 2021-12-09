@@ -8,8 +8,6 @@ target_link_libraries(ledger-core-bitcoin-tests gtest gtest_main)
 target_link_libraries(ledger-core-bitcoin-tests gmock)
 target_link_libraries(ledger-core-bitcoin-tests ledger-core-static)
 target_link_libraries(ledger-core-bitcoin-tests ledger-test)
-target_link_libraries(ledger-core-bitcoin-tests leveldb)
-target_include_directories(ledger-core-bitcoin-tests PUBLIC ../../../core/lib/leveldb/include)
 include_directories(../lib/libledger-test/)
 
 include(CopyAndInstallImportedTargets)

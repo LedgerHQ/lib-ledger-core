@@ -38,16 +38,14 @@
 #include <src/utils/optional.hpp>
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"
+#include "MemPreferencesBackend.hpp"
 #include <iostream>
+
 using namespace std;
 class EthereumKeychains : public BaseFixture {
 public:
     void testEthKeychain(const KeychainTestData &data, std::function<void (EthereumLikeKeychain&)> f) {
-        auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-                "/preferences/tests.db",
-                dispatcher->getMainExecutionContext(),
-                resolver
-        );
+        auto backend = std::make_shared<ledger::core::test::MemPreferencesBackend>();
         auto configuration = std::make_shared<DynamicObject>();
         dispatcher->getMainExecutionContext()->execute(ledger::core::make_runnable([=]() {
             EthereumLikeKeychain keychain(

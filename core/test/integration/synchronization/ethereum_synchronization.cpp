@@ -48,6 +48,7 @@
 #include "../../fixtures/http_cache_EthereumLikeWalletSynchronization_MediumXpubSynchronization_2.h"
 #include "../../fixtures/http_cache_EthereumLikeWalletSynchronization_MediumXpubSynchronization_3.h"
 #include "../../fixtures/http_cache_EthereumLikeWalletSynchronization_MediumXpubSynchronization_4.h"
+#include "MemPreferencesBackend.hpp"
 
 using namespace std;
 
@@ -64,7 +65,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
         HTTP_CACHE_EthereumLikeWalletSynchronization_MediumXpubSynchronization_3::BODY);
     http->addCache(HTTP_CACHE_EthereumLikeWalletSynchronization_MediumXpubSynchronization_4::URL,
         HTTP_CACHE_EthereumLikeWalletSynchronization_MediumXpubSynchronization_4::BODY);
-    
+
     auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
     auto erc20Count = 0;
     {
@@ -190,7 +191,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_BalanceHistory) {
 
                     if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                         return;
-                    
+
                     auto balance = uv::wait(account->getBalance());
                     balanceStr = balance->toString();
 
@@ -237,7 +238,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_BalanceHistory) {
 
                 auto eventBus = account->synchronize();
                 eventBus->subscribe(getTestExecutionContext(), receiver);
-                
+
                 dispatcher->waitUntilStopped();
             }
         }
@@ -384,8 +385,8 @@ TEST_F(EthereumLikeWalletSynchronization, ReorgLastBlock) {
             rng,
             backend,
             api::DynamicObject::newInstance(),
-            nullptr,
-            nullptr
+            std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+            std::make_shared<ledger::core::test::MemPreferencesBackend>()
         );
         {
             auto configuration = DynamicObject::newInstance();

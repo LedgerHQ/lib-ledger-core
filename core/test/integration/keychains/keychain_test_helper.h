@@ -36,6 +36,7 @@
 #include <api/EthereumLikeNetworkParameters.hpp>
 #include <api/Currency.hpp>
 #include "../BaseFixture.h"
+#include "MemPreferencesBackend.hpp"
 
 
 struct KeychainTestData {
@@ -121,11 +122,7 @@ template <class Keychain>
 class KeychainFixture : public BaseFixture {
 public:
     void testKeychain(const KeychainTestData &data, std::function<void (Keychain&)> f) {
-        auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-                "/preferences/tests.db",
-                dispatcher->getMainExecutionContext(),
-                resolver
-        );
+        auto backend = std::make_shared<ledger::core::test::MemPreferencesBackend>();
         testKeychain(data, std::move(backend), f);
     };
 

@@ -7,8 +7,6 @@ add_executable(ledger-core-common-tests main.cpp balance_history.cpp)
 target_link_libraries(ledger-core-common-tests gtest gtest_main)
 target_link_libraries(ledger-core-common-tests ledger-core-static)
 target_link_libraries(ledger-core-common-tests ledger-test)
-target_link_libraries(ledger-core-common-tests leveldb)
-target_include_directories(ledger-core-common-tests PUBLIC ../../../core/lib/leveldb/include)
 include_directories(../lib/libledger-test/)
 
 include(CopyAndInstallImportedTargets)
