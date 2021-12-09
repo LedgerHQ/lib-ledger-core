@@ -17,16 +17,12 @@ git submodule update -- djinni || echo "===========Djinni submodule already upda
 git submodule update -- toolchains/polly || echo "===========Polly submodule already updated"
 #git submodule update -- tools/gyp || echo "===========gyp submodule already updated"
 git submodule update -- core/lib/spdlog || echo "===========spdlog submodule already updated"
-git submodule update -- core/lib/leveldb || echo "===========leveldb submodule already updated"
 git submodule update -- core/lib/ethash || echo "===========ethash submodule already updated"
 git submodule update -- core/lib/fmt || echo "===========fmt submodule already updated"
 git submodule update -- core/test/lib/googletest || echo "===========googletest submodule already updated"
 git submodule update -- core/lib/CRCpp || echo "===========CRCpp submodule already updated"
 git submodule update -- core/test/lib/libuv || echo "===========libuv submodule already updated"
 git submodule update -- core/src/wallet/algorand/thirdparty/msgpack-c || echo "===========msgpack submodule already updated"
-
-#should checkout leveldb bitcoin-fork branch on leveldb submodule
-cd $HOME/lib-ledger-core/core/lib/leveldb && git checkout bitcoin-fork
 
 echo "========> Generate ITFs"
 cd $HOME/lib-ledger-core
