@@ -494,7 +494,7 @@ TEST_F(BitcoinLikeWalletSynchronization, XSTParsingAndSerialization) {
     }
 }
 
-TEST_F(BitcoinLikeWalletSynchronization, GetSelfRecipients) {
+TEST_F(BitcoinLikeWalletSynchronization, DISABLED_GetSelfRecipients) {
     const api::ExtendedKeyAccountCreationInfo SELF_RECIPIENT_XPUB_INFO(
         0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
 );
