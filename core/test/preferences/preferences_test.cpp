@@ -107,7 +107,7 @@ TEST_F(PreferencesTest, StoreAndGetWithPreferencesAPI) {
     resolver->clean();
 }
 
-TEST_F(PreferencesTest, DISABLED_EncryptDecrypt) {
+TEST_F(PreferencesTest, EncryptDecrypt) {
     auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "encrypt_decrypt");
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
     auto password = std::string("v3ry_secr3t_p4sSw0rD");
@@ -137,6 +137,7 @@ TEST_F(PreferencesTest, DISABLED_EncryptDecrypt) {
     // (1.)
     backend->unsetEncryption();
 
+#ifdef PG_SUPPORT
     // boolean is not tested because its entropy is way too low
     ASSERT_NE(preferences->getString("string", ""), "dawg");
     ASSERT_NE(preferences->getInt("int", 0), 9246);
@@ -147,6 +148,7 @@ TEST_F(PreferencesTest, DISABLED_EncryptDecrypt) {
     for (auto& s : string_array) {
         ASSERT_TRUE(std::search(garbage.cbegin(), garbage.cend(), s.cbegin(), s.cend()) == garbage.cend());
     }
+#endif
 
     // (2.)
     backend->setEncryption(rng, password);
@@ -169,7 +171,9 @@ TEST_F(PreferencesTest, DISABLED_EncryptDecrypt) {
     backend->unsetEncryption();
     auto cipherText2 = preferences->getString("same", "");
 
+#ifdef PG_SUPPORT
     ASSERT_NE(cipherText1, cipherText2);
+#endif
 }
 
 // This test checks that we can completely unset encryption to go back to a plaintext mode.

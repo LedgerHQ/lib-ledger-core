@@ -192,7 +192,7 @@ TEST(HttpClient, POST) {
     }
 }
 
-TEST(HttpClient, DISABLED_GETWithSax) {
+TEST(HttpClient, GETWithSax) {
     struct Success {
         int the_answer;
     };
@@ -264,7 +264,7 @@ TEST(HttpClient, DISABLED_GETWithSax) {
     }
 }
 
-TEST(HttpClient, DISABLED_GETWithSaxError) {
+TEST(HttpClient, GETWithSaxError) {
     struct Success {
         int the_answer;
     };
