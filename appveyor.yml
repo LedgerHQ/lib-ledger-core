@@ -78,7 +78,7 @@ build_script:
 - if %BUILD_CONFIG% == Release (
     cmake -G "%CMAKE_GENERATOR%" -DBUILD_TESTS=OFF ../lib-ledger-core
   ) else (
-    cmake -G "%CMAKE_GENERATOR%" -DSYS_OPENSSL=ON -DOPENSSL_ROOT_DIR=C:\OpenSSL-Win64 -DOPENSSL_USE_STATIC_LIBS=TRUE ../lib-ledger-core
+    cmake -G "%CMAKE_GENERATOR%" -DBUILD_TESTS=OFF -DSYS_OPENSSL=ON -DOPENSSL_ROOT_DIR=C:\OpenSSL-Win64 -DOPENSSL_USE_STATIC_LIBS=TRUE ../lib-ledger-core
   )
 
 #Build
