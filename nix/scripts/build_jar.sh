@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
+echo "GITHUB_REF==" ${GITHUB_REF}
 printf "\n============ Generate Java/Scala interface files\n"
 bash tools/generate_interfaces.sh
 printf "\n============ Moving native libraries (from ${LIBCORE_LIB_DIR})\n"
@@ -18,7 +19,7 @@ ls -la jar_build/src/main/resources/resources/djinni_native_libs
 printf "\n============ Packaging JAR (with ${LIBCORE_LIB_DIR})\n"
 cd jar_build
 sbt package
-sbt publish
+echo ${GITHUB_REF} | grep "release" && sbt publish
 printf "\n============ Showing target build, hopefully with a JAR to rename ledger-lib-core.jar\n"
 
 mkdir -p artifact
