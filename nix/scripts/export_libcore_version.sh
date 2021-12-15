@@ -18,12 +18,16 @@ echo "=====> Libcore version : $LIBCORE_VERSION"
 #https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-output-parameter
 echo "::set-output name=lib_version::$LIBCORE_VERSION"
 
-if [[ "${GITHUB_EVENT_NAME:-NO}" == "push" ]]; then
+printf "# github event is **${GITHUB_EVENT_NAME}**\n"
+if [[ "${GITHUB_EVENT_NAME:-NO}" == "release" ]]; then
     printf "\nMarking for deploy\n"
     echo "::set-output name=deploy_dynlibs::YES"
     echo "::set-output name=jar_version::${LIB_VERSION}"
-else
-    printf "\n${GITHUB_EVENT_NAME:-NO} is not \"push\", so not marking for deploy\n"
+elif [[ "${GITHUB_EVENT_NAME:-NO}" == "push" ]]; then
+    printf "\n${GITHUB_EVENT_NAME:-NO} is \"push\", creating a snapshot\n"
     echo "::set-output name=deploy_dynlibs::NO"
     echo "::set-output name=jar_version::${LIB_VERSION}-SNAPSHOT"
+elif [[ "${GITHUB_EVENT_NAME:-NO}" == "pull_request" ]]; then
+    printf "Github event matched the \"pull_request\" type\n"
+    printf "No upload being done, cause this is a pull request from a forked repository\n"
 fi
