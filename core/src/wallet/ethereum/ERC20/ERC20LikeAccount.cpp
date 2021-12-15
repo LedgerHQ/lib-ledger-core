@@ -53,6 +53,10 @@ using namespace soci;
 
 namespace ledger {
     namespace core {
+
+        constexpr auto DECIMAL_NUM_BASE = 10;
+
+
         ERC20LikeAccount::ERC20LikeAccount(const std::string &accountUid,
                                            const api::ERC20Token &erc20Token,
                                            const std::string &accountAddress,
@@ -115,7 +119,7 @@ namespace ledger {
                 }
 
                 static inline void update_balance(std::shared_ptr<api::ERC20LikeOperation>& op, BigInt& sum) {
-                    auto value = BigInt(op->getValue()->toString(10));
+                    auto value = BigInt(op->getValue()->toString(DECIMAL_NUM_BASE));
 
                     switch (op->getOperationType()) {
                         case api::OperationType::RECEIVE:
@@ -146,7 +150,7 @@ namespace ledger {
             api::ERC20LikeOperation& op
         ) {
             auto ty = op.getOperationType();
-            auto value = BigInt(op.getValue()->toString(10));
+            auto value = BigInt(op.getValue()->toString(DECIMAL_NUM_BASE));
 
             switch (ty) {
                 case api::OperationType::RECEIVE:
@@ -229,7 +233,7 @@ namespace ledger {
 
                 writer.writeByteArray(hex::toByteArray(toUint256Format(address.substr(2,address.size() - 2))));
 
-                BigInt bigAmount(amount->toString(10));
+                BigInt bigAmount(amount->toString(DECIMAL_NUM_BASE));
                 writer.writeByteArray(hex::toByteArray(toUint256Format(bigAmount.toHexString())));
 
                 return writer.toByteArray();
@@ -247,7 +251,7 @@ namespace ledger {
             auto data = std::dynamic_pointer_cast<EthereumOperationAttachedData>(op.attachedData);
             if (!data)
                 return ;
-            data->erc20Operations.push_back(std::make_tuple(_accountUid, *operation));
+            data->erc20Operations.emplace_back(std::make_tuple(_accountUid, *operation));
         }
 
         std::shared_ptr<api::OperationQuery> ERC20LikeAccount::queryOperations() {
@@ -255,13 +259,14 @@ namespace ledger {
             if (!localAccount) {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
             }
-            auto accountUid = localAccount->getAccountUid();
+            const auto& accountUid = localAccount->getAccountUid();
             auto filter = std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", _accountUid, "e");
+            auto wallet = localAccount->getWallet();
             auto query = std::make_shared<ERC20OperationQuery>(
                     filter,
-                    localAccount->getWallet()->getDatabase(),
-                    localAccount->getWallet()->getPool()->getThreadPoolExecutionContext(),
-                    localAccount->getWallet()->getMainExecutionContext()
+                    wallet->getDatabase(),
+                    wallet->getPool()->getThreadPoolExecutionContext(),
+                    wallet->getMainExecutionContext()
             );
             query->registerAccount(localAccount);
             return query;
@@ -296,7 +301,7 @@ namespace ledger {
 
         Future<ERC20LikeOperationList> ERC20LikeAccount::getAllOperations(int32_t from, int32_t to, bool ascending) {
             auto parent = acquireParent();
-            std::string accountUid = _accountUid;
+            const std::string accountUid = _accountUid;
             return Future<ERC20LikeOperationList>::async(parent->getContext(), [=] () -> ERC20LikeOperationList {
                 soci::session sql (parent->getWallet()->getDatabase()->getReadonlyPool());
                 auto size = to - from;
