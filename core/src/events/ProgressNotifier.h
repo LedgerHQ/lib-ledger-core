@@ -89,7 +89,7 @@ namespace ledger {
             mutable std::list<std::pair<std::shared_ptr<api::ExecutionContext>, ProgressHandler>> _handlers;
             Promise<T> _promise;
             std::string _lastStep;
-            std::mutex _mutex;
+            mutable std::mutex _mutex;
         };
     }
 }
