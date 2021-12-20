@@ -319,6 +319,10 @@ jobs:
         command: |
           . .circleci/export_lib_version.sh
     - run:
+        name: Generate_interfaces
+        command: |
+          . tools/generate_interfaces.sh
+    - run:
         name: Publish_jar
         command: |
           . .circleci/publish_jar.sh

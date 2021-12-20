@@ -6,8 +6,6 @@ JAVA_API_DIR=api/core/java
 SCALA_API_DIR=api/core/scala
 RESOURCE_DIR=$JAR_BUILD_DIR/src/main/resources/resources/djinni_native_libs
 
-bash tools/generate_interfaces.sh
-
 rm -rf $JAR_BUILD_DIR
 mkdir $JAR_BUILD_DIR
 mkdir -p $RESOURCE_DIR
