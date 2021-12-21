@@ -43,6 +43,7 @@
 #include <api/RippleConfigurationDefaults.hpp>
 #include <iostream>
 #include "FakeHttpClient.hpp"
+#include "MemPreferencesBackend.hpp"
 
 using namespace std;
 
@@ -70,8 +71,8 @@ TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction)
         rng,
         backend,
         api::DynamicObject::newInstance(),
-        nullptr,
-        nullptr);
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        std::make_shared<ledger::core::test::MemPreferencesBackend>());
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
@@ -84,7 +85,7 @@ TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction)
 
             fakeHttp->setBehavior({{fmt::format("http://test.test:{}/", api::RippleConfigurationDefaults::RIPPLE_DEFAULT_PORT),
                                     test::FakeUrlConnection::fromString("{\"result\":{\"engine_result\":\"tesSUCCESS\",\"tx_json\":{\"hash\":\"AC0D84CB81E8ECA92E7EF9ABC3526FAED54DE07763A308296B28468D68D34991\"}}}")}});
-            
+
             auto dummy_transaction = make_shared<RippleLikeTransactionApi>(account->getWallet()->getCurrency());
             dummy_transaction->setSequence(BigInt(1));
             dummy_transaction->setLedgerSequence(BigInt(1));

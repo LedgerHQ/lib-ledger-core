@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
+echo "GITHUB_REF==" ${GITHUB_REF}
 printf "\n============ Generate Java/Scala interface files\n"
 bash tools/generate_interfaces.sh
 printf "\n============ Moving native libraries (from ${LIBCORE_LIB_DIR})\n"
@@ -29,4 +30,3 @@ printf "\n============ Showing target build, hopefully with a JAR to rename ledg
 mkdir -p artifact
 mv target/scala-2.12/*.jar artifact/ledger-lib-core.jar
 ls -la artifact
-

@@ -31,7 +31,6 @@
 
 #include "BitcoinLikeWalletFactory.hpp"
 #include "../networks.hpp"
-#include <leveldb/db.h>
 #include <wallet/currencies.hpp>
 #include <api/KeychainEngines.hpp>
 #include <wallet/pool/WalletPool.hpp>

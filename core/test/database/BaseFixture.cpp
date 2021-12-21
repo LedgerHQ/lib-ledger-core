@@ -32,6 +32,7 @@
 #include <FilesystemUtils.hpp>
 #include "IntegrationEnvironment.h"
 #include "BaseFixture.h"
+#include "MemPreferencesBackend.hpp"
 
 api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
         0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
@@ -74,8 +75,8 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
             nullptr,
             backend,
             api::DynamicObject::newInstance(),
-            nullptr,
-            nullptr
+            std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+            std::make_shared<ledger::core::test::MemPreferencesBackend>()
     );
 }
 

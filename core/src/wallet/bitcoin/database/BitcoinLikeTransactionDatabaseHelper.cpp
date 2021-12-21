@@ -95,14 +95,16 @@ namespace ledger {
                 block.currencyName = row.get<std::string>(7);
                 out.block = block;
             }
+
+            auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, out.hash);
+
             // Fetch inputs
             rowset<soci::row> inputRows = (sql.prepare <<
-                "SELECT DISTINCT ON(ti.input_idx) ti.input_idx, i.previous_output_idx, i.previous_tx_hash, i.amount, i.address, i.coinbase,"
+                "SELECT ti.input_idx, i.previous_output_idx, i.previous_tx_hash, i.amount, i.address, i.coinbase,"
                         "i.sequence "
                 "FROM bitcoin_transaction_inputs AS ti "
                 "INNER JOIN bitcoin_inputs AS i ON ti.input_uid = i.uid "
-                "WHERE ti.transaction_hash = :hash ORDER BY ti.input_idx", use(out.hash)
-            );
+                "WHERE ti.transaction_uid = :txuid ORDER BY ti.input_idx", use(btcTxUid));
             for (auto& inputRow : inputRows) {
                 BitcoinLikeBlockchainExplorerInput input;
                 input.index = get_number<uint64_t>(inputRow, 0);
@@ -124,7 +126,6 @@ namespace ledger {
             //solve case of 2 accounts in DB one as sender and one as receiver
             //of same transaction (filter on account_uid won't solve the issue because
             //bitcoin_outputs going to external accounts have NULL account_uid)
-            auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, out.hash);
             rowset<soci::row> outputRows = (sql.prepare <<
                     "SELECT idx, amount, script, address, block_height, replaceable "
                     "FROM bitcoin_outputs WHERE transaction_hash = :hash AND transaction_uid = :tx_uid "

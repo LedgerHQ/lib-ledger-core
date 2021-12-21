@@ -73,7 +73,7 @@ TEST_F(AccountInfoTests, FirstXRPAccountInfo) {
     uv::wait(pool->deleteWallet(walletName));
 }
 
-TEST_F(AccountInfoTests, FirstXTZAccountInfo) {
+TEST_F(AccountInfoTests, DISABLED_FirstXTZAccountInfo) {
     auto pool = newDefaultPool();
     const auto walletName = "my_wallet_firstaccountinfo";
     auto wallet = uv::wait(pool->createWallet(walletName, "tezos", DynamicObject::newInstance()));
@@ -112,7 +112,7 @@ TEST_F(AccountInfoTests, AnotherAccountInfo) {
     uv::wait(pool->deleteWallet(walletName));
 }
 
-TEST_F(AccountInfoTests, GetAddressFromRange) {
+TEST_F(AccountInfoTests, DISABLED_GetAddressFromRange) {
     auto pool = newDefaultPool();
     const auto walletName = "my_wallet_addressFromRange";
     auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));

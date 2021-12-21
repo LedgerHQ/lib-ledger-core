@@ -54,7 +54,7 @@ class TezosLikeWalletSynchronization : public BaseFixture {
 
 };
 
-TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
+TEST_F(TezosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
     auto pool = newDefaultPool("xtz", "");
     static std::function<void (
             const std::string &,

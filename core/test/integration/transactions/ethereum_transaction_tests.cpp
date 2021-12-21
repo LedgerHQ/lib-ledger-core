@@ -51,7 +51,7 @@ struct EthereumMakeTransaction : public EthereumMakeBaseTransaction {
     }
 };
 
-TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
+TEST_F(EthereumMakeTransaction, DISABLED_CreateStandardWithOneOutput) {
     auto builder = tx_builder();
     auto balance = uv::wait(account->getBalance());
     auto fromDate = "2018-01-01T13:38:23Z";

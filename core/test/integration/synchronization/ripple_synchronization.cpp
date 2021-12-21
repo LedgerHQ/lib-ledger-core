@@ -46,7 +46,7 @@ class RippleLikeWalletSynchronization : public BaseFixture {
 
 };
 
-TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
+TEST_F(RippleLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();

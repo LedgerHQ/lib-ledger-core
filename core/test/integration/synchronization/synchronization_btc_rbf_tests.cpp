@@ -182,7 +182,7 @@ static std::string mockTransaction(const std::string& hash, const std::vector<In
     return ss.str();
 }
 
-TEST_F(BitcoinLikeWalletBtcRbfSynchronization, SimpleRbfScenario) {
+TEST_F(BitcoinLikeWalletBtcRbfSynchronization, DISABLED_SimpleRbfScenario) {
     auto pool = newPool();
     auto wallet = uv::wait(pool->createWallet("e857815f-488a-4301-b67c-378a5e9c8a63", "bitcoin",
                                           api::DynamicObject::newInstance()));

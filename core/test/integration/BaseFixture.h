@@ -158,9 +158,10 @@ public:
     protected:
     std::string randomWalletName() const;
     std::string randomDBName() const;
+    std::string randomKeychainName() const;
 
     private:
-    std::string randomName(const std::string& prefix, uint suffix_length = 10) const;
+    std::string randomName(const std::string& prefix, unsigned int suffix_length = 10) const;
 };
 
 #endif //LEDGER_CORE_BASEFIXTURE_H

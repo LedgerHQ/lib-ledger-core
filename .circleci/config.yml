@@ -314,6 +314,22 @@ jobs:
         name: Submodule_Initialization
         command: |
           . .circleci/init_submodules.sh
+    - run:
+        name: Export_Lib_Version
+        command: |
+          . .circleci/export_lib_version.sh
+    - run:
+        name: Generate_interfaces
+        command: |
+          . tools/generate_interfaces.sh
+    - run:
+        name: Publish_jar
+        command: |
+          . .circleci/publish_jar.sh
+    - deploy:
+        name: Deploy_Artifacts
+        command: |
+          . .circleci/deploy.sh
     - store_artifacts:
         path: ~/lib-ledger-core-artifacts
   generate_doc:

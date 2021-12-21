@@ -57,8 +57,8 @@ install:
 - ssh-keygen -y -f c:\users\appveyor\.ssh\id_rsa > c:\users\appveyor\.ssh\id_rsa.pub
 
 #Install openssl
-- ps: Start-FileDownload 'https://slproweb.com/download/Win64OpenSSL-1_1_1L.exe'
-- ps: Start-Process "Win64OpenSSL-1_1_1L.exe" -ArgumentList "/silent /verysilent /sp- /suppressmsgboxes" -Wait
+- ps: Start-FileDownload 'https://slproweb.com/download/Win64OpenSSL-1_1_1m.exe'
+- ps: Start-Process "Win64OpenSSL-1_1_1m.exe" -ArgumentList "/silent /verysilent /sp- /suppressmsgboxes" -Wait
 
 #Install Node
 - ps: Install-Product node $env:nodejs_version
@@ -66,9 +66,6 @@ install:
 #Init submodules
 - cd C:\projects\lib-ledger-core
 - git submodule update --init --recursive
-#Checkout leveldb bitcoin-fork branch
-- cd core\lib\leveldb
-- git checkout bitcoin-fork || echo 'Checkout of bitcoin-fork branch on leveldb submodule failed'
 
 build_script:
 
@@ -81,7 +78,7 @@ build_script:
 - if %BUILD_CONFIG% == Release (
     cmake -G "%CMAKE_GENERATOR%" -DBUILD_TESTS=OFF ../lib-ledger-core
   ) else (
-    cmake -G "%CMAKE_GENERATOR%" -DSYS_OPENSSL=ON -DOPENSSL_ROOT_DIR=C:\OpenSSL-Win64 -DOPENSSL_USE_STATIC_LIBS=TRUE ../lib-ledger-core
+    cmake -G "%CMAKE_GENERATOR%" -DBUILD_TESTS=OFF -DSYS_OPENSSL=ON -DOPENSSL_ROOT_DIR=C:\OpenSSL-Win64 -DOPENSSL_USE_STATIC_LIBS=TRUE ../lib-ledger-core
   )
 
 #Build

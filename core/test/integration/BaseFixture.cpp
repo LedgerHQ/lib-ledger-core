@@ -34,6 +34,7 @@
 #include "BaseFixture.h"
 #include "IntegrationEnvironment.h"
 #include <utils/hex.h>
+#include "MemPreferencesBackend.hpp"
 
 api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
         0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
@@ -171,7 +172,11 @@ std::string BaseFixture::randomDBName() const {
     return randomName("pool-", 10);
 }
 
-std::string BaseFixture::randomName(const std::string& prefix, uint suffix_length) const {
+std::string BaseFixture::randomKeychainName() const {
+    return randomName("keychain-", 10);
+}
+
+std::string BaseFixture::randomName(const std::string& prefix, unsigned int suffix_length) const {
     static const char alphanum[] =
         "0123456789"
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -179,7 +184,7 @@ std::string BaseFixture::randomName(const std::string& prefix, uint suffix_lengt
 
     std::stringstream randName;
     randName << prefix;
-    for (auto i = 0; i < suffix_length; ++i) {
+    for (unsigned int i = 0; i < suffix_length; ++i) {
         randName << alphanum[rng->getRandomLong() % (sizeof(alphanum) - 1)];
     }
 
@@ -221,8 +226,8 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolN
             rng,
             backend,
             configuration,
-            nullptr,
-            nullptr
+            std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+            std::make_shared<ledger::core::test::MemPreferencesBackend>()
     );
 }
 

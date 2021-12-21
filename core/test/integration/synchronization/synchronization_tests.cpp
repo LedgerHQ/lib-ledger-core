@@ -41,6 +41,7 @@
 #include "../../fixtures/http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_1.h"
 #include "../../fixtures/http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_2.h"
 #include <api/AllocationMetrics.hpp>
+#include "MemPreferencesBackend.hpp"
 
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 
@@ -60,6 +61,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
 #else
     auto pool = newDefaultPool();
 #endif
+    const auto walletName = randomWalletName();
 
     {
         //configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
@@ -67,7 +69,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
         configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, true);
         configuration->putInt(api::Configuration::MEMPOOL_GRACE_PERIOD_SECS, 10);
-        auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin",
+        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin",
                                               configuration));
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
@@ -77,39 +79,50 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
 
             bool synchronizationDone = false;
             auto receiver = make_receiver([=, &synchronizationDone](const std::shared_ptr<api::Event> &event) {
-                fmt::print("Received event {}\n", api::to_string(event->getCode()));
-                switch (event->getCode())
-                {
-                case api::EventCode::SYNCHRONIZATION_STARTED:
-                    return;
-                case api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT:
-                    synchronizationDone = true;
-                    break;
-                default:
-                    dispatcher->stop();
-                    return;
-                }
-                auto balance = uv::wait(account->getBalance())->toString();
-                auto destination = "bc1qh4kl0a0a3d7su8udc2rn62f8w939prqpl34z86";
-                auto txBuilder = account->buildTransaction(false);
-                auto tx = uv::wait(std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(txBuilder->sendToAddress(api::Amount::fromLong(wallet->getCurrency(), 2000), destination)
-                                                                                                    ->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>())
-                                                                                                    ->setFeesPerByte(api::Amount::fromLong(wallet->getCurrency(), 50)))
-                                       ->build());
-                EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), destination);
+                try {
+                    fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                    switch (event->getCode())
+                    {
+                    case api::EventCode::SYNCHRONIZATION_STARTED:
+                        return;
+                    case api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT:
+                        synchronizationDone = true;
+                        break;
+                    default:
+                        dispatcher->stop();
+                        return;
+                    }
+                    auto balance = uv::wait(account->getBalance())->toString();
+                    auto destination = "bc1qh4kl0a0a3d7su8udc2rn62f8w939prqpl34z86";
+                    auto txBuilder = account->buildTransaction(false);
+                    auto tx = uv::wait(std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(txBuilder->sendToAddress(api::Amount::fromLong(wallet->getCurrency(), 2000), destination)
+                                                                                                        ->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>())
+                                                                                                        ->setFeesPerByte(api::Amount::fromLong(wallet->getCurrency(), 50)))
+                                           ->build());
+                    EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), destination);
 
-                auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
-                std::cout << "Balance: " << uv::wait(account->getBalance())->toString() << std::endl;
-                std::cout << "Ops: " << ops.size() << std::endl;
-                for (auto& op : ops) {
-                    std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
-                    std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
-                    std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
-                }
-                ops.clear();
-                auto metrics = api::AllocationMetrics::getObjectAllocations();
-                for (const auto& metric : metrics) {
-                    std::cout << metric.first << ": " << metric.second << std::endl;
+                    auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+                    std::cout << "Balance: " << uv::wait(account->getBalance())->toString() << std::endl;
+                    std::cout << "Ops: " << ops.size() << std::endl;
+                    for (auto& op : ops) {
+                        std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
+                        std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
+                        std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
+                    }
+                    ops.clear();
+
+                    auto metrics = api::AllocationMetrics::getObjectAllocations();
+                    for (const auto& metric : metrics) {
+                        std::cout << metric.first << ": " << metric.second << std::endl;
+                    }
+                } catch (const std::exception& e) {
+                    std::cerr << "Exception caught: " << e.what() << std::endl;
+                    dispatcher->stop();
+                    GTEST_FAIL();
+                } catch (...) {
+                    std::cerr << "Exception caught." << std::endl;
+                    dispatcher->stop();
+                    GTEST_FAIL();
                 }
                 dispatcher->stop();
             });
@@ -412,7 +425,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizationAfterErase) {
             auto date = "2000-03-27T09:10:22Z";
             auto formatedDate = DateUtils::fromJSON(date);
 
-            static std::function<void (std::shared_ptr<uv::SequentialExecutionContext>)> syncAccount = 
+            static std::function<void (std::shared_ptr<uv::SequentialExecutionContext>)> syncAccount =
             [formatedDate, account, this](std::shared_ptr<uv::SequentialExecutionContext> context) {
                 auto localReceiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                     fmt::print("Received event {}\n", api::to_string(event->getCode()));
@@ -434,13 +447,13 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizationAfterErase) {
                     context->stop();
                 });
 
-                auto bus = account->synchronize();               
-                bus->subscribe(context, localReceiver);              
+                auto bus = account->synchronize();
+                bus->subscribe(context, localReceiver);
                 context->waitUntilStopped();
 
                 return Future<Unit>::successful(unit);
             };
-            
+
             syncAccount(std::dynamic_pointer_cast<uv::SequentialExecutionContext>(
                 getTestExecutionContext()));
 
@@ -481,7 +494,7 @@ TEST_F(BitcoinLikeWalletSynchronization, XSTParsingAndSerialization) {
     }
 }
 
-TEST_F(BitcoinLikeWalletSynchronization, GetSelfRecipients) {
+TEST_F(BitcoinLikeWalletSynchronization, DISABLED_GetSelfRecipients) {
     const api::ExtendedKeyAccountCreationInfo SELF_RECIPIENT_XPUB_INFO(
         0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
 );
@@ -560,8 +573,8 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnFakeExplorer) {
         rng,
         backend,
         api::DynamicObject::newInstance(),
-        nullptr,
-        nullptr
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        std::make_shared<ledger::core::test::MemPreferencesBackend>()
     );
     {
         const auto walletName = randomWalletName();
@@ -594,7 +607,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnFakeExplorer) {
     }
 }
 
-TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFilterOperationsByBlockHeight) {
+TEST_F(BitcoinLikeWalletSynchronization, DISABLED_SynchronizeAndFilterOperationsByBlockHeight) {
     auto pool = newDefaultPool();
     auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin",
                                           api::DynamicObject::newInstance()));

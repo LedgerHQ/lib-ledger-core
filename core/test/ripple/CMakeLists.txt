@@ -7,8 +7,6 @@ add_executable(ledger-core-ripple-tests main.cpp address_test.cpp)
 target_link_libraries(ledger-core-ripple-tests gtest gtest_main)
 target_link_libraries(ledger-core-ripple-tests ledger-core)
 target_link_libraries(ledger-core-ripple-tests ledger-test)
-target_link_libraries(ledger-core-ripple-tests leveldb)
-target_include_directories(ledger-core-ripple-tests PUBLIC ../../../core/lib/leveldb/include)
 include_directories(../lib/libledger-test/)
 
 include(CopyAndInstallImportedTargets)

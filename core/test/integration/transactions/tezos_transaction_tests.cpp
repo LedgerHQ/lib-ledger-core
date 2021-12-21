@@ -56,7 +56,7 @@ struct TezosMakeTransaction : public TezosMakeBaseTransaction {
     }
 };
 
-TEST_F(TezosMakeTransaction, CreateTx) {
+TEST_F(TezosMakeTransaction, DISABLED_CreateTx) {
     auto builder = tx_builder();
 
     auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {

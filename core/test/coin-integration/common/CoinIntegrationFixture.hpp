@@ -65,6 +65,7 @@
 #include <FilesystemUtils.hpp>
 #include <utils/hex.h>
 #include "../integration/IntegrationEnvironment.h"
+#include "MemPreferencesBackend.hpp"
 
 using namespace ledger::core; // don't do this at home. Only for testing contexts
 using namespace ledger::core::test;
@@ -103,8 +104,8 @@ public:
                 rng,
                 backend,
                 api::DynamicObject::newInstance(),
-                nullptr,
-                nullptr
+                std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+                std::make_shared<ledger::core::test::MemPreferencesBackend>()
         );
     }
 

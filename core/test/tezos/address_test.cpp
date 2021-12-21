@@ -113,7 +113,7 @@ TEST_P(AddressTest, AddressValidation) {
     EXPECT_EQ(api::Address::isValid(address, currency), false);
 }
 
-TEST_F(AddressFeaturesTest, isDelegate) {
+TEST_F(AddressFeaturesTest, DISABLED_isDelegate) {
     auto pool = newDefaultPool();
     auto configuration = DynamicObject::newInstance();
     configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);

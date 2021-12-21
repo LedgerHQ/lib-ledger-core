@@ -112,7 +112,7 @@ TEST_F(WalletTests, CreateNonContiguousAccountBis) {
     auto account3 = createBitcoinLikeAccount(wallet, 4, P2PKH_MEDIUM_XPUB_INFO);
 }
 
-TEST_F(WalletTests, CreateAccountBug) {
+TEST_F(WalletTests, DISABLED_CreateAccountBug) {
     auto pool = newDefaultPool();
     auto wallet = uv::wait(pool->createWallet(randomWalletName(), "bitcoin", api::DynamicObject::newInstance()));
     auto list = [pool, this] () -> Future<Unit> {
