@@ -299,12 +299,16 @@ namespace ledger {
                 if (request.toAddress == senderAddress) {
                     throw make_exception(api::ErrorCode::INVALID_SELF_TX, "Cannot send funds to sending address!");
                 }
+                self->logger()->info("TezosLikeAccount::buildTransaction start");
                 // Check if balance is sufficient
                 auto currency = self->getWallet()->getCurrency();
                 auto accountAddress = TezosLikeAddress::fromBase58(senderAddress, currency);
                 return explorer->getBalance(std::vector<std::shared_ptr<TezosLikeAddress>>{accountAddress}).flatMapPtr<api::TezosLikeTransaction>(
                         self->getMainExecutionContext(),
                         [self, request, explorer, accountAddress, currency, senderAddress](const std::shared_ptr<BigInt> &balance) {
+
+                            self->logger()->info("balance={}", balance->toString());
+
                             // Check if all needed values are set
                             if (!request.transactionGasLimit || !request.storageLimit || !request.transactionFees
                                 || (request.type != api::TezosOperationTag::OPERATION_TAG_DELEGATION && !request.value && !request.wipe)) {
@@ -327,6 +331,9 @@ namespace ledger {
                             return getAllocationFee()
                                     .flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [=]
                                             (const BigInt &burned) {
+
+                                        self->logger()->info("burned={}", burned.toString());
+
                                         auto managerAddress = self->getKeychain()->getAddress()->toString();
                                         auto protocolUpdate = self->getWallet()
                                                 ->getConfiguration()
@@ -343,8 +350,9 @@ namespace ledger {
                                         // during Babylon update (arf ...)
                                         auto setRevealStatus = [self, explorer, tx, senderAddress, managerAddress, request]() {
                                             // So here we are looking for unallocated accounts
-                                            return explorer->getManagerKey(senderAddress.find("KT1") == 0 ? managerAddress : senderAddress).map<Unit>(self->getMainExecutionContext(), [tx, request] (const std::string &managerKey) -> Unit {
+                                            return explorer->getManagerKey(senderAddress.find("KT1") == 0 ? managerAddress : senderAddress).map<Unit>(self->getMainExecutionContext(), [self, tx, request] (const std::string &managerKey) -> Unit {
                                                 tx->reveal(managerKey.empty());
+                                                self->logger()->info("setreveal={}", tx->toReveal());
                                                 std::cout << "Set Reveal:"<< tx->toReveal() << std::endl;
                                                 if (tx->toReveal() && (!request.revealGasLimit || !request.revealFees)) {
                                                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
@@ -361,6 +369,12 @@ namespace ledger {
                                             if (request.type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
                                                 tx->setValue(request.wipe ? std::make_shared<BigInt>(BigInt::ZERO) : request.value);
                                             }
+
+                                            self->logger()->info("request.transactionFees={}", request.transactionFees->toString());
+                                            self->logger()->info("request.transactionGasLimit={}", request.transactionGasLimit->toString());
+                                            self->logger()->info("request.revealFees={}", request.revealFees->toString());
+                                            self->logger()->info("request.revealGasLimit={}", request.revealGasLimit->toString());
+                                            self->logger()->info("request.storageLimit={}", request.storageLimit->toString());
 
                                             // Burned XTZs are not part of the fees
                                             // And if we have a reveal operation, it will be doubled automatically
@@ -429,7 +443,8 @@ namespace ledger {
                                                 tx->setBlockHash(block->hash);
                                                 if (senderAddress.find("KT1") == 0) {
                                                     // HACK: KT Operation we use forge endpoint
-                                                        return explorer->forgeKTOperation(tx).mapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [tx] (const std::vector<uint8_t> &rawTx) {
+                                                        return explorer->forgeKTOperation(tx).mapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, tx] (const std::vector<uint8_t> &rawTx) {
+                                                            self->logger()->info("rawTx={}", std::string(rawTx.begin(), rawTx.end()));
                                                         tx->setRawTx(rawTx);
                                                         return tx;
                                                     });
@@ -437,45 +452,78 @@ namespace ledger {
                                                     return FuturePtr<TezosLikeTransactionApi>::successful(tx);
                                                 }).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, request] (const std::shared_ptr<TezosLikeTransactionApi> &tx) {
                                                     if (request.transactionGasLimit->toInt() == 0) {
+                                                        self->logger()->info("tx={}", tx->serializeJsonForDryRun("somechainid"));
                                                         auto filledTx = tx;
                                                         auto gasPriceFut = request.transactionFees->toInt() == 0
                                                                 ? self->getGasPrice()
                                                                 : FuturePtr<BigInt>::successful(request.transactionFees);
 
                                                         return gasPriceFut.flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, filledTx] (const std::shared_ptr<BigInt>&gasPrice) -> FuturePtr<TezosLikeTransactionApi> {
-                                                            return self->estimateGasLimit(filledTx).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [filledTx, gasPrice] (const std::shared_ptr<GasLimit> &gas) -> FuturePtr<TezosLikeTransactionApi> {
+                                                            return self->estimateGasLimit(filledTx).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, filledTx, gasPrice] (const std::shared_ptr<GasLimit> &gas) -> FuturePtr<TezosLikeTransactionApi> {
                                                                 // 0.000001 comes from the gasPrice->toInt64 being in picoTez
-
                                                                 filledTx->setRevealGasLimit(std::make_shared<BigInt>(gas->reveal));
                                                                 const auto revealFees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->reveal.toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));
                                                                 filledTx->setRevealFees(revealFees);
 
                                                                 filledTx->setTransactionGasLimit(std::make_shared<BigInt>(gas->transaction));
-                                                                const auto transactionFees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->transaction.toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));
+                                                                
+                                                                auto computeFees = [](int64_t size, int64_t gasLimit) -> double {
+                                                                    constexpr double minimalFees = 0.0001; // 100utz
+                                                                    constexpr double minimalNanotezPerByte = 0.000001; // 1000ntz
+                                                                    constexpr double minimalNanotezPerGazUnit = 0.0000001; // 100ntz
+                                                                    constexpr int64_t signatureSize = 64;
+                                                                    return (minimalFees + minimalNanotezPerByte * (size + signatureSize) + minimalNanotezPerGazUnit * gasLimit) * 1e6; // utz
+                                                                };
+                                                                
+                                                                const int64_t txSize = filledTx->serialize().size();
+                                                                double computedFees = computeFees(txSize, gas->transaction.toInt64());
+                                                                self->logger()->info("txSize={}", txSize);
+                                                                self->logger()->info("computedFees={}", computedFees);
+                                                                const auto transactionFees = std::make_shared<BigInt>(static_cast<int64_t>(std::ceil(computedFees)));
                                                                 filledTx->setTransactionFees(transactionFees);
 
+                                                                self->logger()->info("gas->reveal={}", gas->reveal.toString());
+                                                                self->logger()->info("gas->transaction={}", gas->transaction.toString());
+                                                                self->logger()->info("revealFees={}", revealFees->toString());
+                                                                self->logger()->info("gasPrice={}", gasPrice->toString());
+                                                                self->logger()->info("transactionFees={}", transactionFees->toString());
+                                                                self->logger()->info("filledTx={}", filledTx->serializeJsonForDryRun("somechainid"));
                                                                 return FuturePtr<TezosLikeTransactionApi>::successful(filledTx);
                                             });
                                         });
                                                     }
                                                     return FuturePtr<TezosLikeTransactionApi>::successful(tx);
                                                 }).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, request, burned, senderAddress, balance] (const std::shared_ptr<TezosLikeTransactionApi> &tx) {
+                                                    self->logger()->info("tx2={}", tx->serializeJsonForDryRun("somechainid"));
+                                                    
+                                                    self->logger()->info("burned={}", burned.toString());
+                                                    self->logger()->info("balance={}", balance->toString());
                                                     auto fees = burned + BigInt(tx->getFees()->toLong());
+                                                    self->logger()->info("tx->getFees()={}", tx->getFees()->toString());
+                                                    self->logger()->info("fees1={}", fees.toString());
                                                     // If sender is KT account then the managing account is paying the fees ...
                                                     if (senderAddress.find("KT1") == 0) {
                                                         fees = fees - BigInt(tx->getFees()->toLong());
+                                                        self->logger()->info("fees2={}", fees.toString());
                                                     }
 
                                                     if (request.type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
                                                         auto maxPossibleAmountToSend = *balance - fees;
+                                                        self->logger()->info("maxPossibleAmountToSend={}", maxPossibleAmountToSend.toString());
 
                                                         auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
+                                                        self->logger()->info("request.wipe={}", request.wipe);
+                                                        self->logger()->info("amountToSend={}", amountToSend.toString());
+                                                        self->logger()->info("maxPossibleAmountToSend={}", maxPossibleAmountToSend.toString());
                                                         if (maxPossibleAmountToSend < amountToSend) {
                                                             std::cout << maxPossibleAmountToSend.to_string() << "<" << amountToSend.to_string() << std::endl;
                                                             throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
                                                         }
+                                                        self->logger()->info("request.value={}", request.value->toString());
                                                         tx->setValue(request.wipe ? std::make_shared<BigInt>(maxPossibleAmountToSend) : request.value);
                                                     }
+
+                                                    self->logger()->info("tx3={}", tx->serializeJsonForDryRun("somechainid"));
                                                     return FuturePtr<api::TezosLikeTransaction>::successful(tx);
                                                 });                                        });
                                     });
