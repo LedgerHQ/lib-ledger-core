@@ -184,13 +184,13 @@ namespace ledger {
 
             // Hackish way to seemlessly decode DER signature
             // TODO: extract this into a setDERSignature method
-            if (signature.size() != 64) {
+            if (signature.size() != SIGNATURE_SIZE_BYTES) {
                 auto der = DER::fromRaw(signature);
                 decoded = der.toBytes();
             }
 
             // Decoded bytes-only signature should be 64 bytes
-            if (decoded.size() != 64) {
+            if (decoded.size() != SIGNATURE_SIZE_BYTES) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::setSignature: XTZ signature should have a length of 64 bytes.");
             }                
             _signature = decoded;
