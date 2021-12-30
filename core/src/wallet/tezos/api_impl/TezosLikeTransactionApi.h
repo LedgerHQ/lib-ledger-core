@@ -44,6 +44,9 @@ namespace ledger {
         // Reference: https://github.com/obsidiansystems/ledger-app-tezos/blob/9a0c8cc546677147b93935e0b0c96925244baf64/src/types.h
         class TezosLikeTransactionApi : public api::TezosLikeTransaction {
         public:
+            static const std::size_t SIGNATURE_SIZE_BYTES = 64;
+
+
             explicit TezosLikeTransactionApi(const api::Currency &currency,
                                              const std::string &protocolUpdate);
 
