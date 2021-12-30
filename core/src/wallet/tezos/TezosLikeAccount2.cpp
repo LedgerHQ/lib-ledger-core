@@ -502,10 +502,12 @@ namespace ledger {
                                                         tx->setValue(request.wipe ? std::make_shared<BigInt>(maxPossibleAmountToSend) : request.value);
                                                     }
 
+                                                    std::shared_ptr<api::Amount> value = tx->getValue();
+
                                                     self->logger()->info(
                                                         "Transaction amount specifications: totalfees={} (including burned={}) value={} oldbalance={}", 
                                                         fees.toString(), burned.toString(),
-                                                        tx->getValue()->toString(), balance->toString()
+                                                        value ? value->toString() : "NA", balance->toString()
                                                     );
 
                                                     return FuturePtr<api::TezosLikeTransaction>::successful(tx);
