@@ -1,3 +1,6 @@
+## 4.1.2
+
+- Fix of Tezos fees calculation formula
 ## 4.1.1
 > Unreleased
 
