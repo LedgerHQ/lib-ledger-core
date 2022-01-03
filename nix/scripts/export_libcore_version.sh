@@ -24,9 +24,16 @@ if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
     printf "\nMarking for deploy\n"
     echo "::set-output name=deploy_dynlibs::YES"
     echo "::set-output name=jar_version::${LIB_VERSION}"
-elif [[ "${GITHUB_EVENT_NAME}" == "push" ]] || [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]] ; then
+elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
     printf "\nMarking for snapshot\n"
     echo "::set-output name=deploy_dynlibs::NO"
     echo "::set-output name=jar_version::${LIB_VERSION}-${LIBCORE_GIT_DESCRIBE}-SNAPSHOT"
+elif [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+    printf "\nMarking for snapshot\n"
+    BRANCH_NAME=$1
+    BRANCH_LENGTH=`git rev-list --count ^remotes/origin/${GITHUB_BASE_REF} remotes/origin/${BRANCH_NAME}`
+    ABBREV_COMMIT_HASH=`git rev-list ^remotes/origin/${GITHUB_BASE_REF} remotes/origin/${BRANCH_NAME} | head -n 1 | cut -c 1-6`
+    echo "::set-output name=deploy_dynlibs::NO"
+    echo "::set-output name=jar_version::${LIB_VERSION}-${BRANCH_NAME}-${BRANCH_LENGTH}-${ABBREV_COMMIT_HASH}-SNAPSHOT"
 fi
 
