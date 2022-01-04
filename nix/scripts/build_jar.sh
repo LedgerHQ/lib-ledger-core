@@ -19,14 +19,12 @@ ls -la jar_build/src/main/resources/resources/djinni_native_libs
 printf "\n============ Packaging JAR (with ${LIBCORE_LIB_DIR})\n"
 cd jar_build
 sbt package
-if [[ "${GITHUB_EVENT_NAME:-NO}" == "pull_request" ]]; then
-    printf "Github event matched the \"pull_request\" type\n"
-    printf "No upload being done, cause this is a pull request from a forked repository\n"
-else
-    printf "Running SBT publish\n"
-    sbt publish
-fi
+sbt publish
 printf "\n============ Showing target build, hopefully with a JAR to rename ledger-lib-core.jar\n"
 mkdir -p artifact
-mv target/scala-2.12/*.jar artifact/ledger-lib-core.jar
+for f in `ls target/scala-2.12/`
+do
+  dst=`echo $f | perl -pe 's/^.*?(-[a-z]+)?(\.[a-z]+)$/ledger-lib-core$1$2/'`
+  mv target/scala-2.12/$f artifact/$dst
+done
 ls -la artifact

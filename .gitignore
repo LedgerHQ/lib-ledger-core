@@ -31,3 +31,7 @@ tags
 result/
 jar_build/
 artifact/
+
+# vim temporary files
+*.sw?
+

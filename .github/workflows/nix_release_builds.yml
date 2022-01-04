@@ -24,9 +24,14 @@ jobs:
       jar_version: ${{ steps.lib_version.outputs.jar_version }}
     steps:
       - uses: actions/checkout@v2.3.4
+        with:
+          fetch-depth: 0   # By default action fetches only a single commit.
+                           # fetch-depth=0 forces to fetch all history and tags.
+                           # nix/scripts/export_libcore_version.sh requires git history
+                           # https://github.com/actions/checkout/blob/v2.3.4/README.md
       - name: Set version slug and push_to_S3 flags
         id: lib_version
-        run: bash nix/scripts/export_libcore_version.sh
+        run: bash nix/scripts/export_libcore_version.sh ${{ github.event.pull_request.head.ref }}
   Ubuntu_jni:
     name: Linux (with JNI)
     needs: libcore_version
