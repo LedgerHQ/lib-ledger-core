@@ -1,0 +1,32 @@
+POST https://s2.ripple.com:51234/
+1
+{"method":"server_state","params":[{}]}
+3
+{"result":{"state":{"build_version":"1.8.0-rc2","complete_ledgers":"32570-68864688","io_latency_ms":1,"last_close":{"converge_time":0,"proposers":0},"pubkey_node":"n9MgCJXcqvsrZ9AbPsdvLdkvAnrXmvLWBNbE3JS8NPFK7oyvnzC9","published_ledger":"none","reporting":{"etl_sources":[{"connected":true,"grpc_port":"50051","ip":"52.43.207.32","last_message_arrival_time":"2022-Jan-08 00:28:53.133313 UTC","validated_ledgers_range":"68842464-68864688","websocket_port":"51233"},{"connected":true,"grpc_port":"50051","ip":"35.162.207.187","last_message_arrival_time":"2022-Jan-08 00:28:53.133667 UTC","validated_ledgers_range":"68831285-68864688","websocket_port":"51233"},{"connected":true,"grpc_port":"50051","ip":"54.185.9.123","last_message_arrival_time":"2022-Jan-08 00:28:53.133158 UTC","validated_ledgers_range":"68836521-68864688","websocket_port":"51233"},{"connected":true,"grpc_port":"50051","ip":"44.224.110.8","last_message_arrival_time":"2022-Jan-07 02:14:14.010319 UTC","validated_ledgers_range":"68803550-68844285","websocket_port":"51233"}],"is_writer":false,"last_publish_time":"2022-Jan-08 00:28:52.419133 UTC"},"server_state":"full","server_state_duration_us":"1313893082444","state_accounting":{"connected":{"duration_us":"0","transitions":0},"disconnected":{"duration_us":"62546","transitions":1},"full":{"duration_us":"1313893082444","transitions":1},"syncing":{"duration_us":"0","transitions":0},"tracking":{"duration_us":"0","transitions":0}},"time":"2022-Jan-08 00:28:53.148028 UTC","uptime":1313896,"validated_ledger":{"base_fee":10,"close_time":694916930,"hash":"133B0A03287261F0C0250BEE6FE049F444EE75DE45D2F34B12E87790FC651371","reserve_base":10000000,"reserve_inc":2000000,"seq":68864688},"validation_quorum":1},"status":"success","warnings":[{"id":1004,"message":"This is a reporting server.  The default behavior of a reporting server is to only return validated data. If you are looking for not yet validated data, include \"ledger_index : current\" in your request, which will cause this server to forward the request to a p2p node. If the forward is successful the response will include \"forwarded\" : \"true\""}]}}
+
+
+
+POST https://s2.ripple.com:51234/
+1
+{"method":"ledger","params":[{"ledger_index":"validated"}]}
+3
+{"result":{"ledger":{"accepted":true,"account_hash":"D913EC2D629BD07CF23C58E358FF7638AA5B279664305A85A87C26C750C8B0FC","close_flags":0,"close_time":694916930,"close_time_human":"2022-Jan-08 00:28:50.000000000 UTC","close_time_resolution":10,"closed":true,"hash":"133B0A03287261F0C0250BEE6FE049F444EE75DE45D2F34B12E87790FC651371","ledger_hash":"133B0A03287261F0C0250BEE6FE049F444EE75DE45D2F34B12E87790FC651371","ledger_index":"68864688","parent_close_time":694916922,"parent_hash":"BBA05CC9643A01E1DD40423705955F7AC8FC3CCE704A59741BF11C0A4491F6EF","seqNum":"68864688","totalCoins":"99989802173682311","total_coins":"99989802173682311","transaction_hash":"917A475DFFDDECBD2DED14C28AF5AA30F7868161E46F18D005209A2530A81EE9"},"ledger_hash":"133B0A03287261F0C0250BEE6FE049F444EE75DE45D2F34B12E87790FC651371","ledger_index":68864688,"status":"success","validated":true,"warnings":[{"id":1004,"message":"This is a reporting server.  The default behavior of a reporting server is to only return validated data. If you are looking for not yet validated data, include \"ledger_index : current\" in your request, which will cause this server to forward the request to a p2p node. If the forward is successful the response will include \"forwarded\" : \"true\""}]}}
+
+
+
+POST https://s2.ripple.com:51234/
+1
+{"method":"account_info","params":[{"account":"r4j2WKcuL3iRJ25QfKLv1JHQXmxM5Zhxuo","ledger_index":"validated"}]}
+3
+{"result":{"account":"r4j2WKcuL3iRJ25QfKLv1JHQXmxM5Zhxuo","error":"actNotFound","error_code":19,"error_message":"Account not found.","ledger_hash":"133B0A03287261F0C0250BEE6FE049F444EE75DE45D2F34B12E87790FC651371","ledger_index":68864688,"request":{"account":"r4j2WKcuL3iRJ25QfKLv1JHQXmxM5Zhxuo","command":"account_info","ledger_index":"validated"},"status":"error","validated":true,"warnings":[{"id":1004,"message":"This is a reporting server.  The default behavior of a reporting server is to only return validated data. If you are looking for not yet validated data, include \"ledger_index : current\" in your request, which will cause this server to forward the request to a p2p node. If the forward is successful the response will include \"forwarded\" : \"true\""}]}}
+
+
+
+POST https://s2.ripple.com:51234/
+1
+{"method":"account_tx","params":[{"account":"r4j2WKcuL3iRJ25QfKLv1JHQXmxM5Zhxuo","forward":1}]}
+3
+{"result":{"account":"r4j2WKcuL3iRJ25QfKLv1JHQXmxM5Zhxuo","ledger_index_max":68864688,"ledger_index_min":32570,"limit":0,"status":"success","transactions":[],"used_postgres":true,"validated":true,"warnings":[{"id":1004,"message":"This is a reporting server.  The default behavior of a reporting server is to only return validated data. If you are looking for not yet validated data, include \"ledger_index : current\" in your request, which will cause this server to forward the request to a p2p node. If the forward is successful the response will include \"forwarded\" : \"true\""}]}}
+
+
+

@@ -36,4 +36,10 @@ else()
     copy_install_imported_targets(ledger-core-tezos-tests crypto ledger-core)
 endif()
 
+add_custom_command(TARGET ${TEZOS_TESTS_NAME} POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_CURRENT_SOURCE_DIR}/http_cache
+                       $<TARGET_FILE_DIR:${TEZOS_TESTS_NAME}>/../http_cache/
+                   )
+
 gtest_discover_tests(${TEZOS_TESTS_NAME} PROPERTIES "LABELS;unit")

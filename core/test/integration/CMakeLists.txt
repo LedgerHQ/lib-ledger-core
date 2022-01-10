@@ -59,6 +59,12 @@ else()
     copy_install_imported_targets(ledger-core-integration-tests uv)
 endif()
 
+add_custom_command(TARGET ledger-core-integration-tests  POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_CURRENT_SOURCE_DIR}/http_cache
+                       $<TARGET_FILE_DIR:ledger-core-integration-tests>/../http_cache/
+                   )
+
 include(GoogleTest)
 gtest_discover_tests(ledger-core-integration-tests PROPERTIES "LABELS;integration")
 
