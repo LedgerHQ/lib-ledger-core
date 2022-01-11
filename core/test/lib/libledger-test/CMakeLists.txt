@@ -24,25 +24,6 @@ add_library(ledger-test STATIC
             callbacks.cpp callbacks.hpp
             route.cc route.h)
 
-add_library(ledger-test-proxy-http-client STATIC
-            FakeUrlConnection.hpp FakeUrlConnection.cpp
-            ProxyHttpClient.hpp ProxyHttpClient.cpp)
-
-target_link_libraries(ledger-test PUBLIC ledger-test-proxy-http-client)
-target_link_libraries(ledger-test-proxy-http-client PUBLIC ledger-core-static)
-target_link_libraries(ledger-test-proxy-http-client PUBLIC gtest)
-
-if (TESTS_UPDATE_HTTP_CACHE)
-    message("ProxyHttpClient mode: update HTTP cache")
-    set_property(SOURCE ProxyHttpClient.cpp PROPERTY COMPILE_DEFINITIONS UPDATE_HTTP_CACHE ALLOW_HTTP_ACCESS)
-elseif (TESTS_RUN_WITHOUT_HTTP_CACHE)
-    message("ProxyHttpClient mode: don't use HTTP cache")
-    set_property(SOURCE ProxyHttpClient.cpp PROPERTY COMPILE_DEFINITIONS ALLOW_HTTP_ACCESS)
-else ()
-    message("ProxyHttpClient mode: use HTTP cache")
-    set_property(SOURCE ProxyHttpClient.cpp PROPERTY COMPILE_DEFINITIONS LOAD_HTTP_CACHE)
-endif()
-
 if (SYS_OPENSSL)
     include_directories(${CMAKE_BINARY_DIR}/include ${OPENSSL_INCLUDE_DIR})
 else()
@@ -76,6 +57,9 @@ if(UNIX AND NOT ANDROID)
     target_link_libraries(ledger-test PUBLIC $<$<CXX_COMPILER_ID:GNU>: stdc++fs> )
 endif()
 
+add_subdirectory(proxy-http-client)
+
+target_link_libraries(ledger-test PUBLIC ledger-test-proxy-http-client)
 target_link_libraries(ledger-test PUBLIC ledger-core-static)
 target_link_libraries(ledger-test PUBLIC mangoose)
 target_include_directories(ledger-test PUBLIC ../../../lib/fmt-3.0.0)
@@ -85,3 +69,4 @@ target_include_directories(ledger-test PUBLIC ../../../../core/src)
 target_include_directories(ledger-test PUBLIC ../../../lib/boost/)
 target_include_directories(ledger-test PUBLIC ../libuv/include)
 target_include_directories(ledger-test PUBLIC ../cpp-httplib/)
+
