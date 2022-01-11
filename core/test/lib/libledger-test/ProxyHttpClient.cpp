@@ -23,8 +23,7 @@
 #error "Incorrect configuration of HTTP caching"
 #endif
 
-using namespace std;
-namespace fs = experimental::filesystem;
+namespace fs = std::experimental::filesystem;
 
 namespace ledger {
     namespace core {
@@ -40,47 +39,47 @@ namespace ledger {
                         save();
                     }
 
-                    void add(const string& type,
-                             const string& url,
-                             const string& request_body,
-                             const string& response_body) {
-                        ostringstream oss;
-                        oss << type << " " << url << endl;
+                    void add(const std::string& type,
+                             const std::string& url,
+                             const std::string& request_body,
+                             const std::string& response_body) {
+                        std::ostringstream oss;
+                        oss << type << " " << url << std::endl;
                         oss << encodeBody(request_body);
 
-                        lock_guard<mutex> guard(_mutex);
+                        std::lock_guard<std::mutex> guard(_mutex);
                         _data[oss.str()] = encodeBody(response_body);
                     }
 
-                    static string getCacheFileName() {
+                    static std::string getCacheFileName() {
                         const testing::TestInfo* const test_info =
                             testing::UnitTest::GetInstance()->current_test_info();
 
-                        const string cache_fn = string(HTTP_CACHE_DIR)
-                                + string("/")
-                                + string(test_info->test_suite_name())
-                                + string(".")
-                                + string(test_info->name());
+                        const std::string cache_fn = std::string(HTTP_CACHE_DIR)
+                                + std::string("/")
+                                + std::string(test_info->test_suite_name())
+                                + std::string(".")
+                                + std::string(test_info->name());
 
                         return cache_fn;
                     }
 
                 protected:
-                    typedef unordered_map<string, string> map_type_t;
+                    typedef std::unordered_map<std::string, std::string> map_type_t;
 
-                    string encodeBody(const string& body) {
-                        ostringstream oss;
+                    std::string encodeBody(const std::string& body) {
+                        std::ostringstream oss;
                         if (body.size() == 0) {
-                            oss << 0 << endl;
+                            oss << 0 << std::endl;
                         } else {
-                            oss << count(body.begin(), body.end(), '\n') + 1 << endl;
-                            oss << body << endl;
+                            oss << std::count(body.begin(), body.end(), '\n') + 1 << std::endl;
+                            oss << body << std::endl;
                         }
                         return oss.str();
                     }
 
                     void save() {
-                        lock_guard<mutex> guard(_mutex);
+                        std::lock_guard<std::mutex> guard(_mutex);
 
                         if (_data.empty())
                             return;
@@ -88,25 +87,25 @@ namespace ledger {
                         if (!fs::exists(HTTP_CACHE_DIR))
                             fs::create_directory(HTTP_CACHE_DIR);
 
-                        ofstream out(_cache_fn);
+                        std::ofstream out(_cache_fn);
 
                         for (const auto& kv : _data)
-                            out << kv.first << kv.second << endl;
+                            out << kv.first << kv.second << std::endl;
                     }
 
-                    mutex _mutex;
+                    std::mutex _mutex;
                     map_type_t _data;
-                    string _cache_fn;
+                    std::string _cache_fn;
                 };
 
                 class LoggingHttpRequest : public api::HttpRequest {
                 public:
-                    typedef function<void(const string& type,
-                                          const string& url,
-                                          const vector<uint8_t>& req_body,
-                                          const string& resp_body)> callback_t;
+                    typedef std::function<void(const std::string& type,
+                                               const std::string& url,
+                                               const std::vector<uint8_t>& req_body,
+                                               const std::string& resp_body)> callback_t;
 
-                    LoggingHttpRequest(const shared_ptr<api::HttpRequest>& request, callback_t fn)
+                    LoggingHttpRequest(const std::shared_ptr<api::HttpRequest>& request, callback_t fn)
                         : _request(request), _callback(fn) {}
 
                     virtual ~LoggingHttpRequest() {}
@@ -115,38 +114,39 @@ namespace ledger {
                         return _request->getMethod();
                     }
 
-                    virtual unordered_map<string, string> getHeaders() {
+                    virtual std::unordered_map<std::string, std::string> getHeaders() {
                         return _request->getHeaders();
                     }
 
-                    virtual vector<uint8_t> getBody() {
+                    virtual std::vector<uint8_t> getBody() {
                         return _request->getBody();
                     }
 
-                    virtual string getUrl() {
+                    virtual std::string getUrl() {
                         return _request->getUrl();
                     }
 
-                    virtual void complete(const shared_ptr<api::HttpUrlConnection> & response, const experimental::optional<api::Error> & error) {
-                        const string response_body = readResponseBody(response);
+                    virtual void complete(const std::shared_ptr<api::HttpUrlConnection> & response,
+                                          const std::experimental::optional<api::Error> & error) {
+                        const std::string response_body = readResponseBody(response);
                         _callback(to_string(getMethod()), getUrl(), getBody(), response_body);
                         _request->complete(FakeUrlConnection::fromString(response_body), error);
                     }
 
                 protected:
-                    static string readResponseBody(const shared_ptr<api::HttpUrlConnection> & response) {
-                        string response_body;
+                    static std::string readResponseBody(const std::shared_ptr<api::HttpUrlConnection> & response) {
+                        std::string response_body;
                         while (true) {
                             api::HttpReadBodyResult body = response->readBody();
 
                             if (body.error)
-                                throw runtime_error(body.error->message);
+                                throw std::runtime_error(body.error->message);
 
                             if (body.data) {
-                                const vector<uint8_t>& data = *(body.data);
+                                const std::vector<uint8_t>& data = *(body.data);
                                 if (data.empty())
                                     break;
-                                response_body += string((char*)data.data(), data.size());
+                                response_body += std::string(data.begin(), data.end());
                                 continue;
                             }
                             break;
@@ -154,12 +154,12 @@ namespace ledger {
                         return response_body;
                     }
 
-                    const shared_ptr<api::HttpRequest> _request;
+                    const std::shared_ptr<api::HttpRequest> _request;
                     callback_t _callback;
                 };
             }
 
-            ProxyHttpClient::ProxyHttpClient(shared_ptr<api::HttpClient> httpClient)
+            ProxyHttpClient::ProxyHttpClient(std::shared_ptr<api::HttpClient> httpClient)
                 : _httpClient(httpClient)
             {
 #ifdef UPDATE_HTTP_CACHE
@@ -167,33 +167,32 @@ namespace ledger {
 #endif
 
 #ifdef LOAD_HTTP_CACHE
-                if (!_logger) {
+                if (!_logger)
                     loadCache(impl::TrafficLogger::getCacheFileName());
-                }
 #endif
             }
 
-            void ProxyHttpClient::execute(const shared_ptr<api::HttpRequest>& request) {
-                auto vector_uint8_to_string = [](const vector<uint8_t>& v) {
-                    return string((const char*)v.data(), v.size());
+            void ProxyHttpClient::execute(const std::shared_ptr<api::HttpRequest>& request) {
+                auto vector_uint8_to_string = [](const std::vector<uint8_t>& v) {
+                    return std::string(v.begin(), v.end());
                 };
                 auto it = _cache.find(request->getUrl() + vector_uint8_to_string(request->getBody()));
                 if (it != _cache.end() && !_logger) {
-                    cout << "get response from cache : " << request->getUrl() << endl;
-                    request->complete(it->second, experimental::nullopt);
+                    std::cout << "get response from cache : " << request->getUrl() << std::endl;
+                    request->complete(it->second, std::experimental::nullopt);
                     return;
                 }
 
 #ifndef ALLOW_HTTP_ACCESS
-                throw runtime_error("HTTP access isn't allowed.");
+                throw std::runtime_error("HTTP access isn't allowed.");
 #endif
                 if (_logger) {
-                    shared_ptr<impl::LoggingHttpRequest> temp
-                            = make_shared<impl::LoggingHttpRequest>(request,
-                                                                    [this, vector_uint8_to_string](const string& type,
-                                                                                                   const string& url,
-                                                                                                   const vector<uint8_t>& req_body,
-                                                                                                   const string& resp_body){
+                    std::shared_ptr<impl::LoggingHttpRequest> temp
+                            = std::make_shared<impl::LoggingHttpRequest>(request,
+                                                                    [this, vector_uint8_to_string](const std::string& type,
+                                                                                                   const std::string& url,
+                                                                                                   const std::vector<uint8_t>& req_body,
+                                                                                                   const std::string& resp_body){
                         _logger->add(type, url, vector_uint8_to_string(req_body), resp_body);
                     });
 
@@ -207,7 +206,7 @@ namespace ledger {
                 }
             }
 
-            void ProxyHttpClient::loadCache(const string& file_name) {
+            void ProxyHttpClient::loadCache(const std::string& file_name) {
                 // Cache file format:
                 // (GET|POST) URL
                 // request length in lines
@@ -215,12 +214,12 @@ namespace ledger {
                 // response length in lines
                 // response body
                 // empty line
-                auto read_body = [](ifstream& file) {
-                    string s, line;
+                auto read_body = [](std::ifstream& file) {
+                    std::string s, line;
                     size_t n = 0;
 
                     file >> n;
-                    while (n > 0 && getline(file, line)) {
+                    while (n > 0 && std::getline(file, line)) {
                         if (s.empty() && line.empty())
                             continue;
                         if (!s.empty())
@@ -232,13 +231,13 @@ namespace ledger {
                     return s;
                 };
 
-                ifstream input_file(file_name);
+                std::ifstream input_file(file_name);
                 if (input_file.is_open()) {
-                    string line;
-                    string type, url;
+                    std::string line;
+                    std::string type, url;
                     while (input_file >> type >> url) {
-                        const string request_body = read_body(input_file);
-                        const string response_body = read_body(input_file);
+                        const std::string request_body = read_body(input_file);
+                        const std::string response_body = read_body(input_file);
 
                         url += request_body;
                         addCache(url, response_body);
@@ -246,7 +245,7 @@ namespace ledger {
                 }
             }
 
-            void ProxyHttpClient::addCache(const string& url, const string& body) {
+            void ProxyHttpClient::addCache(const std::string& url, const std::string& body) {
                 _cache.emplace(url, FakeUrlConnection::fromString(body));
             }
         }
