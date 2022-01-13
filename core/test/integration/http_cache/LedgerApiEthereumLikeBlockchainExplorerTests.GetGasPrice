@@ -1,0 +1,5 @@
+GET https://explorers.api.live.ledger.com/blockchain/v3/eth_ropsten/fees
+0
+1
+{"gas_price":1468414801,"error":false,"valid":true}
+

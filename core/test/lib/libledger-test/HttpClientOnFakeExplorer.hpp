@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <memory>
 #include "api/HttpClient.hpp"
-#include "FakeUrlConnection.hpp"
+#include "proxy-http-client/FakeUrlConnection.hpp"
 #include "ExplorerStorage.hpp"
 
 namespace ledger {

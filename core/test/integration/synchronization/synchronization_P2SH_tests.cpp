@@ -110,16 +110,16 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, SynchronizeOnceAtATime) {
     }
 }
 
-TEST_F(BitcoinLikeWalletP2SHSynchronization, SynchronizeFromLastBlock) {
+TEST_F(BitcoinLikeWalletP2SHSynchronization, DISABLED_SynchronizeFromLastBlock) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
-
-        auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a63", "bitcoin_testnet",configuration));
+        const auto walletName = randomWalletName();
+        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin_testnet",configuration));
         createBitcoinLikeAccount(wallet, 0, P2SH_XPUB_INFO);
-        auto synchronize = [wallet, pool, this] (bool expectNewOp) {
+        auto synchronize = [wallet, pool, this] (std::shared_ptr<uv::SequentialExecutionContext> context, bool expectNewOp) {
             auto account = uv::wait(wallet->getAccount(0));
             auto numberOfOp = 0;
 
@@ -128,7 +128,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, SynchronizeFromLastBlock) {
             });
 
             auto eventBus = pool->getEventBus();
-            eventBus->subscribe(getTestExecutionContext(),receiverNumberOp);
+            eventBus->subscribe(context, receiverNumberOp);
             auto bus = account->synchronize();
 
             auto receiver = make_receiver([=, &numberOfOp](const std::shared_ptr<api::Event> &event) {
@@ -138,18 +138,20 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, SynchronizeFromLastBlock) {
 
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                 EXPECT_EQ(expectNewOp, (numberOfOp > 0));
-                dispatcher->stop();
+                context->stop();
             });
 
-            bus->subscribe(getTestExecutionContext(),receiver);
+            bus->subscribe(context, receiver);
             auto newBus = account->synchronize();
             EXPECT_EQ(bus, newBus);
-            dispatcher->waitUntilStopped();
+            context->waitUntilStopped();
             return bus;
         };
 
-        auto b1 = synchronize(true);
-        auto b2 = synchronize(false);
+        auto b1 = synchronize(std::dynamic_pointer_cast<uv::SequentialExecutionContext>(
+                                  dispatcher->getSerialExecutionContext("__sync1__")), true);
+        auto b2 = synchronize(std::dynamic_pointer_cast<uv::SequentialExecutionContext>(
+                                  dispatcher->getSerialExecutionContext("__sync2__")), false);
         EXPECT_NE(b1, b2);
     }
 }

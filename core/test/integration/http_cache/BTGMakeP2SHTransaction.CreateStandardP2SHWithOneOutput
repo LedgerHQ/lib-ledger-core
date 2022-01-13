@@ -1,0 +1,10 @@
+GET https://explorers.api.live.ledger.com/blockchain/v2/btg/blocks/current
+0
+1
+{"hash":"00000002e58fec3340bff49c71af407b30b956ff3ad51f05d28cea151dff5a65","height":720148,"time":"2022-01-08T00:13:18Z","txs":["9ceaceebf4750495d56f0c4fe32e018e5a5e573809cfeaae5e04bd30f98f290b","052fd762405513541d393234aa0b9fd590e108b38e2d6beca97a65c23dfb9f4a","dd78e763fcdbf23112564ef939dbb4c935465788d8b9fa83b0fd114637a25b38"]}
+
+GET https://explorers.api.live.ledger.com/timestamp
+0
+1
+{"timestamp":1641601718}
+

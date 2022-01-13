@@ -35,7 +35,6 @@
 #include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/ethereum/explorers/LedgerApiEthereumLikeBlockchainExplorer.h>
 #include "BaseFixture.h"
-#include "../../fixtures/http_cache_LedgerApiBitcoinLikeBlockchainExplorerTests_GetTransactions.h"
 
 template <typename CurrencyExplorer, typename NetworkParameters>
 class LedgerApiBlockchainExplorerTests : public BaseFixture {
@@ -144,8 +143,6 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetCurrentBlock) {
 }
 
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactions) {
-    http->addCache(HTTP_CACHE_LedgerApiBitcoinLikeBlockchainExplorerTests_GetTransactions::URL,
-        HTTP_CACHE_LedgerApiBitcoinLikeBlockchainExplorerTests_GetTransactions::BODY);
     auto result = uv::wait(explorer
                                ->getTransactions(
                                        {"1H6ZZpRmMnrw8ytepV3BYwMjYYnEkWDqVP", "1DxPxrQtUXVcebgNYETn163RQaEKxAvxqP"},
