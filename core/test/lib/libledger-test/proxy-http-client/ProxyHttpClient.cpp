@@ -163,7 +163,7 @@ namespace ledger {
                 : _httpClient(httpClient)
             {
 #ifdef UPDATE_HTTP_CACHE
-                _logger = make_shared<impl::TrafficLogger>();
+                _logger = std::make_shared<impl::TrafficLogger>();
 #endif
 
 #ifdef LOAD_HTTP_CACHE
