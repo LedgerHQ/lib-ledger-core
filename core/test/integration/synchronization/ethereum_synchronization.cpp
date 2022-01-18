@@ -52,7 +52,7 @@ class EthereumLikeWalletSynchronization : public BaseFixture {
 
 };
 
-TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
+TEST_F(EthereumLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
     auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
     auto erc20Count = 0;
     {

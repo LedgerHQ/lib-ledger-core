@@ -107,7 +107,7 @@ TEST_F(PreferencesTest, StoreAndGetWithPreferencesAPI) {
     resolver->clean();
 }
 
-TEST_F(PreferencesTest, EncryptDecrypt) {
+TEST_F(PreferencesTest, DISABLED_EncryptDecrypt) {
     auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "encrypt_decrypt");
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
     auto password = std::string("v3ry_secr3t_p4sSw0rD");
