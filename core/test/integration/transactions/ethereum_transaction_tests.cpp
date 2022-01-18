@@ -43,7 +43,7 @@ using namespace std;
 struct EthereumMakeTransaction : public EthereumMakeBaseTransaction {
     void SetUpConfig() override {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v3");
         testData.configuration = configuration;
         testData.walletName = randomWalletName();
         testData.currencyName = "ethereum";
@@ -51,7 +51,7 @@ struct EthereumMakeTransaction : public EthereumMakeBaseTransaction {
     }
 };
 
-TEST_F(EthereumMakeTransaction, DISABLED_CreateStandardWithOneOutput) {
+TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     auto builder = tx_builder();
     auto balance = uv::wait(account->getBalance());
     auto fromDate = "2018-01-01T13:38:23Z";
