@@ -240,7 +240,7 @@ const std::vector<DerivationSchemeTestData> derivationSchemeTestData = {
 
 };
 
-TEST_F(EthereumKeychains, EthereumDerivationSchemes) {
+TEST_F(EthereumKeychains, DISABLED_EthereumDerivationSchemes) {
     auto pool = newDefaultPool();
     auto configuration = DynamicObject::newInstance();
     {
