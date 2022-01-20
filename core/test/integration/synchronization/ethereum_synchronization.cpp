@@ -232,7 +232,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_BalanceHistory) {
     }
 }
 
-TEST_F(EthereumLikeWalletSynchronization, DISABLED_XpubSynchronization) {
+TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
@@ -290,7 +290,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_XpubSynchronization) {
     }
 }
 
-TEST_F(EthereumLikeWalletSynchronization, DISABLED_XpubETCSynchronization) {
+TEST_F(EthereumLikeWalletSynchronization, XpubETCSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();

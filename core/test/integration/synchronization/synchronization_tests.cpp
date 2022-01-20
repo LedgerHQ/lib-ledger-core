@@ -487,7 +487,7 @@ TEST_F(BitcoinLikeWalletSynchronization, XSTParsingAndSerialization) {
     }
 }
 
-TEST_F(BitcoinLikeWalletSynchronization, DISABLED_GetSelfRecipients) {
+TEST_F(BitcoinLikeWalletSynchronization, GetSelfRecipients) {
     const api::ExtendedKeyAccountCreationInfo SELF_RECIPIENT_XPUB_INFO(
         0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
 );
@@ -600,7 +600,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnFakeExplorer) {
     }
 }
 
-TEST_F(BitcoinLikeWalletSynchronization, DISABLED_SynchronizeAndFilterOperationsByBlockHeight) {
+TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFilterOperationsByBlockHeight) {
     auto pool = newDefaultPool();
     auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin",
                                           api::DynamicObject::newInstance()));
