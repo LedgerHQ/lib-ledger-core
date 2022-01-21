@@ -49,6 +49,7 @@ namespace ledger {
             extern LIBCORE_EXPORT const std::vector<api::Currency> ALL;
             extern LIBCORE_EXPORT const api::Currency BITCOIN;
             extern LIBCORE_EXPORT const api::Currency BITCOIN_TESTNET;
+            extern LIBCORE_EXPORT const api::Currency BITCOIN_REGTEST;
             extern LIBCORE_EXPORT const api::Currency BITCOIN_CASH;
             extern LIBCORE_EXPORT const api::Currency BITCOIN_GOLD;
             extern LIBCORE_EXPORT const api::Currency ZCASH;

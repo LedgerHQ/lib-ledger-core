@@ -37,7 +37,7 @@
 namespace ledger {
     namespace core {
         Option<std::shared_ptr<Bech32>> Bech32Factory::newBech32Instance(const std::string &networkIdentifier) {
-            const auto btcBech32Identifiers = std::vector<std::string>{"btc", "btc_testnet", "dgb", "ltc"};
+            const auto btcBech32Identifiers = std::vector<std::string>{"btc", "btc_testnet", "btc_regtest", "dgb", "ltc"};
             const auto cosmosBech32Identifiers = std::vector<std::string>{
             api::to_string(api::CosmosBech32Type::ADDRESS),
             api::to_string(api::CosmosBech32Type::ADDRESS_VAL),

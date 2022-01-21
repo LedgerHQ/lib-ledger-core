@@ -88,6 +88,22 @@ namespace ledger {
                             {}
                     );
                     return BITCOIN_TESTNET;
+                } else if (networkName == "bitcoin_regtest") {
+                    static const api::BitcoinLikeNetworkParameters BITCOIN_REGTEST(
+                            "btc_regtest",
+                            {0x6F},
+                            {0xC4},
+                            {0x04, 0x35, 0x87, 0xCF},
+                            api::BitcoinLikeFeePolicy::PER_BYTE,
+                            3000,
+                            api::BitcoinLikeDustPolicy::PER_KBYTE,
+                            "Bitcoin signed message:\n",
+                            false,
+                            0,
+                            {sigHashType::SIGHASH_ALL},
+                            {}
+                    );
+                    return BITCOIN_REGTEST;
                 } else if (networkName == "bitcoin_cash") {
                     static const api::BitcoinLikeNetworkParameters BITCOIN_CASH(
                             "abc",
@@ -454,6 +470,7 @@ namespace ledger {
             ({
                 getNetworkParameters("bitcoin"),
                 getNetworkParameters("bitcoin_testnet"),
+                getNetworkParameters("bitcoin_regtest"),
                 getNetworkParameters("bitcoin_cash"),
                 getNetworkParameters("bitcoin_gold"),
                 getNetworkParameters("zcash"),

@@ -62,6 +62,17 @@ namespace ledger {
                             {0x00}
                     };
                     return BITCOIN_TESTNET;
+                } else if (networkIdentifier == "btc_regtest") {
+                    static const Bech32Struct BITCOIN_REGTEST = {
+                            "bitcoin_regtest",
+                            "bcrt",
+                            "1",
+                            6,
+                            {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
+                            {0x00},
+                            {0x00}
+                    };
+                    return BITCOIN_REGTEST;
                 } else if (networkIdentifier == "abc") {
                     static const Bech32Struct BITCOIN_CASH = {
                             "bitcoin_cash",
@@ -105,6 +116,7 @@ namespace ledger {
                     {
                             getBech32Params("btc"),
                             getBech32Params("btc_testnet"),
+                            getBech32Params("btc_regtest"),
                             getBech32Params("abc"),
                             getBech32Params("dgb"),
                             getBech32Params("ltc")
