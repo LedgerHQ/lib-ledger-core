@@ -38,8 +38,6 @@
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
 #include "ExplorerStorage.hpp"
 #include "HttpClientOnFakeExplorer.hpp"
-#include "../../fixtures/http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_1.h"
-#include "../../fixtures/http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_2.h"
 #include <api/AllocationMetrics.hpp>
 #include "MemPreferencesBackend.hpp"
 
@@ -48,11 +46,6 @@ class BitcoinLikeWalletSynchronization : public BaseFixture {
 };
 
 TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
-    http->addCache(HTTP_CACHE_http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_1::URL,
-        HTTP_CACHE_http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_1::BODY);
-    http->addCache(HTTP_CACHE_http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_2::URL,
-        HTTP_CACHE_http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_2::BODY);
-
     auto configuration = DynamicObject::newInstance();
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
@@ -128,7 +121,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
             });
 
             auto bus = account->synchronize();
-            bus->subscribe(getTestExecutionContext(),receiver);
+            bus->subscribe(getTestExecutionContext(), receiver);
 
             dispatcher->waitUntilStopped();
             EXPECT_EQ(synchronizationDone, true);
@@ -494,7 +487,7 @@ TEST_F(BitcoinLikeWalletSynchronization, XSTParsingAndSerialization) {
     }
 }
 
-TEST_F(BitcoinLikeWalletSynchronization, DISABLED_GetSelfRecipients) {
+TEST_F(BitcoinLikeWalletSynchronization, GetSelfRecipients) {
     const api::ExtendedKeyAccountCreationInfo SELF_RECIPIENT_XPUB_INFO(
         0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
 );
@@ -607,7 +600,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnFakeExplorer) {
     }
 }
 
-TEST_F(BitcoinLikeWalletSynchronization, DISABLED_SynchronizeAndFilterOperationsByBlockHeight) {
+TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFilterOperationsByBlockHeight) {
     auto pool = newDefaultPool();
     auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin",
                                           api::DynamicObject::newInstance()));

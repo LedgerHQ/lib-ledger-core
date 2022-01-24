@@ -1,0 +1,5 @@
+GET https://explorers.api.live.ledger.com/blockchain/v3/btc/transactions/16da85a108a63ff318458be597f34f0a7f6b9f703528249056ba2f48722ae44e
+0
+1
+[{"id":"16da85a108a63ff318458be597f34f0a7f6b9f703528249056ba2f48722ae44e","hash":"16da85a108a63ff318458be597f34f0a7f6b9f703528249056ba2f48722ae44e","received_at":"2017-04-14T11:00:58Z","lock_time":0,"fees":0,"inputs":[{"coinbase":"03070c070004ebabf05804496e151608bef5342d8b2800000a425720537570706f727420384d200a666973686572206a696e78696e092f425720506f6f6c2f","input_index":0,"sequence":4294967295}],"outputs":[{"output_index":0,"value":1380320309,"address":"1BQLNJtMDKmMZ4PyqVFfRuBNvoGhjigBKF","script_hex":"76a914721afdf638d570285d02d3076d8be6a03ee0794d88ac"}],"block":{"hash":"0000000000000000015599c8066fa0e72847a748d0fe30e71a7a706399ec3c4a","height":461831,"time":"2017-04-14T11:00:58Z"},"confirmations":255822}]
+

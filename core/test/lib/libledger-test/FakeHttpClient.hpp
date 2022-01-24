@@ -1,7 +1,7 @@
 #pragma once
 #include "api/HttpClient.hpp"
 #include <unordered_map>
-#include "FakeUrlConnection.hpp"
+#include "proxy-http-client/FakeUrlConnection.hpp"
 
 namespace ledger {
     namespace core {

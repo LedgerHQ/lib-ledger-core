@@ -39,6 +39,7 @@
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include "ExplorerStorage.hpp"
 #include "HttpClientOnFakeExplorer.hpp"
+#include "MemPreferencesBackend.hpp"
 #include <boost/algorithm/string/join.hpp>
 #include <algorithm>
 
@@ -69,8 +70,8 @@ struct BitcoinLikeWalletBtcRbfSynchronization : public BaseFixture {
                 rng,
                 backend,
                 api::DynamicObject::newInstance(),
-                nullptr,
-                nullptr
+                std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+                std::make_shared<ledger::core::test::MemPreferencesBackend>()
         );
     }
 

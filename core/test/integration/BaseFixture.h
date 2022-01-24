@@ -59,7 +59,7 @@
 #include <api/BitcoinLikeOutput.hpp>
 #include <api/BigInt.hpp>
 #include <CppHttpLibClient.hpp>
-#include <ProxyHttpClient.hpp>
+#include <proxy-http-client/ProxyHttpClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <soci.h>
 #include <api/Account.hpp>

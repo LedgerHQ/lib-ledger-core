@@ -1,0 +1,10 @@
+GET https://explorers.api.live.ledger.com/blockchain/v3/btc_testnet/blocks/current
+0
+1
+{"hash":"000000000000008269dc24ea4c94677a4cda670626f2d00d5a89f9245c7fd313","height":2134940,"time":"2022-01-08T00:10:36Z","txs":["cf2125601baf412ffb66abc92a112f5022c1ff8ad0d62d41307da5dea3be9a3f","d0fc6eae8c8e80ebe22a16e52fdab478cf480b5d91225748b69b6d60b075e0df","5c17050933644122a438a1da0597fb3a5a5ccfdaaebe9d620f2af871fc558be0","d1ccbae7c81719e6f2c6efb69b5e217801c2692270fa5ed23a96f2d01f438698"]}
+
+GET https://explorers.api.live.ledger.com/timestamp
+0
+1
+{"timestamp":1641601728}
+
