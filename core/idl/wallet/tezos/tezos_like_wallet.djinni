@@ -19,9 +19,13 @@ TezosOperationTag = enum {
 #Class representing a Tezos transaction
 TezosLikeTransaction = interface +c {
 	# Get type of operation (transaction, reveal ... cf TezosOperationTag)
-	getType(): TezosOperationTag;
+	const getType(): TezosOperationTag;
 	# Get the hash of the transaction.
-	getHash(): string;
+	const getHash(): string;
+	# Get the operation index in the transaction
+	const getOperationIndexInTransaction(): i64;
+	# Get the operation type in the transaction
+	const getOperationTypeInTransaction(): TezosOperationTag;
 	# Get Fees (in drop) 
 	# It returns the sum of transaction fees and reveal fees (if it exists)
 	getFees(): Amount;
@@ -31,9 +35,9 @@ TezosLikeTransaction = interface +c {
 	getRevealFees(): Amount;
 
 	# Get destination XTZ. address
-	getReceiver(): optional<TezosLikeAddress>;
+	const getReceiver(): optional<TezosLikeAddress>;
 	# Get XTZ. sender address
-	getSender(): TezosLikeAddress;
+	const getSender(): TezosLikeAddress;
 	# Get amount of XTZ to send
 	getValue(): optional<Amount>;
 	# Serialize the transaction to its raw format.
@@ -54,10 +58,10 @@ TezosLikeTransaction = interface +c {
 	getStatus(): i32;
 	# Get the correlation id
 	getCorrelationId(): string;
-        # Set the correlation id which can be used to debug transaction errors
-        # through the full ledger stack
-        # @return the OLD Correlation ID, if it was set (empty string if it was unset)
-        setCorrelationId(correlationId : string) : string;
+	# Set the correlation id which can be used to debug transaction errors
+	# through the full ledger stack
+	# @return the OLD Correlation ID, if it was set (empty string if it was unset)
+	setCorrelationId(correlationId : string) : string;
 }
 
 #Class representing a Tezos Operation
@@ -158,9 +162,11 @@ TezosLikeAccount = interface +c {
 	getOriginatedAccounts(): list<TezosLikeOriginatedAccount>;
 	# Get current delegate
 	getCurrentDelegate(callback: Callback<string>);
-  # Get the balance of the account for a given token
-  # @param tokenAddress Address of the contract
-  getTokenBalance(tokenAddress: string, callback: Callback<BigInt>);
+	# Get the balance of the account for a given token
+	# @param tokenAddress Address of the contract
+	getTokenBalance(tokenAddress: string, callback: Callback<BigInt>);
+	# Get the deterministic operation Uid
+	const computeOperationUid(transaction: TezosLikeTransaction): string;
 }
 
 # Class representing originated accounts

@@ -82,6 +82,8 @@ namespace ledger {
             uint64_t status;
             std::string originatedAccountUid;
             std::string originatedAccountAddress;
+            int64_t counter{0};
+            int64_t index{0};
 
             TezosLikeBlockchainExplorerTransaction() {
                 confirmations = 0;
@@ -89,24 +91,7 @@ namespace ledger {
                 status = 0;
             }
 
-            TezosLikeBlockchainExplorerTransaction(const TezosLikeBlockchainExplorerTransaction &cpy) {
-                this->hash = cpy.hash;
-                this->receivedAt = cpy.receivedAt;
-                this->value = cpy.value;
-                this->fees = cpy.fees;
-                this->gas_limit = cpy.gas_limit;
-                this->storage_limit = cpy.storage_limit;
-                this->receiver = cpy.receiver;
-                this->sender = cpy.sender;
-                this->block = cpy.block;
-                this->confirmations = cpy.confirmations;
-                this->type = cpy.type;
-                this->publicKey = cpy.publicKey;
-                this->originatedAccount = cpy.originatedAccount;
-                this->status = cpy.status;
-                this->originatedAccountUid = cpy.originatedAccountUid; 
-                this->originatedAccountAddress = cpy.originatedAccountAddress; 
-            }
+            TezosLikeBlockchainExplorerTransaction(const TezosLikeBlockchainExplorerTransaction &cpy) = default;
 
         };
 

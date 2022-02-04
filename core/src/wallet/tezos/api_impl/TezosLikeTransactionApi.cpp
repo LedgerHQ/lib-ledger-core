@@ -92,11 +92,11 @@ namespace ledger {
             _status = tx.status;
         }
 
-        api::TezosOperationTag TezosLikeTransactionApi::getType() {
+        api::TezosOperationTag TezosLikeTransactionApi::getType() const {
             return _type;
         }
 
-        std::string TezosLikeTransactionApi::getHash() {
+        std::string TezosLikeTransactionApi::getHash() const {
             return _hash;
         }
 
@@ -127,11 +127,11 @@ namespace ledger {
             return std::make_shared<Amount>(_currency, 0, BigInt(fees));
         }
 
-        std::shared_ptr<api::TezosLikeAddress> TezosLikeTransactionApi::getReceiver() {
+        std::shared_ptr<api::TezosLikeAddress> TezosLikeTransactionApi::getReceiver() const {
             return _receiver;
         }
 
-        std::shared_ptr<api::TezosLikeAddress> TezosLikeTransactionApi::getSender() {
+        std::shared_ptr<api::TezosLikeAddress> TezosLikeTransactionApi::getSender() const {
             return _sender;
         }
 
@@ -704,6 +704,22 @@ namespace ledger {
             auto oldId = _correlationId;
             _correlationId = newId;
             return oldId;
+        }
+
+        int64_t TezosLikeTransactionApi::getOperationIndexInTransaction() const {
+            return _operationIndexInTransaction;
+        }
+
+        TezosLikeTransactionApi& TezosLikeTransactionApi::setOperationIndexInTransaction(int64_t index) {
+            _operationIndexInTransaction = index;
+        }
+        
+        api::TezosOperationTag TezosLikeTransactionApi::getOperationTypeInTransaction() const {
+            return _operationTypeInTransaction;
+        }
+
+        TezosLikeTransactionApi& TezosLikeTransactionApi::setOperationTypeInTransaction(api::TezosOperationTag type) {
+            _operationTypeInTransaction = type;
         }
 
     }

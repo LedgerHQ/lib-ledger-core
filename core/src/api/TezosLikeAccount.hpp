@@ -68,6 +68,9 @@ public:
      * @param tokenAddress Address of the contract
      */
     virtual void getTokenBalance(const std::string & tokenAddress, const std::shared_ptr<BigIntCallback> & callback) = 0;
+
+    /** Get the deterministic operation Uid */
+    virtual std::string computeOperationUid(const std::shared_ptr<TezosLikeTransaction> & transaction) const = 0;
 };
 
 } } }  // namespace ledger::core::api

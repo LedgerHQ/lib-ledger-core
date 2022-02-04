@@ -53,9 +53,9 @@ namespace ledger {
             explicit TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation,
                                              const std::string &protocolUpdate);
 
-            api::TezosOperationTag getType() override;
+            api::TezosOperationTag getType() const override;
 
-            std::string getHash() override;
+            std::string getHash() const override;
 
             std::shared_ptr<api::Amount> getFees() override;
 
@@ -63,9 +63,9 @@ namespace ledger {
 
             std::shared_ptr<api::Amount> getTransactionFees() override;
 
-            std::shared_ptr<api::TezosLikeAddress> getReceiver() override;
+            std::shared_ptr<api::TezosLikeAddress> getReceiver() const override;
 
-            std::shared_ptr<api::TezosLikeAddress> getSender() override;
+            std::shared_ptr<api::TezosLikeAddress> getSender() const override;
 
             std::shared_ptr<api::Amount> getValue() override;
 
@@ -135,6 +135,12 @@ namespace ledger {
 
             TezosLikeTransactionApi &reveal(bool needReveal);
             bool toReveal() const;
+
+            int64_t getOperationIndexInTransaction() const override;
+            TezosLikeTransactionApi& setOperationIndexInTransaction(int64_t index);
+
+            api::TezosOperationTag getOperationTypeInTransaction() const override;
+            TezosLikeTransactionApi& setOperationTypeInTransaction(api::TezosOperationTag type);
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<TezosLikeBlockApi> _block;
@@ -163,6 +169,8 @@ namespace ledger {
             std::shared_ptr<api::Amount> _revealFees;
             std::shared_ptr<api::Amount> _revealGasLimit;
             std::string _correlationId;
+            int64_t _operationIndexInTransaction {0};
+            api::TezosOperationTag _operationTypeInTransaction {api::TezosOperationTag::OPERATION_TAG_NONE};
         };
     }
 }
