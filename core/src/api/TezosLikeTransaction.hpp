@@ -31,10 +31,16 @@ public:
     virtual ~TezosLikeTransaction() {}
 
     /** Get type of operation (transaction, reveal ... cf TezosOperationTag) */
-    virtual TezosOperationTag getType() = 0;
+    virtual TezosOperationTag getType() const = 0;
 
     /** Get the hash of the transaction. */
-    virtual std::string getHash() = 0;
+    virtual std::string getHash() const = 0;
+
+    /** Get the operation index in the transaction */
+    virtual int64_t getOperationIndexInTransaction() const = 0;
+
+    /** Get the operation type in the transaction */
+    virtual TezosOperationTag getOperationTypeInTransaction() const = 0;
 
     /**
      * Get Fees (in drop) 
@@ -49,10 +55,10 @@ public:
     virtual std::shared_ptr<Amount> getRevealFees() = 0;
 
     /** Get destination XTZ. address */
-    virtual std::shared_ptr<TezosLikeAddress> getReceiver() = 0;
+    virtual std::shared_ptr<TezosLikeAddress> getReceiver() const = 0;
 
     /** Get XTZ. sender address */
-    virtual std::shared_ptr<TezosLikeAddress> getSender() = 0;
+    virtual std::shared_ptr<TezosLikeAddress> getSender() const = 0;
 
     /** Get amount of XTZ to send */
     virtual std::shared_ptr<Amount> getValue() = 0;

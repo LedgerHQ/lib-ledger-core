@@ -89,7 +89,18 @@ namespace ledger {
 
             Operation& operator=(Operation const&) = default;
             Operation& operator=(Operation&&) = default;
+
+            template <typename CoinOperationType>
+            static std::string computeTransactionId(const std::string& txHash, const CoinOperationType& coinOperationType, const std::string& additional = "");
+            static std::string computeTransactionId(const std::string& txHash, const std::string& additional = "");
+
         };
+
+        template <typename CoinOperationType>
+        std::string Operation::computeTransactionId(const std::string& txHash, const CoinOperationType& coinOperationType, const std::string& additional) {
+            auto hashAndCoinOpType = fmt::format("{}+{}", txHash, api::to_string(coinOperationType));
+            return computeTransactionId(hashAndCoinOpType, additional);
+        }
     }
 }
 

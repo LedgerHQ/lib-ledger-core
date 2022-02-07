@@ -204,12 +204,14 @@ namespace ledger {
             auto blockHash = Base58::encodeWithChecksum(vector::concat(blockPrefix, blockHashBytes), config);
             tx->setBlockHash(blockHash);
 
+            int32_t opIndex = {0};
             uint8_t OpTag;
             auto offset = static_cast<uint8_t>(isBabylonActivated ? 100 : 0);
             do {
                 // Operation Tag
                 OpTag = reader.readNextByte();
-                tx->setType(static_cast<api::TezosOperationTag>(OpTag - offset));
+                const auto operationTag = static_cast<api::TezosOperationTag>(OpTag - offset);
+                tx->setType(operationTag);
                 // sender hash160
                 std::vector<uint8_t> senderHash160, version;
                 uint8_t senderCurveCode;
@@ -241,17 +243,18 @@ namespace ledger {
                                 static_cast<api::TezosCurve>(senderCurveCode));
 
                 // Fee
-                if(OpTag - offset == static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_REVEAL)) {
+                if(operationTag == api::TezosOperationTag::OPERATION_TAG_REVEAL) {
                     tx->setRevealFees(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
                 }
                 else {
                     tx->setTransactionFees(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
                 }
                 // Counter
-                tx->setCounter(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
+                const auto counter = std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader))));
+                tx->setCounter(counter);
 
                 // Gas Limit
-                if(OpTag - offset == static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_REVEAL)) {
+                if(operationTag == api::TezosOperationTag::OPERATION_TAG_REVEAL) {
                     tx->setRevealGasLimit(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
                 }
                 else {
@@ -262,8 +265,8 @@ namespace ledger {
 
                 // Offset introduced by Babylon
                 
-                switch (OpTag - offset) {
-                    case static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_REVEAL): {
+                switch (operationTag) {
+                    case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
                         auto curveCode = reader.readNextByte();
                         std::vector<uint8_t> pubKey;
                         switch (curveCode) {
@@ -284,7 +287,7 @@ namespace ledger {
                         tx->reveal(true); 
                         break;
                     }
-                    case static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_TRANSACTION): {
+                    case api::TezosOperationTag::OPERATION_TAG_TRANSACTION: {
                         // Amount
                         tx->setValue(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
 
@@ -325,7 +328,7 @@ namespace ledger {
                         }
                         break;
                     }
-                    case static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_ORIGINATION): {
+                    case api::TezosOperationTag::OPERATION_TAG_ORIGINATION: {
                         tx->setValue(std::make_shared<BigInt>(BigInt::ZERO));
                         tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
                                                                         std::vector<uint8_t>(),
@@ -345,7 +348,7 @@ namespace ledger {
                         reader.read(4);
                         break;
                     }
-                    case static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_DELEGATION): {
+                    case api::TezosOperationTag::OPERATION_TAG_DELEGATION: {
                         tx->setValue(std::make_shared<BigInt>(BigInt::ZERO));
                         auto hasDelegationData = reader.readNextByte();
                         if (hasDelegationData) {
@@ -366,6 +369,14 @@ namespace ledger {
                     default:
                         break;
                 }
+
+                // Sorry, I really had to do this way..
+                if(operationTag != api::TezosOperationTag::OPERATION_TAG_REVEAL) {
+                    tx->setOperationIndexInTransaction(opIndex);  
+                    tx->setOperationTypeInTransaction(operationTag);  
+                }
+                ++opIndex;
+
             } while(isSigned ? reader.available()-64 > 0 : reader.available() > 0 );
             
 

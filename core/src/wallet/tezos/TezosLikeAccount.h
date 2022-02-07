@@ -162,14 +162,21 @@ namespace ledger {
 
             void getTokenBalance(const std::string& tokenAddress, const std::shared_ptr<api::BigIntCallback>& callback) override;
 
+            const std::string& getAccountAddress() const; 
+
             /// Return a common trace prefix for logs
             /// TODO: Upstream tracePrefix() to AbstractAccount and use that everywhere
             std::string tracePrefix() const;
+
+            std::string computeOperationUid(const std::shared_ptr<api::TezosLikeTransaction> & transaction) const override;
+        
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
             void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                          const std::shared_ptr<api::StringCallback> &callback,
                                          const std::string& correlationId);
+
+            std::pair<api::OperationType, std::string> getOperationTypeAndUidAdditional(const std::string& sender, const std::string& receiver, const std::string& originatedAccountId, const std::string& originatedAccountAddress) const;
 
             std::shared_ptr<TezosLikeKeychain> _keychain;
             std::string _accountAddress;

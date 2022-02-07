@@ -36,34 +36,37 @@ namespace ledger {
     namespace core {
 
         void Operation::refreshUid(const std::string &additional) {
+            std::string txId;
             if (bitcoinTransaction.nonEmpty()) {
-                uid = OperationDatabaseHelper::createUid(accountUid, bitcoinTransaction.getValue().hash, type);
+                txId = computeTransactionId(bitcoinTransaction.getValue().hash);
             }
             else if (cosmosTransaction.nonEmpty()) {
-                auto final = cosmosTransaction.getValue().tx.hash;
-                if (!additional.empty()){
-                    final = fmt::format("{}+{}", final, additional);
-                }
-
-                uid = OperationDatabaseHelper::createUid(accountUid, final, type);
+                txId = computeTransactionId(cosmosTransaction.getValue().tx.hash, additional);
             }
             else if (ethereumTransaction.nonEmpty()) {
-                uid = OperationDatabaseHelper::createUid(accountUid, ethereumTransaction.getValue().hash, type);
+                txId = computeTransactionId(ethereumTransaction.getValue().hash);
             }
             else if (rippleTransaction.nonEmpty()) {
-                uid = OperationDatabaseHelper::createUid(accountUid, rippleTransaction.getValue().hash, type);
+                txId = computeTransactionId(rippleTransaction.getValue().hash);
             }
             else if (tezosTransaction.nonEmpty()) {
-                auto final = fmt::format("{}+{}", tezosTransaction.getValue().hash, api::to_string(tezosTransaction.getValue().type));
-                if (!additional.empty()){
-                    final = fmt::format("{}+{}", final, additional);
-                }
-                uid = OperationDatabaseHelper::createUid(accountUid, final, type);
+                const auto& tx = tezosTransaction.getValue();
+                std::string txIdBase = fmt::format("{}+{}", 
+                    tx.counter, 
+                    tx.index
+                );
+                txId = computeTransactionId(txIdBase, tx.type, additional);
             } else if (stellarOperation.nonEmpty()) {
-                uid = OperationDatabaseHelper::createUid(accountUid, stellarOperation.getValue().operation.transactionHash, type);
+                txId = computeTransactionId(stellarOperation.getValue().operation.transactionHash);
             } else {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Cannot refresh uid of an incomplete operation.");
             }
+
+            uid = OperationDatabaseHelper::createUid(accountUid, txId, type);
+        }
+
+        std::string Operation::computeTransactionId(const std::string& txHash, const std::string& additional){
+            return additional.empty() ? txHash : fmt::format("{}+{}", txHash, additional);
         }
 
     }

@@ -59,6 +59,7 @@
 #include <api/TezosLikeTransaction.hpp>
 #include <common/AccountHelper.hpp>
 #include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
+#include <fmt/format.h>
 
 using namespace soci;
 
@@ -528,6 +529,58 @@ namespace ledger {
             );
         }
 
+        std::string TezosLikeAccount::computeOperationUid(const std::shared_ptr<api::TezosLikeTransaction> & transaction) const {
+             
+
+            // The provided transaction has not necessarily been forged already, so we have to 
+            // compute the raw transaction first and parse it to make sure we can compute the 
+            // required operation values, including the operation index. 
+            std::shared_ptr<api::TezosLikeTransaction> parsedTx;
+            {
+                auto currency = getWallet()->getCurrency();
+                auto protocolUpdate = getWallet()
+                                    ->getConfiguration()
+                                    ->getString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE)
+                                    .value_or("");
+
+                parsedTx = TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
+                    std::move(currency), 
+                    transaction->serialize(), 
+                    std::move(protocolUpdate)
+                );
+            }
+
+            std::string additional;
+            api::OperationType opType;
+            {
+                std::string originatedAccountId;
+                std::string originatedAccountAddress;
+                if(!_originatedAccounts.empty()) {
+                    auto originatedAccount = std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(_originatedAccounts[0]);
+                    originatedAccountId = originatedAccount->getAccountUid();
+                    originatedAccountAddress = originatedAccount->getAddress();
+                }
+
+                const std::string& sender = parsedTx->getSender()->toBase58();
+                const std::string& receiver = parsedTx->getReceiver()->toBase58();
+                std::tie(opType, additional) = getOperationTypeAndUidAdditional(
+                    sender, 
+                    receiver,
+                    originatedAccountId,
+                    originatedAccountAddress
+                );
+            }
+
+            std::string txIdBase = fmt::format("{}+{}", 
+                parsedTx->getCounter()->intValue(), 
+                parsedTx->getOperationIndexInTransaction()
+            );
+
+            std::string&& txId = Operation::computeTransactionId(txIdBase, parsedTx->getOperationTypeInTransaction(), additional);
+
+            return OperationDatabaseHelper::createUid(getAccountUid(), txId, opType);
+        }
+
         void TezosLikeAccount::incrementOptimisticCounter(std::shared_ptr<TezosLikeTransactionApi> tx, const std::shared_ptr<BigInt>& explorerCounter) {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             std::cout << "get explorer counter =" << explorerCounter->toInt64() << std::endl;
@@ -644,6 +697,10 @@ namespace ledger {
 
         std::string TezosLikeAccount::tracePrefix() const {
             return fmt::format("{}/{}/{}", getWallet()->getPool()->getName(), getWallet()->getName(), getIndex());
+        }
+
+        const std::string& TezosLikeAccount::getAccountAddress() const {
+            return _accountAddress;
         }
     }
 }
