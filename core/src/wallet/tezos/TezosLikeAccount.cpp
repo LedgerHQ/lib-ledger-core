@@ -112,33 +112,35 @@ namespace ledger {
             // Check if it's an operation related to an originated account
             // It can be the case if we are putting transaction operations
             // for originated account.
+            std::string originatedAccountUid;
+            std::string originatedAccountAddress;
             if (!transaction.originatedAccountUid.empty() && !transaction.originatedAccountAddress.empty()) {
-                operation.amount = transaction.value;
-                operation.type = transaction.sender == transaction.originatedAccountAddress ? api::OperationType::SEND : api::OperationType::RECEIVE;
-                operation.refreshUid(transaction.originatedAccountUid);
-                out.push_back(operation);
-                result = static_cast<int>(transaction.type);
-                return addedAddressToKeychain;
+                originatedAccountUid = transaction.originatedAccountUid;
+                originatedAccountAddress = transaction.originatedAccountAddress;
             }
 
-            if (_accountAddress == transaction.sender) {
-                operation.amount = transaction.value;
-                operation.type = api::OperationType::SEND;
-                operation.refreshUid();
-                if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1) {
-                    addedAddressToKeychain = updateOriginatedAccounts(operation);
-                }
-                out.push_back(operation);
-                result = static_cast<int>(transaction.type);
+            std::string additional;
+            api::OperationType opType;
+            std::tie(opType, additional) = getOperationTypeAndUidAdditional(
+                transaction.sender, 
+                transaction.receiver,
+                originatedAccountUid,
+                originatedAccountAddress
+            );
+
+            operation.amount = transaction.value;
+            operation.type = opType;
+            operation.refreshUid(additional);
+
+            if (additional.empty() && _accountAddress == transaction.sender && 
+                transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1)
+            {
+                addedAddressToKeychain = updateOriginatedAccounts(operation);
             }
 
-            if (_accountAddress == transaction.receiver) {
-                operation.amount = transaction.value;
-                operation.type = api::OperationType::RECEIVE;
-                operation.refreshUid();
-                out.push_back(operation);
-                result = static_cast<int>(transaction.type);
-            }
+            out.push_back(operation);
+            result = static_cast<int>(transaction.type);
+
             return addedAddressToKeychain;
         }
 
@@ -345,6 +347,27 @@ namespace ledger {
                     return std::make_shared<api::BigIntImpl>(*balance);
                 })
                 .callback(getMainExecutionContext(), callback);
+        }
+
+        std::pair<api::OperationType, std::string> TezosLikeAccount::getOperationTypeAndUidAdditional(const std::string& sender, const std::string& receiver, 
+            const std::string& originatedAccountId, const std::string& originatedAccountAddress) const {
+            const std::string& accountAddress = getAccountAddress(); 
+
+            if(!originatedAccountId.empty() && !originatedAccountAddress.empty()) {
+                if(originatedAccountAddress == sender) {
+                    return std::make_pair(api::OperationType::SEND, originatedAccountId);
+                }
+                if(originatedAccountAddress == receiver) {
+                    return std::make_pair(api::OperationType::RECEIVE, originatedAccountId);
+                }
+            }
+            if(accountAddress == sender) {
+                return std::make_pair(api::OperationType::SEND, "");
+            }
+            if(accountAddress == receiver) {
+                return std::make_pair(api::OperationType::RECEIVE, "");
+            }
+            throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to determine the operation type for computing the operation id");
         }
     }
 }

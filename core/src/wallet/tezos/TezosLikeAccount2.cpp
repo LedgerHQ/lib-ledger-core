@@ -531,33 +531,7 @@ namespace ledger {
 
         std::string TezosLikeAccount::computeOperationUid(const std::shared_ptr<api::TezosLikeTransaction> & transaction) const {
              
-             const auto getOperationType = [this](const api::TezosLikeTransaction& tx) -> std::pair<api::OperationType, std::string> {
-                const std::string& accountAddress = getAccountAddress(); 
-                const std::string& sender = tx.getSender()->toBase58();
-                const std::string& receiver = tx.getReceiver()->toBase58();
-                if(!_originatedAccounts.empty()) {
-                    auto originatedAccount = std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(_originatedAccounts[0]);
-                    const std::string& originatedAccountId = originatedAccount->getAccountUid();
-                    const std::string& originatedAccountAddress = originatedAccount->getAddress();
-                    if(!originatedAccountId.empty() && !originatedAccountAddress.empty()) {
-                        if(originatedAccountAddress == sender) {
-                            return std::make_pair(api::OperationType::SEND, originatedAccountId);
-                        }
-                        if(originatedAccountAddress == receiver) {
-                            return std::make_pair(api::OperationType::RECEIVE, originatedAccountId);
-                        }
-                    }
-                }
-                if(accountAddress == sender) {
-                    return std::make_pair(api::OperationType::SEND, "");
-                }
-                if(accountAddress == receiver) {
-                    return std::make_pair(api::OperationType::RECEIVE, "");
-                }
-                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to determine the operation type for computing the operation id");
-            };
 
-            
             // The provided transaction has not necessarily been forged already, so we have to 
             // compute the raw transaction first and parse it to make sure we can compute the 
             // required operation values, including the operation index. 
@@ -578,7 +552,24 @@ namespace ledger {
 
             std::string additional;
             api::OperationType opType;
-            std::tie(opType, additional) = getOperationType(*parsedTx);
+            {
+                std::string originatedAccountId;
+                std::string originatedAccountAddress;
+                if(!_originatedAccounts.empty()) {
+                    auto originatedAccount = std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(_originatedAccounts[0]);
+                    originatedAccountId = originatedAccount->getAccountUid();
+                    originatedAccountAddress = originatedAccount->getAddress();
+                }
+
+                const std::string& sender = parsedTx->getSender()->toBase58();
+                const std::string& receiver = parsedTx->getReceiver()->toBase58();
+                std::tie(opType, additional) = getOperationTypeAndUidAdditional(
+                    sender, 
+                    receiver,
+                    originatedAccountId,
+                    originatedAccountAddress
+                );
+            }
 
             std::string txIdBase = fmt::format("{}+{}", 
                 parsedTx->getCounter()->intValue(), 

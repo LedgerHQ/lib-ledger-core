@@ -176,6 +176,8 @@ namespace ledger {
                                          const std::shared_ptr<api::StringCallback> &callback,
                                          const std::string& correlationId);
 
+            std::pair<api::OperationType, std::string> getOperationTypeAndUidAdditional(const std::string& sender, const std::string& receiver, const std::string& originatedAccountId, const std::string& originatedAccountAddress) const;
+
             std::shared_ptr<TezosLikeKeychain> _keychain;
             std::string _accountAddress;
             std::shared_ptr<TezosLikeBlockchainExplorer> _explorer;
