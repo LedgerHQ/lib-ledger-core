@@ -30,6 +30,8 @@
  */
 
 #include "BaseFixture.h"
+#include "api/TezosConfiguration.hpp"
+#include "api/TezosConfigurationDefaults.hpp"
 
 class AccountCreationTest : public BaseFixture {};
 
@@ -92,5 +94,47 @@ TEST_F(AccountCreationTest, ChangePassword) {
     changePasswordAndGetInfos(pool, "", "new_test");
     changePasswordAndGetInfos(pool, "new_test", "new_test_0");
     changePasswordAndGetInfos(pool, "new_test_0", "");
+    uv::wait(pool->deleteWallet(walletName));
+}
+
+TEST_F(AccountCreationTest, CreateBitcoinAccountTwiceShouldRaiseError) {
+    auto pool = newDefaultPool();
+    const auto walletName = "my_wallet_createbtcaccountwithinfo";
+    auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
+    auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithInfo(P2PKH_MEDIUM_KEYS_INFO)));
+    try
+    {
+        uv::wait(wallet->newAccountWithInfo(P2PKH_MEDIUM_KEYS_INFO));
+    }
+    catch(const ledger::core::Exception& e)
+    {
+        EXPECT_EQ(e.getErrorCode(), ledger::core::api::ErrorCode::ACCOUNT_ALREADY_EXISTS);
+    }
+    catch(...)
+    {
+        ADD_FAILURE() << "Expected ledger::core::Exception exception";
+    }
+    uv::wait(pool->deleteWallet(walletName));
+}
+
+TEST_F(AccountCreationTest, CreateTezosAccountTwiceShouldRaiseError) {
+    auto pool = newDefaultPool();
+    auto configuration = DynamicObject::newInstance();
+    configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
+    const auto walletName = "my_wallet_createbtcaccountwithinfo";
+    auto wallet = uv::wait(pool->createWallet(walletName, "tezos", configuration));
+    auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithInfo(XTZ_KEYS_INFO)));
+    try
+    {
+        uv::wait(wallet->newAccountWithInfo(XTZ_KEYS_INFO));
+    }
+    catch(const ledger::core::Exception& e)
+    {
+        EXPECT_EQ(e.getErrorCode(), ledger::core::api::ErrorCode::ACCOUNT_ALREADY_EXISTS);
+    }
+    catch(...)
+    {
+        ADD_FAILURE() << "Expected ledger::core::Exception exception";
+    }
     uv::wait(pool->deleteWallet(walletName));
 }
