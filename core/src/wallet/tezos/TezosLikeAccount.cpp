@@ -120,7 +120,7 @@ namespace ledger {
             }
 
             std::string additional;
-            api::OperationType opType;
+            api::OperationType opType = api::OperationType::NONE;
             std::tie(opType, additional) = getOperationTypeAndUidAdditional(
                 transaction.sender, 
                 transaction.receiver,
@@ -128,18 +128,20 @@ namespace ledger {
                 originatedAccountAddress
             );
 
-            operation.amount = transaction.value;
-            operation.type = opType;
-            operation.refreshUid(additional);
+            if(opType != api::OperationType::NONE) {
+                operation.amount = transaction.value;
+                operation.type = opType;
+                operation.refreshUid(additional);
 
-            if (additional.empty() && _accountAddress == transaction.sender && 
-                transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1)
-            {
-                addedAddressToKeychain = updateOriginatedAccounts(operation);
+                if (additional.empty() && _accountAddress == transaction.sender && 
+                    transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1)
+                {
+                    addedAddressToKeychain = updateOriginatedAccounts(operation);
+                }
+
+                out.push_back(operation);
+                result = static_cast<int>(transaction.type);
             }
-
-            out.push_back(operation);
-            result = static_cast<int>(transaction.type);
 
             return addedAddressToKeychain;
         }
@@ -367,7 +369,8 @@ namespace ledger {
             if(accountAddress == receiver) {
                 return std::make_pair(api::OperationType::RECEIVE, "");
             }
-            throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to determine the operation type for computing the operation id");
+
+            return std::make_pair(api::OperationType::NONE, "");
         }
     }
 }
