@@ -130,7 +130,7 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWhenOriginatedAccount) {
       parsedTx->originatedAccountAddress = accAddress;
       account->interpretTransaction(*parsedTx, operations);
       EXPECT_EQ(operations.size(), 1);
-      EXPECT_EQ(operations[0].uid, "082aceada20da02b93fb900884dbbe3f76ad82edb8b67815166854ca147358fa");
+      EXPECT_EQ(operations[0].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263644+0+OPERATION_TAG_REVEAL+someUid", api::OperationType::SEND));
     }
 
     // Test when received in originated account
@@ -141,7 +141,7 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWhenOriginatedAccount) {
       parsedTx->originatedAccountAddress = accAddress;
       account->interpretTransaction(*parsedTx, operations);
       EXPECT_EQ(operations.size(), 2);
-      EXPECT_EQ(operations[1].uid, "071404545ec745cf078aab689521a936260219096d73fb7b372ce3443b9772a4");
+      EXPECT_EQ(operations[1].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263645+1+OPERATION_TAG_TRANSACTION+someUid", api::OperationType::RECEIVE));
     }
 }
 
@@ -156,7 +156,7 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWithoutOriginatedAccount) 
       parsedTx->sender = accAddress;
       account->interpretTransaction(*parsedTx, operations);
       EXPECT_EQ(operations.size(), 1);
-      EXPECT_EQ(operations[0].uid, "ba40df6c41b8115ec5b50f101364c916aa360972009c780f6d0fcea4e19c1476");
+      EXPECT_EQ(operations[0].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263644+0+OPERATION_TAG_REVEAL", api::OperationType::SEND));
     }
 
     // Test when received in account
@@ -165,7 +165,7 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWithoutOriginatedAccount) 
       parsedTx->receiver = accAddress;
       account->interpretTransaction(*parsedTx, operations);
       EXPECT_EQ(operations.size(), 2);
-      EXPECT_EQ(operations[1].uid, "d7ebd2fc71fdd7a552a8bd9ce0cd696871eec2cd8050861077046e7d3b069945");
+      EXPECT_EQ(operations[1].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263645+1+OPERATION_TAG_TRANSACTION", api::OperationType::RECEIVE));
     }
 }
 
