@@ -108,7 +108,7 @@ namespace ledger {
                     payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
                     if (result.isSuccess()) {
                         code = api::EventCode::SYNCHRONIZATION_SUCCEED;
-
+                        self->getWallet()->invalidateBalanceCache(self->getIndex());
                         auto const state = result.getValue();
 
                         payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(state.lastBlockHeight));
@@ -254,13 +254,19 @@ namespace ledger {
 
         void StellarLikeAccount::interpretTransaction(const stellar::Transaction &tx, std::vector<Operation> &out) {
             auto log = logger();
-            if (tx.envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX_V0 &&
-                tx.envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX) {
+            if (tx.envelope.isEmpty()) {
+                log->warn("Failed to decode transaction {}, skipping transaction!", tx.hash);
+                return ;
+            }
+            auto& envelope = tx.envelope.getValue();
+            if (envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX_V0 &&
+                envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX) {
                 // Ignore transaction with unhandled envelope types.
+                log->warn("Unsupported transaction envelope type {}, skipping transaction!", static_cast<int>(envelope.type));
                 return;
             }
             // Ignore transaction if at least one operation has an unsupported type
-            const auto& operations = stellar::xdr::getOperations(tx.envelope);
+            const auto& operations = stellar::xdr::getOperations(envelope);
             for (const auto& op : operations) {
                 if (!(op.type < stellar::OperationType::num_types)) {
                     log->warn("Unsupported operation type {}, skipping transaction!", static_cast<int>(op.type));
@@ -268,7 +274,6 @@ namespace ledger {
                 }
             }
             int createdOperations = 0;
-            //StellarLikeTransactionDatabaseHelper::putTransaction(sql, getWallet()->getCurrency(), tx);
             Operation operation;
             operation.accountUid = getAccountUid();
             operation.currencyName = getWallet()->getCurrency().name;

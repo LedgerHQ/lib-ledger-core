@@ -314,7 +314,6 @@ jobs:
         name: Submodule_Initialization
         command: |
           . .circleci/init_submodules.sh
-    - run:
         name: Export_Lib_Version
         command: |
           . .circleci/export_lib_version.sh
@@ -323,9 +322,6 @@ jobs:
         command: |
           . tools/generate_interfaces.sh
     - run:
-        name: Publish_jar
-        command: |
-          . .circleci/publish_jar.sh
     - deploy:
         name: Deploy_Artifacts
         command: |

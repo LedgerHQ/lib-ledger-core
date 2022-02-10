@@ -109,7 +109,12 @@ namespace ledger {
                 std::vector<uint8_t> buffer;
                 BaseConverter::decode(std::string(str, length), BaseConverter::BASE64_RFC4648, buffer);
                 stellar::xdr::Decoder decoder(buffer);
-                decoder >> _transaction->envelope;
+                try {
+                    _transaction->envelope = stellar::xdr::TransactionEnvelope();
+                    decoder >> _transaction->envelope.getValue();
+                } catch (stellar::xdr::UnsupportedObjectException& ex) {
+                    _transaction->envelope = Option<stellar::xdr::TransactionEnvelope>::NONE;
+                }
             } else if (_path.match(FEE_MATCHER)) {
                 _transaction->feePaid = BigInt::fromString(std::string(str, length));
             } else if (_path.match(ACCOUNT_SEQUENCE_MATCHER)) {

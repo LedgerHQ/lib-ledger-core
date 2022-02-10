@@ -338,7 +338,7 @@ namespace ledger {
                 payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
                 if (result.isSuccess()) {
                     code = api::EventCode::SYNCHRONIZATION_SUCCEED;
-
+                    self->getWallet()->invalidateBalanceCache(self->getIndex());
                     auto const context = result.getValue();
 
                     payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
@@ -402,6 +402,7 @@ namespace ledger {
                     std::vector<Operation> operations;
                     self->interpretTransaction(txExplorer, operations);
                     self->bulkInsert(operations);
+                    self->getWallet()->invalidateBalanceCache(self->getIndex());
                     return txHash;
                 });
         }
