@@ -1,6 +1,7 @@
 ## 4.1.2
 
 - Fix of Tezos fees calculation formula
+  
 ## 4.1.1
 > Unreleased
 
@@ -29,8 +30,57 @@
 - Tezos: fees estimation 
 - Tezos: get token balance
 
+## 4.0.6
+
+> Unreleased
+
+- Hotfix unknown Stellar transactions operation type
+
+## 4.0.5
+
+> 2021/08/04
+
+- Add `MEMPOOL_GRACE_PERIOD_SECS` configuration for BTC-like wallets
+  This protects transactions without blocks from being deleted from
+  database if they are too recent.
+  Currently defaults to 900 seconds, 1.5 mean BTC block
+- Remove RBF support, that was incompatible with the new Grace Period
+  for now
+- Fix optimistic update operation for BTC-like broadcasts when the
+  broadcasted transaction uses a non-first UTXO (#807)
+
+## 4.0.4
+> 2021/07/15
+
+- Fix correlationId in Transaction API
+  (the TransactionAPI fix was forgotten in cherry-picking)
+- Update googletest dependency to compile with
+  recent compilers
+- Add broadcastTransaction API to StellarLikeAccount
+
+
+## 4.0.3
+> 2021/07/15
+
+- Add correlationId setters and getters
+  in TransactionBuilder and Transaction APIs
+- Merge and reduce size of foreign outputs stored
+  after synchronization (mitigation against dust attacks that
+  inflate DB and reduce performance)
+- Add more balance cache invalidations
+
+## 4.0.2
+> 2021/04/14
+
+- Fix stellar incremental synchronization
+
+## 4.0.1
+> 2021/04/12
+
+- Missing XRP transfer
+
 ## 4.0.0
-> 2021/02/12 NRT
+> 2021/03/24 NRT
 
 - Stable test environment with libuv and cpp-http implementatioon of services
 - Fix and improve keychain discovery during synchronization

@@ -131,7 +131,7 @@ namespace ledger {
                 std::string memoType;
                 std::string memo;
                 std::string pagingToken;
-                stellar::xdr::TransactionEnvelope envelope;
+                Option<stellar::xdr::TransactionEnvelope> envelope;
             };
 
             struct OperationWithParentTransaction {

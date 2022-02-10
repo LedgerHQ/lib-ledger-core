@@ -619,6 +619,8 @@ BEGIN_DECODER(Operation)
             object.content = ManageBuyOfferOp();
             decoder >> boost::get<ManageBuyOfferOp>(object.content);
             break;
+        default:
+            throw stellar::xdr::UnsupportedObjectException();
     }
 END_DECODER
 

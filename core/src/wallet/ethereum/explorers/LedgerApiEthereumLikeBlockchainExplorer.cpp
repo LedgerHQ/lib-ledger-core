@@ -116,7 +116,7 @@ namespace ledger {
               {"Content-Type", "application/json"}};
           const bool jsonParseNumbersAsString = true;
 
-          const auto interestingField = "estimated_gas_limit";
+          const auto* const interestingField = "estimated_gas_limit";
           rapidjson::Document body;
           body.SetObject();
           auto &allocator = body.GetAllocator();
@@ -229,43 +229,50 @@ namespace ledger {
         Future<std::vector<BigInt>>
         LedgerApiEthereumLikeBlockchainExplorer::getERC20Balances(const std::string &address,
                                                                   const std::vector<std::string> &erc20Addresses) {
-            rapidjson::Document docContainer;
-            docContainer.SetArray();
-            auto &allocator = docContainer.GetAllocator();
-            for (auto &erc20Address : erc20Addresses) {
-                rapidjson::Value o(rapidjson::kObjectType);
-                rapidjson::Value vString(rapidjson::kStringType);
-                // Set address of account to check balance of
-                vString.SetString(address.c_str(), static_cast<rapidjson::SizeType>(address.length()), allocator);
-                o.AddMember("address", vString, allocator);
-                // Set address of contract (ERC20) to check balance on
-                vString.SetString(erc20Address.c_str(), static_cast<rapidjson::SizeType>(erc20Address.length()), allocator);
-                o.AddMember("contract", vString, allocator);
-                docContainer.PushBack(o.GetObject(), allocator);
+            std::vector<uint8_t> requestBody;
+            {
+                rapidjson::Document docContainer;
+                docContainer.SetArray();
+                auto &allocator = docContainer.GetAllocator();
+                for (const auto &erc20Address : erc20Addresses) {
+                    rapidjson::Value o(rapidjson::kObjectType);
+                    rapidjson::Value vString(rapidjson::kStringType);
+                    // Set address of account to check balance of
+                    vString.SetString(address.c_str(), static_cast<rapidjson::SizeType>(address.length()), allocator);
+                    o.AddMember("address", vString, allocator);
+                    // Set address of contract (ERC20) to check balance on
+                    vString.SetString(erc20Address.c_str(), static_cast<rapidjson::SizeType>(erc20Address.length()), allocator);
+                    o.AddMember("contract", vString, allocator);
+                    docContainer.PushBack(o.GetObject(), allocator);
+                }
+
+                rapidjson::StringBuffer buffer;
+                rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                docContainer.Accept(writer);
+
+                const auto * const strBuffer = buffer.GetString();
+                requestBody = std::vector<uint8_t>(strBuffer, strBuffer + buffer.GetSize());
             }
 
-            rapidjson::StringBuffer buffer;
-            rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-            docContainer.Accept(writer);
-            std::string requestBody(buffer.GetString());
+            const std::size_t numAddresses = erc20Addresses.size();
 
             bool parseNumbersAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return _http->POST(fmt::format("/blockchain/{}/{}/erc20/balances",
                                            getExplorerVersion(),
                                            getNetworkParameters().Identifier),
-                               std::vector<uint8_t>(requestBody.begin(), requestBody.end()),
+                               requestBody,
                                headers)
                     .json(parseNumbersAsString)
-                    .map<std::vector<BigInt>>(getContext(), [erc20Addresses] (const HttpRequest::JsonResult& result) {
-                        auto& json = *std::get<1>(result);
+                    .map<std::vector<BigInt>>(getContext(), [numAddresses] (const HttpRequest::JsonResult& result) {
+                        const auto& json = *std::get<1>(result);
 
-                        if (!json.IsArray() || json.Size() != erc20Addresses.size()) {
+                        if (!json.IsArray() || json.Size() != numAddresses) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balances for erc20 addresses.");
                         }
 
                         std::vector<BigInt> balances;
-                        for (auto &b : json.GetArray()) {
+                        for (const auto &b : json.GetArray()) {
                             if (!b.IsObject() || !b.GetObject().HasMember("balance")) {
                                 throw make_exception(api::ErrorCode::HTTP_ERROR, "ERC20 balance: Malformed balance fields.");
                             }

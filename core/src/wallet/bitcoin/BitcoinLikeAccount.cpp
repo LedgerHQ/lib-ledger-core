@@ -767,8 +767,11 @@ namespace ledger {
                 // and the update will occur at next synchro ...
                 // But still let's log that !
                 if (optimisticUpdate.isFailure()) {
-                    self->logger()->warn("{} Optimistic update failed for broadcasted transaction : {}", 
-                        CORRELATIONID_PREFIX(correlationId), txHash);
+                    self->logger()->warn("{} Optimistic update failed for broadcasted transaction [hash: {}] with errcode {}: {}",
+                        CORRELATIONID_PREFIX(correlationId), txHash, api::to_string(optimisticUpdate.getFailure().getErrorCode()), optimisticUpdate.getFailure().getMessage());
+                }
+                else {
+                    self->getWallet()->invalidateBalanceCache(self->getIndex());
                 }
 
                 return txHash;
@@ -778,7 +781,7 @@ namespace ledger {
         void BitcoinLikeAccount::broadcastTransaction(const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
                                                       const std::shared_ptr<api::StringCallback> &callback) {
             
-        logger()->info("{} received raw transaction to broadcast", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
+            logger()->info("{} received raw transaction to broadcast", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
             broadcastRawTransaction(transaction->serialize(), callback, transaction->getCorrelationId());
         }
 
