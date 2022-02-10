@@ -531,7 +531,6 @@ namespace ledger {
 
         std::string TezosLikeAccount::computeOperationUid(const std::shared_ptr<api::TezosLikeTransaction> & transaction) const {
              
-
             // The provided transaction has not necessarily been forged already, so we have to 
             // compute the raw transaction first and parse it to make sure we can compute the 
             // required operation values, including the operation index. 
@@ -569,6 +568,9 @@ namespace ledger {
                     originatedAccountId,
                     originatedAccountAddress
                 );
+            }
+            if(opType == api::OperationType::NONE) {
+                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to determine the operation type for computing the operation id");
             }
 
             std::string txIdBase = fmt::format("{}+{}", 

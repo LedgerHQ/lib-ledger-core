@@ -2,7 +2,11 @@ cmake_minimum_required(VERSION 3.0)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR}/include)
 
-add_executable(ledger-core-common-tests main.cpp balance_history.cpp)
+add_executable(ledger-core-common-tests 
+    main.cpp
+    balance_history.cpp
+    operation.cpp 
+)
 
 target_link_libraries(ledger-core-common-tests gtest gtest_main)
 target_link_libraries(ledger-core-common-tests ledger-core-static)
