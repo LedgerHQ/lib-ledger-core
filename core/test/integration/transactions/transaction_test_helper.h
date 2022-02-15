@@ -48,7 +48,6 @@
 #include <wallet/tezos/transaction_builders/TezosLikeTransactionBuilder.h>
 #include "../BaseFixture.h"
 
-
 using namespace ledger::core;
 
 struct TransactionTestData {
@@ -69,11 +68,23 @@ struct TransactionTestData {
 
 struct BitcoinMakeBaseTransaction : public BaseFixture {
 
+    struct InputDescr {
+        std::string _tx_hash;
+        int32_t _out_idx;
+        std::shared_ptr<api::BigInt> _amount;
+    };
+
+    struct OutputDescr {
+        std::string _addr;            // for tx building
+        std::vector<uint8_t> _script; // for tx verification
+        std::shared_ptr<api::BigInt> _amount;
+    };
+
     void SetUp() override {
         BaseFixture::SetUp();
         SetUpConfig();
         recreate();
-    }
+    };
 
     virtual void recreate() {
         pool = newDefaultPool();
@@ -92,6 +103,18 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
     std::shared_ptr<BitcoinLikeTransactionBuilder> tx_builder() {
         return std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(account->buildTransaction(false));
     }
+
+    std::shared_ptr<api::BitcoinLikeTransaction> createTransaction(const std::vector<OutputDescr>& outputs);
+
+    bool verifyTransactionInputs(std::shared_ptr<api::BitcoinLikeTransaction> tx,
+                                 const std::vector<InputDescr>& inputs);
+    bool verifyTransactionOutputs(std::shared_ptr<api::BitcoinLikeTransaction> tx,
+                                  const std::vector<OutputDescr>& outputs);
+
+    bool verifyTransaction(std::shared_ptr<api::BitcoinLikeTransaction> tx,
+                           const std::vector<InputDescr>& inputs,
+                           const std::vector<OutputDescr>& outputs);
+
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<AbstractWallet> wallet;
     std::shared_ptr<BitcoinLikeAccount> account;
