@@ -19,17 +19,17 @@ namespace ledger {
     namespace testing {
         namespace tezos {
 
-           
 
-            
+
+
             struct TezosMakeBaseTransaction : public BaseFixture {
 
                 void SetUp() override;
 
-                void recreate();
+                virtual void recreate();
 
                 void TearDown() override;
-                            
+
                 struct Callback: public api::StringCallback {
                     Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher): _dispatcher(dispatcher)
                     {}
