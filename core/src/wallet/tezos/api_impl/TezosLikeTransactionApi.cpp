@@ -712,6 +712,7 @@ namespace ledger {
 
         TezosLikeTransactionApi& TezosLikeTransactionApi::setOperationIndexInTransaction(int64_t index) {
             _operationIndexInTransaction = index;
+            return *this;
         }
         
         api::TezosOperationTag TezosLikeTransactionApi::getOperationTypeInTransaction() const {
@@ -720,6 +721,7 @@ namespace ledger {
 
         TezosLikeTransactionApi& TezosLikeTransactionApi::setOperationTypeInTransaction(api::TezosOperationTag type) {
             _operationTypeInTransaction = type;
+            return *this;
         }
 
     }
