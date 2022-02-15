@@ -181,11 +181,11 @@ BitcoinLikeTransaction = interface +c {
     # through the full ledger stack
     # @return the OLD Correlation ID, if it was set (empty string if it was unset)
     setCorrelationId(correlationId : string) : string;
-    # Sign all inputs for given transaction. 
+    # Sign all inputs for given transaction.
     # Build DER encoded signature from RSV data.
     # @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
     setSignatures(signatures: list<BitcoinLikeSignature>, override: bool): BitcoinLikeSignatureState;
-    # Sign all inputs for given transaction. 
+    # Sign all inputs for given transaction.
     # @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
     setDERSignatures(signatures: list<binary>, override: bool): BitcoinLikeSignatureState;
 }
@@ -235,13 +235,6 @@ BitcoinLikePickingStrategy = enum {
 }
 
 BitcoinLikeTransactionBuilder = interface +c {
-    # Add the given input to the final transaction.
-    # @param transactionhash The hash of the transaction in where the UTXO can be located.
-    # @params index Index of the UTXO in the previous transaction
-    # @params sequence Sequence number to add at the end of the input serialization. This can be used for RBF transaction
-    # @return A reference on the same builder in order to chain calls.
-    addInput(transactionHash: string, index: i32, sequence: i32): BitcoinLikeTransactionBuilder;
-
     # Add the given output to the final transaction.
     # @return A reference on the same builder in order to chain calls.
     addOutput(amount: Amount, script: BitcoinLikeScript): BitcoinLikeTransactionBuilder;
@@ -303,7 +296,7 @@ BitcoinLikeTransactionBuilder = interface +c {
     reset();
 
     # Set the correlation id which can be used to debug transaction errors
-    # through the full ledger stack 
+    # through the full ledger stack
     # @return A reference on the same builder in order to chain calls.
     setCorrelationId(correlationId : string) : BitcoinLikeTransactionBuilder;
 

@@ -100,8 +100,6 @@ namespace ledger {
                     const std::shared_ptr<spdlog::logger>& logger,
                     const BitcoinLikeTransactionBuildFunction& buildFunction);
             BitcoinLikeTransactionBuilder(const BitcoinLikeTransactionBuilder& cpy);
-            std::shared_ptr<api::BitcoinLikeTransactionBuilder>
-            addInput(const std::string &transactionHash, int32_t index, int32_t sequence) override;
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder> addOutput(const std::shared_ptr<api::Amount> &amount,
                                                                           const std::shared_ptr<api::BitcoinLikeScript> &script) override;
