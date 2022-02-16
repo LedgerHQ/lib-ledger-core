@@ -560,19 +560,32 @@ namespace ledger {
                     originatedAccountAddress = originatedAccount->getAddress();
                 }
 
-                const std::string& sender = parsedTx->getSender()->toBase58();
-                const std::string& receiver = parsedTx->getReceiver()->toBase58();
+                auto sender = parsedTx->getSender();
+                if(!sender) {
+                    throw make_exception(api::ErrorCode::RUNTIME_ERROR, "computeOperationUid: Sender must be provided"); 
+                }
+                auto receiver = parsedTx->getReceiver();
+
+                const std::string& senderAddress = sender->toBase58();
+                const std::string& receiverAddress = receiver? receiver->toBase58() : std::string();
                 std::tie(opType, additional) = getOperationTypeAndUidAdditional(
-                    sender, 
-                    receiver,
+                    senderAddress, 
+                    receiverAddress,
                     originatedAccountId,
                     originatedAccountAddress
                 );
-            }
-            if(opType == api::OperationType::NONE) {
-                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to determine the operation type for computing the operation id");
-            }
 
+                if(opType == api::OperationType::NONE) {
+                    throw make_exception(
+                        api::ErrorCode::RUNTIME_ERROR, "computeOperationUid: Failed to determine the operation type, sender=[%s] receiver=[%s] originatedAccId=[%s] originatedAccAddr=[%s]",
+                        senderAddress,
+                        receiverAddress,
+                        originatedAccountId,
+                        originatedAccountAddress
+                    );
+                }
+            }
+            
             std::string txIdBase = fmt::format("{}+{}", 
                 parsedTx->getCounter()->intValue(), 
                 parsedTx->getOperationIndexInTransaction()
