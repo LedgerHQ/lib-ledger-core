@@ -31,6 +31,9 @@
 
 #include "transaction_test_helper.h"
 
+#include "api/BitcoinLikeInput.hpp"
+#include "api/BitcoinLikeOutput.hpp"
+
 //Examples taken from https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki
 //Serialized signed segwit transactions, first has 2 inputs with witnesses, second has 2 inputs and only one of them has a witness
 const std::vector<std::string> rawSegwitTxs {
@@ -41,3 +44,83 @@ const std::vector<std::string> rawSegwitTxs {
 //01000000000101db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477010000001716001479091972186c449eb1ded22b78e40d009bdf0089feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac02473044022047ac8e878352d3ebbde1c94ce3a10d057c24175747116f8288e5d794d12d482f0220217f36a485cae903c713331d877c1f64677e3622ad4010726870540656fe9dcb012103ad1d8e89212f0b92c74d23bb710c00662ad1470198ac48c43f7d6f93a2a2687392040000
 //KO: P2WPKH (normally not used, to check)
 //01000000000102fff7f7881a8099afa6940d42d1e7f6362bec38171ea3edf433541db4e4ad969f00000000494830450221008b9d1dc26ba6a9cb62127b02742fa9d754cd3bebf337f7a55d114c8e5cdd30be022040529b194ba3f9281a99f2b1c0a19c0489bc22ede944ccf4ecbab4cc618ef3ed01eeffffffef51e1b804cc89d182d279655c3aa89e815b1b309fe287d9b2b55d57b90ec68a0100000000ffffffff02202cb206000000001976a9148280b37df378db99f66f85c95a783a76ac7a6d5988ac9093510d000000001976a9143bde42dbee7e4dbe6a21b2d50ce2f0167faa815988ac000247304402203609e17b84f6a7d30c80bfa610b5b4542f32a8a0d5447a12fb1366d7f01cc44a0220573a954c4518331561406f90300e8f3358f51928d43c212a8caed02de67eebee0121025476c2e83188368da1ff3e292e7acafcdb3566bb0ad253f62fc70f07aeee635711000000
+
+std::shared_ptr<api::BitcoinLikeTransaction> BitcoinMakeBaseTransaction::createTransaction(const std::vector<OutputDescr>& outputs) {
+    auto builder = tx_builder();
+
+    for (const OutputDescr& od : outputs) {
+        if (od._addr.empty())
+            continue;
+
+        builder->sendToAddress(
+                    std::make_shared<ledger::core::Amount>(
+                        currency,
+                        0,
+                        std::dynamic_pointer_cast<api::BigIntImpl>(od._amount)->backend()),
+                    od._addr);
+    }
+
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
+    builder->setFeesPerByte(api::Amount::fromLong(currency, 61));
+
+    auto f = builder->build();
+    std::shared_ptr<api::BitcoinLikeTransaction> tx = uv::wait(f);
+    return tx;
+}
+
+bool BitcoinMakeBaseTransaction::verifyTransactionInputs(std::shared_ptr<api::BitcoinLikeTransaction> tx,
+                                                         const std::vector<InputDescr>& inputs) {
+    if (inputs.size() != tx->getInputs().size())
+        return false;
+
+    std::set<size_t> inputs_matched;
+    for (size_t i = 0; i < inputs.size(); ++i) {
+        for(size_t j = 0; j < inputs.size(); ++j) {
+            if (inputs_matched.end() != inputs_matched.find(j)) {
+                continue;
+            }
+
+            std::shared_ptr<api::BitcoinLikeInput> txin = tx->getInputs()[j];
+            if (txin->getValue()->toBigInt()->compare(inputs[i]._amount) == 0
+                && txin->getPreviousTxHash().value_or("no hash") == inputs[i]._tx_hash
+                && txin->getPreviousOutputIndex().value_or(-1) == inputs[i]._out_idx) {
+                inputs_matched.insert(j);
+                break;
+            }
+        }
+    }
+
+    return inputs.size() == inputs_matched.size();
+}
+
+bool BitcoinMakeBaseTransaction::verifyTransactionOutputs(std::shared_ptr<api::BitcoinLikeTransaction> tx,
+                                                          const std::vector<OutputDescr>& outputs) {
+    if (outputs.size() != tx->getOutputs().size())
+        return false;
+
+    std::set<size_t> outputs_matched;
+    for (size_t i = 0; i < outputs.size(); ++i) {
+        for(size_t j = 0; j < outputs.size(); ++j) {
+            if (outputs_matched.end() != outputs_matched.find(j)) {
+                continue;
+            }
+
+            std::shared_ptr<api::BitcoinLikeOutput> txout = tx->getOutputs()[j];
+            if (txout->getValue()->toBigInt()->compare(outputs[i]._amount) == 0
+                && txout->getScript() == outputs[i]._script) {
+                outputs_matched.insert(j);
+                break;
+            }
+            std::cerr << hex::toString(txout->getScript()) << std::endl;
+        }
+    }
+
+    return outputs.size() == outputs_matched.size();
+}
+
+bool BitcoinMakeBaseTransaction::verifyTransaction(std::shared_ptr<api::BitcoinLikeTransaction> tx,
+                                                   const std::vector<InputDescr>& inputs,
+                                                   const std::vector<OutputDescr>& outputs) {
+    return verifyTransactionInputs(tx, inputs) && verifyTransactionOutputs(tx, outputs);
+}
+

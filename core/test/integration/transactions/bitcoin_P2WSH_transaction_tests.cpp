@@ -28,42 +28,132 @@
  *
  */
 #include "../BaseFixture.h"
-#include "../../fixtures/medium_xpub_fixtures.h"
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <math/bech32/Bech32Factory.h>
 #include "transaction_test_helper.h"
 #include <utils/hex.h>
 #include <api/KeychainEngines.hpp>
+#include "../../fixtures/medium_xpub_fixtures.h"
+#include "../../fixtures/txes_to_wpkh_fixtures.h"
+
 using namespace std;
 
-struct BitcoinMakeP2WSHTransaction : public BitcoinMakeBaseTransaction {
+struct BitcoinMakeTransactionFromNativeSegwitToP2WSH : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
-        testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WSH);
+        testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
+        //https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
+        testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"84'/<coin_type>'/<account>'/<node>/<address>");
+        testData.walletName = randomWalletName();
+        testData.currencyName = "bitcoin";
+        testData.inflate_btc = ledger::testing::txes_to_wpkh::inflate;
+    }
+};
+
+TEST_F(BitcoinMakeTransactionFromNativeSegwitToP2WSH, CreateStandardP2WSHWithOneOutput) {
+    auto address = "bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3";
+
+    auto balance = uv::wait(account->getBalance());
+    std::cerr << balance->toLong() << std::endl;
+
+    std::vector<InputDescr> input_descrs = {
+        {
+            "673f7e1155dd2cf61c961cedd24608274c0f20cfaeaa1154c2b5ef94ec7b81d1",
+            1,
+            std::make_shared<api::BigIntImpl>(BigInt(25402))
+        }
+    };
+    std::vector<OutputDescr> output_descrs = {
+        {
+            address,
+            hex::toByteArray("00201863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262"),
+            std::make_shared<api::BigIntImpl>(BigInt(100))
+        },
+        {
+            "", // This is a change output. Don't use it explicitely in building
+            hex::toByteArray("00141017b1e1ca8632828f22a4d6c5260f3492b1dd08"),
+            // yes, change goes to legacy address
+            std::make_shared<api::BigIntImpl>(BigInt(16396))
+        }
+    };
+
+    std::shared_ptr<api::BitcoinLikeTransaction> generatedTx
+            = createTransaction(output_descrs);
+
+    std::cerr << hex::toString(generatedTx->serialize()) << std::endl;
+
+    EXPECT_TRUE(verifyTransaction(generatedTx, input_descrs, output_descrs));
+
+    std::vector<uint8_t> tx_bin = generatedTx->serialize();
+    std::cerr << hex::toString(generatedTx->serialize()) << std::endl;
+
+    auto parsedTx
+            = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(),
+                                                                         tx_bin, 0);
+
+    EXPECT_TRUE(verifyTransactionOutputs(parsedTx, output_descrs));
+    // Values in inputs are missing after parsing. Here we can test only outputs.
+
+    EXPECT_EQ(tx_bin, parsedTx->serialize());
+}
+
+struct BitcoinMakeTransactionFromLegacyToP2WSH : public BitcoinMakeBaseTransaction {
+    void SetUpConfig() override {
+        testData.configuration = DynamicObject::newInstance();
         testData.walletName = randomWalletName();
         testData.currencyName = "bitcoin";
         testData.inflate_btc = ledger::testing::medium_xpub::inflate;
     }
 };
 
-TEST_F(BitcoinMakeP2WSHTransaction, CreateStandardP2WSHWithOneOutput) {
-    auto builder = tx_builder();
-    auto freshAddress = uv::wait(account->getFreshPublicAddresses())[0];
-    auto hrp = Bech32Factory::newBech32Instance("btc").getValue()->getBech32Params().hrp;
-    auto freshAddressStr = freshAddress->asBitcoinLikeAddress()->toBech32();
-    EXPECT_EQ(freshAddressStr.substr(0, hrp.size()), hrp);
-    auto balance = uv::wait(account->getBalance());
-    // TODO: send BTC on address bc1q7kggee5ry2xpr0nul42grqul6ygyll5afj34xxehaftcc0pty4sqvud0h2 to implement the rest of tests ?
-    EXPECT_EQ(balance->toLong(), 0);
+TEST_F(BitcoinMakeTransactionFromLegacyToP2WSH, CreateStandardP2WSHWithOneOutput) {
+    auto address = "bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3";
 
-    // TODO: In the meantime ...
-    // Reference: https://github.com/bitcoin/bitcoin/blob/master/src/test/data/tx_valid.json
-    auto mockTx = "0100000000010100010000000000000000000000000000000000000000000000000000000000000000000000ffffffff01e8030000000000001976a9144c9c3dfac4207d5d8cb89df5722cb3d712385e3f88ac02483045022100aa5d8aa40a90f23ce2c3d11bc845ca4a12acd99cbea37de6b9f6d86edebba8cb022022dedc2aa0a255f74d04c0b76ece2d7c691f9dd11a64a8ac49f62a99c3a05f9d01232103596d3451025c19dbbdeb932d6bf8bfb4ad499b95b6f88db8899efac102e5fc71ac00000000";
-    auto parsedTx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(mockTx), 0);
-    EXPECT_EQ(mockTx, hex::toString(parsedTx->serialize()));
+    auto balance = uv::wait(account->getBalance());
+    std::cerr << "Balance before test: " << balance->toLong() << std::endl;
+
+    std::vector<InputDescr> input_descrs = {
+        {
+            "a207285f69f5966f47c93ea0b76c1d751912823ed5f58ad23d8e5600260f39f6",
+            0,
+            std::make_shared<api::BigIntImpl>(BigInt(100000))
+        }
+    };
+    std::vector<OutputDescr> output_descrs = {
+        {
+            address,
+            hex::toByteArray("00201863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262"),
+            std::make_shared<api::BigIntImpl>(BigInt(100))
+        },
+        {
+            "", // This is a change output. Don't use it explicitely in building
+            hex::toByteArray("76a914d642b9c546d114dc634e65f72283e3458032a3d488ac"),
+            // yes, change goes to legacy address
+            std::make_shared<api::BigIntImpl>(BigInt(86114))
+        }
+    };
+
+    std::shared_ptr<api::BitcoinLikeTransaction> generatedTx
+            = createTransaction(output_descrs);
+
+    std::cerr << "generated tx: " << std::endl
+              << hex::toString(generatedTx->serialize()) << std::endl;
+
+    EXPECT_TRUE(verifyTransaction(generatedTx, input_descrs, output_descrs));
+
+    std::vector<uint8_t> tx_bin = generatedTx->serialize();
+
+    auto parsedTx
+            = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(),
+                                                                         tx_bin, 0);
+
+    EXPECT_TRUE(verifyTransactionOutputs(parsedTx, output_descrs));
+    // Values in inputs are missing after parsing. Here we can test only outputs.
+
+    EXPECT_EQ(tx_bin, parsedTx->serialize());
 }
 
-TEST_F(BitcoinMakeP2WSHTransaction, ParseSignedTx) {
+TEST_F(BitcoinMakeTransactionFromLegacyToP2WSH, ParseSignedTx) {
     auto hash = "94236be7808bc824ae3c531ee4cdf26559d6cf40cb6541f38153c54701fb0ea7";
     auto sender = "bc1qsqe7gwppjngklwjd2lp8kde0cpglerldadudcua3efr7a0tf3ucs995hxa";
     std::vector<std::string> receivers {"bc1qmxalhet27lzt07tq5uxhagg8z4538k095f4s5u2znh67p972v5mswsecmn", "bc1qhfrga6jkrvnrq8jv7606xj77fttqeq08puze7pzu4xnejvgqffxs96j3cx"};
