@@ -169,15 +169,24 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWithoutOriginatedAccount) 
     }
 }
 
+struct TezosAccountWithFixedPoolName : public TezosAccount {
+    virtual void recreate() {
+        SetUpConfig();
+        pool = newDefaultPool("my_ppol");
+        wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        account = testData.inflate_xtz(pool, wallet);
+        currency = wallet->getCurrency();
+    }
+};
 
-TEST_F(TezosAccount, ComputeOperationUidWithValidTransaction) {
+TEST_F(TezosAccountWithFixedPoolName, ComputeOperationUidWithValidTransaction) {
     auto strTx = "036e766ee0733ef0fb6385f2034cfbd437247afad4b301ebce1b929a67ce4a0b8d6c00902c5d86590a2452f0ccf9c1fa55ae679de27d398e0aee94cb03a75100882700011ebab3538f6ca4223ee98b565846e47d273d112900";
     auto txBytes = hex::toByteArray(strTx);
     auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
         ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON));
     tx->setRawTx(std::vector<unsigned char>{});
     auto accAddress = ledger::core::TezosLikeAddress::fromBase58(account->getAccountAddress(), currency);
-    
+
     // when sender
     {
       auto txTest = std::make_shared<TezosLikeTransactionApi>(*tx);
@@ -195,7 +204,7 @@ TEST_F(TezosAccount, ComputeOperationUidWithValidTransaction) {
 }
 
 
-TEST_F(TezosAccount, ComputeOperationUidWithInvalidTransaction) {
+TEST_F(TezosAccountWithFixedPoolName, ComputeOperationUidWithInvalidTransaction) {
     auto strTx = "036e766ee0733ef0fb6385f2034cfbd437247afad4b301ebce1b929a67ce4a0b8d6c00902c5d86590a2452f0ccf9c1fa55ae679de27d398e0aee94cb03a75100882700011ebab3538f6ca4223ee98b565846e47d273d112900";
     auto txBytes = hex::toByteArray(strTx);
     auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(

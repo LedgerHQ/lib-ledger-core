@@ -1,0 +1,10 @@
+GET https://explorers.api.live.ledger.com/blockchain/v2/btc/blocks/current
+0
+1
+{"hash":"00000000000000000008db19835048ecdd79d0974f4bd1a1d5492a5502f1d61c","height":722923,"time":"2022-02-12T11:49:27Z","txs":[]}
+
+GET https://explorers.api.live.ledger.com/timestamp
+0
+1
+{"timestamp":1644666863}
+
