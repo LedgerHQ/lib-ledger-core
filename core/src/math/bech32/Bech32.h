@@ -46,26 +46,38 @@ namespace ledger {
         class Bech32 {
         public:
             Bech32(Bech32Parameters::Bech32Struct bech32Params) : _bech32Params(bech32Params) {}
+
+            virtual std::string encode(const std::vector<uint8_t>& hash,
+                                       const std::vector<uint8_t>& version) const = 0;
+
+            // @return tuple<witnessVersion, hash>
+            virtual std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
+            decode(const std::string& str) const = 0;
+
+            Bech32Parameters::Bech32Struct getBech32Params() const {
+                return _bech32Params;
+            }
+
+        protected:
+            std::string encodeBech32(const std::vector<uint8_t>& values, uint32_t bech32_param=1) const;
+
+            // Decode from bech32 address and verify checksum
+            // @return pair<hrp, hash>
+            std::pair<std::string, std::vector<uint8_t>> decodeBech32(const std::string& str) const;
+
+            // Decode from bech32 address and doesn't verify checksum
+            // @return pair<hrp, hash>
+            std::pair<std::string, std::vector<uint8_t>> decodeBech32Raw(const std::string& str) const;
+
             // Find the polynomial with value coefficients mod the generator as 64-bit.
             virtual uint64_t polymod(const std::vector<uint8_t>& values) const = 0;
 
             // Expand a HRP for use in checksum computation.
             virtual std::vector<uint8_t> expandHrp(const std::string& hrp) const = 0;
 
-            bool verifyChecksum(const std::vector<uint8_t>& values) const;
+            bool verifyChecksum(const std::vector<uint8_t>& values, uint32_t bech32_param) const;
 
-            std::vector<uint8_t> createChecksum(const std::vector<uint8_t>& values) const;
-
-            virtual std::string encode(const std::vector<uint8_t>& hash,
-                                       const std::vector<uint8_t>& version) const = 0;
-
-            // Decode from bech32 address
-            // @return pair<hrp, hash>
-            std::pair<std::string, std::vector<uint8_t>>
-            decodeBech32(const std::string& str) const;
-            // @return tuple<witnessVersion, hash>
-            virtual std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
-            decode(const std::string& str) const = 0;
+            std::vector<uint8_t> createChecksum(const std::vector<uint8_t>& values, uint32_t bech32_param) const;
 
             static unsigned char toLowerCase(unsigned char c);
 
@@ -75,12 +87,6 @@ namespace ledger {
                                     bool pad,
                                     std::vector<uint8_t>& out);
 
-            Bech32Parameters::Bech32Struct getBech32Params() const {
-                return _bech32Params;
-            }
-
-        protected:
-            std::string encodeBech32(const std::vector<uint8_t>& values) const;
             Bech32Parameters::Bech32Struct _bech32Params;
         };
     }

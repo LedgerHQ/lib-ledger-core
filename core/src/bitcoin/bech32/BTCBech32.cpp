@@ -28,9 +28,9 @@
  *
  */
 
-
 #include "BTCBech32.h"
 #include <utils/Exception.hpp>
+#include <collections/vector.hpp>
 
 namespace ledger {
     namespace core {
@@ -68,30 +68,69 @@ namespace ledger {
             std::vector<uint8_t> converted;
             converted.insert(converted.end(), version.begin(), version.end());
             Bech32::convertBits(data, fromBits, toBits, pad, converted);
-            return encodeBech32(converted);
+            if (version.size() == 1) {
+                if (version == _bech32Params.P2WPKHVersion || version == _bech32Params.P2WSHVersion) {
+                    return encodeBech32(converted, 1);
+                } else if (version[0] <= 16) {
+                    return encodeBech32(converted, 0x2bc830a3);
+                }
+                throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid Bech32 version value : must be in the range 0..16 inclusive");
+            }
+            throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid Bech32 version length : must be exactly 1 byte");
         }
 
         std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
         BTCBech32::decode(const std::string& str) const {
-            auto decoded = decodeBech32(str);
-            if (decoded.first != _bech32Params.hrp || decoded.second.size() < 1) {
-                throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid bech 32 format");
+            auto decoded = decodeBech32Raw(str);
+
+            if (decoded.second.size() < 1) {
+                throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : invalid Bech32 format");
+            }
+
+            std::vector<uint8_t> version{decoded.second[0]};
+
+            if (decoded.second.size() < _bech32Params.checksumSize) {
+                throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : the address is less than checksum size");
+            }
+
+            if (version[0] == 0) {
+                if (!verifyChecksum(decoded.second, 1)) {
+                    throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Bech32 checksum verification failed");
+                }
+            } else if (version[0] <= 16) {
+                if (!verifyChecksum(decoded.second, 0x2bc830a3)) {
+                    throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Bech32M checksum verification failed");
+                }
+            } else {
+                throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid Bech32 version value : must be in the range 0..16 inclusive");
+            }
+
+            // strip the checksum
+            std::vector<uint8_t> decoded_address(decoded.second.begin(), decoded.second.end() - _bech32Params.checksumSize);
+
+            if (decoded.first != _bech32Params.hrp) {
+                throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid Bech32 hrp");
             }
             std::vector<uint8_t> converted;
             int fromBits = 5, toBits = 8;
             bool pad = false;
-            auto result = Bech32::convertBits(std::vector<uint8_t>(decoded.second.begin() + 1, decoded.second.end()),
+            auto result = Bech32::convertBits(std::vector<uint8_t>(decoded_address.begin() + 1, decoded_address.end()),
                                               fromBits,
                                               toBits,
                                               pad,
                                               converted);
-            if (!result || converted.size() < 2 ||
-                converted.size() > 40 || decoded.second[0] > 16 ||
-                (decoded.second[0] == 0 && converted.size() != 20 && converted.size() != 32)) {
-                throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid bech 32 format");
+
+            if (!result || converted.size() < 2 || converted.size() > 40 || version.size() != 1) {
+                throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid Bech32 format");
             }
-            std::vector<uint8_t> version{decoded.second[0]};
-            return std::make_pair(version, converted);
+
+            if ((converted.size() == 20 && version == _bech32Params.P2WPKHVersion) ||
+                (converted.size() == 32 && (version == _bech32Params.P2WSHVersion
+                                            || version == _bech32Params.P2TRVersion))) {
+                return std::make_pair(version, converted);
+            }
+
+            throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid Bech32 format, data length and version missmatch");
         }
     }
 }

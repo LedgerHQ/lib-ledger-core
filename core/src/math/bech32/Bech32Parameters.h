@@ -55,6 +55,7 @@ namespace ledger {
                 std::vector<unsigned long long> generator;
                 std::vector<uint8_t> P2WPKHVersion;
                 std::vector<uint8_t> P2WSHVersion;
+                std::vector<uint8_t> P2TRVersion;
 
                 Bech32Struct() = default;
                 Bech32Struct(const std::string &_name,
@@ -63,14 +64,15 @@ namespace ledger {
                              size_t _checksumSize,
                              const std::vector<unsigned long long> &_generator,
                              const std::vector<uint8_t> &_P2WPKHVersion,
-                             const std::vector<uint8_t> &_P2WSHVersion) : name(_name),
-                                                                          hrp(_hrp),
-                                                                          separator(_separator),
-                                                                          checksumSize(_checksumSize),
-                                                                          generator(_generator),
-                                                                          P2WPKHVersion(_P2WPKHVersion),
-                                                                          P2WSHVersion(_P2WSHVersion)
-
+                             const std::vector<uint8_t> &_P2WSHVersion,
+                             const std::vector<uint8_t> &_P2TRVersion) : name(_name),
+                                                                         hrp(_hrp),
+                                                                         separator(_separator),
+                                                                         checksumSize(_checksumSize),
+                                                                         generator(_generator),
+                                                                         P2WPKHVersion(_P2WPKHVersion),
+                                                                         P2WSHVersion(_P2WSHVersion),
+                                                                         P2TRVersion(_P2TRVersion)
                 {};
 
             };
