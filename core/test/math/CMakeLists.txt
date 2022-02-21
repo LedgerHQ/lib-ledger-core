@@ -8,6 +8,7 @@ add_executable(ledger-core-math-tests
         bigint_tests.cpp
         bigint_api_tests.cpp
         base58_test.cpp
+        bech32_test.cpp
         fibonacci_test.cpp
         base_converter_tests.cpp)
 
@@ -27,3 +28,4 @@ endif()
 
 include(GoogleTest)
 gtest_discover_tests(ledger-core-math-tests PROPERTIES "LABELS;unit")
+
