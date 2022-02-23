@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <map>
+#include <mutex>
 #include <api/PreferencesBackend.hpp>
 #include <api/PreferencesChange.hpp>
 
@@ -28,6 +29,7 @@ namespace ledger {
 
             private:
                 std::map<std::vector<uint8_t>, std::vector<uint8_t>> _data;
+                std::mutex _mtx;
             };
         }
     }
