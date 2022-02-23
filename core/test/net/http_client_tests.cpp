@@ -40,6 +40,8 @@
 #include <ledger/core/net/HttpClient.hpp>
 #include <ledger/core/net/HttpJsonHandler.hpp>
 #include <boost/lexical_cast.hpp>
+#include <thread>
+#include <chrono>
 
 static std::string BIG_TEXT =
         "Hi guys, I own a Nano S and I am a big fan, however there is a big slice of information that is missing from your website, that is how reliable the Nano S is, how much testing it's been through (and it goes through any time a new software release is distributed) etc. \n"
@@ -71,6 +73,7 @@ TEST(HttpClient, GET) {
         });
 
         server->start(8000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
         worker->execute(::make_runnable([&http, dispatcher, &server] () {
             http.GET("/say/hello/toto/please")().foreach(dispatcher->getMainExecutionContext(),
@@ -103,6 +106,7 @@ TEST(HttpClient, GETJson) {
         });
 
         server->start(8000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
         worker->execute(::make_runnable([&http, dispatcher, &server] () {
                 http
@@ -136,6 +140,7 @@ TEST(HttpClient, GETJsonError) {
         });
 
         server->start(8000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
         worker->execute(::make_runnable([&http, dispatcher, &server] () {
             http
@@ -171,7 +176,7 @@ TEST(HttpClient, POST) {
         });
 
         server->start(8000);
-
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
         worker->execute(::make_runnable([&http, dispatcher, &server] () {
             std::vector<uint8_t> body((uint8_t *)BIG_TEXT.c_str(), (uint8_t *)(BIG_TEXT.c_str() + BIG_TEXT.size()));
@@ -246,6 +251,7 @@ TEST(HttpClient, GETWithSax) {
         });
 
         server->start(8000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
         worker->execute(::make_runnable([&http, dispatcher, &server] () {
             http
@@ -326,6 +332,7 @@ TEST(HttpClient, GETWithSaxError) {
         });
 
         server->start(8000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
         worker->execute(::make_runnable([&http, dispatcher, &server] () {
             http
