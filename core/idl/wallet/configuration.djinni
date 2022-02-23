@@ -29,6 +29,7 @@ KeychainEngines = interface +c {
     const BIP49_P2SH: string = "BIP49_P2SH";
     const BIP173_P2WPKH: string = "BIP173_P2WPKH";
     const BIP173_P2WSH: string = "BIP173_P2WSH";
+    const BIP350_P2TR: string = "BIP350_P2TR";
 }
 
 # Class of constants representing the engines to rely on for synchronization.

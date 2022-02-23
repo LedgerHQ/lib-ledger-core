@@ -184,6 +184,8 @@ namespace ledger {
                 script << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUAL;
             } else if (a->isP2WPKH() || a->isP2WSH()) {
                 script << btccore::OP_0 << a->getHash160();
+            } else if (a->isP2TR()) {
+                script << btccore::OP_1 << a->getHash160();
             } else {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Cannot create output script from {}.", address);
             }

@@ -94,6 +94,10 @@ namespace ledger {
             return state;
         }
 
+        std::string CommonBitcoinLikeKeychains::getKeychainEngine() const {
+            return _keychainEngine;
+        }
+
         bool CommonBitcoinLikeKeychains::markPathAsUsed(const DerivationPath &p, bool needExtendKeychain) {
             KeychainPersistentState state = getState();
             DerivationPath path(p);

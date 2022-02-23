@@ -46,22 +46,21 @@ namespace ledger {
                                const std::string &keychainEngine,
                                const Option<std::string>& derivationPath = Option<std::string>());
             virtual std::vector<uint8_t> getVersion() override;
-            std::vector<uint8_t> getVersionFromKeychainEngine(const std::string &keychainEngine,
-                                                              const api::BitcoinLikeNetworkParameters &params) const;
             virtual std::vector<uint8_t> getHash160() override;
             virtual api::BitcoinLikeNetworkParameters getNetworkParameters() override;
             virtual std::string toBase58() override;
             virtual std::string toBech32() override;
-            std::string toBase58() const;
-            std::string toBech32() const;
             virtual bool isP2SH() override;
             virtual bool isP2PKH() override;
             virtual bool isP2WSH() override;
             virtual bool isP2WPKH() override;
+            virtual bool isP2TR() override;
             virtual optional<std::string> getDerivationPath() override;
 
             std::string toString() override;
             std::string getStringAddress() const;
+
+            const std::string& getKeychainEngine() const;
 
             static std::shared_ptr<AbstractAddress> parse(const std::string& address, const api::Currency& currency,
                                                           const Option<std::string>& derivationPath = Option<std::string>());
@@ -87,6 +86,11 @@ namespace ledger {
                                                                const api::Currency &currency,
                                                                const std::string &keychainEngine);
 
+        protected:
+            std::string toBase58Impl() const;
+            std::string toBech32Impl() const;
+            static std::vector<uint8_t> getVersionFromKeychainEngine(const std::string &keychainEngine,
+                                                                     const api::BitcoinLikeNetworkParameters &params);
 
         private:
             const std::vector<uint8_t> _hash160;

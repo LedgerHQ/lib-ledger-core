@@ -113,12 +113,14 @@ namespace ledger {
         bool BitcoinLikeKeychain::isSegwit(const std::string &keychainEngine) {
             return keychainEngine == api::KeychainEngines::BIP49_P2SH ||
                    keychainEngine == api::KeychainEngines::BIP173_P2WPKH ||
-                   keychainEngine == api::KeychainEngines::BIP173_P2WSH;
+                   keychainEngine == api::KeychainEngines::BIP173_P2WSH ||
+                   keychainEngine == api::KeychainEngines::BIP350_P2TR;
         }
 
         bool BitcoinLikeKeychain::isNativeSegwit(const std::string &keychainEngine) {
             return keychainEngine == api::KeychainEngines::BIP173_P2WPKH ||
-                   keychainEngine == api::KeychainEngines::BIP173_P2WSH;
+                   keychainEngine == api::KeychainEngines::BIP173_P2WSH ||
+                   keychainEngine == api::KeychainEngines::BIP350_P2TR;
         }
     }
 }
