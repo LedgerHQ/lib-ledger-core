@@ -9,7 +9,7 @@ namespace ledger {
 
             std::experimental::optional<std::vector<uint8_t>> MemPreferencesBackend::get(const std::vector<uint8_t> & key)
             {
-                std::unique_lock<std::mutex> lock(_mtx);
+                std::lock_guard<std::mutex> lock(_mtx);
                 if (_data.find(key) != _data.end())
                     return _data.at(key);
                 return optional<std::vector<uint8_t>>();
@@ -17,9 +17,9 @@ namespace ledger {
 
             bool MemPreferencesBackend::commit(const std::vector<api::PreferencesChange> & changes)
             {
-                std::unique_lock<std::mutex> lock(_mtx);
                 for(const auto& change: changes)
                 {
+                    std::lock_guard<std::mutex> lock(_mtx);
                     switch (change.type) {
                     case api::PreferencesChangeType::PUT_TYPE:
                         _data[change.key] = change.value;
