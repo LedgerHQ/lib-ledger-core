@@ -88,6 +88,8 @@ namespace ledger {
                 _input->coinbase = Option<std::string>(value);
             } else if (_lastKey == "value") {
                 _input->value = Option<BigInt>(BigInt::fromString(value));
+            } else if (_lastKey == "sequence") {
+                _input->sequence = BigInt::fromString(value).toUint64();
             }
             return true;
         }
