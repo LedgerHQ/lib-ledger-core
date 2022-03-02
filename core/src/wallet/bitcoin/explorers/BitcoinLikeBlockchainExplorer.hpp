@@ -99,17 +99,7 @@ namespace ledger {
                 confirmations = -1;
             }
 
-            BitcoinLikeBlockchainExplorerTransaction(const BitcoinLikeBlockchainExplorerTransaction &cpy) {
-                this->confirmations = cpy.confirmations;
-                this->version = cpy.version;
-                this->outputs = cpy.outputs;
-                this->inputs = cpy.inputs;
-                this->receivedAt = cpy.receivedAt;
-                this->lockTime = cpy.lockTime;
-                this->fees = cpy.fees;
-                this->hash = cpy.hash;
-                this->block = cpy.block;
-            }
+            BitcoinLikeBlockchainExplorerTransaction(const BitcoinLikeBlockchainExplorerTransaction &cpy) = default;
         };
 
         class BitcoinLikeBlockchainExplorer : public ConfigurationMatchable,

@@ -169,7 +169,11 @@ namespace ledger {
                 }
                 else if (_lastKey == "received_at") {
                     _transaction->receivedAt = DateUtils::fromJSON(value);
+                } else if (_lastKey == "fees") {
+                    BigInt intValue = BigInt::fromString(value);
+                    _transaction->fees = Option<BigInt>(intValue);
                 }
+                
                 return true;
             }
         }
