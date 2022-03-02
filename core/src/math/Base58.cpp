@@ -35,6 +35,7 @@
 #include <utils/hex.h>
 #include <functional>
 #include <crypto/Keccak.h>
+#include <vector>
 
 using namespace ledger::core;
 static const std::string DIGITS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -62,7 +63,7 @@ std::string ledger::core::Base58::encode(const std::vector<uint8_t> &bytes,
     pend = len;
     while (pbegin != pend && !bytes[pbegin]) pbegin = ++zeros;
     const int size = 1 + iFactor * (double)(pend - pbegin);
-    unsigned char* b58 = new unsigned char[size];
+    std::vector<unsigned char> b58(size, 0);
     for (int i = 0; i < size; i++) b58[i] = 0;
     while (pbegin != pend) {
         unsigned int carry = bytes[pbegin];
@@ -82,7 +83,6 @@ std::string ledger::core::Base58::encode(const std::vector<uint8_t> &bytes,
     int ri = 0;
     while (ri < zeros) { result += base58Dictionary[0]; ri++; }
     for (; it2 < size; ++it2) result += base58Dictionary[b58[it2]];
-    delete[] b58;
     return result;
 }
 
