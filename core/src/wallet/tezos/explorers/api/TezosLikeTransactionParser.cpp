@@ -138,7 +138,9 @@ namespace ledger {
                     && _transaction->block.hasValue()) {
                     _transaction->block.getValue().height = BigInt::fromString(number).toUint64();
                 } else if (_lastKey == "amount" || _lastKey == "volume") {
-                    _transaction->value = toValue(number, _lastKey == "volume");
+                    if(_transaction->type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                        _transaction->value = toValue(number, _lastKey == "volume");
+                    }
                 } else if (_lastKey == "fee") {
                     _transaction->fees = _transaction->fees + toValue(number, false);
                 } else if (_lastKey == "gas_limit") {
@@ -193,6 +195,11 @@ namespace ledger {
                 } else if (_lastKey == "sender" ||
                         (currentObject == "src" && _lastKey == "tz")) {
                     _transaction->sender = value;
+                } else if(_lastKey == "receiver" && _transaction->type == api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                    // For undelegation, the API returns type=delegation & receiver attribute is defined
+                    // For delegation, the API returns type=delegation but receiver is not defined ('delegate' used instead)
+                    // Receiver should be empty to differentiate delegate from undelegate in db
+                    _transaction->receiver = "";
                 } else if (_lastKey == "receiver" || _lastKey == "delegate" ||
                         ((currentObject == "destination" || currentObject == "delegate") && _lastKey == "tz")) {
                     _transaction->receiver = value;
@@ -222,6 +229,9 @@ namespace ledger {
                     if (_lastKey == "type" &&
                             _transaction->type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
                         _transaction->originatedAccount = TezosLikeBlockchainExplorerOriginatedAccount();
+                    } else if(_lastKey == "type" &&
+                            _transaction->type == api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                        _transaction->value = BigInt(0);
                     }
 
                 } else if (_lastKey == "public_key" ||
