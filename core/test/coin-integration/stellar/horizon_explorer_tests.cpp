@@ -92,7 +92,7 @@ TEST_F(StellarFixture, GetLastLedger) {
     auto ledger = uv::wait(explorer->getLastLedger());
     auto t = DateUtils::toJSON(ledger->time);
     EXPECT_TRUE(!ledger->hash.empty());
-    EXPECT_TRUE(ledger->height > 69859L);
+    EXPECT_TRUE(ledger->height > 21153L);
     EXPECT_TRUE(ledger->time > DateUtils::fromJSON("2015-07-16T23:49:00Z"));
 }
 
