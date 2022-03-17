@@ -138,7 +138,9 @@ namespace ledger {
                     && _transaction->block.hasValue()) {
                     _transaction->block.getValue().height = BigInt::fromString(number).toUint64();
                 } else if (_lastKey == "amount" || _lastKey == "volume") {
-                    _transaction->value = toValue(number, _lastKey == "volume");
+                    if(_transaction->type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                        _transaction->value = toValue(number, _lastKey == "volume");
+                    }
                 } else if (_lastKey == "fee") {
                     _transaction->fees = _transaction->fees + toValue(number, false);
                 } else if (_lastKey == "gas_limit") {
@@ -222,6 +224,9 @@ namespace ledger {
                     if (_lastKey == "type" &&
                             _transaction->type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
                         _transaction->originatedAccount = TezosLikeBlockchainExplorerOriginatedAccount();
+                    } else if(_lastKey == "type" &&
+                            _transaction->type == api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                        _transaction->value = BigInt(0);
                     }
 
                 } else if (_lastKey == "public_key" ||
