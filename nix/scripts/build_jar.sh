@@ -19,7 +19,7 @@ ls -la jar_build/src/main/resources/resources/djinni_native_libs
 printf "\n============ Packaging JAR (with ${LIBCORE_LIB_DIR})\n"
 cd jar_build
 sbt package
-sbt publish
+# sbt publish
 printf "\n============ Showing target build, hopefully with a JAR to rename ledger-lib-core.jar\n"
 mkdir -p artifact
 for f in `ls target/scala-2.12/`

@@ -131,19 +131,41 @@ namespace ledger {
         Future<std::shared_ptr<BigInt>>
         ExternalTezosLikeBlockchainExplorer::getGasPrice() {
             const bool parseNumbersAsString = true;
-            const auto gasPriceField = "gas_price";
+            // Since tzindex 12.01, we don't have gas_price field anymore
+            // We have to calculate it instead from gas_used and fee
+            const auto gasUsedField = "gas_used";
+            const auto feeField = "fee";
 
             return _http->GET("block/head")
                     .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
 
-                        if (!json.IsObject() || !json.HasMember(gasPriceField) ||
-                            !json[gasPriceField].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 fmt::format("Failed to get gas_price from network, no (or malformed) field \"{}\" in response", gasPriceField));
+                        if (!json.IsObject()) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR, "Failed to compute gas_price from network, block/head is not a JSON object");
                         }
-                        const std::string apiGasPrice = json[gasPriceField].GetString();
-                        const std::string picoTezGasPrice = api::BigInt::fromDecimalString(apiGasPrice, 6, ".")->toString(10);
+                        /*rapidjson::StringBuffer sb;
+                        rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
+                        json.Accept(writer);
+                        std::string jsonAsString = sb.GetString();*/
+                        std::string jsonAsString = "COOL";
+                        if (!json.HasMember(gasUsedField) || !json[gasUsedField].IsInt()) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR, fmt::format(
+                                    "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response \"{}\"",
+                                    gasUsedField, jsonAsString));
+                        }
+                        if (!json.HasMember(feeField) || !json[feeField].IsDouble()) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR, fmt::format(
+                                    "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
+                                    feeField));
+                        }
+                        const double apiGasUsed = json[gasUsedField].GetInt();
+                        const double apiFee = json[feeField].GetDouble();
+                        const double gasPrice = apiFee / static_cast<double>(apiGasUsed);
+                        const std::string gasPriceAsString = std::to_string(gasPrice);
+                        const std::string picoTezGasPrice = api::BigInt::fromDecimalString(gasPriceAsString, 6, ".")->toString(10);
                         return std::make_shared<BigInt>(std::stoi(picoTezGasPrice));
                     });
         }
