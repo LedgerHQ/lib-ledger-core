@@ -34,8 +34,6 @@
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
 
-#include <iostream>
-
 namespace ledger {
     namespace core {
         ExternalTezosLikeBlockchainExplorer::ExternalTezosLikeBlockchainExplorer(
