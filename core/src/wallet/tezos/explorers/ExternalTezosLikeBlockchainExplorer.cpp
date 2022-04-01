@@ -132,8 +132,8 @@ namespace ledger {
         ExternalTezosLikeBlockchainExplorer::getGasPrice() {
             const bool parseNumbersAsString = true;
             // Since tzindex 12.01, we don't have gas_price field anymore
-            // We have to calculate it instead from gas_used and fee
-            const auto gasUsedField = "gas_used";
+            // We have to calculate it instead from gas_limit and fee
+            const auto gasLimitField = "gas_limit";
             const auto feeField = "fee";
 
             return _http->GET("block/head")
@@ -144,11 +144,11 @@ namespace ledger {
                             throw make_exception(
                                 api::ErrorCode::HTTP_ERROR, "Failed to compute gas_price from network, block/head is not a JSON object");
                         }
-                        if (!json.HasMember(gasUsedField) || !json[gasUsedField].IsString()) {
+                        if (!json.HasMember(gasLimitField) || !json[gasLimitField].IsString()) {
                             throw make_exception(
                                 api::ErrorCode::HTTP_ERROR, fmt::format(
                                     "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
-                                    gasUsedField));
+                                    gasLimitField));
                         }
                         if (!json.HasMember(feeField) || !json[feeField].IsString()) {
                             throw make_exception(
@@ -156,9 +156,9 @@ namespace ledger {
                                     "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
                                     feeField));
                         }
-                        const uint64_t apiGasUsed = std::stoull(json[gasUsedField].GetString());
+                        const uint64_t apiGasLimit = std::stoull(json[gasLimitField].GetString());
                         const double apiFee = std::stod(json[feeField].GetString());
-                        const double gasPrice = apiFee / static_cast<double>(apiGasUsed);
+                        const double gasPrice = apiFee / static_cast<double>(apiGasLimit);
                         const std::string gasPriceAsString = std::to_string(gasPrice);
                         const std::string picoTezGasPrice = api::BigInt::fromDecimalString(gasPriceAsString, 6, ".")->toString(10);
                         return std::make_shared<BigInt>(std::stoi(picoTezGasPrice));
