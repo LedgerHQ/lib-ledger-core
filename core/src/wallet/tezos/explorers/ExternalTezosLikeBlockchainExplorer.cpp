@@ -34,6 +34,8 @@
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
 
+#include <iostream>
+
 namespace ledger {
     namespace core {
         ExternalTezosLikeBlockchainExplorer::ExternalTezosLikeBlockchainExplorer(
@@ -144,25 +146,20 @@ namespace ledger {
                             throw make_exception(
                                 api::ErrorCode::HTTP_ERROR, "Failed to compute gas_price from network, block/head is not a JSON object");
                         }
-                        /*rapidjson::StringBuffer sb;
-                        rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
-                        json.Accept(writer);
-                        std::string jsonAsString = sb.GetString();*/
-                        std::string jsonAsString = "COOL";
-                        if (!json.HasMember(gasUsedField) || !json[gasUsedField].IsInt()) {
+                        if (!json.HasMember(gasUsedField) || !json[gasUsedField].IsString()) {
                             throw make_exception(
                                 api::ErrorCode::HTTP_ERROR, fmt::format(
-                                    "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response \"{}\"",
-                                    gasUsedField, jsonAsString));
+                                    "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
+                                    gasUsedField));
                         }
-                        if (!json.HasMember(feeField) || !json[feeField].IsDouble()) {
+                        if (!json.HasMember(feeField) || !json[feeField].IsString()) {
                             throw make_exception(
                                 api::ErrorCode::HTTP_ERROR, fmt::format(
                                     "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
                                     feeField));
                         }
-                        const double apiGasUsed = json[gasUsedField].GetInt();
-                        const double apiFee = json[feeField].GetDouble();
+                        const uint64_t apiGasUsed = std::stoull(json[gasUsedField].GetString());
+                        const double apiFee = std::stod(json[feeField].GetString());
                         const double gasPrice = apiFee / static_cast<double>(apiGasUsed);
                         const std::string gasPriceAsString = std::to_string(gasPrice);
                         const std::string picoTezGasPrice = api::BigInt::fromDecimalString(gasPriceAsString, 6, ".")->toString(10);
