@@ -131,19 +131,53 @@ namespace ledger {
         Future<std::shared_ptr<BigInt>>
         ExternalTezosLikeBlockchainExplorer::getGasPrice() {
             const bool parseNumbersAsString = true;
+            // Since tzindex 12.01, we don't have gas_price field anymore
+            // We have to calculate it instead from gas_limit and fee
+            const auto gasLimitField = "gas_limit";
+            const auto feeField = "fee";
+            // We still use the legacy field in case we have a rollback
             const auto gasPriceField = "gas_price";
 
             return _http->GET("block/head")
                     .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
 
-                        if (!json.IsObject() || !json.HasMember(gasPriceField) ||
-                            !json[gasPriceField].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 fmt::format("Failed to get gas_price from network, no (or malformed) field \"{}\" in response", gasPriceField));
+                        if (!json.IsObject()) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR, "Failed to compute gas_price from network, block/head is not a JSON object");
                         }
-                        const std::string apiGasPrice = json[gasPriceField].GetString();
-                        const std::string picoTezGasPrice = api::BigInt::fromDecimalString(apiGasPrice, 6, ".")->toString(10);
+                        std::string gasPrice;
+                        // Legacy field access
+                        if (json.HasMember(gasPriceField) && json[gasPriceField].IsString()) {
+                            gasPrice = json[gasPriceField].GetString();
+                        }
+                        // OR
+                        // tzindex v12+ gas_price compute
+                        else {
+                            if (!json.HasMember(gasLimitField) || !json[gasLimitField].IsString()) {
+                                throw make_exception(
+                                    api::ErrorCode::HTTP_ERROR, fmt::format(
+                                        "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
+                                        gasLimitField));
+                            }
+                            if (!json.HasMember(feeField) || !json[feeField].IsString()) {
+                                throw make_exception(
+                                    api::ErrorCode::HTTP_ERROR, fmt::format(
+                                        "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
+                                        feeField));
+                            }
+                            const uint64_t apiGasLimit = std::stoull(json[gasLimitField].GetString());
+                            if (apiGasLimit == 0) {
+                                throw make_exception(
+                                    api::ErrorCode::HTTP_ERROR, "Failed to compute gas_price from network, gas_limit of HEAD block is 0"
+                                );
+                            }
+                            const double apiFee = std::stod(json[feeField].GetString());
+                            const double numericGasPrice = apiFee / static_cast<double>(apiGasLimit);
+                            gasPrice = std::to_string(numericGasPrice);
+                        }
+
+                        const std::string picoTezGasPrice = api::BigInt::fromDecimalString(gasPrice, 6, ".")->toString(10);
                         return std::make_shared<BigInt>(std::stoi(picoTezGasPrice));
                     });
         }
