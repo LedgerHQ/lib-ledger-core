@@ -33,6 +33,9 @@
 #include <api/ErrorCode.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <locale>
+#include <sstream>
+
 
 namespace ledger {
     namespace core {
@@ -140,6 +143,21 @@ namespace ledger {
 
             return _http->GET("block/head")
                     .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) {
+
+                        // Fix locale issue in conversion string from/to double
+                        struct ScopedLocale {
+                            ScopedLocale() {
+                                _locale = std::setlocale(LC_NUMERIC, nullptr);
+                                std::setlocale(LC_NUMERIC, "C");
+                            }
+                            ~ScopedLocale() {
+                                std::setlocale(LC_NUMERIC, _locale.c_str());
+                             }
+                        private:
+                            std::string _locale;
+                        } _;
+
+
                         auto &json = *std::get<1>(result);
 
                         if (!json.IsObject()) {
@@ -172,9 +190,13 @@ namespace ledger {
                                     api::ErrorCode::HTTP_ERROR, "Failed to compute gas_price from network, gas_limit of HEAD block is 0"
                                 );
                             }
-                            const double apiFee = std::stod(json[feeField].GetString());
+
+                            double apiFee = std::stod(json[feeField].GetString());
                             const double numericGasPrice = apiFee / static_cast<double>(apiGasLimit);
-                            gasPrice = std::to_string(numericGasPrice);
+                            std::ostringstream ss;
+                            ss.precision(std::numeric_limits<double>::digits10);
+                            ss << std::fixed << numericGasPrice;
+                            gasPrice = ss.str();
                         }
 
                         const std::string picoTezGasPrice = api::BigInt::fromDecimalString(gasPrice, 6, ".")->toString(10);
