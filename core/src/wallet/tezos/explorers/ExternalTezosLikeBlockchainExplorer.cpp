@@ -135,8 +135,8 @@ namespace ledger {
         ExternalTezosLikeBlockchainExplorer::getGasPrice() {
             const bool parseNumbersAsString = true;
             // Since tzindex 12.01, we don't have gas_price field anymore
-            // We have to calculate it instead from gas_limit and fee
-            const auto gasLimitField = "gas_limit";
+            // We have to calculate it instead from gas_used and fee
+            const auto gasUsedField = "gas_used";
             const auto feeField = "fee";
             // We still use the legacy field in case we have a rollback
             const auto gasPriceField = "gas_price";
@@ -172,11 +172,11 @@ namespace ledger {
                         // OR
                         // tzindex v12+ gas_price compute
                         else {
-                            if (!json.HasMember(gasLimitField) || !json[gasLimitField].IsString()) {
+                            if (!json.HasMember(gasUsedField) || !json[gasUsedField].IsString()) {
                                 throw make_exception(
                                     api::ErrorCode::HTTP_ERROR, fmt::format(
                                         "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
-                                        gasLimitField));
+                                        gasUsedField));
                             }
                             if (!json.HasMember(feeField) || !json[feeField].IsString()) {
                                 throw make_exception(
@@ -184,15 +184,15 @@ namespace ledger {
                                         "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
                                         feeField));
                             }
-                            const uint64_t apiGasLimit = std::stoull(json[gasLimitField].GetString());
-                            if (apiGasLimit == 0) {
+                            const uint64_t apiGasUsed = std::stoull(json[gasUsedField].GetString());
+                            if (apiGasUsed == 0) {
                                 throw make_exception(
-                                    api::ErrorCode::HTTP_ERROR, "Failed to compute gas_price from network, gas_limit of HEAD block is 0"
+                                    api::ErrorCode::HTTP_ERROR, "Failed to compute gas_price from network, gas_used of HEAD block is 0"
                                 );
                             }
 
                             double apiFee = std::stod(json[feeField].GetString());
-                            const double numericGasPrice = apiFee / static_cast<double>(apiGasLimit);
+                            const double numericGasPrice = apiFee / static_cast<double>(apiGasUsed);
                             std::ostringstream ss;
                             ss.precision(std::numeric_limits<double>::digits10);
                             ss << std::fixed << numericGasPrice;
