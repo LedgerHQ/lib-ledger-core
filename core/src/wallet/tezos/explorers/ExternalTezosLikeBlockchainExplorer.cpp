@@ -33,7 +33,7 @@
 #include <api/ErrorCode.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
-#include <locale>
+#include <clocale>
 #include <sstream>
 
 
