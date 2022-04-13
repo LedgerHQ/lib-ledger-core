@@ -461,7 +461,7 @@ namespace ledger {
                             pub_key.c_str(), static_cast<SizeType>(pub_key.length()), allocator);
                         revealOp.AddMember("public_key", vString, allocator);
 
-                        static const auto fee = "257000";
+                        static const auto fee = "10000";
                         vString.SetString(fee, static_cast<SizeType>(std::strlen(fee)), allocator);
                         revealOp.AddMember("fee", vString, allocator);
 
