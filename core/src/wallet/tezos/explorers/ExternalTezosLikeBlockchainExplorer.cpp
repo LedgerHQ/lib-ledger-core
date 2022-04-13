@@ -191,7 +191,33 @@ namespace ledger {
                                 );
                             }
 
-                            double apiFee = std::stod(json[feeField].GetString());
+                            const auto& feeFieldStringValue = json[feeField].GetString();
+                            double apiFee = 0.;
+                            try
+                            {
+                                apiFee = std::stod(feeFieldStringValue);
+                            }
+                            catch(const std::invalid_argument& e)
+                            {
+                                throw make_exception(
+                                    api::ErrorCode::INVALID_ARGUMENT, fmt::format(
+                                        "Failed to compute gas_price from network, issue converting from string with fee of HEAD block equal to \"{}\": {}",
+                                        feeFieldStringValue,
+                                        e.what()
+                                    )
+                                );
+                            }
+                            catch(const std::out_of_range& e)
+                            {
+                                throw make_exception(
+                                    api::ErrorCode::OUT_OF_RANGE, fmt::format(
+                                        "Failed to compute gas_price from network, issue casting to double with fee of HEAD block equal to \"{}\" : {}",
+                                        feeFieldStringValue,
+                                        e.what()
+                                    )
+                                );
+                            }
+
                             const double numericGasPrice = apiFee / static_cast<double>(apiGasUsed);
                             std::ostringstream ss;
                             ss.precision(std::numeric_limits<double>::digits10);
@@ -200,7 +226,33 @@ namespace ledger {
                         }
 
                         const std::string picoTezGasPrice = api::BigInt::fromDecimalString(gasPrice, 6, ".")->toString(10);
-                        return std::make_shared<BigInt>(std::stoi(picoTezGasPrice));
+                        int intPicoTezGasPrice = 0;
+                        try
+                        {
+                            intPicoTezGasPrice = std::stoi(picoTezGasPrice);
+                        }
+                        catch(const std::invalid_argument& e)
+                        {
+                            throw make_exception(
+                                api::ErrorCode::INVALID_ARGUMENT, fmt::format(
+                                    "Failed to compute gas_price from network, issue converting from string with picoTezGasPrice equal to \"{}\": {}",
+                                    picoTezGasPrice,
+                                    e.what()
+                                )
+                            );
+                        }
+                        catch(const std::out_of_range& e)
+                        {
+                            throw make_exception(
+                                api::ErrorCode::OUT_OF_RANGE, fmt::format(
+                                    "Failed to compute gas_price from network, issue casting to int with picoTezGasPrice equal to \"{}\" : {}",
+                                    picoTezGasPrice,
+                                    e.what()
+                                )
+                            );
+                        }
+                        
+                        return std::make_shared<BigInt>(intPicoTezGasPrice);
                     });
         }
 
