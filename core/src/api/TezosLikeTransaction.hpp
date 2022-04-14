@@ -36,9 +36,6 @@ public:
     /** Get the hash of the transaction. */
     virtual std::string getHash() const = 0;
 
-    /** Get the operation index in the transaction */
-    virtual int64_t getOperationIndexInTransaction() const = 0;
-
     /** Get the operation type in the transaction */
     virtual TezosOperationTag getOperationTypeInTransaction() const = 0;
 

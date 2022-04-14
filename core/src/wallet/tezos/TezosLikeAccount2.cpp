@@ -584,10 +584,7 @@ namespace ledger {
                 }
             }
             
-            std::string txIdBase = fmt::format("{}+{}", 
-                parsedTx->getCounter()->intValue(), 
-                parsedTx->getOperationIndexInTransaction()
-            );
+            std::string txIdBase = fmt::format("{}", parsedTx->getCounter()->intValue());
 
             std::string&& txId = Operation::computeTransactionId(txIdBase, parsedTx->getOperationTypeInTransaction(), additional);
 
