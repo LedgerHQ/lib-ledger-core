@@ -151,8 +151,6 @@ namespace ledger {
                     _transaction->fees = _transaction->fees + toValue(number, true);
                 } else if (_lastKey == "confirmations") {
                     _transaction->confirmations = toValue(number, false).toInt64();
-                } else if (_lastKey == "op_c") {
-                    _transaction->index = toValue(number, false).toInt64();
                 } else if (_lastKey == "counter") {
                     _transaction->counter = toValue(number, false).toInt64();
                 }

@@ -44,16 +44,16 @@ TEST(Operation, TezosUidIsValid) {
     op.tezosTransaction->type = ledger::core::api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
     EXPECT_EQ(op.uid, "");
     op.refreshUid();
-    EXPECT_EQ(op.uid, "5b46f1084ef236091f04e257ab1902ed564dac1cad6d8fb403c007e3fe838411");
+    EXPECT_EQ(op.uid, "95d272362380dd84f330edebc776f178e12e6a637cef852512115ac182889b95");
 
     // change only type
     op.tezosTransaction->type = ledger::core::api::TezosOperationTag::OPERATION_TAG_REVEAL;
     op.refreshUid();
-    EXPECT_EQ(op.uid, "79ac6452f6ab4ebd0cc6bc0041b89a8954849b032f70bcb21154a0b351565c98");
+    EXPECT_EQ(op.uid, "98e675229d3001a50e4dd7a527643af3658b985b05f74fe4ff03305dd41ccdc2");
 
     // with additional
     op.refreshUid("456");
-    EXPECT_EQ(op.uid, "c5a8f07c86e5442c58cd95c8e16de8f50c1b980cf591ab215edfb9389166843a");
+    EXPECT_EQ(op.uid, "cdd40b9116abc9830fd12cd38a4801fadf519fc11746f66bedc0c5062eee9774");
 }
 
 

@@ -705,15 +705,6 @@ namespace ledger {
             _correlationId = newId;
             return oldId;
         }
-
-        int64_t TezosLikeTransactionApi::getOperationIndexInTransaction() const {
-            return _operationIndexInTransaction;
-        }
-
-        TezosLikeTransactionApi& TezosLikeTransactionApi::setOperationIndexInTransaction(int64_t index) {
-            _operationIndexInTransaction = index;
-            return *this;
-        }
         
         api::TezosOperationTag TezosLikeTransactionApi::getOperationTypeInTransaction() const {
             return _operationTypeInTransaction;

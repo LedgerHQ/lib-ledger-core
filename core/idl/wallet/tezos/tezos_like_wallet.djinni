@@ -22,8 +22,6 @@ TezosLikeTransaction = interface +c {
 	const getType(): TezosOperationTag;
 	# Get the hash of the transaction.
 	const getHash(): string;
-	# Get the operation index in the transaction
-	const getOperationIndexInTransaction(): i64;
 	# Get the operation type in the transaction
 	const getOperationTypeInTransaction(): TezosOperationTag;
 	# Get Fees (in drop) 

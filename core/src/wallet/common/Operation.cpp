@@ -51,10 +51,7 @@ namespace ledger {
             }
             else if (tezosTransaction.nonEmpty()) {
                 const auto& tx = tezosTransaction.getValue();
-                std::string txIdBase = fmt::format("{}+{}", 
-                    tx.counter, 
-                    tx.index
-                );
+                std::string txIdBase = fmt::format("{}", tx.counter);
                 txId = computeTransactionId(txIdBase, tx.type, additional);
             } else if (stellarOperation.nonEmpty()) {
                 txId = computeTransactionId(stellarOperation.getValue().operation.transactionHash);

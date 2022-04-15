@@ -195,7 +195,6 @@ TEST_F(ED25519TezosMakeTransaction, ParseUnsignedRawTransaction) {
     EXPECT_EQ(tx->getGasLimit()->toLong(), 10407);
     EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
     EXPECT_EQ(tx->getOperationTypeInTransaction(), ledger::core::api::TezosOperationTag::OPERATION_TAG_TRANSACTION);
-    EXPECT_EQ(tx->getOperationIndexInTransaction(), 0);
 }
 
 TEST_F(ED25519TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
@@ -215,7 +214,6 @@ TEST_F(ED25519TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
     EXPECT_EQ(tx->getGasLimit()->toLong(), 10407+10200);
     EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
     EXPECT_EQ(tx->getOperationTypeInTransaction(), ledger::core::api::TezosOperationTag::OPERATION_TAG_TRANSACTION);
-    EXPECT_EQ(tx->getOperationIndexInTransaction(), 1);
 }
 
 TEST_F(ED25519TezosMakeTransaction, CreateDelegation) {
@@ -285,7 +283,6 @@ TEST_F(ED25519TezosMakeTransaction, ParseUnsignedRawDelegation) {
     EXPECT_EQ(tx->getGasLimit()->toLong(), 1200);
     EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
     EXPECT_EQ(tx->getOperationTypeInTransaction(), ledger::core::api::TezosOperationTag::OPERATION_TAG_DELEGATION);
-    EXPECT_EQ(tx->getOperationIndexInTransaction(), 0);
 }
 
 TEST_F(ED25519TezosMakeTransaction, ParseUnsignedRawUndelegation) {
@@ -304,7 +301,6 @@ TEST_F(ED25519TezosMakeTransaction, ParseUnsignedRawUndelegation) {
     EXPECT_EQ(tx->getGasLimit()->toLong(), 1200);
     EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
     EXPECT_EQ(tx->getOperationTypeInTransaction(), ledger::core::api::TezosOperationTag::OPERATION_TAG_DELEGATION);
-    EXPECT_EQ(tx->getOperationIndexInTransaction(), 0);
 }
 
 TEST_F(ED25519TezosMakeTransaction, GetCurrentDelegationOnNotDelegatedAccount) {
@@ -340,5 +336,4 @@ TEST_F(ED25519TezosMakeTransaction, ParseUnsignedRawDelegationWithReveal) {
     EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
     EXPECT_EQ(tx->toReveal(), true);
     EXPECT_EQ(tx->getOperationTypeInTransaction(), ledger::core::api::TezosOperationTag::OPERATION_TAG_DELEGATION);
-    EXPECT_EQ(tx->getOperationIndexInTransaction(), 1);
 }

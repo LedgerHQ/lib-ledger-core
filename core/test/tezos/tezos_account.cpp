@@ -130,7 +130,7 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWhenOriginatedAccount) {
       parsedTx->originatedAccountAddress = accAddress;
       account->interpretTransaction(*parsedTx, operations);
       EXPECT_EQ(operations.size(), 1);
-      EXPECT_EQ(operations[0].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263644+0+OPERATION_TAG_REVEAL+someUid", api::OperationType::SEND));
+      EXPECT_EQ(operations[0].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263644+OPERATION_TAG_REVEAL+someUid", api::OperationType::SEND));
     }
 
     // Test when received in originated account
@@ -141,7 +141,7 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWhenOriginatedAccount) {
       parsedTx->originatedAccountAddress = accAddress;
       account->interpretTransaction(*parsedTx, operations);
       EXPECT_EQ(operations.size(), 2);
-      EXPECT_EQ(operations[1].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263645+1+OPERATION_TAG_TRANSACTION+someUid", api::OperationType::RECEIVE));
+      EXPECT_EQ(operations[1].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263645+OPERATION_TAG_TRANSACTION+someUid", api::OperationType::RECEIVE));
     }
 }
 
@@ -156,7 +156,7 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWithoutOriginatedAccount) 
       parsedTx->sender = accAddress;
       account->interpretTransaction(*parsedTx, operations);
       EXPECT_EQ(operations.size(), 1);
-      EXPECT_EQ(operations[0].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263644+0+OPERATION_TAG_REVEAL", api::OperationType::SEND));
+      EXPECT_EQ(operations[0].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263644+OPERATION_TAG_REVEAL", api::OperationType::SEND));
     }
 
     // Test when received in account
@@ -165,7 +165,7 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWithoutOriginatedAccount) 
       parsedTx->receiver = accAddress;
       account->interpretTransaction(*parsedTx, operations);
       EXPECT_EQ(operations.size(), 2);
-      EXPECT_EQ(operations[1].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263645+1+OPERATION_TAG_TRANSACTION", api::OperationType::RECEIVE));
+      EXPECT_EQ(operations[1].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263645+OPERATION_TAG_TRANSACTION", api::OperationType::RECEIVE));
     }
 }
 
@@ -191,14 +191,14 @@ TEST_F(TezosAccountWithFixedPoolName, ComputeOperationUidWithValidTransaction) {
     {
       auto txTest = std::make_shared<TezosLikeTransactionApi>(*tx);
       txTest->setSender(accAddress);
-      EXPECT_EQ(account->computeOperationUid(txTest), "7ce5bfdcb02056ffe84412ab15504cda6bd02ac38ce211826cfd1a9b6b236184");
+      EXPECT_EQ(account->computeOperationUid(txTest), "5bd2461f4fb753689ad05bce533808d72cbf11403d3e1b8d3fd7a7589205ff1f");
     }
 
     // when receiver
     {
       auto txTest = std::make_shared<TezosLikeTransactionApi>(*tx);
       txTest->setReceiver(accAddress);
-      EXPECT_EQ(account->computeOperationUid(txTest), "01f1f96874f5ea39ad4eec831d4291b249b95f2ebc4672884124ebc0f47a260e");
+      EXPECT_EQ(account->computeOperationUid(txTest), "931b61f6786f39430c105372352d47c487ed4f4ba58d1cd7f11627bb6ae68ca9");
     }
 
 }
