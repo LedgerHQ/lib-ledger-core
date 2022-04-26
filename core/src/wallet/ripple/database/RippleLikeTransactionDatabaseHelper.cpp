@@ -95,7 +95,7 @@ namespace ledger {
 
             tx.sequence = BigInt(static_cast<unsigned long long>(get_number<uint64_t>(row, 14)));
             if (row.get_indicator(15) != i_null) {
-                tx.destinationTag = get_number<uint64_t>(row, 15);
+                tx.destinationTag = get_number<int64_t>(row, 15);
             }
 
             if (row.get_indicator(16) != i_null) {

@@ -201,7 +201,14 @@ namespace ledger {
                 //1 byte Destination tag:   Type Code = 2, Field Code = 14
                 writer.writeByte(0x2E);
                 //4 bytes Destination tag
-                writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(_destinationTag.getValue()));
+                const int64_t& destinationTagValue = _destinationTag.getValue();
+                if(destinationTagValue  > static_cast<int64_t>(std::numeric_limits<uint32_t>::max()) ||
+                     destinationTagValue  < static_cast<int64_t>(std::numeric_limits<uint32_t>::min()))
+                {
+                    throw make_exception(api::ErrorCode::RUNTIME_ERROR,
+                                     "RippleLikeTransactionApi::serialize: destinationTag value does not fit in uint32");
+                }
+                writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(destinationTagValue));
             }
 
             //2 bytes LastLedgerSequence Field ID:   Type Code = 2, Field Code = 27
@@ -361,7 +368,7 @@ namespace ledger {
             return *this;
         }
 
-        RippleLikeTransactionApi &RippleLikeTransactionApi::setDestinationTag(uint32_t tag) {
+        RippleLikeTransactionApi &RippleLikeTransactionApi::setDestinationTag(int64_t tag) {
             _destinationTag = tag;
             return *this;
         }

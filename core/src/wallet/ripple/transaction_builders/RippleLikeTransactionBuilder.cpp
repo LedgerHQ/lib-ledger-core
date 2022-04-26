@@ -173,7 +173,7 @@ namespace ledger {
                 //1 byte Destination tag:   Type Code = 2, Field Code = 14
                 reader.readNextByte();
                 auto bigIntTag = BigInt::fromHex(hex::toString(reader.read(4)));
-                tx->setDestinationTag(static_cast<const uint32_t>(bigIntTag.toUint64()));
+                tx->setDestinationTag(bigIntTag.toInt64());
             }
 
             //2 bytes LastLedgerSequence Field ID:   Type Code = 2, Field Code = 27
