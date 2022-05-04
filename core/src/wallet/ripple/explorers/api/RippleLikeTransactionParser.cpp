@@ -140,7 +140,7 @@ namespace ledger {
                     block.hash = number;
                     _transaction->block = block;
                 } else if (_lastKey == "DestinationTag") {
-                  _transaction->destinationTag = Option<uint64_t>(value.toInt64());
+                  _transaction->destinationTag = Option<int64_t>(value.toInt64());
                 } else if (_lastKey == "date" && currentObject != "transaction") {
                   _transaction->receivedAt = xrp_utils::toTimePoint<std::chrono::system_clock>(value.toUint64());
                   if (_transaction->block.hasValue()) {
