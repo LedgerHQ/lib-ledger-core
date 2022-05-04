@@ -62,7 +62,7 @@ namespace ledger {
             std::string sender;
             Option<Block> block;
             uint64_t confirmations;
-            Option<uint64_t> destinationTag;
+            Option<int64_t> destinationTag;
             std::vector<api::RippleLikeMemo> memos;
             int32_t status;
 

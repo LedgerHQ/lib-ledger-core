@@ -201,7 +201,7 @@ TEST_F(RippleLikeWalletSynchronization, VaultAccountSynchronization) {
             std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
     std::cout << "Ops: " << ops.size() << std::endl;
 
-    uint32_t destinationTag = 0;
+    int64_t destinationTag = 0;
     for (auto const& op : ops) {
         auto xrpOp = op->asRippleLikeOperation();
 
