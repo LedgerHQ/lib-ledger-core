@@ -122,6 +122,12 @@ namespace ledger {
             return _derivationPath.toOptional();
         }
 
+        bool BitcoinLikeAddress::isKeychainEngineBech32Compatible() const {
+            return _keychainEngine == api::KeychainEngines::BIP173_P2WPKH
+                    || _keychainEngine == api::KeychainEngines::BIP173_P2WSH
+                    || _keychainEngine == api::KeychainEngines::BIP350_P2TR;
+        }
+
         std::string BitcoinLikeAddress::toBase58Impl() const {
             if (_keychainEngine != api::KeychainEngines::BIP32_P2PKH && _keychainEngine != api::KeychainEngines::BIP49_P2SH) {
                 throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT,
@@ -134,9 +140,7 @@ namespace ledger {
         }
 
         std::string BitcoinLikeAddress::toBech32Impl() const {
-            if (_keychainEngine != api::KeychainEngines::BIP173_P2WPKH
-                && _keychainEngine != api::KeychainEngines::BIP173_P2WSH
-                && _keychainEngine != api::KeychainEngines::BIP350_P2TR) {
+            if (!isKeychainEngineBech32Compatible()) {
                 throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT,
                                 "Bech32 format only available for api::KeychainEngines::BIP173_P2WPKH/P2WSH and api::KeychainEngines::BIP350_P2TR");
             }
@@ -164,9 +168,7 @@ namespace ledger {
         }
 
         std::string BitcoinLikeAddress::getStringAddress() const {
-            if (_keychainEngine == api::KeychainEngines::BIP173_P2WPKH
-                    || _keychainEngine == api::KeychainEngines::BIP173_P2WSH
-                    || _keychainEngine == api::KeychainEngines::BIP350_P2TR) {
+            if (isKeychainEngineBech32Compatible()) {
                 return toBech32Impl();
             }
             return toBase58Impl();
