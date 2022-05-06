@@ -95,7 +95,7 @@ namespace ledger {
              */
             KeychainPersistentState getState() const;
 
-            std::string getKeychainEngine() const;
+            const std::string& getKeychainEngine() const;
 
         protected:
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _internalNodeXpub;

@@ -86,13 +86,12 @@ namespace ledger {
                                                                const api::Currency &currency,
                                                                const std::string &keychainEngine);
 
-        protected:
+        private:
             std::string toBase58Impl() const;
             std::string toBech32Impl() const;
             static std::vector<uint8_t> getVersionFromKeychainEngine(const std::string &keychainEngine,
                                                                      const api::BitcoinLikeNetworkParameters &params);
 
-        private:
             const std::vector<uint8_t> _hash160;
             const api::BitcoinLikeNetworkParameters _params;
             const Option<std::string> _derivationPath;
