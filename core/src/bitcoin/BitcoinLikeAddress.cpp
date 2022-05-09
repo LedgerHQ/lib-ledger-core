@@ -258,6 +258,7 @@ namespace ledger {
                 auto hash160 = fromPublicKeyToHash160(pubKey->derivePublicKey(derivationPath), pubKey->deriveHash160(derivationPath), currency, keychainEngine);
                 return BitcoinLikeAddress(currency, hash160, keychainEngine).toString();
             }
+            // keychainEngine == BIP350_P2TR: we don't create Taproot addresses from extended pubkey.
             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid Keychain Engine: ", keychainEngine);
         }
 
@@ -283,6 +284,7 @@ namespace ledger {
                 witnessScript.push_back(btccore::OP_CHECKSIG);
                 return SHA256::bytesToBytesHash(witnessScript);
             }
+            // keychainEngine == BIP350_P2TR: we don't create a hash160 from the Taproot public key
             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid Keychain Engine: ", keychainEngine);
         }
 
