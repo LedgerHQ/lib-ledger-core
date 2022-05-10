@@ -146,14 +146,16 @@ namespace ledger {
                     strings::join(strGenerator, generator, separator);
                     auto P2WPKHVersion = hex::toString(params.P2WPKHVersion);
                     auto P2WSHVersion = hex::toString(params.P2WSHVersion);
+                    auto P2TRVersion = hex::toString(params.P2TRVersion);
                     auto generatorStr = generator.str();
-                    sql << "INSERT INTO bech32_parameters VALUES(:name, :hrp, :separator, :generator, :p2wpkh_version, :p2wsh_version)",
+                    sql << "INSERT INTO bech32_parameters VALUES(:name, :hrp, :separator, :generator, :p2wpkh_version, :p2wsh_version, :p2tr_version)",
                             use(params.name),
                             use(params.hrp),
                             use(params.separator),
                             use(generatorStr),
                             use(P2WPKHVersion),
-                            use(P2WSHVersion);
+                            use(P2WSHVersion),
+                            use(P2TRVersion);
                     return true;
                 }
                 return false;

@@ -358,7 +358,6 @@ namespace ledger {
                     "symbol VARCHAR(255) NOT NULL,"
                     "number_of_decimal INTEGER NOT NULL"
                     ")";
-
         }
 
         template <> void rollback<5>(soci::session& sql, api::DatabaseBackendType type) {
@@ -734,7 +733,6 @@ namespace ledger {
         }
 
         template <> void rollback<18>(soci::session& sql, api::DatabaseBackendType type) {
-
         }
 
         template <> void migrate<19>(soci::session& sql,  api::DatabaseBackendType type) {
@@ -813,7 +811,6 @@ namespace ledger {
                    "type INTEGER NOT NULL"
                    ")";
 
-
             // Stellar account operations
             sql << "CREATE TABLE stellar_account_operations("
                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
@@ -825,7 +822,6 @@ namespace ledger {
                    "base_fee VARCHAR(255) NOT NULL,"
                    "base_reserve VARCHAR(255) NOT NULL"
                    ")";
-
         }
 
         template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type) {
@@ -955,9 +951,7 @@ namespace ledger {
             sql << "DROP TABLE cosmos_transactions";
             sql << "DROP TABLE cosmos_accounts";
             sql << "DROP TABLE cosmos_currencies";
-
         }
-
 
         template <> void migrate<21>(soci::session& sql, api::DatabaseBackendType type) {
            sql << "ALTER TABLE bitcoin_outputs ADD replaceable INTEGER DEFAULT 0";
@@ -1143,7 +1137,6 @@ namespace ledger {
             } else {
                 sql << "UPDATE bitcoin_currencies SET dust_amount = 546 WHERE identifier = 'btc'";
                 sql << "UPDATE bitcoin_currencies SET dust_amount = 546 WHERE identifier = 'btc_testnet'";
-         
             }
         }
 
@@ -1205,5 +1198,29 @@ namespace ledger {
             sql << "DROP INDEX bitcoin_operations_transaction_uid_index ;";
         }
 
+        template <> void migrate<29>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "ALTER TABLE bech32_parameters ADD p2trversion VARCHAR(255) DEFAULT 0x01;";
+        }
+
+        template <> void rollback<29>(soci::session& sql, api::DatabaseBackendType type) {
+            // SQLite doesn't handle ALTER TABLE DROP
+            if (type != api::DatabaseBackendType::SQLITE3) {
+                sql << "ALTER TABLE bech32_parameters DROP p2trversion";
+            } else {
+                sql << "CREATE TABLE bech32_parameters_swap("
+                       "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES bitcoin_currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                       "hrp VARCHAR(255) NOT NULL,"
+                       "separator VARCHAR(255) NOT NULL,"
+                       "generator VARCHAR(255) NOT NULL,"
+                       "p2wpkh_version VARCHAR(255) NOT NULL,"
+                       "p2wsh_version VARCHAR(255) NOT NULL"
+                       ")";
+                sql << "INSERT INTO bech32_parameters_swap "
+                       "SELECT name, hrp, separator, generator, p2wpkh_version, p2wsh_version "
+                       "FROM bech32_parameters";
+                sql << "DROP TABLE bech32_parameters";
+                sql << "ALTER TABLE bech32_parameters_swap RENAME TO bech32_parameters";
+            }
+        }
     }
 }
