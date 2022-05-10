@@ -85,24 +85,24 @@ namespace ledger {
 
         std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
         BTCBech32::decode(const std::string& str) const {
-            auto decoded = decodeBech32Raw(str);
-
-            if (decoded.second.size() < 1) {
+            const auto decoded = decodeBech32Raw(str);
+            const auto& decoded_payload = decoded.second;
+            if (decoded_payload.size() < 1) {
                 throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : invalid Bech32 format");
             }
 
-            std::vector<uint8_t> version{decoded.second[0]};
+            const std::vector<uint8_t> version{decoded_payload[0]};
 
-            if (decoded.second.size() < _bech32Params.checksumSize) {
+            if (decoded_payload.size() < _bech32Params.checksumSize) {
                 throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : the address is less than checksum size");
             }
 
             if (version[0] == 0) {
-                if (!verifyChecksum(decoded.second, 1)) {
+                if (!verifyChecksum(decoded_payload, 1)) {
                     throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Bech32 checksum verification failed");
                 }
             } else if (version[0] <= 16) {
-                if (!verifyChecksum(decoded.second, bech32mParam)) {
+                if (!verifyChecksum(decoded_payload, bech32mParam)) {
                     throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Bech32M checksum verification failed");
                 }
             } else {
@@ -110,7 +110,7 @@ namespace ledger {
             }
 
             // strip the checksum
-            std::vector<uint8_t> decoded_address(decoded.second.begin(), decoded.second.end() - _bech32Params.checksumSize);
+            const std::vector<uint8_t> decoded_address(decoded_payload.begin(), decoded_payload.end() - _bech32Params.checksumSize);
 
             if (decoded.first != _bech32Params.hrp) {
                 throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid Bech32 hrp");
@@ -118,11 +118,11 @@ namespace ledger {
             std::vector<uint8_t> converted;
             int fromBits = 5, toBits = 8;
             bool pad = false;
-            auto result = Bech32::convertBits(std::vector<uint8_t>(decoded_address.begin() + 1, decoded_address.end()),
-                                              fromBits,
-                                              toBits,
-                                              pad,
-                                              converted);
+            const auto result = Bech32::convertBits(std::vector<uint8_t>(decoded_address.begin() + 1, decoded_address.end()),
+                                                    fromBits,
+                                                    toBits,
+                                                    pad,
+                                                    converted);
 
             if (!result || converted.size() < 2 || converted.size() > 40 || version.size() != 1) {
                 throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid Bech32 format");
