@@ -34,6 +34,10 @@
 
 namespace ledger {
     namespace core {
+        namespace {
+            const uint32_t bech32mParam = 0x2bc830a3;
+        }
+
         uint64_t BTCBech32::polymod(const std::vector<uint8_t>& values) const {
             uint32_t chk = 1;
             for (size_t i = 0; i < values.size(); ++i) {
@@ -72,7 +76,7 @@ namespace ledger {
                 if (version == _bech32Params.P2WPKHVersion || version == _bech32Params.P2WSHVersion) {
                     return encodeBech32(converted, 1);
                 } else if (version[0] <= 16) {
-                    return encodeBech32(converted, 0x2bc830a3);
+                    return encodeBech32(converted, bech32mParam);
                 }
                 throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid Bech32 version value : must be in the range 0..16 inclusive");
             }
@@ -98,7 +102,7 @@ namespace ledger {
                     throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Bech32 checksum verification failed");
                 }
             } else if (version[0] <= 16) {
-                if (!verifyChecksum(decoded.second, 0x2bc830a3)) {
+                if (!verifyChecksum(decoded.second, bech32mParam)) {
                     throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Bech32M checksum verification failed");
                 }
             } else {
