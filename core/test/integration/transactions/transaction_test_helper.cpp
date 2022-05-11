@@ -124,3 +124,25 @@ bool BitcoinMakeBaseTransaction::verifyTransaction(std::shared_ptr<api::BitcoinL
     return verifyTransactionInputs(tx, inputs) && verifyTransactionOutputs(tx, outputs);
 }
 
+void BitcoinMakeBaseTransaction::createAndVerifyTransaction(const std::vector<InputDescr>& inputs,
+                                                            const std::vector<OutputDescr>& outputs) {
+    std::shared_ptr<api::BitcoinLikeTransaction> generatedTx
+            = createTransaction(outputs);
+
+    std::cerr << "generated tx: " << std::endl
+              << hex::toString(generatedTx->serialize()) << std::endl;
+
+    EXPECT_TRUE(verifyTransaction(generatedTx, inputs, outputs));
+
+    std::vector<uint8_t> tx_bin = generatedTx->serialize();
+
+    auto parsedTx
+            = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(),
+                                                                         tx_bin, 0);
+
+    EXPECT_TRUE(verifyTransactionOutputs(parsedTx, outputs));
+    // Values in inputs are missing after parsing. Here we can test only outputs.
+
+    EXPECT_EQ(tx_bin, parsedTx->serialize());
+}
+
