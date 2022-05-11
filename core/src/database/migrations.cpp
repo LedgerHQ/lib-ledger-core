@@ -1199,7 +1199,7 @@ namespace ledger {
         }
 
         template <> void migrate<29>(soci::session& sql, api::DatabaseBackendType type) {
-            sql << "ALTER TABLE bech32_parameters ADD p2trversion VARCHAR(255) DEFAULT 0x01;";
+            sql << "ALTER TABLE bech32_parameters ADD p2trversion VARCHAR(255) DEFAULT 01;";
         }
 
         template <> void rollback<29>(soci::session& sql, api::DatabaseBackendType type) {
