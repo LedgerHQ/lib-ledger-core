@@ -1,4 +1,4 @@
-name: clang-tidy-review
+name: "Clang-tidy Code Review"
 on: [pull_request]
 
 jobs:
@@ -11,6 +11,7 @@ jobs:
       - uses: ZedThree/clang-tidy-review@v0.8.3
         id: review
         with:
+          build_dir: build
           # List of packages to install
           apt_packages: libssl-dev
           # CMake command to run in order to generate compile_commands.json
