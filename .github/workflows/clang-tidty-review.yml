@@ -7,6 +7,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: true
 
       - uses: ZedThree/clang-tidy-review@v0.8.3
         id: review
