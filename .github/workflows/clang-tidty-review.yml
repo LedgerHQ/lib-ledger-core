@@ -1,0 +1,17 @@
+name: clang-tidy-review
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ZedThree/clang-tidy-review@v0.8.0
+        id: review
+        with:
+          # List of packages to install
+          apt_packages: libssl-dev
+          # CMake command to run in order to generate compile_commands.json
+          cmake_command: cmake . -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE -DTARGET_JNI=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=on
