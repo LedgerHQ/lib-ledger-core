@@ -20,4 +20,4 @@ jobs:
           # the unit tests until they're fixed or ignored upstream
           exclude: "core/test/*"
           # CMake command to run in order to generate compile_commands.json
-          cmake_command: cmake . -B build -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE -DTARGET_JNI=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=on
+          cmake_command: cmake . -B build -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE -DTARGET_JNI=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=on && cmake --build build --target secp256k1
