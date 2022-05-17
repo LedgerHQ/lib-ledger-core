@@ -394,6 +394,9 @@ namespace ledger {
             return _keychain;
         }
 
+        inline bool BitcoinLikeAccount::allowP2TR() const {
+            return getWallet()->getConfig()->getBoolean(api::Configuration::ALLOW_P2TR).value_or(false);
+        }
 
         bool BitcoinLikeAccount::isSynchronizing() {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
@@ -818,7 +821,8 @@ namespace ledger {
                                               _keychain,
                                               lastBlockHeight,
                                               logger(),
-                                              partial)
+                                              partial),
+                    allowP2TR()
             );
         }
 

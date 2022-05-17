@@ -70,6 +70,9 @@ public:
      * deletion from database
      */
     static std::string const MEMPOOL_GRACE_PERIOD_SECS;
+
+    /** Allow the generation of the P2TR (Taproot) outputs */
+    static std::string const ALLOW_P2TR;
 };
 
 } } }  // namespace ledger::core::api

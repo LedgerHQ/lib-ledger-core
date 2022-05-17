@@ -118,6 +118,9 @@ Configuration = interface +c {
     # Grace period (in seconds) during which no "missing" transactions on-chain should trigger
     # deletion from database
     const MEMPOOL_GRACE_PERIOD_SECS: string = "MEMPOOL_GRACE_PERIOD_SECS";
+
+    # Allow the generation of the P2TR (Taproot) outputs
+    const ALLOW_P2TR: string = "ALLOW_P2TR";
 }
 
 # Configuration of wallet pools.

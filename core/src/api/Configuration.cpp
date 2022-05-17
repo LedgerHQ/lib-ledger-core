@@ -37,4 +37,6 @@ std::string const Configuration::DEACTIVATE_SYNC_TOKEN = {"DEACTIVATE_SYNC_TOKEN
 
 std::string const Configuration::MEMPOOL_GRACE_PERIOD_SECS = {"MEMPOOL_GRACE_PERIOD_SECS"};
 
+std::string const Configuration::ALLOW_P2TR = {"ALLOW_P2TR"};
+
 } } }  // namespace ledger::core::api

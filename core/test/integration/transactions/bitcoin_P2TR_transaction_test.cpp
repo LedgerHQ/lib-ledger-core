@@ -33,13 +33,15 @@
 #include <utils/hex.h>
 #include <api/KeychainEngines.hpp>
 #include "../../fixtures/txes_to_wpkh_fixtures.h"
+#include "api/ErrorCode.hpp"
 
 using namespace std;
 
 struct BitcoinTestNetMakeP2TRTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
-        testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
+        testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
+        testData.configuration->putBoolean(api::Configuration::ALLOW_P2TR, true);
         //https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
         testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"84'/<coin_type>'/<account>'/<node>/<address>");
         testData.walletName = randomWalletName();
@@ -93,7 +95,8 @@ TEST_F(BitcoinTestNetMakeP2TRTransaction, CreateP2TRWithOneOutput) {
 struct BitcoinMainNetMakeP2TRTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
-        testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
+        testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
+        testData.configuration->putBoolean(api::Configuration::ALLOW_P2TR, true);
         //https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
         testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"84'/<coin_type>'/<account>'/<node>/<address>");
         testData.walletName = randomWalletName();
@@ -125,5 +128,50 @@ TEST_F(BitcoinMainNetMakeP2TRTransaction, CreateP2TRWithOneOutput) {
     };
 
     createAndVerifyTransaction(input_descrs, output_descrs);
+}
+
+struct BitcoinP2TRFeatureFlagTest : public BitcoinMakeBaseTransaction {
+    void SetUpConfig() override {
+        testData.configuration = DynamicObject::newInstance();
+        testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
+        // Don't set feature flag (false by default):
+        // testData.configuration->putBoolean(api::Configuration::ALLOW_P2TR, true);
+
+        //https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
+        testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"84'/<coin_type>'/<account>'/<node>/<address>");
+        testData.walletName = randomWalletName();
+        testData.currencyName = "bitcoin";
+        testData.inflate_btc = ledger::testing::txes_to_wpkh::inflate;
+    }
+};
+
+TEST_F(BitcoinP2TRFeatureFlagTest, CreateP2TRWithOneOutputFails) {
+
+    std::vector<InputDescr> input_descrs = {
+        {
+            "673f7e1155dd2cf61c961cedd24608274c0f20cfaeaa1154c2b5ef94ec7b81d1",
+            1,
+            std::make_shared<api::BigIntImpl>(BigInt(25402))
+        }
+    };
+    std::vector<OutputDescr> output_descrs = {
+        {
+            "bc1psf4kpzmrk9aqszdwfmtpqhmvhuhq69frx5efq64yqudq08p3u5vsq8wc5y",
+            hex::toByteArray("5120826b608b63b17a0809ae4ed6105f6cbf2e0d15233532906aa4071a079c31e519"),
+            std::make_shared<api::BigIntImpl>(BigInt(100))
+        },
+        {
+            "", // This is a change output. It isn't used for tx building.
+            hex::toByteArray("00141017b1e1ca8632828f22a4d6c5260f3492b1dd08"),
+            std::make_shared<api::BigIntImpl>(BigInt(16396))
+        }
+    };
+
+    try {
+        createAndVerifyTransaction(input_descrs, output_descrs);
+    } catch (const Exception& e) {
+        std::cerr << "An exception must be thrown here: " << e.what() << std::endl;
+        EXPECT_EQ(e.getErrorCode(), ledger::core::api::ErrorCode::UNSUPPORTED_OPERATION);
+    }
 }
 
