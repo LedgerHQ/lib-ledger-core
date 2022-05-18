@@ -3,6 +3,7 @@ on: [pull_request]
 
 jobs:
   build:
+    name: Code review of changed lines
     runs-on: ubuntu-latest
 
     steps:
