@@ -215,6 +215,9 @@ namespace ledger {
         template <> void migrate<28>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<28>(soci::session& sql, api::DatabaseBackendType type);
 
+        // add indexes for db performance optimization
+        template <> void migrate<29>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<29>(soci::session& sql, api::DatabaseBackendType type);
     }
 }
 
