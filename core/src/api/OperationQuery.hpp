@@ -16,6 +16,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+class OperationCountListCallback;
 class OperationListCallback;
 class QueryFilter;
 enum class OperationOrderKey;
@@ -65,6 +66,12 @@ public:
      * @param callback, if execute method succeed, ListCallback object returning a List of Operation objects
      */
     virtual void execute(const std::shared_ptr<OperationListCallback> & callback) = 0;
+
+    /**
+     * Count operations by type
+     * @param callback, if execute method succeed, ListCallback object returning a List of OperationCount objects
+     */
+    virtual void count(const std::shared_ptr<OperationCountListCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

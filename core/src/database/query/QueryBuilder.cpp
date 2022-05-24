@@ -51,6 +51,10 @@ namespace ledger {
                 query << sFilter;
             }
 
+            if (!_group.empty()) {
+              query << " GROUP BY " << _group;
+            }
+
             if (!_order.empty()) {
                 query << " ORDER BY ";
                 for (auto it = _order.begin(); it != _order.end(); it++) {
@@ -131,6 +135,11 @@ namespace ledger {
         QueryBuilder& QueryBuilder::outerJoin(const std::string &table, const std::string &condition) {
             _outerJoins.emplace_back(Option<LeftOuterJoin>(std::make_tuple(table, condition)));
             return *this;
+        }
+
+        QueryBuilder &QueryBuilder::groupBy(std::string &&group) {
+          _group = std::move(group);
+          return *this;
         }
 
     }
