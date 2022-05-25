@@ -48,7 +48,7 @@ namespace ledger {
             std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
             decode(const std::string& str) const override;
 
-        protected:
+        private:
             uint64_t polymod(const std::vector<uint8_t>& values) const override;
 
             std::vector<uint8_t> expandHrp(const std::string& hrp) const override;
