@@ -32,6 +32,7 @@
 #include "migrations.hpp"
 #include <api/BitcoinLikeNetworkParameters.hpp>
 #include <wallet/bitcoin/networks.hpp>
+#include <fmt/format.h>
 
 namespace ledger {
     namespace core {
@@ -435,15 +436,21 @@ namespace ledger {
             sql << "DROP TABLE ripple_currencies";
         }
 
+        namespace {
+            std::string getBech32ParamsCreateTableSQL(const char* tableName) {
+                return fmt::format("CREATE TABLE {}("
+                       "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES bitcoin_currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                       "hrp VARCHAR(255) NOT NULL,"
+                       "separator VARCHAR(255) NOT NULL,"
+                       "generator VARCHAR(255) NOT NULL,"
+                       "p2wpkh_version VARCHAR(255) NOT NULL,"
+                       "p2wsh_version VARCHAR(255) NOT NULL"
+                       ")", tableName);
+            }
+        }
+
         template <> void migrate<7>(soci::session& sql, api::DatabaseBackendType type) {
-            sql << "CREATE TABLE bech32_parameters("
-                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES bitcoin_currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
-                    "hrp VARCHAR(255) NOT NULL,"
-                    "separator VARCHAR(255) NOT NULL,"
-                    "generator VARCHAR(255) NOT NULL,"
-                    "p2wpkh_version VARCHAR(255) NOT NULL,"
-                    "p2wsh_version VARCHAR(255) NOT NULL"
-                    ")";
+            sql << getBech32ParamsCreateTableSQL("bech32_parameters");
         }
 
         template <> void rollback<7>(soci::session& sql, api::DatabaseBackendType type) {
@@ -1207,14 +1214,7 @@ namespace ledger {
             if (type != api::DatabaseBackendType::SQLITE3) {
                 sql << "ALTER TABLE bech32_parameters DROP p2trversion";
             } else {
-                sql << "CREATE TABLE bech32_parameters_swap("
-                       "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES bitcoin_currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
-                       "hrp VARCHAR(255) NOT NULL,"
-                       "separator VARCHAR(255) NOT NULL,"
-                       "generator VARCHAR(255) NOT NULL,"
-                       "p2wpkh_version VARCHAR(255) NOT NULL,"
-                       "p2wsh_version VARCHAR(255) NOT NULL"
-                       ")";
+                sql << getBech32ParamsCreateTableSQL("bech32_parameters_swap");
                 sql << "INSERT INTO bech32_parameters_swap "
                        "SELECT name, hrp, separator, generator, p2wpkh_version, p2wsh_version "
                        "FROM bech32_parameters";
