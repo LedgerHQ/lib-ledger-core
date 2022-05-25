@@ -42,6 +42,7 @@
 #include <crypto/HashAlgorithm.h>
 #include <crypto/HASH160.hpp>
 #include <wallet/bitcoin/scripts/operators.h>
+#include <wallet/currencies.hpp>
 
 namespace ledger {
     namespace core {
@@ -214,7 +215,7 @@ namespace ledger {
             const auto bech32_params = bech32->getBech32Params();
             const size_t payload_sz = decoded.second.size();
             if (bech32_params.P2WSHVersion == bech32_params.P2WPKHVersion) {
-                // Bitcoin case (both are equal to zero) => detect keychain engine by length
+                // Bitcoin-like case (both are equal to zero) => detect keychain engine by length
                 if (decoded.first == bech32_params.P2WSHVersion) {
                     if (payload_sz == 32) {
                         keychainEngine = api::KeychainEngines::BIP173_P2WSH;
@@ -224,19 +225,22 @@ namespace ledger {
                         throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Unexpected wintess program length");
                     }
                 } else if (decoded.first == bech32_params.P2TRVersion && payload_sz == 32) {
+                    if (currency.name != currencies::BITCOIN.name &&
+                        currency.name != currencies::BITCOIN_TESTNET.name &&
+                        currency.name != currencies::BITCOIN_REGTEST.name) {
+                        throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Can't create Taproot address ({}) in currency {}", address, currency.name);
+                    }
                     keychainEngine = api::KeychainEngines::BIP350_P2TR;
                 } else {
                     throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Unknown form of Bech32 format (Bitcoin like)");
                 }
             } else {
-                // Bitcoin Cash case (P2WPKH is 0 and P2WSH is 8), length of hash can be different
+                // Bitcoin Cash like case (P2WPKH is 0 and P2WSH is 8), length of hash can be different
                 // https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md
                 if (decoded.first == bech32_params.P2WSHVersion && (payload_sz == 32 || payload_sz == 20)) {
                     keychainEngine = api::KeychainEngines::BIP173_P2WSH;
                 } else if (decoded.first == bech32_params.P2WPKHVersion && payload_sz == 20) {
                     keychainEngine = api::KeychainEngines::BIP173_P2WPKH;
-                } else if (decoded.first == bech32_params.P2TRVersion && payload_sz == 32) {
-                    keychainEngine = api::KeychainEngines::BIP350_P2TR;
                 } else {
                     throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Unknown form of Bech32 format (BCH)");
                 }
