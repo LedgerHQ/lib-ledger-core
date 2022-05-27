@@ -136,11 +136,11 @@ namespace ledger {
 
         void OperationQuery::performCount(std::vector<api::OperationCount> &operations) {
           soci::session sql(_pool->getPool());
-          soci::rowset<soci::row> rows = performCount(sql);
+          const soci::rowset<soci::row> rows = performCount(sql);
 
-          for (auto& row : rows) {
-            auto type = api::from_string<api::OperationType >(row.get<std::string>(0));
-            auto count = soci::get_number<int64_t>(row, 1);
+          for (const auto& row : rows) {
+            const auto type = api::from_string<api::OperationType >(row.get<std::string>(0));
+            const auto count = soci::get_number<int64_t>(row, 1);
 
             operations.emplace_back(api::OperationCount{type, count});
           }

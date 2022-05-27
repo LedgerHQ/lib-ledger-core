@@ -137,7 +137,7 @@ namespace ledger {
             return *this;
         }
 
-        QueryBuilder &QueryBuilder::groupBy(std::string &&group) {
+        QueryBuilder &QueryBuilder::groupBy(std::string group) {
           _group = std::move(group);
           return *this;
         }

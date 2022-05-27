@@ -55,7 +55,7 @@ namespace ledger {
             QueryBuilder& order(std::string&& keys, bool&& descending, std::string&& table);
             QueryBuilder& limit(int32_t limit);
             QueryBuilder& offset(int32_t offset);
-            QueryBuilder& groupBy(std::string &&group);
+            QueryBuilder& groupBy(std::string group);
             soci::details::prepare_temp_type execute(soci::session& sql);
 
         private:
