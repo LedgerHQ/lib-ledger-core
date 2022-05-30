@@ -1227,6 +1227,7 @@ namespace ledger {
           sql << "DROP INDEX ripple_transactions_hash_index ;";
           sql << "DROP INDEX stellar_transactions_hash_index ;";
           sql << "DROP INDEX tezos_transactions_hash_index ;";
+        }
       
         template <> void migrate<30>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE bech32_parameters ADD p2trversion VARCHAR(255) DEFAULT 01;";
