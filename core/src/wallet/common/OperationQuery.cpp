@@ -30,6 +30,7 @@
  */
 #include "OperationQuery.h"
 #include <api/OperationListCallback.hpp>
+#include <api/OperationCountListCallback.hpp>
 #include "Operation.h"
 #include <database/soci-date.h>
 #include <database/soci-option.h>
@@ -108,6 +109,41 @@ namespace ledger {
         std::shared_ptr<api::OperationQuery> OperationQuery::partial() {
             _fetchCompleteOperation = false;
             return shared_from_this();
+        }
+
+        void OperationQuery::count(
+            const std::shared_ptr<api::OperationCountListCallback> &callback) {
+          count().callback(_mainContext, callback);
+        }
+
+        Future<std::vector<api::OperationCount>>
+        OperationQuery::count() {
+          auto self = shared_from_this();
+          return async<std::vector<api::OperationCount>>([=] () {
+            std::vector<api::OperationCount> out;
+            self->performCount(out);
+            return out;
+          });
+        }
+
+        soci::rowset<soci::row> OperationQuery::performCount(soci::session &sql) {
+          return _builder.select("o.type, count(*)")
+              .from("operations").to("o")
+              .outerJoin("blocks AS b", "o.block_uid = b.uid")
+              .groupBy("o.type")
+              .execute(sql);
+        }
+
+        void OperationQuery::performCount(std::vector<api::OperationCount> &operations) {
+          soci::session sql(_pool->getPool());
+          const soci::rowset<soci::row> rows = performCount(sql);
+
+          for (const auto& row : rows) {
+            const auto type = api::from_string<api::OperationType >(row.get<std::string>(0));
+            const auto count = soci::get_number<int64_t>(row, 1);
+
+            operations.emplace_back(api::OperationCount{type, count});
+          }
         }
 
         void OperationQuery::execute(const std::shared_ptr<api::OperationListCallback> &callback) {

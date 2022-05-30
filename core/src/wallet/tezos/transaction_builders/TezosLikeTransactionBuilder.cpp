@@ -204,7 +204,6 @@ namespace ledger {
             auto blockHash = Base58::encodeWithChecksum(vector::concat(blockPrefix, blockHashBytes), config);
             tx->setBlockHash(blockHash);
 
-            int32_t opIndex = {0};
             uint8_t OpTag;
             auto offset = static_cast<uint8_t>(isBabylonActivated ? 100 : 0);
             do {
@@ -372,13 +371,11 @@ namespace ledger {
 
                 // Sorry, I really had to do this way..
                 if(operationTag != api::TezosOperationTag::OPERATION_TAG_REVEAL) {
-                    tx->setOperationIndexInTransaction(opIndex);  
-                    tx->setOperationTypeInTransaction(operationTag);  
+                    tx->setOperationTypeInTransaction(operationTag);
                 }
-                ++opIndex;
 
             } while(isSigned ? reader.available()-64 > 0 : reader.available() > 0 );
-            
+
 
             // Parse signature
             if (isSigned) {

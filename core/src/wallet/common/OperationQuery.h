@@ -33,6 +33,7 @@
 
 #include <api/OperationQuery.hpp>
 #include <api/OperationOrderKey.hpp>
+#include <api/OperationCount.hpp>
 #include <database/query/QueryBuilder.h>
 #include <database/DatabaseSessionPool.hpp>
 #include <async/DedicatedContext.hpp>
@@ -69,11 +70,14 @@ namespace ledger {
 
             void execute(const std::shared_ptr<api::OperationListCallback> &callback) override;
             Future<std::vector<std::shared_ptr<api::Operation>>> execute();
+            void count(const std::shared_ptr<api::OperationCountListCallback> &callback) override;
+            Future<std::vector<api::OperationCount>> count();
 
             std::shared_ptr<OperationQuery> registerAccount(const  std::shared_ptr<AbstractAccount>& account);
 
         private:
             void performExecute(std::vector<std::shared_ptr<api::Operation>>& operations);
+            void performCount(std::vector<api::OperationCount>& operations);
             void inflateCompleteTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
             void inflateBitcoinLikeTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
             void inflateCosmosLikeTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
@@ -86,6 +90,7 @@ namespace ledger {
 
         protected:
             virtual soci::rowset<soci::row> performExecute(soci::session &sql);
+            virtual soci::rowset<soci::row> performCount(soci::session &sql);
             QueryBuilder _builder;
             std::shared_ptr<api::QueryFilter> _headFilter;
             bool _fetchCompleteOperation;

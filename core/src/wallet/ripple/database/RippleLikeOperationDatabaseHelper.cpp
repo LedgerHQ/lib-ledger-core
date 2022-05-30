@@ -54,7 +54,7 @@ namespace {
         std::vector<std::string> fees;
         std::vector<uint64_t> confirmations;
         std::vector<BigInt> sequence;
-        std::vector<Option<uint64_t>> tag;
+        std::vector<Option<int64_t>> tag;
         std::vector<int32_t> status;
 
         void update(const std::string& txUid, const Option<std::string>& bUid,

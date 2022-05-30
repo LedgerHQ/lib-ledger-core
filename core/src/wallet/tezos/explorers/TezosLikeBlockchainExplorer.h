@@ -83,7 +83,6 @@ namespace ledger {
             std::string originatedAccountUid;
             std::string originatedAccountAddress;
             int64_t counter{0};
-            int64_t index{0};
 
             TezosLikeBlockchainExplorerTransaction() {
                 confirmations = 0;

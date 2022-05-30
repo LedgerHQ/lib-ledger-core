@@ -75,6 +75,9 @@ namespace ledger {
         }
 
         std::string TezosLikeAddress::toBase58() {
+            if(_hash160.empty()) {
+                return std::string();
+            }
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", _params.Identifier);
             return Base58::encodeWithChecksum(vector::concat(getVersion(), _hash160), config);

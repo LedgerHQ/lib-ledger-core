@@ -17,7 +17,7 @@ cp $BIN_DIR/macos/jni/libledger-core_jni.dylib $RESOURCE_DIR
 cp .circleci/build.sbt $JAR_BUILD_DIR
 
 cd $JAR_BUILD_DIR
-if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" == "develop" ] || [[ "$CIRCLE_BRANCH" == "release/"* ]] ; then
+if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "main" -o "$CIRCLE_BRANCH" == "develop" ] || [[ "$CIRCLE_BRANCH" == "release/"* ]] ; then
 	if [[ $LIB_VERSION == *"-rc-"* ]]; then
 		export JAR_VERSION="$LIB_VERSION"-SNAPSHOT
 	else

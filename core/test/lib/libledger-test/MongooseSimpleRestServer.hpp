@@ -39,6 +39,7 @@
 #include <regex>
 #include "route.h"
 #include <memory>
+#include <condition_variable>
 
 struct RestRequest {
     struct mg_connection *connection;
@@ -69,6 +70,7 @@ public:
     MongooseSimpleRestServer(const std::shared_ptr<ledger::core::api::ExecutionContext>& context);
     void start(short port);
     void stop();
+    bool wait_for_started();
     void endpoint(const std::string& method, const std::string &path, const RestRequestHandler &handler);
     void GET(const std::string &path, const RestRequestHandler &handler);
     void PUT(const std::string &path, const RestRequestHandler &handler);
@@ -94,6 +96,9 @@ private:
 private:
     struct mg_mgr _mgr;
     bool _running;
+    bool _started;
+    std::condition_variable _cv;
+    std::mutex _mtx; // protects _started and _cv
     std::shared_ptr<ledger::core::api::ExecutionContext> _context;
     std::vector<Endpoint> _endpoints;
     struct mg_connection *_connection;

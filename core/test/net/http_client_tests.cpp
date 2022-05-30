@@ -71,6 +71,7 @@ TEST(HttpClient, GET) {
         });
 
         server->start(8000);
+        server->wait_for_started();
 
         worker->execute(::make_runnable([&http, dispatcher, &server] () {
             http.GET("/say/hello/toto/please")().foreach(dispatcher->getMainExecutionContext(),
@@ -103,6 +104,7 @@ TEST(HttpClient, GETJson) {
         });
 
         server->start(8000);
+        server->wait_for_started();
 
         worker->execute(::make_runnable([&http, dispatcher, &server] () {
                 http
@@ -136,6 +138,7 @@ TEST(HttpClient, GETJsonError) {
         });
 
         server->start(8000);
+        server->wait_for_started();
 
         worker->execute(::make_runnable([&http, dispatcher, &server] () {
             http
@@ -171,7 +174,7 @@ TEST(HttpClient, POST) {
         });
 
         server->start(8000);
-
+        server->wait_for_started();
 
         worker->execute(::make_runnable([&http, dispatcher, &server] () {
             std::vector<uint8_t> body((uint8_t *)BIG_TEXT.c_str(), (uint8_t *)(BIG_TEXT.c_str() + BIG_TEXT.size()));
@@ -246,6 +249,7 @@ TEST(HttpClient, GETWithSax) {
         });
 
         server->start(8000);
+        server->wait_for_started();
 
         worker->execute(::make_runnable([&http, dispatcher, &server] () {
             http
@@ -326,6 +330,7 @@ TEST(HttpClient, GETWithSaxError) {
         });
 
         server->start(8000);
+        server->wait_for_started();
 
         worker->execute(::make_runnable([&http, dispatcher, &server] () {
             http

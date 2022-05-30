@@ -461,7 +461,7 @@ namespace ledger {
                             pub_key.c_str(), static_cast<SizeType>(pub_key.length()), allocator);
                         revealOp.AddMember("public_key", vString, allocator);
 
-                        static const auto fee = "257000";
+                        static const auto fee = "10000";
                         vString.SetString(fee, static_cast<SizeType>(std::strlen(fee)), allocator);
                         revealOp.AddMember("fee", vString, allocator);
 
@@ -704,15 +704,6 @@ namespace ledger {
             auto oldId = _correlationId;
             _correlationId = newId;
             return oldId;
-        }
-
-        int64_t TezosLikeTransactionApi::getOperationIndexInTransaction() const {
-            return _operationIndexInTransaction;
-        }
-
-        TezosLikeTransactionApi& TezosLikeTransactionApi::setOperationIndexInTransaction(int64_t index) {
-            _operationIndexInTransaction = index;
-            return *this;
         }
         
         api::TezosOperationTag TezosLikeTransactionApi::getOperationTypeInTransaction() const {

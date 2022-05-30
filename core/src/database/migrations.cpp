@@ -1205,11 +1205,34 @@ namespace ledger {
             sql << "DROP INDEX bitcoin_operations_transaction_uid_index ;";
         }
 
-        template <> void migrate<29>(soci::session& sql, api::DatabaseBackendType type) {
+        template<>
+        void migrate<29>(soci::session &sql, api::DatabaseBackendType type) {
+          sql << "CREATE INDEX blocks_height_index ON blocks(height);";
+          sql << "CREATE INDEX algorand_transactions_hash_index ON algorand_transactions(hash);";
+          sql << "CREATE INDEX bitcoin_transactions_hash_index ON bitcoin_transactions(hash);";
+          sql << "CREATE INDEX cosmos_transactions_hash_index ON cosmos_transactions(hash);";
+          sql << "CREATE INDEX ethereum_transactions_hash_index ON ethereum_transactions(hash);";
+          sql << "CREATE INDEX ripple_transactions_hash_index ON ripple_transactions(hash);";
+          sql << "CREATE INDEX stellar_transactions_hash_index ON stellar_transactions(hash);";
+          sql << "CREATE INDEX tezos_transactions_hash_index ON tezos_transactions(hash);";
+        }
+
+        template<>
+        void rollback<29>(soci::session &sql, api::DatabaseBackendType type) {
+          sql << "DROP INDEX blocks_height_index ;";
+          sql << "DROP INDEX algorand_transactions_hash_index ;";
+          sql << "DROP INDEX bitcoin_transactions_hash_index ;";
+          sql << "DROP INDEX cosmos_transactions_hash_index ;";
+          sql << "DROP INDEX ethereum_transactions_hash_index ;";
+          sql << "DROP INDEX ripple_transactions_hash_index ;";
+          sql << "DROP INDEX stellar_transactions_hash_index ;";
+          sql << "DROP INDEX tezos_transactions_hash_index ;";
+      
+        template <> void migrate<30>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE bech32_parameters ADD p2trversion VARCHAR(255) DEFAULT 01;";
         }
 
-        template <> void rollback<29>(soci::session& sql, api::DatabaseBackendType type) {
+        template <> void rollback<30>(soci::session& sql, api::DatabaseBackendType type) {
             // SQLite doesn't handle ALTER TABLE DROP
             if (type != api::DatabaseBackendType::SQLITE3) {
                 sql << "ALTER TABLE bech32_parameters DROP p2trversion";

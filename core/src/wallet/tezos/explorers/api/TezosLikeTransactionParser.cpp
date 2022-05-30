@@ -138,7 +138,9 @@ namespace ledger {
                     && _transaction->block.hasValue()) {
                     _transaction->block.getValue().height = BigInt::fromString(number).toUint64();
                 } else if (_lastKey == "amount" || _lastKey == "volume") {
-                    _transaction->value = toValue(number, _lastKey == "volume");
+                    if(_transaction->type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                        _transaction->value = toValue(number, _lastKey == "volume");
+                    }
                 } else if (_lastKey == "fee") {
                     _transaction->fees = _transaction->fees + toValue(number, false);
                 } else if (_lastKey == "gas_limit") {
@@ -149,8 +151,6 @@ namespace ledger {
                     _transaction->fees = _transaction->fees + toValue(number, true);
                 } else if (_lastKey == "confirmations") {
                     _transaction->confirmations = toValue(number, false).toInt64();
-                } else if (_lastKey == "op_c") {
-                    _transaction->index = toValue(number, false).toInt64();
                 } else if (_lastKey == "counter") {
                     _transaction->counter = toValue(number, false).toInt64();
                 }
@@ -193,10 +193,15 @@ namespace ledger {
                 } else if (_lastKey == "sender" ||
                         (currentObject == "src" && _lastKey == "tz")) {
                     _transaction->sender = value;
-                } else if (_lastKey == "receiver" || _lastKey == "delegate" ||
+                } else if((_lastKey == "receiver" || _lastKey == "previous_baker") && _transaction->type == api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                    // For undelegation, the API returns type=delegation & receiver attribute is defined
+                    // For delegation, the API returns type=delegation but receiver is not defined ('delegate' used instead)
+                    // Receiver should be empty to differentiate delegate from undelegate in db
+                    _transaction->receiver = "";
+                } else if (_lastKey == "receiver" || _lastKey == "delegate" || _lastKey == "baker" ||
                         ((currentObject == "destination" || currentObject == "delegate") && _lastKey == "tz")) {
                     _transaction->receiver = value;
-                    if (_lastKey == "receiver" &&
+                    if ((_lastKey == "receiver" || _lastKey == "baker") &&
                             _transaction->type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
                         _transaction->originatedAccount.getValue().address = value;
                     }
@@ -222,6 +227,9 @@ namespace ledger {
                     if (_lastKey == "type" &&
                             _transaction->type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
                         _transaction->originatedAccount = TezosLikeBlockchainExplorerOriginatedAccount();
+                    } else if(_lastKey == "type" &&
+                            _transaction->type == api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                        _transaction->value = BigInt(0);
                     }
 
                 } else if (_lastKey == "public_key" ||

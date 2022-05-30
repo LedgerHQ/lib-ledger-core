@@ -81,7 +81,7 @@ namespace ledger {
                 soci::session sql(self->getDatabase()->getPool());
                 {
                     if (AccountDatabaseHelper::accountExists(sql, getWalletUid(), info.index)) {
-                        throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Account {} already exists", info.index);
+                        throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {} already exists", info.index);
                     }
                     auto keychain = self->_params.keychainFactory->build(
                             info.index, path, std::dynamic_pointer_cast<DynamicObject>(self->getConfiguration()),

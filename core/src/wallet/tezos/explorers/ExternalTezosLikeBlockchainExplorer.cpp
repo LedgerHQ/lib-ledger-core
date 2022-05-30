@@ -33,6 +33,9 @@
 #include <api/ErrorCode.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <clocale>
+#include <sstream>
+
 
 namespace ledger {
     namespace core {
@@ -131,20 +134,125 @@ namespace ledger {
         Future<std::shared_ptr<BigInt>>
         ExternalTezosLikeBlockchainExplorer::getGasPrice() {
             const bool parseNumbersAsString = true;
+            // Since tzindex 12.01, we don't have gas_price field anymore
+            // We have to calculate it instead from gas_used and fee
+            const auto gasUsedField = "gas_used";
+            const auto feeField = "fee";
+            // We still use the legacy field in case we have a rollback
             const auto gasPriceField = "gas_price";
 
             return _http->GET("block/head")
                     .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) {
+
+                        // Fix locale issue in conversion string from/to double
+                        struct ScopedLocale {
+                            ScopedLocale() {
+                                _locale = std::setlocale(LC_NUMERIC, nullptr);
+                                std::setlocale(LC_NUMERIC, "C");
+                            }
+                            ~ScopedLocale() {
+                                std::setlocale(LC_NUMERIC, _locale.c_str());
+                             }
+                        private:
+                            std::string _locale;
+                        } _;
+
+
                         auto &json = *std::get<1>(result);
 
-                        if (!json.IsObject() || !json.HasMember(gasPriceField) ||
-                            !json[gasPriceField].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 fmt::format("Failed to get gas_price from network, no (or malformed) field \"{}\" in response", gasPriceField));
+                        if (!json.IsObject()) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR, "Failed to compute gas_price from network, block/head is not a JSON object");
                         }
-                        const std::string apiGasPrice = json[gasPriceField].GetString();
-                        const std::string picoTezGasPrice = api::BigInt::fromDecimalString(apiGasPrice, 6, ".")->toString(10);
-                        return std::make_shared<BigInt>(std::stoi(picoTezGasPrice));
+                        std::string gasPrice;
+                        // Legacy field access
+                        if (json.HasMember(gasPriceField) && json[gasPriceField].IsString()) {
+                            gasPrice = json[gasPriceField].GetString();
+                        }
+                        // OR
+                        // tzindex v12+ gas_price compute
+                        else {
+                            if (!json.HasMember(gasUsedField) || !json[gasUsedField].IsString()) {
+                                throw make_exception(
+                                    api::ErrorCode::HTTP_ERROR, fmt::format(
+                                        "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
+                                        gasUsedField));
+                            }
+                            if (!json.HasMember(feeField) || !json[feeField].IsString()) {
+                                throw make_exception(
+                                    api::ErrorCode::HTTP_ERROR, fmt::format(
+                                        "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
+                                        feeField));
+                            }
+                            const uint64_t apiGasUsed = std::stoull(json[gasUsedField].GetString());
+                            if (apiGasUsed == 0) {
+                                throw make_exception(
+                                    api::ErrorCode::HTTP_ERROR, "Failed to compute gas_price from network, gas_used of HEAD block is 0"
+                                );
+                            }
+
+                            const auto& feeFieldStringValue = json[feeField].GetString();
+                            double apiFee = 0.;
+                            try
+                            {
+                                apiFee = std::stod(feeFieldStringValue);
+                            }
+                            catch(const std::invalid_argument& e)
+                            {
+                                throw make_exception(
+                                    api::ErrorCode::INVALID_ARGUMENT, fmt::format(
+                                        "Failed to compute gas_price from network, issue converting from string with fee of HEAD block equal to \"{}\": {}",
+                                        feeFieldStringValue,
+                                        e.what()
+                                    )
+                                );
+                            }
+                            catch(const std::out_of_range& e)
+                            {
+                                throw make_exception(
+                                    api::ErrorCode::OUT_OF_RANGE, fmt::format(
+                                        "Failed to compute gas_price from network, issue casting to double with fee of HEAD block equal to \"{}\" : {}",
+                                        feeFieldStringValue,
+                                        e.what()
+                                    )
+                                );
+                            }
+
+                            const double numericGasPrice = apiFee / static_cast<double>(apiGasUsed);
+                            std::ostringstream ss;
+                            ss.precision(std::numeric_limits<double>::digits10);
+                            ss << std::fixed << numericGasPrice;
+                            gasPrice = ss.str();
+                        }
+
+                        const std::string picoTezGasPrice = api::BigInt::fromDecimalString(gasPrice, 6, ".")->toString(10);
+                        int intPicoTezGasPrice = 0;
+                        try
+                        {
+                            intPicoTezGasPrice = std::stoi(picoTezGasPrice);
+                        }
+                        catch(const std::invalid_argument& e)
+                        {
+                            throw make_exception(
+                                api::ErrorCode::INVALID_ARGUMENT, fmt::format(
+                                    "Failed to compute gas_price from network, issue converting from string with picoTezGasPrice equal to \"{}\": {}",
+                                    picoTezGasPrice,
+                                    e.what()
+                                )
+                            );
+                        }
+                        catch(const std::out_of_range& e)
+                        {
+                            throw make_exception(
+                                api::ErrorCode::OUT_OF_RANGE, fmt::format(
+                                    "Failed to compute gas_price from network, issue casting to int with picoTezGasPrice equal to \"{}\" : {}",
+                                    picoTezGasPrice,
+                                    e.what()
+                                )
+                            );
+                        }
+                        
+                        return std::make_shared<BigInt>(intPicoTezGasPrice);
                     });
         }
 

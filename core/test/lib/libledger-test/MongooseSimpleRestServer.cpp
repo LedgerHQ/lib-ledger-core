@@ -68,12 +68,27 @@ void MongooseSimpleRestServer::poll() {
         std::weak_ptr<MongooseSimpleRestServer> self = shared_from_this();
         _context->execute(make_runnable([self]() {
             auto s = self.lock();
+            {
+                std::lock_guard<std::mutex> lk(s->_mtx);
+                s->_started = true;
+            }
+            s->_cv.notify_one();
             if (s) {
                 mg_mgr_poll(&(s->_mgr), 100);
                 s->poll();
             }
+            {
+                std::lock_guard<std::mutex> lk(s->_mtx);
+                s->_started = false;
+            }
         }));
     }
+}
+
+bool MongooseSimpleRestServer::wait_for_started() {
+    std::unique_lock<std::mutex> lk(_mtx);
+    _cv.wait(lk, [this](){return _started;});
+    return _started;
 }
 
 
@@ -123,6 +138,7 @@ void MongooseSimpleRestServer::DEL(const std::string &path, const RestRequestHan
 
 MongooseSimpleRestServer::MongooseSimpleRestServer(const std::shared_ptr<ledger::core::api::ExecutionContext>& context) {
     _running = false;
+    _started = false;
     mg_mgr_init(&_mgr, NULL);
     _context = context;
 }

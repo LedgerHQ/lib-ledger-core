@@ -136,9 +136,6 @@ namespace ledger {
             TezosLikeTransactionApi &reveal(bool needReveal);
             bool toReveal() const;
 
-            int64_t getOperationIndexInTransaction() const override;
-            TezosLikeTransactionApi& setOperationIndexInTransaction(int64_t index);
-
             api::TezosOperationTag getOperationTypeInTransaction() const override;
             TezosLikeTransactionApi& setOperationTypeInTransaction(api::TezosOperationTag type);
         private:
@@ -169,7 +166,6 @@ namespace ledger {
             std::shared_ptr<api::Amount> _revealFees;
             std::shared_ptr<api::Amount> _revealGasLimit;
             std::string _correlationId;
-            int64_t _operationIndexInTransaction {0};
             api::TezosOperationTag _operationTypeInTransaction {api::TezosOperationTag::OPERATION_TAG_NONE};
         };
     }
