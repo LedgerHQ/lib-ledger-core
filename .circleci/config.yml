@@ -383,8 +383,8 @@ workflows:
           filters:
             tags:
               only: /.*/
-            branches:
-              only: /^(?!pull\/).*$/
+            #branches:
+            #  only: /^(?!pull\/).*$/
       - build_android_release:
           <<: *default_context
           filters:
@@ -409,8 +409,8 @@ workflows:
           filters:
             tags:
               only: /.*/
-            branches:
-              only: /^(?!pull\/).*$/
+            #branches:
+            #  only: /^(?!pull\/).*$/
       - build_linux_debug:
           <<: *default_context
       - build_macos_debug:
