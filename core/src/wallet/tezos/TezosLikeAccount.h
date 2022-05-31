@@ -59,7 +59,16 @@ namespace ledger {
 
             };
         protected:
-            virtual soci::rowset<soci::row> performExecute(soci::session &sql) {
+            soci::rowset<soci::row> performCount(soci::session &sql) override {
+              return _builder.select("o.type, count(*)")
+                  .from("operations").to("o")
+                  .outerJoin("blocks AS b", "o.block_uid = b.uid")
+                  .outerJoin("tezos_originated_operations AS orig_op", "o.uid = orig_op.uid")
+                  .groupBy("o.type")
+                  .execute(sql);
+            }
+
+            soci::rowset<soci::row> performExecute(soci::session &sql) override {
                 return _builder.select("o.account_uid, o.uid, o.wallet_uid, o.type, o.date, o.senders, o.recipients,"
                                                "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time, orig_op.uid"
                         )
