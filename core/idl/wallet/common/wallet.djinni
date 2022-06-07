@@ -106,6 +106,13 @@ Block = record {
     height: i64;
 }
 
+OperationCount = record {
+    # Type of operation
+    type: OperationType;
+    # Count of operations
+    count: i64;
+}
+
 # Class representing an operation.
 Operation = interface +c {
     # Get id's operation.
@@ -265,6 +272,9 @@ OperationQuery = interface +c {
     # Execute query to retrieve operations.
     # @param callback, if execute method succeed, ListCallback object returning a List of Operation objects
     execute(callback: ListCallback<Operation>);
+    # Count operations by type
+    # @param callback, if execute method succeed, ListCallback object returning a List of OperationCount objects
+    count(callback: ListCallback<OperationCount>);
 }
 
 # Structure of informations needed for account creation.

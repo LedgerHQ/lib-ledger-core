@@ -3,6 +3,7 @@
 
 #include "OperationQuery.hpp"  // my header
 #include "Marshal.hpp"
+#include "OperationCountListCallback.hpp"
 #include "OperationListCallback.hpp"
 #include "OperationOrderKey.hpp"
 #include "QueryFilter.hpp"
@@ -89,6 +90,15 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::OperationQuery>(nativeRef);
         ref->execute(::djinni_generated::OperationListCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_1count(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::OperationQuery>(nativeRef);
+        ref->count(::djinni_generated::OperationCountListCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
