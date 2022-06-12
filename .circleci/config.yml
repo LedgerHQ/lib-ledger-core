@@ -20,7 +20,7 @@ jobs:
       - run:
           name: Submodule_Initialization
           command: |
-            . .circleci/init_submodules.sh
+            echo "Pumpking Test..."; . .circleci/init_submodules.sh
       - run:
           name: Build_Library
           command: |
