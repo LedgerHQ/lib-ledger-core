@@ -49,13 +49,14 @@ namespace ledger {
         //TODO: remove TransactionsParser and TransactionsBulkParser from template when refactoring them (common interface)
         template <typename BlockchainExplorerTransaction, typename TransactionsBulk, typename TransactionsParser, typename TransactionsBulkParser, typename BlockParser, typename NetworkParameters>
         class AbstractLedgerApiBlockchainExplorer {
+          constexpr static const uint16_t DEFAULT_BATCH_SIZE = 1000;
         public:
             FuturePtr<TransactionsBulk>
             getLedgerApiTransactions(const std::vector<std::string> &addresses,
                             Option<std::string> fromBlockHash,
                             Option<void *> session,
                             bool isSnakeCase = false,
-                            uint16_t batch_size = 1000) {
+                            uint16_t batch_size = DEFAULT_BATCH_SIZE) {
                 auto joinedAddresses = Array<std::string>(addresses).join(strings::mkString(",")).getValueOr("");
                 std::string params;
                 std::unordered_map<std::string, std::string> headers;
@@ -96,22 +97,22 @@ namespace ledger {
                                 } else {
                                     throw result.getLeft();
                                 }
-                            } else {
-                                auto bulk = result.getRight();
-                                auto fb = bulk->transactions.front().block;
-                                auto bb = bulk->transactions.back().block;
-                                if (bulk->transactions.size() == batch_size && fb.getValue().hash == bb.getValue().hash)
-                                { // We might have more than {batch_size} transactions in a single block for this address, let's ask for more transaction ! (recovered exception below)
-                                  throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Some transaction might be missing !");
-                                }
-                                return result.getRight();
                             }
+
+                            auto bulk = result.getRight();
+                            auto firstBlock = bulk->transactions.front().block.getValue();
+                            auto lastBlock = bulk->transactions.back().block.getValue();
+                            if (bulk->transactions.size() == batch_size && firstBlock.hash == lastBlock.hash)
+                            { // We might have more than {batch_size} transactions in a single block for this address, let's ask for more transaction ! (recovered exception below)
+                              throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Some transaction might be missing !");
+                            }
+                            return result.getRight();
                         })
                         .template recoverWith(getExplorerContext(), [this, addresses, fromBlockHash, session, isSnakeCase, batch_size](const Exception&e) {
-                            if (e.getErrorCode() == api::ErrorCode::INCOMPLETE_TRANSACTION)
-                              return getLedgerApiTransactions(addresses, fromBlockHash, session, isSnakeCase, batch_size + 1000);
-                            else
-                              throw e;
+                          if (e.getErrorCode() != api::ErrorCode::INCOMPLETE_TRANSACTION) {
+                            throw e;
+                          }
+                          return getLedgerApiTransactions(addresses, fromBlockHash, session, isSnakeCase, batch_size + DEFAULT_BATCH_SIZE);
                         });
             };
 
