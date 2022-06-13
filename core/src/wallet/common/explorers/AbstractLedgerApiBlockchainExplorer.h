@@ -54,7 +54,8 @@ namespace ledger {
             getLedgerApiTransactions(const std::vector<std::string> &addresses,
                             Option<std::string> fromBlockHash,
                             Option<void *> session,
-                            bool isSnakeCase = false) {
+                            bool isSnakeCase = false,
+                            uint16_t batch_size = 1000) {
                 auto joinedAddresses = Array<std::string>(addresses).join(strings::mkString(",")).getValueOr("");
                 std::string params;
                 std::unordered_map<std::string, std::string> headers;
@@ -64,8 +65,10 @@ namespace ledger {
                 } else {
                     headers["X-LedgerWallet-SyncToken"] = *((std::string *)session.getValue());
                 }
+
+                // Block hash
                 if (!fromBlockHash.isEmpty()) {
-                    if (params.size() > 0) {
+                    if (!params.empty()) {
                         params = params + "&";
                     } else {
                         params = params + "?";
@@ -73,9 +76,19 @@ namespace ledger {
                     auto blockHash = isSnakeCase ? "block_hash=" : "blockHash=";
                     params = params + blockHash + fromBlockHash.getValue();
                 }
+
+                // Batch size
+                if (!params.empty()) {
+                  params = params + "&";
+                } else {
+                  params = params + "?";
+                }
+                params = params + "batch_size=" + std::to_string(batch_size);
+
+                // Execute
                 return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/transactions{}", getExplorerVersion(), getNetworkParameters().Identifier, joinedAddresses, params), headers)
                         .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TransactionsBulkParser>(), true)
-                        .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash] (const Either<Exception, std::shared_ptr<TransactionsBulk>>& result) {
+                        .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash, batch_size] (const Either<Exception, std::shared_ptr<TransactionsBulk>>& result) {
                             if (result.isLeft()) {
                                 // Only case where we should emit block not found error
                                 if (!fromBlockHash.isEmpty() && result.getLeft().getErrorCode() == api::ErrorCode::HTTP_ERROR) {
@@ -84,8 +97,21 @@ namespace ledger {
                                     throw result.getLeft();
                                 }
                             } else {
+                                auto bulk = result.getRight();
+                                auto fb = bulk->transactions.front().block;
+                                auto bb = bulk->transactions.back().block;
+                                if (bulk->transactions.size() == batch_size && fb.getValue().hash == bb.getValue().hash)
+                                { // We might have more than {batch_size} transactions in a single block for this address, let's ask for more transaction ! (recovered exception below)
+                                  throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Some transaction might be missing !");
+                                }
                                 return result.getRight();
                             }
+                        })
+                        .template recoverWith(getExplorerContext(), [this, addresses, fromBlockHash, session, isSnakeCase, batch_size](const Exception&e) {
+                            if (e.getErrorCode() == api::ErrorCode::INCOMPLETE_TRANSACTION)
+                              return getLedgerApiTransactions(addresses, fromBlockHash, session, isSnakeCase, batch_size + 1000);
+                            else
+                              throw e;
                         });
             };
 

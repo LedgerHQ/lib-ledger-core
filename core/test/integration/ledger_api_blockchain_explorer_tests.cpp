@@ -159,26 +159,26 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetFees) {
     }
 }
 
-class LedgerApiEthereumLikeBlockchainExplorerTests : public LedgerApiBlockchainExplorerTests<LedgerApiEthereumLikeBlockchainExplorer, api::EthereumLikeNetworkParameters> {
+class LedgerApiEthereumRopstenLikeBlockchainExplorerTests : public LedgerApiBlockchainExplorerTests<LedgerApiEthereumLikeBlockchainExplorer, api::EthereumLikeNetworkParameters> {
 public:
-    LedgerApiEthereumLikeBlockchainExplorerTests() {
+    LedgerApiEthereumRopstenLikeBlockchainExplorerTests() {
         params = networks::getEthLikeNetworkParameters("ethereum_ropsten");
         explorerEndpoint = "https://explorers.api.live.ledger.com";
     }
 };
 
 
-TEST_F(LedgerApiEthereumLikeBlockchainExplorerTests, GetGasPrice) {
+TEST_F(LedgerApiEthereumRopstenLikeBlockchainExplorerTests, GetGasPrice) {
     auto result = uv::wait(explorer->getGasPrice());
     EXPECT_NE(result->toUint64(), 0);
 }
 
-TEST_F(LedgerApiEthereumLikeBlockchainExplorerTests, GetEstimatedGasLimit) {
+TEST_F(LedgerApiEthereumRopstenLikeBlockchainExplorerTests, GetEstimatedGasLimit) {
     auto result = uv::wait(explorer->getEstimatedGasLimit("0x57e8ba2a915285f984988282ab9346c1336a4e11"));
     EXPECT_GE(result->toUint64(), 10000);
 }
 
-TEST_F(LedgerApiEthereumLikeBlockchainExplorerTests, PostEstimatedGasLimit) {
+TEST_F(LedgerApiEthereumRopstenLikeBlockchainExplorerTests, PostEstimatedGasLimit) {
   auto request = api::EthereumGasLimitRequest(
       optional<std::string>(),
       optional<std::string>(),
@@ -192,3 +192,17 @@ TEST_F(LedgerApiEthereumLikeBlockchainExplorerTests, PostEstimatedGasLimit) {
   EXPECT_GE(result->toUint64(), 10000);
 }
 
+
+class LedgerApiEthereumLikeBlockchainExplorerTests : public LedgerApiBlockchainExplorerTests<LedgerApiEthereumLikeBlockchainExplorer, api::EthereumLikeNetworkParameters> {
+public:
+  LedgerApiEthereumLikeBlockchainExplorerTests() {
+    params = networks::getEthLikeNetworkParameters("ethereum");
+    explorerEndpoint = "https://explorers.api.live.ledger.com";
+  }
+};
+
+TEST_F(LedgerApiEthereumLikeBlockchainExplorerTests, GeTransactionsInBigBlock) {
+  auto result = uv::wait(explorer->getTransactions({"0x6262998ced04146fa42253a5c0af90ca02dfd2a3"}, std::string{"0xd7a7888550025aeaaab793345ebf90779c5ae3f4c88b10940ed59dbb6a3d0058"}));
+  EXPECT_NE(result->transactions.front().block.getValue().hash, result->transactions.back().block.getValue().hash);
+  EXPECT_GT(result->transactions.size(), 1001);
+}
