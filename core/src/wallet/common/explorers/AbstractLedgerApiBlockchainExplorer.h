@@ -100,6 +100,9 @@ namespace ledger {
                             }
 
                             auto bulk = result.getRight();
+                            if (bulk->transactions.empty()) {
+                              return bulk;
+                            }
                             auto firstBlock = bulk->transactions.front().block.getValue();
                             auto lastBlock = bulk->transactions.back().block.getValue();
                             if (bulk->transactions.size() == batch_size && firstBlock.hash == lastBlock.hash)
