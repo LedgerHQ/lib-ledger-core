@@ -50,6 +50,40 @@ namespace ledger {
         template <typename BlockchainExplorerTransaction, typename TransactionsBulk, typename TransactionsParser, typename TransactionsBulkParser, typename BlockParser, typename NetworkParameters>
         class AbstractLedgerApiBlockchainExplorer {
           constexpr static const uint16_t DEFAULT_BATCH_SIZE = 1000;
+
+        private:
+          std::string getParams(Option<std::string> fromBlockHash,
+                                const Option<void *>& session,
+                                bool isSnakeCase = false,
+                                uint16_t batch_size = DEFAULT_BATCH_SIZE) {
+            std::string params;
+            std::unordered_map<std::string, std::string> headers;
+
+            if (session.isEmpty()) {
+              params = isSnakeCase ? "?no_token=true" : "?noToken=true";
+            }
+
+            // Block hash
+            if (!fromBlockHash.isEmpty()) {
+              if (!params.empty()) {
+                params = params + "&";
+              } else {
+                params = params + "?";
+              }
+              auto blockHash = isSnakeCase ? "block_hash=" : "blockHash=";
+              params = params + blockHash + fromBlockHash.getValue();
+            }
+
+            // Batch size
+            if (!params.empty()) {
+              params = params + "&";
+            } else {
+              params = params + "?";
+            }
+            params = params + "batch_size=" + std::to_string(batch_size);
+            return params;
+          }
+
         public:
             FuturePtr<TransactionsBulk>
             getLedgerApiTransactions(const std::vector<std::string> &addresses,
@@ -58,35 +92,13 @@ namespace ledger {
                             bool isSnakeCase = false,
                             uint16_t batch_size = DEFAULT_BATCH_SIZE) {
                 auto joinedAddresses = Array<std::string>(addresses).join(strings::mkString(",")).getValueOr("");
-                std::string params;
+                std::string params = getParams(fromBlockHash, session, isSnakeCase, batch_size);
                 std::unordered_map<std::string, std::string> headers;
 
-                if (session.isEmpty()) {
-                    params = isSnakeCase ? "?no_token=true" : "?noToken=true";
-                } else {
+                if (!session.isEmpty()) {
                     headers["X-LedgerWallet-SyncToken"] = *((std::string *)session.getValue());
                 }
 
-                // Block hash
-                if (!fromBlockHash.isEmpty()) {
-                    if (!params.empty()) {
-                        params = params + "&";
-                    } else {
-                        params = params + "?";
-                    }
-                    auto blockHash = isSnakeCase ? "block_hash=" : "blockHash=";
-                    params = params + blockHash + fromBlockHash.getValue();
-                }
-
-                // Batch size
-                if (!params.empty()) {
-                  params = params + "&";
-                } else {
-                  params = params + "?";
-                }
-                params = params + "batch_size=" + std::to_string(batch_size);
-
-                // Execute
                 return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/transactions{}", getExplorerVersion(), getNetworkParameters().Identifier, joinedAddresses, params), headers)
                         .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TransactionsBulkParser>(), true)
                         .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash, batch_size] (const Either<Exception, std::shared_ptr<TransactionsBulk>>& result) {
