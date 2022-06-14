@@ -123,7 +123,7 @@ namespace ledger {
                             }
                             return result.getRight();
                         })
-                        .template recoverWith(getExplorerContext(), [this, addresses, fromBlockHash, session, isSnakeCase, batch_size](const Exception&e) {
+                        .recoverWith(getExplorerContext(), [this, addresses, fromBlockHash, session, isSnakeCase, batch_size](const Exception&e) {
                           if (e.getErrorCode() != api::ErrorCode::INCOMPLETE_TRANSACTION) {
                             throw e;
                           }
