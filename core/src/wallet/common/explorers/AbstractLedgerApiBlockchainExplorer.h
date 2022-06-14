@@ -70,7 +70,7 @@ namespace ledger {
               } else {
                 params = params + "?";
               }
-              auto blockHash = isSnakeCase ? "block_hash=" : "blockHash=";
+              const std::string blockHash = isSnakeCase ? "block_hash=" : "blockHash=";
               params = params + blockHash + fromBlockHash.getValue();
             }
 
