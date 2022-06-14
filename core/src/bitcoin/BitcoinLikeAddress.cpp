@@ -29,8 +29,6 @@
  *
  */
 #include "BitcoinLikeAddress.hpp"
-#include "../utils/djinni_helpers.hpp"
-#include "../bytes/BytesWriter.h"
 #include "../math/Base58.hpp"
 #include "../collections/vector.hpp"
 #include "../utils/Exception.hpp"
@@ -38,7 +36,6 @@
 #include <math/bech32/Bech32.h>
 #include <math/bech32/Bech32Factory.h>
 #include <api/KeychainEngines.hpp>
-#include <api/Configuration.hpp>
 #include <crypto/HashAlgorithm.h>
 #include <crypto/HASH160.hpp>
 #include <wallet/bitcoin/scripts/operators.h>
@@ -62,7 +59,7 @@ namespace ledger {
             return getVersionFromKeychainEngine(_keychainEngine, _params);
         }
 
-        std::vector<uint8_t> BitcoinLikeAddress::getVersionFromKeychainEngine(const std::string &keychainEngine, 
+        std::vector<uint8_t> BitcoinLikeAddress::getVersionFromKeychainEngine(const std::string &keychainEngine,
                                                                               const api::BitcoinLikeNetworkParameters &params) const {
 
             if (keychainEngine == api::KeychainEngines::BIP32_P2PKH) {

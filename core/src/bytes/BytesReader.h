@@ -32,10 +32,8 @@
 #define LEDGER_CORE_BYTESREADER_H
 
 #include <cstdint>
-#include <array>
 #include <vector>
 #include <math/BigInt.h>
-#include "../ledger-core.h"
 #include <utils/endian.h>
 
 namespace ledger {

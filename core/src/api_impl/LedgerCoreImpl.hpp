@@ -31,8 +31,6 @@
 #ifndef LEDGER_CORE_LEDGERCOREIMPL_HPP
 #define LEDGER_CORE_LEDGERCOREIMPL_HPP
 
-#include "api/LedgerCore.hpp"
-
 class LedgerCoreImpl {
 
 };

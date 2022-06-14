@@ -33,8 +33,6 @@
 #define LEDGER_CORE_RLPLISTENCODER_H
 
 #include "RLPEncoder.h"
-#include "../BytesWriter.h"
-
 
 namespace ledger {
     namespace core {

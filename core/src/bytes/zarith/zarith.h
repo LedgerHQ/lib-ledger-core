@@ -35,7 +35,6 @@
 #include <algorithm>
 #include <vector>
 #include <bytes/BytesReader.h>
-#include <utils/hex.h>
 
 namespace ledger {
     namespace core {

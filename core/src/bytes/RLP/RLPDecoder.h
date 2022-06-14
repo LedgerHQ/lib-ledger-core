@@ -34,7 +34,6 @@
 
 #include <tuple>
 #include <vector>
-#include <string>
 #include "../../utils/Exception.hpp"
 #include "RLPEncoder.h"
 

@@ -29,15 +29,8 @@
  *
  */
 #include "utils/DerivationPath.hpp"
-#include "debug/Benchmarker.h"
-#include "bytes/BytesWriter.h"
 #include "BitcoinLikeExtendedPublicKey.hpp"
-#include "utils/djinni_helpers.hpp"
-#include "crypto/HASH160.hpp"
-#include "math/Base58.hpp"
-#include "bytes/BytesReader.h"
 #include "BitcoinLikeAddress.hpp"
-#include <crypto/SECP256k1Point.hpp>
 #include <api/Configuration.hpp>
 #include <api/KeychainEngines.hpp>
 

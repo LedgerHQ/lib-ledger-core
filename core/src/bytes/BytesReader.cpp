@@ -35,7 +35,6 @@
 #include <sstream>
 #include <algorithm>
 #include <utils/hex.h>
-#include <utils/Exception.hpp>
 
 namespace ledger {
 

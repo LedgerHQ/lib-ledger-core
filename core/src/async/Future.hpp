@@ -31,10 +31,8 @@
 #ifndef LEDGER_CORE_FUTURE_HPP
 #define LEDGER_CORE_FUTURE_HPP
 #undef foreach
-#include <exception>
 #include <memory>
 #include <functional>
-#include <list>
 #include "Deffered.hpp"
 #include "api/ExecutionContext.hpp"
 #include "utils/Exception.hpp"

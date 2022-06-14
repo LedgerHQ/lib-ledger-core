@@ -34,7 +34,6 @@
 
 #include "RLPEncoder.h"
 #include <string>
-#include "../BytesWriter.h"
 #include "../../utils/Exception.hpp"
 
 namespace ledger {

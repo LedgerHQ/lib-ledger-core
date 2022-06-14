@@ -36,7 +36,7 @@
 #include "../utils/optional.hpp"
 #include <wallet/common/AbstractAddress.h>
 #include <api/BitcoinLikeExtendedPublicKey.hpp>
-#include <collections/DynamicObject.hpp>
+
 namespace ledger {
     namespace core {
         class BitcoinLikeAddress : public api::BitcoinLikeAddress, public AbstractAddress {
