@@ -42,7 +42,6 @@
 #include <typeinfo>
 #include <stdexcept>
 #include <boost/exception/diagnostic_information.hpp>
-#include <utils/Try.hpp>
 
 namespace ledger {
     namespace core {
