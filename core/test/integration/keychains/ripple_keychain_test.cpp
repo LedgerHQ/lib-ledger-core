@@ -30,8 +30,6 @@
 #include <gtest/gtest.h>
 #include <src/wallet/ripple/keychains/RippleLikeKeychain.h>
 #include <src/ripple/RippleLikeExtendedPublicKey.h>
-#include <src/ripple/RippleLikeAddress.h>
-#include <src/utils/DerivationPath.hpp>
 #include <src/utils/optional.hpp>
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"

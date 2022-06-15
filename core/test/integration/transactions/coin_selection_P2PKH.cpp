@@ -29,11 +29,10 @@
  *
  */
 
-#include "../BaseFixture.h"
+#include <api/BitcoinLikeInput.hpp>
 #include "transaction_test_helper.h"
 #include "../../fixtures/coin_selection_xpub_fixtures.h"
 #include <api/KeychainEngines.hpp>
-#include <api/EstimatedSize.hpp>
 
 struct CoinSelectionP2PKH : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {

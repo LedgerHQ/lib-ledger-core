@@ -35,7 +35,6 @@
 #include <vector>
 #include <ledger/core/crypto/AESCipher.hpp>
 #include <OpenSSLRandomNumberGenerator.hpp>
-#include <sstream>
 #include <ledger/core/bytes/BytesReader.h>
 #include <ledger/core/bytes/BytesWriter.h>
 

@@ -29,7 +29,6 @@
  *
  */
 
-#include "../BaseFixture.h"
 #include "../../fixtures/medium_xpub_fixtures.h"
 #include "../../fixtures/bch_xpub_fixtures.h"
 #include "../../fixtures/zec_xpub_fixtures.h"
@@ -37,10 +36,7 @@
 #include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include "transaction_test_helper.h"
-#include <crypto/HASH160.hpp>
 #include <utils/hex.h>
-#include <utils/DateUtils.hpp>
-#include <wallet/bitcoin/networks.hpp>
 #include <iostream>
 using namespace std;
 

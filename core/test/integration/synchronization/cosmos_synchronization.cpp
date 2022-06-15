@@ -30,7 +30,6 @@
  */
 
 #include <iostream>
-#include <set>
 #include <numeric>
 
 #include <test/cosmos/Fixtures.hpp>
@@ -39,8 +38,6 @@
 #include <gtest/gtest.h>
 
 #include <api/Configuration.hpp>
-#include <api/KeychainEngines.hpp>
-#include <api/PoolConfiguration.hpp>
 #include <utils/DateUtils.hpp>
 #include <utils/hex.h>
 #include <collections/DynamicObject.hpp>
@@ -49,13 +46,9 @@
 #include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/CosmosNetworks.hpp>
 #include <api/CosmosConfigurationDefaults.hpp>
-#include <cosmos/CosmosLikeExtendedPublicKey.hpp>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
-#include <wallet/cosmos/CosmosLikeWallet.hpp>
-#include <wallet/cosmos/CosmosLikeOperationQuery.hpp>
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
-#include <cosmos/bech32/CosmosBech32.hpp>
 
 #include <wallet/cosmos/database/CosmosLikeOperationDatabaseHelper.hpp>
 

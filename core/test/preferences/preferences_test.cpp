@@ -30,13 +30,9 @@
  */
 
 #include <gtest/gtest.h>
-#include <EventLooper.hpp>
-#include <EventThread.hpp>
 #include <NativeThreadDispatcher.hpp>
 #include <ledger/core/preferences/Preferences.hpp>
-#include <ledger/core/utils/Option.hpp>
 #include <NativePathResolver.hpp>
-#include <fstream>
 #include <OpenSSLRandomNumberGenerator.hpp>
 #include "MemPreferencesBackend.hpp"
 

@@ -30,16 +30,10 @@
 
 #include <gtest/gtest.h>
 #include "../BaseFixture.h"
-#include <set>
-#include <api/ConfigurationDefaults.hpp>
-#include <api/KeychainEngines.hpp>
 #include <api/EthereumLikeTransaction.hpp>
 #include <api/OperationOrderKey.hpp>
-#include <utils/DateUtils.hpp>
-#include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
 #include <api/EthereumLikeOperation.hpp>
-#include <api/EthereumLikeTransaction.hpp>
 #include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
 #include <math/BigInt.h>
 #include <iostream>

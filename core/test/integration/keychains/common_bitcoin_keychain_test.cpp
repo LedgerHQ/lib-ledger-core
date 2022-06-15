@@ -31,7 +31,6 @@
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include "api/PreferencesChange.hpp"
 #include "api/KeychainEngines.hpp"
 #include "keychain_test_helper.h"
 
@@ -59,7 +58,7 @@ public:
         const api::Currency &params,
         int account,
         const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-        const std::shared_ptr<Preferences> &preferences) 
+        const std::shared_ptr<Preferences> &preferences)
         : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences)
         {
           _keychainEngine = api::KeychainEngines::BIP49_P2SH;
@@ -73,7 +72,7 @@ class CommonBitcoinKeychains : public KeychainFixture<ConcreteCommonBitcoinLikeK
 template <typename T>
 std::vector<T> string2vector(const std::string& s) {
     return std::vector<T>(s.begin(), s.end());
-} 
+}
 
 std::string serializeStateToString(const KeychainPersistentState& state) {
     std::stringstream is;
@@ -99,7 +98,7 @@ TEST_F(CommonBitcoinKeychains, DISABLED_CorrectStateAtInitialization) {
     mockState.nonConsecutiveReceiveIndexes.emplace(2);
     mockState.nonConsecutiveReceiveIndexes.emplace(3);
 
-    auto backend = std::make_shared<MockPreferencesBackend>(); 
+    auto backend = std::make_shared<MockPreferencesBackend>();
     EXPECT_CALL(*backend, get(string2vector<uint8_t>("keychainstate")))
         .Times(1)
         .WillOnce(Return(serializeStateToVector(mockState)));

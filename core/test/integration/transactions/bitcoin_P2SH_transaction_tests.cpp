@@ -29,7 +29,6 @@
  *
  */
 
-#include "../BaseFixture.h"
 #include "../../fixtures/testnet_xpub_fixtures.h"
 #include "../../fixtures/btg_xpub_fixtures.h"
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
@@ -37,11 +36,11 @@
 #include "transaction_test_helper.h"
 
 #include <utils/hex.h>
-#include <utils/DateUtils.hpp>
-#include <crypto/HASH160.hpp>
 
 #include <iostream>
+
 using namespace std;
+
 struct BitcoinMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();

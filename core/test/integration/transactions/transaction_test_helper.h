@@ -33,17 +33,12 @@
 #define LEDGER_CORE_TRANSACTION_TEST_HELPER_H
 
 #include <string>
-#include <api/DynamicObject.hpp>
-#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
-#include <wallet/ethereum/EthereumLikeWallet.h>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
-#include <wallet/ripple/RippleLikeWallet.h>
 #include <wallet/ripple/RippleLikeAccount.h>
 #include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
-#include <wallet/tezos/TezosLikeWallet.h>
 #include <wallet/tezos/TezosLikeAccount.h>
 #include <wallet/tezos/transaction_builders/TezosLikeTransactionBuilder.h>
 #include "../BaseFixture.h"

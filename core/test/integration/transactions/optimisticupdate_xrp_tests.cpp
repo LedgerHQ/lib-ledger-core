@@ -31,14 +31,7 @@
 
 #include <gtest/gtest.h>
 #include "../BaseFixture.h"
-#include <set>
 #include <api/ConfigurationDefaults.hpp>
-#include <api/KeychainEngines.hpp>
-#include <api/RippleLikeTransaction.hpp>
-#include <api/OperationOrderKey.hpp>
-#include <utils/DateUtils.hpp>
-#include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
-#include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
 #include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
 #include <api/RippleConfigurationDefaults.hpp>
 #include <iostream>

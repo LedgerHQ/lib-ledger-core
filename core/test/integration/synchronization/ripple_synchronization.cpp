@@ -30,13 +30,8 @@
 
 #include <gtest/gtest.h>
 #include "../BaseFixture.h"
-#include <set>
-#include <api/KeychainEngines.hpp>
 #include <utils/DateUtils.hpp>
-#include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
-#include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
 #include <iostream>
-#include <api/BlockchainExplorerEngines.hpp>
 #include <api/RippleLikeOperation.hpp>
 #include <api/RippleLikeTransaction.hpp>
 
@@ -74,7 +69,7 @@ TEST_F(RippleLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
 
                 auto balance = uv::wait(account->getBalance());
                 std::cout << "Balance: " << balance->toString() << std::endl;
-                auto txBuilder = std::dynamic_pointer_cast<RippleLikeTransactionBuilder>(account->buildTransaction());
+                auto txBuilder = std::dynamic_pointer_cast<ledger::core::api::RippleLikeTransactionBuilder>(account->buildTransaction());
                 getTestExecutionContext()->stop();
             });
 
@@ -144,7 +139,7 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
 
                 balance = uv::wait(account->getBalance());
                 std::cout << "Balance: " << balance->toString() << std::endl;
-                auto txBuilder = std::dynamic_pointer_cast<RippleLikeTransactionBuilder>(account->buildTransaction());
+                auto txBuilder = std::dynamic_pointer_cast<ledger::core::api::RippleLikeTransactionBuilder>(account->buildTransaction());
                 getTestExecutionContext()->stop();
             });
 
@@ -153,7 +148,7 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
             bus->subscribe(getTestExecutionContext(), receiver);
 
             getTestExecutionContext()->waitUntilStopped();
-            
+
             auto now = std::time(nullptr);
             char now_str[256];
             std::strftime(now_str, sizeof(now_str), "%Y-%m-%dT%H:%M:%SZ", std::localtime(&now));

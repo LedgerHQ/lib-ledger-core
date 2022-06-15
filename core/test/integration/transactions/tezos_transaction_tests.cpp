@@ -28,9 +28,7 @@
  *
  */
 
-#include "../BaseFixture.h"
 #include "../../fixtures/xtz_fixtures.h"
-#include <api/KeychainEngines.hpp>
 #include <api/TezosLikeOriginatedAccount.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>

@@ -32,8 +32,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <ledger/core/net/WebSocketClient.h>
-#include <ledger/core/utils/Option.hpp>
-#include <ledger/core/async/Future.hpp>
 #include <net/WebSocketConnection.h>
 
 using namespace ledger::core;
@@ -56,7 +54,7 @@ public:
 
 class WebSocketClientTest : public Test {
 public:
-    WebSocketClientTest() 
+    WebSocketClientTest()
         : engine(std::make_shared<MockApiWebSocketClient>())
         , handler([&h = mockHandler](WebSocketEventType a,
                                     const std::shared_ptr<WebSocketConnection>& b,
@@ -66,7 +64,7 @@ public:
     void TearDown() override {
         // there are circular dependencies between WebSocketClient and WebSocketConnection
         // so without connection.close() there is a leak
-        Mock::AllowLeak(engine.get());    
+        Mock::AllowLeak(engine.get());
     }
 
     const std::string url = "uri://some_address";

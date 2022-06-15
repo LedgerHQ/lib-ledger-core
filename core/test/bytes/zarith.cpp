@@ -30,7 +30,6 @@
 
 #include <gtest/gtest.h>
 #include <vector>
-#include <ledger/core/bytes/BytesWriter.h>
 #include <ledger/core/bytes/zarith/zarith.h>
 #include <ledger/core/utils/hex.h>
 #include <iostream>

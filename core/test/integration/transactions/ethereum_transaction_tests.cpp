@@ -28,16 +28,14 @@
  *
  */
 
-#include "../BaseFixture.h"
 #include "../../fixtures/eth_xpub_fixtures.h"
-#include <api/KeychainEngines.hpp>
 #include "transaction_test_helper.h"
 #include <utils/hex.h>
 #include <utils/DateUtils.hpp>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
-#include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
 #include <wallet/currencies.hpp>
 #include <iostream>
+
 using namespace std;
 
 struct EthereumMakeTransaction : public EthereumMakeBaseTransaction {

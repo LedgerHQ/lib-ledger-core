@@ -30,6 +30,7 @@
  */
 
 #include "IntegrationEnvironment.h"
+#include <FilesystemUtils.hpp>
 
 IntegrationEnvironment* IntegrationEnvironment::_instance = nullptr;
 

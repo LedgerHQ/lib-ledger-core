@@ -32,11 +32,8 @@
 #include <src/bitcoin/BitcoinLikeAddress.hpp>
 #include <src/wallet/bitcoin/scripts/operators.h>
 #include <src/crypto/SHA256.hpp>
-#include <src/crypto/HASH160.hpp>
 #include <src/crypto/HashAlgorithm.h>
-#include <src/collections/DynamicObject.hpp>
 #include <src/api/KeychainEngines.hpp>
-#include <src/wallet/bitcoin/networks.hpp>
 #include "keychain_test_helper.h"
 
 using namespace std;

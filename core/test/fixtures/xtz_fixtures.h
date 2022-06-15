@@ -7,7 +7,6 @@
 #include <UvThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
-#include <unordered_set>
 #include <src/wallet/pool/WalletPool.hpp>
 #include <CoutLogPrinter.hpp>
 #include <src/api/DynamicObject.hpp>
@@ -19,15 +18,8 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
 #include <wallet/tezos/TezosLikeAccount.h>
-#include <api/TezosLikeOperation.hpp>
-#include <api/TezosLikeTransaction.hpp>
-#include <api/BigInt.hpp>
-#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
-#include <soci.h>
 #include <utils/hex.h>
-#include <api/Account.hpp>
-#include <api/TezosLikeAccount.hpp>
 
 namespace ledger {
 	namespace testing {

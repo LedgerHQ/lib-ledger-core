@@ -30,7 +30,6 @@
 #include <gtest/gtest.h>
 #include <src/wallet/bitcoin/keychains/P2WPKHBitcoinLikeKeychain.hpp>
 #include "keychain_test_helper.h"
-#include "../BaseFixture.h"
 
 using namespace std;
 

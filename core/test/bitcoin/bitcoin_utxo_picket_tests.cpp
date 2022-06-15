@@ -2,7 +2,6 @@
 #include <gmock/gmock.h>
 #include <api/KeychainEngines.hpp>
 #include <api/BitcoinLikeScript.hpp>
-#include <ledger/core/api/Networks.hpp>
 #include <wallet/currencies.hpp>
 #include <wallet/common/Amount.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
@@ -123,7 +122,7 @@ TEST(OptimizeSize, BacktrackingCalculateChangeCorrectly) {
     const int64_t emtyTransactionSizeInBytes = 10;
     int64_t outputAmount = 25000;
     std::vector<int64_t> inputAmounts{16500, 16500};
-    
+
     auto buddy = createBuddy(feesPerByte, outputAmount, currency);
 
     auto utxos = createUtxos(inputAmounts);

@@ -7,7 +7,6 @@
 #include <UvThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
-#include <unordered_set>
 #include <src/wallet/pool/WalletPool.hpp>
 #include <CoutLogPrinter.hpp>
 #include <src/api/DynamicObject.hpp>
@@ -20,14 +19,7 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
 #include <wallet/ethereum/EthereumLikeAccount.h>
-#include <api/EthereumLikeOperation.hpp>
-#include <api/EthereumLikeTransaction.hpp>
-#include <api/BigInt.hpp>
-#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
-#include <soci.h>
-#include <api/Account.hpp>
-#include <api/EthereumLikeAccount.hpp>
 
 namespace ledger {
 	namespace testing {

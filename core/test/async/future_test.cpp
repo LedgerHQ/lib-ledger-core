@@ -32,7 +32,6 @@
 #include <gtest/gtest.h>
 #include <src/async/Future.hpp>
 #include <src/async/FutureUtils.hpp>
-#include <iostream>
 #include <UvThreadDispatcher.hpp>
 
 #undef foreach

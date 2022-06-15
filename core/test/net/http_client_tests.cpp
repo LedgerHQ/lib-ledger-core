@@ -29,11 +29,7 @@
  *
  */
 #include <gtest/gtest.h>
-#include <EventLooper.hpp>
-#include <EventThread.hpp>
 #include <NativeThreadDispatcher.hpp>
-#include <NativePathResolver.hpp>
-#include <fstream>
 #include <mongoose.h>
 #include <MongooseHttpClient.hpp>
 #include <MongooseSimpleRestServer.hpp>

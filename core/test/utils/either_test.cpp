@@ -31,7 +31,6 @@
 
 #include <gtest/gtest.h>
 #include <ledger/core/utils/Either.hpp>
-#include <ledger/core/utils/Exception.hpp>
 #include <string>
 
 using  namespace ledger::core;

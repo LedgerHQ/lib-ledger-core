@@ -31,12 +31,8 @@
 
 #include <gtest/gtest.h>
 #include "../BaseFixture.h"
-#include <set>
 #include <functional>
-#include <api/KeychainEngines.hpp>
 #include <utils/DateUtils.hpp>
-#include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
-#include <wallet/tezos/transaction_builders/TezosLikeTransactionBuilder.h>
 #include <iostream>
 #include <api/BlockchainExplorerEngines.hpp>
 #include <wallet/tezos/api_impl/TezosLikeOperation.h>
@@ -112,7 +108,7 @@ TEST_F(TezosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
                     auto fromDate = DateUtils::fromJSON("2019-02-01T13:38:23Z");
                     auto toDate = DateUtils::now();
                     auto balanceHistory = uv::wait(std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(origAccount)->getBalanceHistory(dispatcher->getMainExecutionContext(), fromDate, toDate, api::TimePeriod::MONTH));
-                    EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), origBalance->toLong()); 
+                    EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), origBalance->toLong());
                 }
                 context->stop();
             });
@@ -124,7 +120,7 @@ TEST_F(TezosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
 
             context->waitUntilStopped();
 
-            
+
             // re-launch a synchronization if it’s the first time
             std::cout << "Running a second synchronization." << std::endl;
             auto firstSyncOrigAccountsCount = account->getOriginatedAccounts().size();
@@ -141,7 +137,7 @@ TEST_F(TezosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
                         << fmt::format("{} should have at least 5 operations (as of 2021-07-21). Check {} to make sure",
                                 accountAddress,
                                 externalExplorerUrl(accountAddress));
-            
+
             EXPECT_EQ(std::dynamic_pointer_cast<OperationApi>(ops[0])->asTezosLikeOperation()->getTransaction()->getStatus(), 1);
             auto fees = uv::wait(account->getFees());
             EXPECT_GT(fees->toUint64(), 0) << "Fees estimation should return a (strictly) positive number";

@@ -31,7 +31,6 @@
 
 #include <gtest/gtest.h>
 #include "../BaseFixture.h"
-#include <set>
 #include <api/KeychainEngines.hpp>
 #include <utils/DateUtils.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>

@@ -31,8 +31,6 @@
 
 #include <gtest/gtest.h>
 #include "BaseFixture.h"
-#include <src/database/DatabaseSessionPool.hpp>
-#include <unordered_set>
 #include <src/wallet/pool/WalletPool.hpp>
 #include <wallet/common/CurrencyBuilder.hpp>
 
@@ -113,7 +111,7 @@ TEST_F(WalletPoolTest, AddCurrency) {
 
 TEST_F(WalletPoolTest, RemoveCurrency) {
     api::BitcoinLikeNetworkParameters params(
-    "wonder_coin", {42}, {21}, {42, 42, 21, 21}, api::BitcoinLikeFeePolicy::PER_KBYTE, 0, 
+    "wonder_coin", {42}, {21}, {42, 42, 21, 21}, api::BitcoinLikeFeePolicy::PER_KBYTE, 0,
     api::BitcoinLikeDustPolicy::FIXED, "Wonder Coin Signed Message:\n", false, 0, {0x01}, {}
     );
     api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin",

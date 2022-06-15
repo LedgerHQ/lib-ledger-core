@@ -30,6 +30,9 @@
  */
 
 #include "BaseFixture.h"
+#include <api/BitcoinLikeOperation.hpp>
+#include <api/BitcoinLikeTransaction.hpp>
+#include <api/BitcoinLikeInput.hpp>
 
 static const std::string XPUB_1 = "xpub6EedcbfDs3pkzgqvoRxTW6P8NcCSaVbMQsb6xwCdEBzqZBronwY3Nte1Vjunza8f6eSMrYvbM5CMihGo6SbzpHxn4R5pvcr2ZbZ6wkDmgpy";
 

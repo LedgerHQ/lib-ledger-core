@@ -30,7 +30,7 @@
  */
 
 #include <gtest/gtest.h>
-#include <ledger/core/collections/collections.hpp>
+#include <ledger/core/collections/MapLike.hpp>  // for MapLike
 
 using namespace ledger::core;
 

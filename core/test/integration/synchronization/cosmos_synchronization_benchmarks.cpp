@@ -38,28 +38,15 @@
 
 #include <chrono>
 #include <iostream>
-#include <set>
 
 #include <api/Configuration.hpp>
 #include <api/CosmosConfigurationDefaults.hpp>
-#include <api/KeychainEngines.hpp>
-#include <api/PoolConfiguration.hpp>
 #include <collections/DynamicObject.hpp>
-#include <cosmos/CosmosLikeExtendedPublicKey.hpp>
-#include <cosmos/bech32/CosmosBech32.hpp>
 #include <gtest/gtest.h>
-#include <math/BigInt.h>
 #include <test/cosmos/Fixtures.hpp>
-#include <utils/DateUtils.hpp>
 #include <utils/hex.h>
-#include <wallet/cosmos/CosmosLikeConstants.hpp>
-#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
-#include <wallet/cosmos/CosmosLikeOperationQuery.hpp>
-#include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/cosmos/CosmosNetworks.hpp>
-#include <wallet/cosmos/database/CosmosLikeOperationDatabaseHelper.hpp>
 #include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
-#include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
 
 using namespace std;
 using namespace ledger::core;
