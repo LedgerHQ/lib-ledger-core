@@ -38,6 +38,7 @@
 #include <gtest/gtest.h>
 
 #include <api/Configuration.hpp>
+#include <api/PoolConfiguration.hpp>
 #include <utils/DateUtils.hpp>
 #include <utils/hex.h>
 #include <collections/DynamicObject.hpp>
