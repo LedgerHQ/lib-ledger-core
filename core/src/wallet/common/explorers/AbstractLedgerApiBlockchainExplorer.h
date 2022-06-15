@@ -112,7 +112,7 @@ namespace ledger {
                             }
 
                             auto bulk = result.getRight();
-                            if (bulk->transactions.empty()) {
+                            if (bulk->transactions.empty() || !bulk->transactions.front().block.hasValue() || !bulk->transactions.back().block.hasValue()) {
                               return bulk;
                             }
                             auto firstBlock = bulk->transactions.front().block.getValue();
