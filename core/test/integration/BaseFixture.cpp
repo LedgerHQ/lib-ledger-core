@@ -30,6 +30,7 @@
  */
 
 #include <api/ConfigurationDefaults.hpp>
+#include <api/PoolConfiguration.hpp>
 #include "BaseFixture.h"
 #include "IntegrationEnvironment.h"
 #include <utils/hex.h>
