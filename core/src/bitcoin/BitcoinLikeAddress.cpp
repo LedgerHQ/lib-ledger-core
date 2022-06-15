@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #include "BitcoinLikeAddress.hpp"
 #include "../math/Base58.hpp"
 #include "../collections/vector.hpp"
@@ -60,8 +61,7 @@ namespace ledger {
         }
 
         std::vector<uint8_t> BitcoinLikeAddress::getVersionFromKeychainEngine(const std::string &keychainEngine,
-                                                                              const api::BitcoinLikeNetworkParameters &params) const {
-
+                                                                              const api::BitcoinLikeNetworkParameters &params) {
             if (keychainEngine == api::KeychainEngines::BIP32_P2PKH) {
                 return params.P2PKHVersion;
             } else if (keychainEngine == api::KeychainEngines::BIP49_P2SH) {

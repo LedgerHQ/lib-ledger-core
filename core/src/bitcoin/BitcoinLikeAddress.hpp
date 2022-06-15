@@ -46,8 +46,8 @@ namespace ledger {
                                const std::string &keychainEngine,
                                const Option<std::string>& derivationPath = Option<std::string>());
             virtual std::vector<uint8_t> getVersion() override;
-            std::vector<uint8_t> getVersionFromKeychainEngine(const std::string &keychainEngine,
-                                                              const api::BitcoinLikeNetworkParameters &params) const;
+            static std::vector<uint8_t> getVersionFromKeychainEngine(const std::string &keychainEngine,
+                                                                     const api::BitcoinLikeNetworkParameters &params);
             virtual std::vector<uint8_t> getHash160() override;
             virtual api::BitcoinLikeNetworkParameters getNetworkParameters() override;
             virtual std::string toBase58() override;
