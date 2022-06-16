@@ -960,31 +960,11 @@ namespace ledger {
 
 
         template <> void migrate<21>(soci::session& sql, api::DatabaseBackendType type) {
-           sql << "ALTER TABLE bitcoin_outputs ADD replaceable INTEGER DEFAULT 0";
+            sql << "ALTER TABLE bitcoin_outputs ADD replaceable INTEGER DEFAULT 0";
         }
 
         template <> void rollback<21>(soci::session& sql, api::DatabaseBackendType type) {
-            // SQLite doesn't handle ALTER TABLE DROP
-            if (type != api::DatabaseBackendType::SQLITE3) {
-                sql << "ALTER TABLE bitcoin_outputs DROP replaceable";
-            } else {
-                sql << "CREATE TABLE bitcoin_outputs_swap("
-                       "idx INTEGER NOT NULL,"
-                       "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid) ON DELETE CASCADE,"
-                       "transaction_hash VARCHAR(255) NOT NULL,"
-                       "amount BIGINT NOT NULL,"
-                       "script TEXT NOT NULL,"
-                       "address VARCHAR(255),"
-                       "account_uid VARCHAR(255),"
-                       "PRIMARY KEY (idx, transaction_uid)"
-                       ")";
-                sql << "INSERT INTO bitcoin_outputs_swap "
-                       "SELECT idx, transaction_uid, transaction_hash, amount, script, "
-                                   "address, account_uid "
-                       "FROM bitcoin_outputs";
-                sql << "DROP TABLE bitcoin_outputs";
-                sql << "ALTER TABLE bitcoin_outputs_swap RENAME TO bitcoin_outputs";
-            }
+            sql << "ALTER TABLE bitcoin_outputs DROP replaceable";
         }
 
         template <> void migrate<22>(soci::session& sql, api::DatabaseBackendType type) {
@@ -993,26 +973,7 @@ namespace ledger {
         }
 
         template <> void rollback<22>(soci::session& sql, api::DatabaseBackendType type) {
-            // SQLite doesn't handle ALTER TABLE DROP
-            if (type != api::DatabaseBackendType::SQLITE3) {
-                sql << "ALTER TABLE stellar_currencies DROP muxed_address_version";
-            } else {
-                sql << "CREATE TABLE stellar_currencies_swap("
-                       "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
-                       "identifier VARCHAR(255) NOT NULL,"
-                       "address_version VARCHAR(255) NOT NULL,"
-                       "base_reserve BIGINT NOT NULL,"
-                       "base_fee BIGINT NOT NULL,"
-                       "network_passphrase TEXT NOT NULL,"
-                       "additional_SEPs TEXT NOT NULL"
-                       ")";
-                sql << "INSERT INTO stellar_currencies_swap "
-                       "SELECT name, identifier, address_version, base_reserve, base_fee, "
-                       "network_passphrase, additional_SEPs "
-                       "FROM stellar_currencies";
-                sql << "DROP TABLE stellar_currencies";
-                sql << "ALTER TABLE stellar_currencies_swap RENAME TO stellar_currencies";
-            }
+            sql << "ALTER TABLE stellar_currencies DROP muxed_address_version";
         }
 
         template <> void migrate<23>(soci::session& sql, api::DatabaseBackendType type) {
@@ -1137,14 +1098,7 @@ namespace ledger {
         }
 
         template <> void rollback<25>(soci::session& sql, api::DatabaseBackendType type) {
-            // SQLite doesn't handle ALTER TABLE DROP
-            if (type != api::DatabaseBackendType::SQLITE3) {
-                sql << "ALTER TABLE bitcoin_currencies DROP dust_policy";
-            } else {
-                sql << "UPDATE bitcoin_currencies SET dust_amount = 546 WHERE identifier = 'btc'";
-                sql << "UPDATE bitcoin_currencies SET dust_amount = 546 WHERE identifier = 'btc_testnet'";
-         
-            }
+            sql << "ALTER TABLE bitcoin_currencies DROP dust_policy";
         }
 
         template <> void migrate<26>(soci::session& sql, api::DatabaseBackendType type) {
