@@ -551,7 +551,7 @@ namespace ledger {
                 ")";
 
              sql << "INSERT INTO eth_swap "
-                "SELECT transaction_uid, hash, nonce, value, block_uid, time, sender, receiver, input_data, gas_price, gas_limit, gas_used, confirmations, status "
+                "SELECT transaction_uid, hash, nonce, value, block_uid, time, sender, receiver, LEFT(input_data, 255), gas_price, gas_limit, gas_used, confirmations, status "
                 "FROM ethereum_transactions";
 
             switch (type) {
@@ -587,7 +587,7 @@ namespace ledger {
                 ")";
 
             sql << "INSERT INTO erc20_swap "
-                "SELECT uid, ethereum_operation_uid, account_uid, type, hash, nonce, value, date, sender, receiver, input_data, gas_price, gas_limit, gas_used, status "
+                "SELECT uid, ethereum_operation_uid, account_uid, type, hash, nonce, value, date, sender, receiver, LEFT(input_data, 255), gas_price, gas_limit, gas_used, status "
                 "FROM erc20_operations";
             sql << "DROP TABLE erc20_operations";
             sql << "ALTER TABLE erc20_swap RENAME TO erc20_operations";
