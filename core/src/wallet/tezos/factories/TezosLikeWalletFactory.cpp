@@ -79,7 +79,7 @@ namespace ledger {
                                   .value_or(api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION);
                 if (engine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
                     std::weak_ptr<WalletPool> p = pool;
-                    synchronizerFactory = Option<TezosLikeAccountSynchronizerFactory>([p, explorer]() {
+                    synchronizerFactory         = Option<TezosLikeAccountSynchronizerFactory>([p, explorer]() {
                         auto pool = p.lock();
                         return std::make_shared<TezosLikeAccountSynchronizer>(pool, explorer);
                     });
@@ -121,23 +121,23 @@ namespace ledger {
                 }
             }
 
-            auto pool = getPool();
+            auto pool   = getPool();
             auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
                               .value_or(api::BlockchainExplorerEngines::TEZOS_NODE);
             std::shared_ptr<TezosLikeBlockchainExplorer> explorer = nullptr;
-            auto isTzStats = engine == api::BlockchainExplorerEngines::TZSTATS_API;
+            auto isTzStats                                        = engine == api::BlockchainExplorerEngines::TZSTATS_API;
             if (engine == api::BlockchainExplorerEngines::TEZOS_NODE ||
                 isTzStats) {
-                auto defaultValue = isTzStats ? api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT : api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT;
-                auto http = pool->getHttpClient(fmt::format("{}",
-                                                            configuration->getString(
-                                                                             api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
-                                                                .value_or(defaultValue)));
+                auto defaultValue   = isTzStats ? api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT : api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT;
+                auto http           = pool->getHttpClient(fmt::format("{}",
+                                                                      configuration->getString(
+                                                                                       api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
+                                                                          .value_or(defaultValue)));
                 auto &networkParams = getCurrency().tezosLikeNetworkParameters.value();
-                auto context = pool->getDispatcher()->getSerialExecutionContext(
-                    fmt::format("{}-{}-explorer",
-                                api::BlockchainExplorerEngines::TEZOS_NODE,
-                                networkParams.Identifier));
+                auto context        = pool->getDispatcher()->getSerialExecutionContext(
+                           fmt::format("{}-{}-explorer",
+                                       api::BlockchainExplorerEngines::TEZOS_NODE,
+                                       networkParams.Identifier));
                 if (isTzStats) {
                     explorer = std::make_shared<ExternalTezosLikeBlockchainExplorer>(context,
                                                                                      http,

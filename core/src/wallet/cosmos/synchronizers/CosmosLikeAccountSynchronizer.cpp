@@ -36,7 +36,8 @@ namespace ledger {
     namespace core {
 
         static void initializeSavedState(
-            Option<cosmos::AccountSynchronizationSavedState> &savedState, int32_t halfBatchSize) {
+            Option<cosmos::AccountSynchronizationSavedState> &savedState,
+            int32_t halfBatchSize) {
             if (savedState.hasValue() && savedState.getValue().halfBatchSize != halfBatchSize) {
                 cosmos::AccountSynchronizationBatchSavedState block;
                 block.blockHeight = 1U << 31U;
@@ -57,7 +58,7 @@ namespace ledger {
                 savedState.getValue().halfBatchSize = (uint32_t)halfBatchSize;
                 for (auto i = 0; i <= newBatchCount; i++) {
                     cosmos::AccountSynchronizationBatchSavedState s;
-                    s.blockHash = block.blockHash;
+                    s.blockHash   = block.blockHash;
                     s.blockHeight = block.blockHeight;
                     savedState.getValue().batches.push_back(s);
                 }
@@ -80,8 +81,8 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_lock);
             if (!_currentAccount) {
                 _currentAccount = account;
-                _notifier = std::make_shared<ProgressNotifier<cosmos::AccountSynchronizationContext>>();
-                auto self = shared_from_this();
+                _notifier       = std::make_shared<ProgressNotifier<cosmos::AccountSynchronizationContext>>();
+                auto self       = shared_from_this();
                 performSynchronization(account).onComplete(getContext(), [self](auto const &result) {
                     std::lock_guard<std::mutex> l(self->_lock);
                     if (result.isFailure()) {
@@ -89,7 +90,7 @@ namespace ledger {
                     } else {
                         self->_notifier->success(result.getValue());
                     }
-                    self->_notifier = nullptr;
+                    self->_notifier       = nullptr;
                     self->_currentAccount = nullptr;
                 });
             } else if (account != _currentAccount) {
@@ -100,16 +101,16 @@ namespace ledger {
 
         Future<cosmos::AccountSynchronizationContext> CosmosLikeAccountSynchronizer::performSynchronization(
             const std::shared_ptr<CosmosLikeAccount> &account) {
-            auto buddy = std::make_shared<cosmos::SynchronizationBuddy>();
+            auto buddy         = std::make_shared<cosmos::SynchronizationBuddy>();
 
-            buddy->account = account;
+            buddy->account     = account;
             buddy->preferences = std::static_pointer_cast<AbstractAccount>(account)
                                      ->getInternalPreferences()
                                      ->getSubPreferences("CosmosLikeAccountSynchronizer");
 
-            buddy->logger = account->logger();
+            buddy->logger    = account->logger();
             buddy->startDate = DateUtils::now();
-            buddy->wallet = account->getWallet();
+            buddy->wallet    = account->getWallet();
             buddy->configuration =
                 std::static_pointer_cast<AbstractAccount>(account)->getWallet()->getConfig();
             buddy->halfBatchSize =
@@ -124,7 +125,7 @@ namespace ledger {
                 account->getKeychain()->getRestoreKey(),
                 account->getWallet()->getName(),
                 DateUtils::toJSON(buddy->startDate));
-            buddy->context.newOperations = 0;
+            buddy->context.newOperations   = 0;
             buddy->context.lastBlockHeight = 0;
 
             // Check if reorganization happened
@@ -140,8 +141,8 @@ namespace ledger {
                         return lhs.blockHeight < rhs.blockHeight;
                     });
 
-                auto currencyName = buddy->wallet->getCurrency().name;
-                size_t index = 0;
+                auto currencyName                 = buddy->wallet->getCurrency().name;
+                size_t index                      = 0;
                 // Reorg can't happen until genesis block, safely initialize with 0
                 uint64_t deepestFailedBlockHeight = 0;
                 while (
@@ -207,10 +208,10 @@ namespace ledger {
                         // get the last block height treated during the synchronization
                         // std::max_element returns an iterator hence the indirection here
                         // We use an constant iterator variable for readability purpose
-                        auto const batchIt = std::max_element(
-                            std::cbegin(batches),
-                            std::cend(batches),
-                            [](auto const &lhs, auto const &rhs) {
+                        auto const batchIt  = std::max_element(
+                             std::cbegin(batches),
+                             std::cend(batches),
+                             [](auto const &lhs, auto const &rhs) {
                                 return lhs.blockHeight < rhs.blockHeight;
                             });
                         buddy->context.lastBlockHeight = batchIt->blockHeight;
@@ -246,21 +247,22 @@ namespace ledger {
         };
 
         Future<Unit> CosmosLikeAccountSynchronizer::synchronizeBatches(
-            uint32_t currentBatchIndex, std::shared_ptr<cosmos::SynchronizationBuddy> buddy) {
+            uint32_t currentBatchIndex,
+            std::shared_ptr<cosmos::SynchronizationBuddy> buddy) {
             buddy->logger->info("SYNC BATCHES");
 
             // NOTE : is multipleAddresses always false for Cosmos
             const bool hasMultipleAddresses = false;
-            auto done = currentBatchIndex >= buddy->savedState.getValue().batches.size() - 1;
+            auto done                       = currentBatchIndex >= buddy->savedState.getValue().batches.size() - 1;
             if (currentBatchIndex >= buddy->savedState.getValue().batches.size()) {
                 buddy->savedState.getValue().batches.push_back(
                     cosmos::AccountSynchronizationBatchSavedState());
             }
 
-            auto self = shared_from_this();
+            auto self        = shared_from_this();
             auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
 
-            auto benchmark = std::make_shared<Benchmarker>(
+            auto benchmark   = std::make_shared<Benchmarker>(
                 fmt::format("Synchronize batch {}", currentBatchIndex), buddy->logger);
             benchmark->start();
             return synchronizeBatch(currentBatchIndex, buddy)
@@ -299,9 +301,9 @@ namespace ledger {
                             buddy->logger->info("Recovering from reorganization");
 
                             // Get its block/block height
-                            auto &failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
+                            auto &failedBatch      = buddy->savedState.getValue().batches[currentBatchIndex];
                             auto failedBlockHeight = failedBatch.blockHeight;
-                            auto failedBlockHash = failedBatch.blockHash;
+                            auto failedBlockHash   = failedBatch.blockHash;
 
                             if (failedBlockHeight > 0) {
                                 // Delete data related to failedBlock (and all blocks above it)
@@ -321,14 +323,14 @@ namespace ledger {
                                 std::string lastBlockHash;
                                 if (lastBlock.nonEmpty()) {
                                     lastBlockHeight = lastBlock.getValue().height;
-                                    lastBlockHash = lastBlock.getValue().blockHash;
+                                    lastBlockHash   = lastBlock.getValue().blockHash;
                                 }
 
                                 // Update savedState's batches
                                 for (auto &batch : buddy->savedState.getValue().batches) {
                                     if (batch.blockHeight > lastBlockHeight) {
                                         batch.blockHeight = (uint32_t)lastBlockHeight;
-                                        batch.blockHash = lastBlockHash;
+                                        batch.blockHash   = lastBlockHash;
                                     }
                                 }
 
@@ -367,8 +369,8 @@ namespace ledger {
             bool hadTransactions) {
             buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
 
-            auto self = shared_from_this();
-            auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
+            auto self                = shared_from_this();
+            auto &batchState         = buddy->savedState.getValue().batches[currentBatchIndex];
 
             auto derivationBenchmark = std::make_shared<Benchmarker>("Batch derivation", buddy->logger);
             derivationBenchmark->start();
@@ -437,7 +439,7 @@ namespace ledger {
 
                             if (lastBlock.nonEmpty()) {
                                 batchState.blockHeight = (uint32_t)lastBlock.getValue().height;
-                                batchState.blockHash = lastBlock.getValue().hash;
+                                batchState.blockHash   = lastBlock.getValue().hash;
                             }
                         }
 

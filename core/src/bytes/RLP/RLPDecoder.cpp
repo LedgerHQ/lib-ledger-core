@@ -70,7 +70,7 @@ namespace ledger {
             }
             case RLP_TYPES::bytesVector: {
                 auto tmpParent = std::static_pointer_cast<RLPEncoder>(std::make_shared<RLPListEncoder>());
-                auto child = decode(subBytes, tmpParent);
+                auto child     = decode(subBytes, tmpParent);
                 if (parent->isList()) {
                     parent->append(tmpParent);
                     result = parent;
@@ -84,7 +84,7 @@ namespace ledger {
             if (data.size() > std::get<0>(tuple) + std::get<1>(tuple)) {
                 std::vector<uint8_t> tail(data.begin() + std::get<0>(tuple) + std::get<1>(tuple), data.end());
                 auto decodeRemaining = decode(tail, parent);
-                result = parent;
+                result               = parent;
             }
 
             return result;

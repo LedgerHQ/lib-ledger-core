@@ -46,12 +46,12 @@ namespace ledger {
 
         int32_t P2SHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {
             int32_t result = 0;
-            //witness
-            //1 byte for number of stack elements
+            // witness
+            // 1 byte for number of stack elements
             result += 1;
-            //72 byte for signature (length + signature)
+            // 72 byte for signature (length + signature)
             result += 72;
-            //40 byte of hash script (length + script)
+            // 40 byte of hash script (length + script)
             result += 40;
             return result;
         }

@@ -60,21 +60,21 @@ namespace ledger {
               _scheme(derivationScheme),
               _balanceCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
                                                      .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE))) {
-            _pool = pool;
-            _name = walletName;
-            _uid = WalletDatabaseEntry::createWalletUid(pool->getName(), _name);
-            _currency = currency;
-            _configuration = configuration;
+            _pool                = pool;
+            _name                = walletName;
+            _uid                 = WalletDatabaseEntry::createWalletUid(pool->getName(), _name);
+            _currency            = currency;
+            _configuration       = configuration;
             _externalPreferences = pool->getExternalPreferences()->getSubPreferences(
                 fmt::format("wallet_{}", walletName));
             _internalPreferences = pool->getInternalPreferences()->getSubPreferences(
                 fmt::format("wallet_{}", walletName));
-            _publisher = std::make_shared<EventPublisher>(getContext());
-            _logger = pool->logger();
-            _loggerApi = std::make_shared<LoggerApi>(pool->logger());
-            _database = pool->getDatabaseSessionPool();
+            _publisher            = std::make_shared<EventPublisher>(getContext());
+            _logger               = pool->logger();
+            _loggerApi            = std::make_shared<LoggerApi>(pool->logger());
+            _database             = pool->getDatabaseSessionPool();
             _mainExecutionContext = pool->getDispatcher()->getMainExecutionContext();
-            _logger = pool->logger();
+            _logger               = pool->logger();
         }
 
         std::shared_ptr<api::EventBus> AbstractWallet::getEventBus() {
@@ -264,7 +264,7 @@ namespace ledger {
 
         FuturePtr<api::Account> AbstractWallet::getAccount(int32_t index) {
             {
-                //std::lock_guard<std::mutex> lock(_accountsLock);
+                // std::lock_guard<std::mutex> lock(_accountsLock);
                 auto it = _accounts.find(index);
                 if (it != _accounts.end()) {
                     auto ptr = it->second;
@@ -303,7 +303,7 @@ namespace ledger {
         }
 
         void AbstractWallet::addAccountInstanceToInstanceCache(const std::shared_ptr<AbstractAccount> &account) {
-            //std::lock_guard<std::mutex> lock(_accountsLock);
+            // std::lock_guard<std::mutex> lock(_accountsLock);
             _accounts[account->getIndex()] = account;
             _publisher->relay(account->getEventBus());
         }
@@ -329,8 +329,8 @@ namespace ledger {
 
         Future<api::ErrorCode> AbstractWallet::eraseDataSince(const std::chrono::system_clock::time_point &date) {
             auto self = shared_from_this();
-            auto uid = getWalletUid();
-            //auto accounts = _accounts;
+            auto uid  = getWalletUid();
+            // auto accounts = _accounts;
             _logger->debug("Start erasing data of wallet : {} since : {}", uid, DateUtils::toJSON(date));
             static std::function<Future<api::ErrorCode>(int, const std::unordered_map<int32_t, std::shared_ptr<AbstractAccount>> &)> eraseAccount = [date](int index, const std::unordered_map<int32_t, std::shared_ptr<AbstractAccount>> &accountsToErase) -> Future<api::ErrorCode> {
                 if (index == accountsToErase.size()) {
@@ -351,7 +351,7 @@ namespace ledger {
                 }
 
                 soci::session sql(self->getDatabase()->getPool());
-                //Remove all accounts created after date
+                // Remove all accounts created after date
                 soci::rowset<soci::row> accounts = (sql.prepare << "SELECT idx FROM accounts "
                                                                    "WHERE wallet_uid = :wallet_uid AND created_at >= :date",
                                                     soci::use(uid), soci::use(date));

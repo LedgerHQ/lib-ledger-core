@@ -42,23 +42,22 @@ namespace ledger {
                                                const Operation &operation,
                                                const ERC20Transaction &erc20Tx,
                                                const api::Currency &currency) {
-
-            auto &tx = operation.ethereumTransaction.getValue();
-            _uid = operationUid;
+            auto &tx         = operation.ethereumTransaction.getValue();
+            _uid             = operationUid;
             _ethUidOperation = operation.uid;
-            _hash = tx.hash;
-            _nonce = std::make_shared<api::BigIntImpl>(BigInt((int64_t)tx.nonce));
-            _gasPrice = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.gasPrice));
-            _gasLimit = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.gasLimit));
-            _gasUsed = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.gasUsed.getValue()));
-            _status = tx.status;
-            _receiver = erc20Tx.to;
-            _sender = erc20Tx.from;
-            _value = std::make_shared<api::BigIntImpl>(api::BigIntImpl(erc20Tx.value));
-            _data = tx.inputData;
-            _time = tx.receivedAt;
-            _operationType = erc20Tx.type;
-            _blockHeight = tx.block.hasValue() ? tx.block.getValue().height : 0;
+            _hash            = tx.hash;
+            _nonce           = std::make_shared<api::BigIntImpl>(BigInt((int64_t)tx.nonce));
+            _gasPrice        = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.gasPrice));
+            _gasLimit        = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.gasLimit));
+            _gasUsed         = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.gasUsed.getValue()));
+            _status          = tx.status;
+            _receiver        = erc20Tx.to;
+            _sender          = erc20Tx.from;
+            _value           = std::make_shared<api::BigIntImpl>(api::BigIntImpl(erc20Tx.value));
+            _data            = tx.inputData;
+            _time            = tx.receivedAt;
+            _operationType   = erc20Tx.type;
+            _blockHeight     = tx.block.hasValue() ? tx.block.getValue().height : 0;
         }
 
         std::string ERC20LikeOperation::getHash() {

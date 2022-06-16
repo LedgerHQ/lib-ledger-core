@@ -54,14 +54,14 @@ namespace ledger {
 
                 TransactionEnvelope wrap(const xdr::TransactionV0Envelope &envelope) {
                     TransactionEnvelope env;
-                    env.type = EnvelopeType::ENVELOPE_TYPE_TX_V0;
+                    env.type    = EnvelopeType::ENVELOPE_TYPE_TX_V0;
                     env.content = envelope;
                     return env;
                 }
 
                 TransactionEnvelope wrap(const xdr::TransactionV1Envelope &envelope) {
                     TransactionEnvelope env;
-                    env.type = EnvelopeType::ENVELOPE_TYPE_TX;
+                    env.type    = EnvelopeType::ENVELOPE_TYPE_TX;
                     env.content = envelope;
                     return env;
                 }

@@ -46,12 +46,12 @@
 
 namespace ledger {
     namespace core {
-        using AssetsParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Asset>>, HorizonAssetsParser>;
-        using AccountParser = HorizonApiParser<stellar::Account, HorizonAccountParser, false>;
-        using FeeStatsParser = HorizonApiParser<stellar::FeeStats, HorizonFeeStatsParser, false>;
-        using LedgersParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Ledger>>, HorizonLedgersParser>;
+        using AssetsParser       = HorizonApiParser<std::vector<std::shared_ptr<stellar::Asset>>, HorizonAssetsParser>;
+        using AccountParser      = HorizonApiParser<stellar::Account, HorizonAccountParser, false>;
+        using FeeStatsParser     = HorizonApiParser<stellar::FeeStats, HorizonFeeStatsParser, false>;
+        using LedgersParser      = HorizonApiParser<std::vector<std::shared_ptr<stellar::Ledger>>, HorizonLedgersParser>;
         using TransactionsParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Transaction>>, HorizonTransactionsParser>;
-        using OperationsParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Operation>>, HorizonOperationsParser>;
+        using OperationsParser   = HorizonApiParser<std::vector<std::shared_ptr<stellar::Operation>>, HorizonOperationsParser>;
 
         HorizonBlockchainExplorer::HorizonBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
                                                              const std::shared_ptr<HttpClient> &http,
@@ -113,7 +113,6 @@ namespace ledger {
 
         Future<std::vector<std::shared_ptr<stellar::Transaction>>> HorizonBlockchainExplorer::getTransactions(const std::string &address,
                                                                                                               const std::string &cursor) {
-
             auto cursorParam = cursor.empty() ? "" : fmt::format("&cursor={}", cursor);
             return http->GET(fmt::format("/accounts/{}/transactions?limit=50&order=asc{}", address, cursorParam))
                 .template json<TransactionsParser::Result, Exception>(TransactionsParser())

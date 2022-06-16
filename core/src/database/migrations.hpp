@@ -32,10 +32,11 @@
 #ifndef LEDGER_CORE_MIGRATIONS_HPP
 #define LEDGER_CORE_MIGRATIONS_HPP
 
-#include <soci.h>
-#include <iostream>
-#include <api/DatabaseBackendType.hpp>
 #include "utils/Exception.hpp"
+
+#include <api/DatabaseBackendType.hpp>
+#include <iostream>
+#include <soci.h>
 
 namespace ledger {
     namespace core {
@@ -43,16 +44,16 @@ namespace ledger {
         static const int MAX_LENGTH_VAR_CHAR = 255;
 
         /// Get the current database migration version.
-        int getDatabaseMigrationVersion(soci::session& sql);
+        int getDatabaseMigrationVersion(soci::session &sql);
 
         template <int migrationNumber>
-        void migrate(soci::session& sql, api::DatabaseBackendType type) {
+        void migrate(soci::session &sql, api::DatabaseBackendType type) {
             std::cerr << "No specified migration for version " << migrationNumber << std::endl;
             throw make_exception(api::ErrorCode::RUNTIME_ERROR, "No specified migration for version {}", migrationNumber);
         }
 
         template <int version>
-        bool migrate(soci::session& sql, int currentVersion, api::DatabaseBackendType type) {
+        bool migrate(soci::session &sql, int currentVersion, api::DatabaseBackendType type) {
             bool previousResult = migrate<version - 1>(sql, currentVersion, type);
 
             if (currentVersion < version) {
@@ -66,9 +67,9 @@ namespace ledger {
         };
 
         template <int version>
-        void rollback(soci::session& sql, api::DatabaseBackendType type) {
-            //std::cerr << "No specified rollback for version " << version << std::endl;
-            //throw make_exception(api::ErrorCode::RUNTIME_ERROR, "No specified rollback for version {}", version);
+        void rollback(soci::session &sql, api::DatabaseBackendType type) {
+            // std::cerr << "No specified rollback for version " << version << std::endl;
+            // throw make_exception(api::ErrorCode::RUNTIME_ERROR, "No specified rollback for version {}", version);
         }
 
         /// Rollback all migrations down.
@@ -77,7 +78,7 @@ namespace ledger {
         /// and portable way. Also, it enables possible partial rollbacks, even though the current
         /// implementation doesn’t.
         template <int version>
-        void rollback(soci::session& sql, int currentVersion, api::DatabaseBackendType type) {
+        void rollback(soci::session &sql, int currentVersion, api::DatabaseBackendType type) {
             if (currentVersion == version) {
                 // we’re in sync with the database; perform the rollback normally
                 rollback<version>(sql, type);
@@ -103,122 +104,184 @@ namespace ledger {
             }
         }
 
-        template <> bool migrate<-1>(soci::session& sql, int currentVersion, api::DatabaseBackendType type);
-        template <> void rollback<-1>(soci::session& sql, int currentVersion, api::DatabaseBackendType type);
+        template <>
+        bool migrate<-1>(soci::session &sql, int currentVersion, api::DatabaseBackendType type);
+        template <>
+        void rollback<-1>(soci::session &sql, int currentVersion, api::DatabaseBackendType type);
 
         // Migrations
-        template <> void migrate<0>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<0>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<0>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<0>(soci::session &sql, api::DatabaseBackendType type);
 
-        template <> void migrate<1>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<1>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<1>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<1>(soci::session &sql, api::DatabaseBackendType type);
 
-        template <> void migrate<2>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<2>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<2>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<2>(soci::session &sql, api::DatabaseBackendType type);
 
-        template <> void migrate<3>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<3>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<3>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<3>(soci::session &sql, api::DatabaseBackendType type);
 
-        template <> void migrate<4>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<4>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<4>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<4>(soci::session &sql, api::DatabaseBackendType type);
 
-        template <> void migrate<5>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<5>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<5>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<5>(soci::session &sql, api::DatabaseBackendType type);
 
-        template <> void migrate<6>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<6>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<6>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<6>(soci::session &sql, api::DatabaseBackendType type);
 
-        template <> void migrate<7>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<7>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<7>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<7>(soci::session &sql, api::DatabaseBackendType type);
 
         // add ripple’s memo field
-        template <> void migrate<8>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<8>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<8>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<8>(soci::session &sql, api::DatabaseBackendType type);
 
         // Migrate input_data from VARCHAR(255) to TEXT
-        template <> void migrate<9>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<9>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<9>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<9>(soci::session &sql, api::DatabaseBackendType type);
 
         // Add block_height column to erc20_operations table
-        template <> void migrate<10>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<10>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<10>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<10>(soci::session &sql, api::DatabaseBackendType type);
 
         // Tezos Support
-        template <> void migrate<11>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<11>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<11>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<11>(soci::session &sql, api::DatabaseBackendType type);
 
         // Add internal transactions for ETH
-        template <> void migrate<12>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<12>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<12>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<12>(soci::session &sql, api::DatabaseBackendType type);
 
         // Add block height to outputs
-        template <> void migrate<13>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<13>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<13>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<13>(soci::session &sql, api::DatabaseBackendType type);
 
         // Add XRP sequence
-        template <> void migrate<14>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<14>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<14>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<14>(soci::session &sql, api::DatabaseBackendType type);
 
         // Add XRP destination_tag
-        template <> void migrate<15>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<15>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<15>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<15>(soci::session &sql, api::DatabaseBackendType type);
 
         // Replace XTZ address column by public_key one
-        template <> void migrate<16>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<16>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<16>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<16>(soci::session &sql, api::DatabaseBackendType type);
 
         // Add status column on XTZ transactions
-        template <> void migrate<17>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<17>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<17>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<17>(soci::session &sql, api::DatabaseBackendType type);
 
         // Add XRP transaction status
-        template <> void migrate<18>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<18>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<18>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<18>(soci::session &sql, api::DatabaseBackendType type);
 
         // Stellar support
-        template <> void migrate<19>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<19>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<19>(soci::session &sql, api::DatabaseBackendType type);
 
         // Add cosmos (ATOM) tables
-        template <> void migrate<20>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<20>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<20>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<20>(soci::session &sql, api::DatabaseBackendType type);
 
         // Add replaceable column on bitcoin_outputs
-        template <> void migrate<21>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<21>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<21>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<21>(soci::session &sql, api::DatabaseBackendType type);
 
         // Add muxed version in stellar network parameters
-        template <> void migrate<22>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<22>(soci::session& sql, api::DatabaseBackendType type);
-      
+        template <>
+        void migrate<22>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<22>(soci::session &sql, api::DatabaseBackendType type);
+
         // Algorand support
-        template <> void migrate<23>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<23>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<23>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<23>(soci::session &sql, api::DatabaseBackendType type);
 
         // Ripple memo primary key
-        template <> void migrate<24>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<24>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<24>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<24>(soci::session &sql, api::DatabaseBackendType type);
 
         // Add bitcoin dust policy
-        template <> void migrate<25>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<25>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<25>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<25>(soci::session &sql, api::DatabaseBackendType type);
 
         // Add bitcoin dust policy
-        template <> void migrate<26>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<26>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<26>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<26>(soci::session &sql, api::DatabaseBackendType type);
 
         // merge BTC outputs
-        template <> void migrate<27>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<27>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<27>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<27>(soci::session &sql, api::DatabaseBackendType type);
 
         // add indexes for db performance optimization
-        template <> void migrate<28>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<28>(soci::session& sql, api::DatabaseBackendType type);
+        template <>
+        void migrate<28>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<28>(soci::session &sql, api::DatabaseBackendType type);
 
         // add indexes for db performance optimization
-        template <> void migrate<29>(soci::session& sql, api::DatabaseBackendType type);
-        template <> void rollback<29>(soci::session& sql, api::DatabaseBackendType type);
-    }
-}
+        template <>
+        void migrate<29>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<29>(soci::session &sql, api::DatabaseBackendType type);
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_MIGRATIONS_HPP
+#endif // LEDGER_CORE_MIGRATIONS_HPP

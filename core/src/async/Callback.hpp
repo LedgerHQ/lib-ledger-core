@@ -44,7 +44,6 @@ namespace ledger {
 
         template <typename T>
         class Callback {
-
           public:
             Callback(ExecutionContext *_context, const std::function<void(CallbackResult<T>)> &function){};
             void operator()(T result){
@@ -58,4 +57,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_CALLBACK_H
+#endif // LEDGER_CORE_CALLBACK_H

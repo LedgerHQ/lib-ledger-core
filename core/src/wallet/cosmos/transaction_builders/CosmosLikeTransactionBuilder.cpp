@@ -117,7 +117,7 @@ namespace ledger {
             }
 
             cosmos::MsgDelegate buildMsgDelegateFromRawMessage(rjObject const &object) {
-                auto valueObject = object[kValue].GetObject();
+                auto valueObject  = object[kValue].GetObject();
                 auto amountObject = valueObject[kAmount].GetObject();
 
                 return cosmos::MsgDelegate{
@@ -127,7 +127,7 @@ namespace ledger {
             }
 
             cosmos::MsgUndelegate buildMsgUndelegateFromRawMessage(rjObject const &object) {
-                auto valueObject = object[kValue].GetObject();
+                auto valueObject  = object[kValue].GetObject();
                 auto amountObject = valueObject[kAmount].GetObject();
 
                 return cosmos::MsgUndelegate{
@@ -137,7 +137,7 @@ namespace ledger {
             }
 
             cosmos::MsgBeginRedelegate buildMsgBeginRedelegateFromRawMessage(rjObject const &object) {
-                auto valueObject = object[kValue].GetObject();
+                auto valueObject  = object[kValue].GetObject();
                 auto amountObject = valueObject[kAmount].GetObject();
 
                 return cosmos::MsgBeginRedelegate{
@@ -148,14 +148,14 @@ namespace ledger {
             }
 
             cosmos::MsgSubmitProposal buildMsgSubmitProposalFromRawMessage(rjObject const &object) {
-                auto valueObject = object[kValue].GetObject();
-                auto contentObject = valueObject[kContent].GetObject();
+                auto valueObject         = object[kValue].GetObject();
+                auto contentObject       = valueObject[kContent].GetObject();
                 auto initialDepositArray = valueObject[kInitialDeposit].GetArray();
 
-                auto content = api::CosmosLikeContent(
-                    getString(contentObject, kType),
-                    getString(contentObject, kTitle),
-                    getString(contentObject, kDescription));
+                auto content             = api::CosmosLikeContent(
+                                getString(contentObject, kType),
+                                getString(contentObject, kTitle),
+                                getString(contentObject, kDescription));
 
                 std::vector<cosmos::Coin> amounts;
                 // the size of the array of amounts should be frequently equal to one
@@ -217,7 +217,7 @@ namespace ledger {
                         std::vector<cosmos::Coin> inputAmounts;
                         if (input.IsObject()) {
                             auto singleInput = input.GetObject();
-                            auto coins = singleInput[kCoins].GetArray();
+                            auto coins       = singleInput[kCoins].GetArray();
 
                             inputAmounts.reserve(coins.Size());
 
@@ -242,7 +242,7 @@ namespace ledger {
                         std::vector<cosmos::Coin> outputAmounts;
                         if (output.IsObject()) {
                             auto singleOutput = output.GetObject();
-                            auto coins = singleOutput[kCoins].GetArray();
+                            auto coins        = singleOutput[kCoins].GetArray();
 
                             outputAmounts.reserve(coins.Size());
 
@@ -274,7 +274,7 @@ namespace ledger {
                 cosmos::Coin value;
                 if (valueObject.HasMember(kDescription) && valueObject[kDescription].IsObject()) {
                     auto descriptionObject = valueObject[kDescription].GetObject();
-                    description.moniker = getString(descriptionObject, kMoniker);
+                    description.moniker    = getString(descriptionObject, kMoniker);
                     if (descriptionObject.HasMember(kIdentity) && descriptionObject[kIdentity].IsString()) {
                         description.identity = optional<std::string>(getString(descriptionObject, kIdentity));
                     }
@@ -287,11 +287,11 @@ namespace ledger {
                 }
 
                 if (valueObject.HasMember(kCommission) && valueObject[kCommission].IsObject()) {
-                    auto commissionObject = valueObject[kCommission].GetObject();
-                    commission.rates.rate = getString(commissionObject, kCommissionRate);
-                    commission.rates.maxRate = getString(commissionObject, kCommissionMaxRate);
+                    auto commissionObject          = valueObject[kCommission].GetObject();
+                    commission.rates.rate          = getString(commissionObject, kCommissionRate);
+                    commission.rates.maxRate       = getString(commissionObject, kCommissionMaxRate);
                     commission.rates.maxChangeRate = getString(commissionObject, kCommissionMaxChangeRate);
-                    commission.updateTime = DateUtils::fromJSON(getString(commissionObject, kUpdateTime));
+                    commission.updateTime          = DateUtils::fromJSON(getString(commissionObject, kUpdateTime));
                 }
 
                 if (valueObject.HasMember(kValue) && valueObject[kValue].IsObject()) {
@@ -302,9 +302,9 @@ namespace ledger {
                 }
 
                 minSelfDelegation = getString(valueObject, kMinSelfDelegation);
-                delegatorAddress = getString(valueObject, kDelegatorAddress);
-                validatorAddress = getString(valueObject, kValidatorAddress);
-                pubkey = getString(valueObject, kPubKey);
+                delegatorAddress  = getString(valueObject, kDelegatorAddress);
+                validatorAddress  = getString(valueObject, kValidatorAddress);
+                pubkey            = getString(valueObject, kPubKey);
 
                 return cosmos::MsgCreateValidator{description,
                                                   commission,
@@ -323,8 +323,8 @@ namespace ledger {
                 optional<std::string> minSelfDelegation;
                 if (valueObject.HasMember(kDescription) && valueObject[kDescription].IsObject()) {
                     auto descriptionObject = valueObject[kDescription].GetObject();
-                    description = cosmos::ValidatorDescription();
-                    description->moniker = getString(descriptionObject, kMoniker);
+                    description            = cosmos::ValidatorDescription();
+                    description->moniker   = getString(descriptionObject, kMoniker);
                     if (descriptionObject.HasMember(kIdentity) && descriptionObject[kIdentity].IsString()) {
                         description->identity = optional<std::string>(getString(descriptionObject, kIdentity));
                     }
@@ -377,14 +377,14 @@ namespace ledger {
         CosmosLikeTransactionBuilder::CosmosLikeTransactionBuilder(
             const std::shared_ptr<api::ExecutionContext> &context,
             const CosmosLikeTransactionBuildFunction &buildFunction) {
-            _context = context;
+            _context       = context;
             _buildFunction = buildFunction;
         }
 
         CosmosLikeTransactionBuilder::CosmosLikeTransactionBuilder(const CosmosLikeTransactionBuilder &cpy) {
             _buildFunction = cpy._buildFunction;
-            _request = cpy._request;
-            _context = cpy._context;
+            _request       = cpy._request;
+            _context       = cpy._context;
         }
 
         std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::setSequence(
@@ -454,14 +454,16 @@ namespace ledger {
 
         std::shared_ptr<api::CosmosLikeTransaction>
         api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(
-            const api::Currency &currency, const std::string &rawTransaction) {
+            const api::Currency &currency,
+            const std::string &rawTransaction) {
             return ::ledger::core::CosmosLikeTransactionBuilder::parseRawTransaction(
                 currency, rawTransaction, false);
         }
 
         std::shared_ptr<api::CosmosLikeTransaction>
         api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(
-            const api::Currency &currency, const std::string &rawTransaction) {
+            const api::Currency &currency,
+            const std::string &rawTransaction) {
             return ::ledger::core::CosmosLikeTransactionBuilder::parseRawTransaction(
                 currency, rawTransaction, true);
         }
@@ -472,7 +474,9 @@ namespace ledger {
         // to the network :
         // https://github.com/cosmos/cosmos-sdk/blob/2e42f9cb745aaa4c1a52ee730a969a5eaa938360/x/auth/types/stdtx.go#L23-L30
         std::shared_ptr<api::CosmosLikeTransaction> CosmosLikeTransactionBuilder::parseRawTransaction(
-            const api::Currency &currency, const std::string &rawTransaction, bool isSigned) {
+            const api::Currency &currency,
+            const std::string &rawTransaction,
+            bool isSigned) {
             Document document;
             document.Parse(rawTransaction.c_str());
 
@@ -496,22 +500,22 @@ namespace ledger {
                 auto feeObject = document[kFee].GetObject();
 
                 // Gas Limit
-                auto gas = std::make_shared<BigInt>(getString(feeObject, kGas));
+                auto gas       = std::make_shared<BigInt>(getString(feeObject, kGas));
                 tx->setGas(gas);
 
                 // Total Tx fees
                 // Gas Price is then deduced with Total_Tx_fees / Gas Limit
                 if (feeObject[kAmount].IsArray()) {
-                    auto fee = BigInt();
+                    auto fee       = BigInt();
 
                     auto getAmount = [=](const rjObject &object) -> Amount {
-                        auto denom = getString(object, kDenom);
+                        auto denom  = getString(object, kDenom);
                         auto amount = getString(object, kAmount);
 
-                        auto unit = std::find_if(
-                            currency.units.begin(),
-                            currency.units.end(),
-                            [&](const api::CurrencyUnit &unit) {
+                        auto unit   = std::find_if(
+                              currency.units.begin(),
+                              currency.units.end(),
+                              [&](const api::CurrencyUnit &unit) {
                                 return unit.name == denom;
                             });
 
@@ -623,7 +627,7 @@ namespace ledger {
                             break;
                         default: {
                             cosmos::Message msg;
-                            msg.type = getString(msgObject, kType);
+                            msg.type    = getString(msgObject, kType);
                             msg.content = cosmos::MsgUnsupported();
                             messages.push_back(std::make_shared<::ledger::core::CosmosLikeMessage>(msg));
                         } break;
@@ -641,7 +645,7 @@ namespace ledger {
 
                 { // Signature
                     std::string sig = getString(firstSignature, kSignature);
-                    auto decoded = cereal::base64::decode(sig);
+                    auto decoded    = cereal::base64::decode(sig);
                     std::vector<uint8_t> rSig(decoded.begin(), decoded.begin() + 32);
                     std::vector<uint8_t> sSig(decoded.begin() + 32, decoded.begin() + 64);
                     tx->setSignature(rSig, sSig);
@@ -651,7 +655,7 @@ namespace ledger {
                     if (firstSignature.HasMember(kPubKey) &&
                         firstSignature[kPubKey].GetObject().HasMember(kValue)) {
                         std::string pubKey = firstSignature[kPubKey].GetObject()[kValue].GetString();
-                        auto decoded = cereal::base64::decode(pubKey);
+                        auto decoded       = cereal::base64::decode(pubKey);
                         std::vector<uint8_t> publicKey(decoded.begin(), decoded.end());
                         tx->setSigningPubKey(publicKey);
                     }

@@ -26,4 +26,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_SECP256K1API_H
+#endif // LEDGER_CORE_SECP256K1API_H

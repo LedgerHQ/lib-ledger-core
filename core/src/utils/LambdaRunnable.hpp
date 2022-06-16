@@ -39,7 +39,6 @@
 namespace ledger {
     namespace core {
         class LambdaRunnable : public api::Runnable {
-
           public:
             LambdaRunnable(std::function<void()> func);
             virtual void run() override;
@@ -54,4 +53,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_LAMBDARUNNABLE_HPP
+#endif // LEDGER_CORE_LAMBDARUNNABLE_HPP

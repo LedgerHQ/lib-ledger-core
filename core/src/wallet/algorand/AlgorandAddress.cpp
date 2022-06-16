@@ -52,7 +52,7 @@ namespace ledger {
         namespace algorand {
 
             namespace {
-                constexpr int32_t PUBKEY_LEN_BYTES = 32;
+                constexpr int32_t PUBKEY_LEN_BYTES   = 32;
                 constexpr int32_t CHECKSUM_LEN_BYTES = 4;
             } // namespace
 

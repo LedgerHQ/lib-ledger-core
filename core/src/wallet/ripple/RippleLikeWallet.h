@@ -85,4 +85,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_RIPPLELIKEWALLET_H
+#endif // LEDGER_CORE_RIPPLELIKEWALLET_H

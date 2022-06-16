@@ -60,7 +60,7 @@ std::string ledger::core::Base58::encode(const std::vector<uint8_t> &bytes,
     auto base58Dictionary = getNetworkBase58Dictionary(config);
     std::string result;
     const double iFactor = 1.36565823730976103695740418120764243208481439700722980119458355862779176747360903943915516885072037696111192757109;
-    int len = bytes.size();
+    int len              = bytes.size();
     int zeros = 0, length = 0, pbegin = 0, pend;
     pend = len;
     while (pbegin != pend && !bytes[pbegin])
@@ -71,7 +71,7 @@ std::string ledger::core::Base58::encode(const std::vector<uint8_t> &bytes,
         b58[i] = 0;
     while (pbegin != pend) {
         unsigned int carry = bytes[pbegin];
-        int i = 0;
+        int i              = 0;
         for (int it1 = size - 1; (carry || i < length) && (it1 != -1); it1--, i++) {
             carry += 256 * b58[it1];
             b58[it1] = carry % 58;
@@ -98,14 +98,13 @@ std::string ledger::core::Base58::encode(const std::vector<uint8_t> &bytes,
 
 std::string ledger::core::Base58::encodeWithChecksum(const std::vector<uint8_t> &bytes,
                                                      const std::shared_ptr<api::DynamicObject> &config) {
-
     return encode(vector::concat<uint8_t>(bytes, computeChecksum(bytes, getNetworkIdentifier(config))), config);
 }
 
 std::string ledger::core::Base58::encodeWithEIP55(const std::vector<uint8_t> &bytes) {
     auto byteToDigitEIP55 = [](uint8_t byte, uint8_t against) -> char {
         bool uppercase = against >= 0x8;
-        byte = (uint8_t)(0xF < byte ? 0xF : byte);
+        byte           = (uint8_t)(0xF < byte ? 0xF : byte);
         if (byte < 0xA) {
             return '0' + byte;
         } else if (uppercase) {
@@ -119,7 +118,7 @@ std::string ledger::core::Base58::encodeWithEIP55(const std::vector<uint8_t> &by
 
     std::string addressEIP55(bytes.size() * 2, '0');
     for (int i = 0; i < bytes.size(); i++) {
-        addressEIP55[i * 2] = byteToDigitEIP55(bytes[i] >> 4, keccakHash[i] >> 4);
+        addressEIP55[i * 2]     = byteToDigitEIP55(bytes[i] >> 4, keccakHash[i] >> 4);
         addressEIP55[i * 2 + 1] = byteToDigitEIP55((uint8_t)(bytes[i] & 0xF), (uint8_t)(keccakHash[i] & 0xF));
     }
     return "0x" + addressEIP55;
@@ -127,7 +126,7 @@ std::string ledger::core::Base58::encodeWithEIP55(const std::vector<uint8_t> &by
 
 std::string ledger::core::Base58::encodeWithEIP55(const std::string &address) {
     if (address.size() == 42) {
-        //Address with 0x prefix
+        // Address with 0x prefix
         return Base58::encodeWithEIP55(hex::toByteArray(address.substr(2, address.size() - 2)));
     } else if (address.size() == 40) {
         return Base58::encodeWithEIP55(hex::toByteArray(address));
@@ -138,11 +137,11 @@ std::string ledger::core::Base58::encodeWithEIP55(const std::string &address) {
 // refer to https://bitcoin.stackexchange.com/questions/76480/encode-decode-base-58-c
 std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str,
                                                   const std::shared_ptr<api::DynamicObject> &config) {
-    auto useBase58Dict = shouldUseNetworkBase58Dictionary(config);
+    auto useBase58Dict    = shouldUseNetworkBase58Dictionary(config);
     auto base58Dictionary = useBase58Dict ? getNetworkBase58Dictionary(config) : DIGITS;
-    int len = str.size();
+    int len               = str.size();
     std::vector<uint8_t> result(len * 2);
-    result[0] = 0;
+    result[0]     = 0;
     int resultlen = 1;
     for (int i = 0; i < len; i++) {
         auto carry = base58Dictionary.find(str[i]);
@@ -165,8 +164,8 @@ std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str,
 
     for (int i = resultlen - 1, z = (resultlen >> 1) + (resultlen & 1);
          i >= z; i--) {
-        int k = result[i];
-        result[i] = result[resultlen - i - 1];
+        int k                     = result[i];
+        result[i]                 = result[resultlen - i - 1];
         result[resultlen - i - 1] = k;
     }
     result.resize(resultlen);
@@ -176,7 +175,7 @@ std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str,
 std::vector<uint8_t> ledger::core::Base58::computeChecksum(const std::vector<uint8_t> &bytes,
                                                            const std::string &networkIdentifier) {
     ledger::core::HashAlgorithm hashAlgorithm(networkIdentifier);
-    auto hash = hashAlgorithm.bytesToBytesHash(bytes);
+    auto hash       = hashAlgorithm.bytesToBytesHash(bytes);
     auto doubleHash = hashAlgorithm.bytesToBytesHash(hash);
     return std::vector<uint8_t>(doubleHash.begin(), doubleHash.begin() + 4);
 }
@@ -185,7 +184,7 @@ ledger::core::Try<std::vector<uint8_t>> ledger::core::Base58::checkAndDecode(con
                                                                              const std::shared_ptr<api::DynamicObject> &config) {
     return Try<std::vector<uint8_t>>::from([&]() {
         auto decoded = decode(str, config);
-        //Check decoded address size
+        // Check decoded address size
         if (decoded.size() <= 4) {
             throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid address : Invalid base 58 format");
         }

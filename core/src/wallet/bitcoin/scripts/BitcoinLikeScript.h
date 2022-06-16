@@ -81,12 +81,12 @@ namespace ledger {
             }
 
             BitcoinLikeScriptConfiguration(const BitcoinLikeScriptConfiguration &copy) {
-                this->isSigned = copy.isSigned;
+                this->isSigned       = copy.isSigned;
                 this->keychainEngine = copy.keychainEngine;
             }
 
             BitcoinLikeScriptConfiguration &operator=(const BitcoinLikeScriptConfiguration &copy) {
-                this->isSigned = copy.isSigned;
+                this->isSigned       = copy.isSigned;
                 this->keychainEngine = copy.keychainEngine;
                 return *this;
             }
@@ -124,7 +124,8 @@ namespace ledger {
 
             static Try<BitcoinLikeScript> parse(const std::vector<uint8_t> &script,
                                                 const BitcoinLikeScriptConfiguration &configuration = BitcoinLikeScriptConfiguration(
-                                                    false, ""));
+                                                    false,
+                                                    ""));
 
             static BitcoinLikeScript fromAddress(const std::string &address, const api::Currency &currency);
 
@@ -135,4 +136,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKESCRIPT_H
+#endif // LEDGER_CORE_BITCOINLIKESCRIPT_H

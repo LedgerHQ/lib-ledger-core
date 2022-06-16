@@ -40,19 +40,19 @@ namespace ledger {
           public:
             template <typename InputIter, typename UnaryFunction>
             static void parallel_for_each(InputIter first, InputIter last, UnaryFunction f) {
-                auto range = std::distance(first, last);
-                size_t approxNumThreads = std::thread::hardware_concurrency();
+                auto range               = std::distance(first, last);
+                size_t approxNumThreads  = std::thread::hardware_concurrency();
                 // number of elements for one thread
-                size_t jobsForThread = range / approxNumThreads;
+                size_t jobsForThread     = range / approxNumThreads;
                 // number of elements for one thread + remainder
                 size_t jobsForMainThread = range % approxNumThreads + jobsForThread;
                 // minus main thread
                 std::vector<std::thread> threads(approxNumThreads - 1);
                 InputIter block_start = first;
-                InputIter block_end = first + jobsForThread;
+                InputIter block_end   = first + jobsForThread;
                 for (size_t i = 0; i < approxNumThreads - 1; ++i) {
-                    threads[i] = std::thread(std::for_each<InputIter, UnaryFunction>,
-                                             block_start, block_end, f);
+                    threads[i]  = std::thread(std::for_each<InputIter, UnaryFunction>,
+                                              block_start, block_end, f);
                     block_start = block_end;
                     block_end += jobsForThread;
                 }

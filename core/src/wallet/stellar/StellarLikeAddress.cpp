@@ -39,7 +39,7 @@
 namespace ledger {
     namespace core {
 
-        static const std::size_t PUBKEY_SIZE = 32;
+        static const std::size_t PUBKEY_SIZE   = 32;
         static const std::size_t CHECKSUM_SIZE = 2;
 
         StellarLikeAddress::StellarLikeAddress(const std::string &address, const api::Currency &currency, const Option<std::string> &path) : AbstractAddress(currency, path),
@@ -85,7 +85,7 @@ namespace ledger {
                 writer.writeByteArray(params.Version);
                 writer.writeByteArray(pubKey);
             }
-            auto payload = writer.toByteArray();
+            auto payload  = writer.toByteArray();
             auto checksum = CRC::calculate(payload, CRC::XMODEM);
             writer.writeLeValue(checksum);
             return BaseConverter::encode(writer.toByteArray(), BaseConverter::BASE32_RFC4648_NO_PADDING);
@@ -93,7 +93,7 @@ namespace ledger {
 
         stellar::xdr::PublicKey StellarLikeAddress::toXdrPublicKey() const {
             stellar::xdr::PublicKey pk;
-            pk.type = stellar::xdr::PublicKeyType::PUBLIC_KEY_TYPE_ED25519;
+            pk.type           = stellar::xdr::PublicKeyType::PUBLIC_KEY_TYPE_ED25519;
             const auto pubkey = toPublicKey();
             if (pubkey.size() != pk.content.max_size()) {
                 throw make_exception(api::ErrorCode::ILLEGAL_STATE, "Pub key should be {} bytes long (got {})", pk.content.max_size(), pubkey.size());
@@ -116,8 +116,8 @@ namespace ledger {
                 return false;
             }
             BytesReader reader(bytes);
-            auto payload = reader.read(networkParams.Version.size() + PUBKEY_SIZE);
-            auto checksum = reader.readNextLeUint16();
+            auto payload          = reader.read(networkParams.Version.size() + PUBKEY_SIZE);
+            auto checksum         = reader.readNextLeUint16();
             auto expectedChecksum = CRC::calculate(payload, CRC::XMODEM);
             return checksum == expectedChecksum;
         }
@@ -155,12 +155,12 @@ namespace ledger {
             if (version == params.MuxedVersion) {
                 account.type = stellar::xdr::CryptoKeyType::KEY_TYPE_MUXED_ED25519;
                 stellar::xdr::med25519 key;
-                key.id = reader.readNextBeUlong();
+                key.id      = reader.readNextBeUlong();
                 auto pubkey = reader.read(32);
                 std::copy(pubkey.begin(), pubkey.end(), key.ed25519.begin());
                 account.content = key;
             } else {
-                auto pubkey = reader.read(32);
+                auto pubkey  = reader.read(32);
                 account.type = stellar::xdr::CryptoKeyType::KEY_TYPE_ED25519;
                 stellar::xdr::uint256 key;
                 std::copy(pubkey.begin(), pubkey.end(), key.begin());

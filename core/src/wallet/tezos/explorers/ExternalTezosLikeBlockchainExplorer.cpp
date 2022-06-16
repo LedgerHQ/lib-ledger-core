@@ -45,9 +45,9 @@ namespace ledger {
             const api::TezosLikeNetworkParameters &parameters,
             const std::shared_ptr<api::DynamicObject> &configuration) : DedicatedContext(context),
                                                                         TezosLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
-            _http = http;
+            _http       = http;
             _parameters = parameters;
-            _bcd = configuration->getString(api::TezosConfiguration::BCD_API)
+            _bcd        = configuration->getString(api::TezosConfiguration::BCD_API)
                        .value_or(api::TezosConfigurationDefaults::BCD_API_ENDPOINT);
         }
 
@@ -87,7 +87,7 @@ namespace ledger {
                 .mapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) {
                     auto &json = *std::get<1>(result);
 
-                    //Is there a fees field ?
+                    // Is there a fees field ?
                     if (!json.IsObject()) {
                         throw make_exception(api::ErrorCode::HTTP_ERROR,
                                              fmt::format("Failed to get fees from network, no (or malformed) response"));
@@ -107,7 +107,7 @@ namespace ledger {
                         }
                         return value;
                     };
-                    //try first with "fee" else with "fees"
+                    // try first with "fee" else with "fees"
                     std::string feesValueStr = getFieldValue("fee");
                     if (feesValueStr.empty()) {
                         feesValueStr = getFieldValue("fees");
@@ -118,7 +118,7 @@ namespace ledger {
                     }
 
                     const auto totalFees = api::BigInt::fromDecimalString(feesValueStr, 6, ".");
-                    std::string fees = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
+                    std::string fees     = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
                     if (fees != "0" && totalTx->intValue() != 0) {
                         fees = totalFees->divide(totalTx)->toString(10);
                     }
@@ -134,10 +134,10 @@ namespace ledger {
             const bool parseNumbersAsString = true;
             // Since tzindex 12.01, we don't have gas_price field anymore
             // We have to calculate it instead from gas_used and fee
-            const auto gasUsedField = "gas_used";
-            const auto feeField = "fee";
+            const auto gasUsedField         = "gas_used";
+            const auto feeField             = "fee";
             // We still use the legacy field in case we have a rollback
-            const auto gasPriceField = "gas_price";
+            const auto gasPriceField        = "gas_price";
 
             return _http->GET("block/head")
                 .json(parseNumbersAsString)
@@ -189,7 +189,7 @@ namespace ledger {
                         }
 
                         const auto &feeFieldStringValue = json[feeField].GetString();
-                        double apiFee = 0.;
+                        double apiFee                   = 0.;
                         try {
                             apiFee = std::stod(feeFieldStringValue);
                         } catch (const std::invalid_argument &e) {
@@ -214,7 +214,7 @@ namespace ledger {
                     }
 
                     const std::string picoTezGasPrice = api::BigInt::fromDecimalString(gasPrice, 6, ".")->toString(10);
-                    int intPicoTezGasPrice = 0;
+                    int intPicoTezGasPrice            = 0;
                     try {
                         intPicoTezGasPrice = std::stoi(picoTezGasPrice);
                     } catch (const std::invalid_argument &e) {
@@ -284,12 +284,12 @@ namespace ledger {
         ExternalTezosLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                              Option<std::string> offset,
                                                              Option<void *> session) {
-            auto tryOffset = Try<uint64_t>::from([=]() -> uint64_t {
+            auto tryOffset       = Try<uint64_t>::from([=]() -> uint64_t {
                 return std::stoul(offset.getValueOr(""), nullptr, 10);
             });
 
             uint64_t localOffset = tryOffset.isSuccess() ? tryOffset.getValue() : 0;
-            uint64_t limit = 100;
+            uint64_t limit       = 100;
             if (session.hasValue()) {
                 auto s = _sessions[*((std::string *)session.getValue())];
                 localOffset += limit * s;
@@ -363,8 +363,8 @@ namespace ledger {
                                                        const std::string &forceUrl,
                                                        bool isDecimal) {
             const bool parseNumbersAsString = true;
-            const bool ignoreStatusCode = true;
-            auto networkId = getNetworkParameters().Identifier;
+            const bool ignoreStatusCode     = true;
+            auto networkId                  = getNetworkParameters().Identifier;
 
             std::string p, separator = "?";
             for (auto &param : params) {
@@ -498,12 +498,12 @@ namespace ledger {
                 .map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
                     auto &connection = *std::get<0>(result);
                     if (connection.getStatusCode() == 404) {
-                        //an empty account
+                        // an empty account
                         return false;
                     } else if (connection.getStatusCode() < 200 || connection.getStatusCode() >= 300) {
                         throw Exception(api::ErrorCode::HTTP_ERROR, connection.getStatusText());
                     } else {
-                        auto &json = *std::get<1>(result);
+                        auto &json       = *std::get<1>(result);
 
                         // look for the is_funded field
                         const auto field = "is_funded";
@@ -522,7 +522,7 @@ namespace ledger {
             return _http->GET(fmt::format("account/{}", address))
                 .json(false)
                 .map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
-                    auto &json = *std::get<1>(result);
+                    auto &json       = *std::get<1>(result);
                     // look for the is_active_delegate field
                     const auto field = "is_active_delegate";
                     if (!json.IsObject() || !json.HasMember(field) ||

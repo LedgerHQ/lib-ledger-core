@@ -88,7 +88,7 @@ namespace ledger {
                                                const std::vector<uint8_t> &publicKey,
                                                const std::vector<uint8_t> &chainCode,
                                                const std::string &path) {
-            auto &params = currency.ethereumLikeNetworkParameters.value();
+            auto &params             = currency.ethereumLikeNetworkParameters.value();
             DeterministicPublicKey k = EthereumExtendedPublicKey::fromRaw(currency, params, parentPublicKey, publicKey, chainCode, path);
             return std::make_shared<EthereumLikeExtendedPublicKey>(currency, k, DerivationPath(path));
         }
@@ -97,7 +97,7 @@ namespace ledger {
         EthereumLikeExtendedPublicKey::fromBase58(const api::Currency &currency,
                                                   const std::string &xpubBase58,
                                                   const Option<std::string> &path) {
-            auto &params = currency.ethereumLikeNetworkParameters.value();
+            auto &params             = currency.ethereumLikeNetworkParameters.value();
             DeterministicPublicKey k = EthereumExtendedPublicKey::fromBase58(currency, params, xpubBase58, path);
             return std::make_shared<ledger::core::EthereumLikeExtendedPublicKey>(currency, k, DerivationPath(path.getValueOr("m")));
         }

@@ -52,7 +52,7 @@ TEST(DerivationScheme, BIP44) {
 
 TEST(DerivationScheme, PartialScheme) {
     DerivationScheme scheme("44'/<coin_type>'/<account>'/<node>/<address>");
-    auto xpubScheme = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX);
+    auto xpubScheme    = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX);
     auto accountScheme = scheme.getSchemeFrom(DerivationSchemeLevel::NODE);
     EXPECT_EQ(xpubScheme.toString(), "44'/<coin_type>'/<account>'");
     EXPECT_EQ(accountScheme.toString(), "<node>/<address>");

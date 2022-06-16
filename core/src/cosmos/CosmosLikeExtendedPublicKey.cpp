@@ -54,7 +54,7 @@ namespace ledger {
 
         std::shared_ptr<api::CosmosLikeAddress> CosmosLikeExtendedPublicKey::derive(const std::string &path) {
             DerivationPath p(path);
-            auto key = _derive(0, p.toVector(), _key);
+            auto key         = _derive(0, p.toVector(), _key);
             auto addressType = _type == api::CosmosBech32Type::PUBLIC_KEY
                                    ? api::CosmosBech32Type::ADDRESS
                                    : api::CosmosBech32Type::ADDRESS_VAL;
@@ -86,7 +86,7 @@ namespace ledger {
         }
 
         std::string CosmosLikeExtendedPublicKey::toBech32() {
-            auto const pubKey = getKey().getPublicKey();
+            auto const pubKey   = getKey().getPublicKey();
             auto const pkBech32 = CosmosBech32(_type);
             return pkBech32.encode(
                 pubKey, vector::concat(params().PubKeyPrefix, std::vector<uint8_t>(pubKey.size())));
@@ -116,14 +116,16 @@ namespace ledger {
             const std::string &xpub,
             const Option<std::string> &path,
             api::CosmosBech32Type type) {
-            auto const &params = currency.cosmosLikeNetworkParameters.value();
+            auto const &params       = currency.cosmosLikeNetworkParameters.value();
             DeterministicPublicKey k = CosmosExtendedPublicKey::fromBase58(currency, params, xpub, path);
             return std::make_shared<ledger::core::CosmosLikeExtendedPublicKey>(
                 currency, k, api::CosmosCurve::SECP256K1, type, DerivationPath(path.getValueOr("m")));
         }
 
         std::shared_ptr<CosmosLikeExtendedPublicKey> CosmosLikeExtendedPublicKey::fromBech32(
-            const api::Currency &currency, const std::string &bech32PubKey, const Option<std::string> &path) {
+            const api::Currency &currency,
+            const std::string &bech32PubKey,
+            const Option<std::string> &path) {
             auto const &params = currency.cosmosLikeNetworkParameters.value();
             if (bech32PubKey.find(cosmos::getBech32Params(api::CosmosBech32Type::PUBLIC_KEY).hrp) ==
                 std::string::npos) {
@@ -137,7 +139,7 @@ namespace ledger {
                         std::string::npos
                     ? api::CosmosBech32Type::PUBLIC_KEY
                     : api::CosmosBech32Type::PUBLIC_KEY_VAL;
-            auto const pkBech32 = CosmosBech32(type);
+            auto const pkBech32  = CosmosBech32(type);
             auto const decodedPk = pkBech32.decode(bech32PubKey);
 
             // Check version

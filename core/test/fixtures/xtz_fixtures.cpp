@@ -7,7 +7,11 @@ namespace ledger {
     namespace testing {
         namespace xtz {
             core::api::AccountCreationInfo XPUB_INFO(
-                0, {"xtz"}, {"44'/1729'/0'"}, {ledger::core::hex::toByteArray("02af5696511e23b9e3dc5a527abc6929fae708defb5299f96cfa7dd9f936fe747d")}, {ledger::core::hex::toByteArray("abcc4933bec06eeca6628b9e44f8e71d5e3cf510c0450dd1e29d9aa0f1717da9")});
+                0,
+                {"xtz"},
+                {"44'/1729'/0'"},
+                {ledger::core::hex::toByteArray("02af5696511e23b9e3dc5a527abc6929fae708defb5299f96cfa7dd9f936fe747d")},
+                {ledger::core::hex::toByteArray("abcc4933bec06eeca6628b9e44f8e71d5e3cf510c0450dd1e29d9aa0f1717da9")});
             std::shared_ptr<core::TezosLikeAccount> inflate(const std::shared_ptr<core::WalletPool> &pool, const std::shared_ptr<core::AbstractWallet> &wallet) {
                 auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(uv::wait(wallet->newAccountWithInfo(XPUB_INFO)));
                 std::vector<core::Operation> operations;

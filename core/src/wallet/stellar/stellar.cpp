@@ -47,12 +47,12 @@ namespace ledger {
                     return;
                 } else if (asset.type == xdr::AssetType::ASSET_TYPE_CREDIT_ALPHANUM4) {
                     const auto &code = boost::get<xdr::AssetCode4>(asset.assetCode);
-                    out.code = std::string(code.begin(), code.end());
-                    out.type = kAssetTypeCreditAlphanum4;
+                    out.code         = std::string(code.begin(), code.end());
+                    out.type         = kAssetTypeCreditAlphanum4;
                 } else {
                     const auto &code = boost::get<xdr::AssetCode4>(asset.assetCode);
-                    out.code = std::string(code.begin(), code.end());
-                    out.type = kAssetTypeCreditAlphanum4;
+                    out.code         = std::string(code.begin(), code.end());
+                    out.type         = kAssetTypeCreditAlphanum4;
                 }
                 if (asset.issuer.nonEmpty()) {
                     out.issuer = StellarLikeAddress::convertXdrAccountToAddress(asset.issuer.getValue(), params);

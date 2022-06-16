@@ -98,7 +98,9 @@ namespace ledger {
             void reset() override;
 
             static std::shared_ptr<api::CosmosLikeTransaction> parseRawTransaction(
-                const api::Currency &currency, const std::string &rawTransaction, bool isSigned);
+                const api::Currency &currency,
+                const std::string &rawTransaction,
+                bool isSigned);
 
           private:
             CosmosLikeTransactionBuildFunction _buildFunction;

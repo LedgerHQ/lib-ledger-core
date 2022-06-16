@@ -46,44 +46,44 @@ namespace ledger {
         }
 
         CurrencyBuilder &CurrencyBuilder::forkOfBitcoin(api::BitcoinLikeNetworkParameters params) {
-            _type = api::WalletType::BITCOIN;
+            _type    = api::WalletType::BITCOIN;
             _bitcoin = params;
             return *this;
         }
 
         CurrencyBuilder &CurrencyBuilder::forkOfCosmos(api::CosmosLikeNetworkParameters params) {
-            _type = api::WalletType::COSMOS;
+            _type   = api::WalletType::COSMOS;
             _cosmos = params;
             return *this;
         }
 
         CurrencyBuilder &CurrencyBuilder::forkOfEthereum(api::EthereumLikeNetworkParameters params) {
-            _type = api::WalletType::ETHEREUM;
+            _type     = api::WalletType::ETHEREUM;
             _ethereum = params;
             return *this;
         }
 
         CurrencyBuilder &CurrencyBuilder::forkOfRipple(api::RippleLikeNetworkParameters params) {
-            _type = api::WalletType::RIPPLE;
+            _type   = api::WalletType::RIPPLE;
             _ripple = params;
             return *this;
         }
 
         CurrencyBuilder &CurrencyBuilder::forkOfTezos(api::TezosLikeNetworkParameters params) {
-            _type = api::WalletType::TEZOS;
+            _type  = api::WalletType::TEZOS;
             _tezos = params;
             return *this;
         }
 
         CurrencyBuilder &CurrencyBuilder::forkOfStellar(const api::StellarLikeNetworkParameters &params) {
-            _type = api::WalletType::STELLAR;
+            _type    = api::WalletType::STELLAR;
             _stellar = params;
 
             return *this;
         }
 
         CurrencyBuilder &CurrencyBuilder::forkOfAlgorand(const api::AlgorandNetworkParameters &params) {
-            _type = api::WalletType::ALGORAND;
+            _type     = api::WalletType::ALGORAND;
             _algorand = params;
 
             return *this;

@@ -42,13 +42,13 @@ namespace ledger {
 
         bool StellarLikeLedgerDatabaseHelper::putLedger(soci::session &sql, const api::Currency &currency, const stellar::Ledger &ledger) {
             Block block;
-            block.hash = ledger.hash;
-            block.height = ledger.height;
-            block.time = ledger.time;
+            block.hash         = ledger.hash;
+            block.height       = ledger.height;
+            block.time         = ledger.time;
             block.currencyName = currency.name;
             if (BlockDatabaseHelper::putBlock(sql, block)) {
-                auto uid = BlockDatabaseHelper::createBlockUid(ledger.hash, currency.name);
-                auto baseFee = ledger.baseFee.toString();
+                auto uid         = BlockDatabaseHelper::createBlockUid(ledger.hash, currency.name);
+                auto baseFee     = ledger.baseFee.toString();
                 auto baseReserve = ledger.baseReserve.toString();
                 sql << "INSERT INTO stellar_ledgers VALUES(:uid, :base_fee, :base_reserve)",
                     use(uid), use(baseFee), use(baseReserve);
@@ -65,10 +65,10 @@ namespace ledger {
                                                "ORDER BY b.height DESC LIMIT 1",
                                 use(currency.name));
             for (const auto &row : rows) {
-                out.hash = row.get<std::string>(0);
-                out.height = soci::get_number<uint64_t>(row, 1);
-                out.time = row.get<std::chrono::system_clock::time_point>(2);
-                out.baseFee = BigInt::fromString(row.get<std::string>(3));
+                out.hash        = row.get<std::string>(0);
+                out.height      = soci::get_number<uint64_t>(row, 1);
+                out.time        = row.get<std::chrono::system_clock::time_point>(2);
+                out.baseFee     = BigInt::fromString(row.get<std::string>(3));
                 out.baseReserve = BigInt::fromString(row.get<std::string>(4));
                 return true;
             }

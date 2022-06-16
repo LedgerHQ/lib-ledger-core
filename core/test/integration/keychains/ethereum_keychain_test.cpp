@@ -45,7 +45,7 @@ using namespace std;
 class EthereumKeychains : public BaseFixture {
   public:
     void testEthKeychain(const KeychainTestData &data, std::function<void(EthereumLikeKeychain &)> f) {
-        auto backend = std::make_shared<ledger::core::test::MemPreferencesBackend>();
+        auto backend       = std::make_shared<ledger::core::test::MemPreferencesBackend>();
         auto configuration = std::make_shared<DynamicObject>();
         dispatcher->getMainExecutionContext()->execute(ledger::core::make_runnable([=]() {
             EthereumLikeKeychain keychain(
@@ -72,7 +72,7 @@ TEST_F(EthereumKeychains, KeychainDerivation) {
 }
 
 TEST_F(EthereumKeychains, EthereumAddressValidation) {
-    auto address = "0x8f7A0aFAAEE372EEFd020056FC552BD87DD75D73";
+    auto address    = "0x8f7A0aFAAEE372EEFd020056FC552BD87DD75D73";
     auto ethAddress = ledger::core::EthereumLikeAddress::fromEIP55(address, ledger::core::currencies::ETHEREUM);
     EXPECT_EQ(ethAddress->toEIP55(), address);
 }
@@ -92,36 +92,36 @@ TEST_F(EthereumKeychains, EthereumAddressValidationFromXpub) {
     auto derivedExtKey = extKey->derive(ledger::core::DerivationPath("0"));
     EXPECT_EQ(derivedExtKey->toBase58(), derivedPubKey);
 
-    auto address = "0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA";
+    auto address        = "0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA";
     auto derivedAddress = extKey->derive("0/0");
     EXPECT_EQ(derivedAddress->toEIP55(), address);
 }
 
 TEST_F(EthereumKeychains, EthereumChildAddressValidationFromPubKeyAndChainCode) {
-    auto path = "44'/60'/0'";
-    auto pubKey = "035dd2992d954b3d232037aba9cc7fc08c2155e4f3616aa1290edc9cc09f8d64f0";
+    auto path      = "44'/60'/0'";
+    auto pubKey    = "035dd2992d954b3d232037aba9cc7fc08c2155e4f3616aa1290edc9cc09f8d64f0";
     auto chainCode = "6a4e60e6fbd45355d840ff7a18bc7cb628318f1ba6fbcfb0c07626d8ea768aca";
-    auto ethXpub = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
-                                                                        optional<std::vector<uint8_t>>(),
-                                                                        hex::toByteArray(pubKey),
-                                                                        hex::toByteArray(chainCode),
-                                                                        path);
-    auto address = "0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA";
-    auto derive0 = ethXpub->derive("0/0");
+    auto ethXpub   = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
+                                                                          optional<std::vector<uint8_t>>(),
+                                                                          hex::toByteArray(pubKey),
+                                                                          hex::toByteArray(chainCode),
+                                                                          path);
+    auto address   = "0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA";
+    auto derive0   = ethXpub->derive("0/0");
     EXPECT_EQ(derive0->toEIP55(), address);
 }
 
 TEST_F(EthereumKeychains, EthereumExoticDerivationPaths) {
-    auto path = "444'/60'/14'/5'";
-    auto pubKey = "04b82b5c9394ba9b3575e425f09955901a92c1bd2b9e301aede6a1ab9f118290030c6e093d70add73af6b29444d525aab35201e8806ad4dcd4924dedb5afabb9fa";
+    auto path      = "444'/60'/14'/5'";
+    auto pubKey    = "04b82b5c9394ba9b3575e425f09955901a92c1bd2b9e301aede6a1ab9f118290030c6e093d70add73af6b29444d525aab35201e8806ad4dcd4924dedb5afabb9fa";
     auto chainCode = "224eb6e0384eb6193e355195bc76d5bbf2210eb1e9f61b9c826a3a2db18355f0";
-    auto ethXpub = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
-                                                                        optional<std::vector<uint8_t>>(),
-                                                                        hex::toByteArray(pubKey),
-                                                                        hex::toByteArray(chainCode),
-                                                                        path);
-    auto address = "0x25Faa357D783C1A9B1eE9403f6969AC65E6F3ae3";
-    auto derive0 = ethXpub->derive("16");
+    auto ethXpub   = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
+                                                                          optional<std::vector<uint8_t>>(),
+                                                                          hex::toByteArray(pubKey),
+                                                                          hex::toByteArray(chainCode),
+                                                                          path);
+    auto address   = "0x25Faa357D783C1A9B1eE9403f6969AC65E6F3ae3";
+    auto derive0   = ethXpub->derive("16");
     EXPECT_EQ(derive0->toEIP55(), address);
 }
 
@@ -165,22 +165,21 @@ const std::vector<std::vector<std::string>> derivationTestData = {
 };
 
 TEST_F(EthereumKeychains, EthereumAddressValidationFromPubKeyAndChainCode) {
-
     for (auto &elem : derivationTestData) {
-        //So we know what we are dealing with
+        // So we know what we are dealing with
         auto derivationScheme = elem[0];
-        auto path = elem[1];
-        auto publicKey = elem[2];
-        auto chainCode = elem[3];
-        auto expectedAddress = elem[4];
+        auto path             = elem[1];
+        auto publicKey        = elem[2];
+        auto chainCode        = elem[3];
+        auto expectedAddress  = elem[4];
 
-        auto config = DynamicObject::newInstance();
+        auto config           = DynamicObject::newInstance();
         config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, derivationScheme);
-        auto ethXpub = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
-                                                                            optional<std::vector<uint8_t>>(),
-                                                                            hex::toByteArray(publicKey),
-                                                                            hex::toByteArray(chainCode),
-                                                                            path);
+        auto ethXpub        = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
+                                                                                   optional<std::vector<uint8_t>>(),
+                                                                                   hex::toByteArray(publicKey),
+                                                                                   hex::toByteArray(chainCode),
+                                                                                   path);
         auto derivedAddress = ethXpub->derive("");
         EXPECT_EQ(derivedAddress->toEIP55(), expectedAddress);
     }
@@ -213,19 +212,19 @@ const std::vector<DerivationSchemeTestData> derivationSchemeTestData = {
 };
 
 TEST_F(EthereumKeychains, DISABLED_EthereumDerivationSchemes) {
-    auto pool = newDefaultPool();
+    auto pool          = newDefaultPool();
     auto configuration = DynamicObject::newInstance();
     {
         for (auto &elem : derivationSchemeTestData) {
             auto derivationSchemes = elem.equivalentDerivationSchemes;
             for (auto &scheme : derivationSchemes) {
                 configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, scheme);
-                auto wallet = uv::wait(pool->createWallet(scheme, "ethereum", configuration));
-                //Create account as Live does
+                auto wallet                   = uv::wait(pool->createWallet(scheme, "ethereum", configuration));
+                // Create account as Live does
                 api::AccountCreationInfo info = uv::wait(wallet->getNextAccountCreationInfo());
                 info.publicKeys.push_back(hex::toByteArray(elem.pubKey));
                 info.chainCodes.push_back(hex::toByteArray(elem.chainCode));
-                auto account = createEthereumLikeAccount(wallet, info.index, info);
+                auto account   = createEthereumLikeAccount(wallet, info.index, info);
                 auto addresses = uv::wait(account->getFreshPublicAddresses());
                 EXPECT_GT(addresses.size(), 0);
                 EXPECT_EQ(addresses[0]->toString(), elem.expectedAddress);

@@ -40,7 +40,6 @@
 #include <src/wallet/currencies.hpp>
 
 struct KeychainTestData {
-
     ledger::core::api::BitcoinLikeNetworkParameters btc_parameters;
     ledger::core::api::EthereumLikeNetworkParameters eth_parameters;
     ledger::core::api::Currency currency;
@@ -72,16 +71,16 @@ struct KeychainTestData {
     KeychainTestData(const KeychainTestData &data) {
         this->btc_parameters = data.btc_parameters;
         this->eth_parameters = data.eth_parameters;
-        this->currency = data.currency;
-        this->xpub = data.xpub;
+        this->currency       = data.currency;
+        this->xpub           = data.xpub;
         this->derivationPath = data.derivationPath;
     }
 
     KeychainTestData &operator=(const KeychainTestData &data) {
         this->btc_parameters = data.btc_parameters;
         this->eth_parameters = data.eth_parameters;
-        this->currency = data.currency;
-        this->xpub = data.xpub;
+        this->currency       = data.currency;
+        this->xpub           = data.xpub;
         this->derivationPath = data.derivationPath;
         return *this;
     }
@@ -141,4 +140,4 @@ class KeychainFixture : public BaseFixture {
     };
 };
 
-#endif //LEDGER_CORE_KEYCHAIN_TEST_HELPER_H
+#endif // LEDGER_CORE_KEYCHAIN_TEST_HELPER_H

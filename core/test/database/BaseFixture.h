@@ -102,4 +102,4 @@ class BaseFixture : public ::testing::Test {
     std::shared_ptr<CppHttpLibClient> http;
 };
 
-#endif //LEDGER_CORE_BASEFIXTURE_H
+#endif // LEDGER_CORE_BASEFIXTURE_H

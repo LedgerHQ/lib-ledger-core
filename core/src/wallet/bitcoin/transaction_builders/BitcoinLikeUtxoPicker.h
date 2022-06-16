@@ -48,7 +48,7 @@ namespace ledger {
         class BitcoinLikeTransactionApi;
         class BitcoinLikeWritableInputApi;
         using BitcoinLikeGetUtxoFunction = std::function<Future<std::vector<BitcoinLikeUtxo>>()>;
-        using BitcoinLikeGetTxFunction = std::function<FuturePtr<BitcoinLikeBlockchainExplorerTransaction>(const std::string &)>;
+        using BitcoinLikeGetTxFunction   = std::function<FuturePtr<BitcoinLikeBlockchainExplorerTransaction>(const std::string &)>;
 
         class BitcoinLikeUtxoPicker : public DedicatedContext, public std::enable_shared_from_this<BitcoinLikeUtxoPicker> {
           public:
@@ -113,4 +113,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKEUTXOPICKER_H
+#endif // LEDGER_CORE_BITCOINLIKEUTXOPICKER_H

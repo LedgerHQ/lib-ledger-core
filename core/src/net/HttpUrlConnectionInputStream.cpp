@@ -39,8 +39,8 @@ namespace ledger {
         HttpUrlConnectionInputStream::HttpUrlConnectionInputStream(
             const std::shared_ptr<api::HttpUrlConnection> &connection) {
             _connection = connection;
-            _index = 0;
-            _offset = 0;
+            _index      = 0;
+            _offset     = 0;
             refill();
         }
 

@@ -273,7 +273,7 @@ namespace ledger {
                 // Upsert operation
                 operationStmt.bindings.update(op);
                 // Upsert transaction
-                auto &tx = op.bitcoinTransaction.getValue();
+                auto &tx         = op.bitcoinTransaction.getValue();
                 const auto txUid = BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(op.accountUid, tx.hash);
                 transactionStmt.bindings.update(tx, txUid);
                 // Upsert Input
@@ -286,12 +286,12 @@ namespace ledger {
                      * previousTxHash is empty which causes conflict in bitcoin_inputs table
                      * Right now we generate a random 'hash' to compute inputUid, should be improved
                      * (e.g. use scriptSig of each input and sha256 it ...)
-                    */
+                     */
                     std::string hash;
 
-                    //Returned by explorers when tx from zk protocol
+                    // Returned by explorers when tx from zk protocol
                     std::string emptyPreviousTxHash = "0000000000000000000000000000000000000000000000000000000000000000";
-                    auto previousTxHash = input.previousTxHash.getValueOr(emptyPreviousTxHash);
+                    auto previousTxHash             = input.previousTxHash.getValueOr(emptyPreviousTxHash);
                     if (previousTxHash == emptyPreviousTxHash && input.signatureScript.nonEmpty()) {
                         previousTxHash = SHA256::stringToHexHash(input.signatureScript.getValue());
                     }
@@ -319,7 +319,7 @@ namespace ledger {
                 for (const auto &output : tx.outputs) {
                     if (output.accountUid.hasValue() && output.accountUid.getValue() == op.accountUid) {
                         outputStmt.bindings.update(output, replaceable && tx.block.isEmpty(), txUid, tx.hash);
-                    } else { //merge all foreign outputs on a single one
+                    } else { // merge all foreign outputs on a single one
                         foreignOutput += output;
                     }
                 }

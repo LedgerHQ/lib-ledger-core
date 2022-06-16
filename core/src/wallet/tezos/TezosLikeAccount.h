@@ -28,62 +28,61 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEACCOUNT_H
 #define LEDGER_CORE_TEZOSLIKEACCOUNT_H
-#include <time.h>
-#include <api/AddressListCallback.hpp>
 #include <api/Address.hpp>
+#include <api/AddressListCallback.hpp>
+#include <api/BigIntCallback.hpp>
+#include <api/Event.hpp>
+#include <api/StringCallback.hpp>
 #include <api/TezosLikeAccount.hpp>
 #include <api/TezosLikeTransactionBuilder.hpp>
-#include <api/StringCallback.hpp>
-#include <api/Event.hpp>
-#include <api/BigIntCallback.hpp>
-#include <wallet/common/AbstractWallet.hpp>
+#include <time.h>
 #include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/AbstractWallet.hpp>
 #include <wallet/common/Amount.h>
-#include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
-#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.hpp>
-#include <wallet/tezos/keychains/TezosLikeKeychain.h>
 #include <wallet/tezos/database/TezosLikeAccountDatabaseEntry.h>
+#include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
+#include <wallet/tezos/keychains/TezosLikeKeychain.h>
+#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.hpp>
 
 namespace ledger {
     namespace core {
 
         class TezosOperationQuery : public OperationQuery {
-        public:
-            TezosOperationQuery(const std::shared_ptr<api::QueryFilter>& headFilter,
-                                const std::shared_ptr<DatabaseSessionPool>& pool,
-                                const std::shared_ptr<api::ExecutionContext>& context,
-                                const std::shared_ptr<api::ExecutionContext>& mainContext) : OperationQuery(headFilter, pool, context, mainContext) {
+          public:
+            TezosOperationQuery(const std::shared_ptr<api::QueryFilter> &headFilter,
+                                const std::shared_ptr<DatabaseSessionPool> &pool,
+                                const std::shared_ptr<api::ExecutionContext> &context,
+                                const std::shared_ptr<api::ExecutionContext> &mainContext) : OperationQuery(headFilter, pool, context, mainContext){
 
-            };
-        protected:
+                                                                                             };
+
+          protected:
             soci::rowset<soci::row> performCount(soci::session &sql) override {
-              return _builder.select("o.type, count(*)")
-                  .from("operations").to("o")
-                  .outerJoin("blocks AS b", "o.block_uid = b.uid")
-                  .outerJoin("tezos_originated_operations AS orig_op", "o.uid = orig_op.uid")
-                  .groupBy("o.type")
-                  .execute(sql);
+                return _builder.select("o.type, count(*)")
+                    .from("operations")
+                    .to("o")
+                    .outerJoin("blocks AS b", "o.block_uid = b.uid")
+                    .outerJoin("tezos_originated_operations AS orig_op", "o.uid = orig_op.uid")
+                    .groupBy("o.type")
+                    .execute(sql);
             }
 
             soci::rowset<soci::row> performExecute(soci::session &sql) override {
                 return _builder.select("o.account_uid, o.uid, o.wallet_uid, o.type, o.date, o.senders, o.recipients,"
-                                               "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time, orig_op.uid"
-                        )
-                        .from("operations").to("o")
-                        .outerJoin("blocks AS b", "o.block_uid = b.uid")
-                        .outerJoin("tezos_originated_operations AS orig_op", "o.uid = orig_op.uid")
-                        .execute(sql);
-
+                                       "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time, orig_op.uid")
+                    .from("operations")
+                    .to("o")
+                    .outerJoin("blocks AS b", "o.block_uid = b.uid")
+                    .outerJoin("tezos_originated_operations AS orig_op", "o.uid = orig_op.uid")
+                    .execute(sql);
             };
         };
 
         class TezosLikeOriginatedAccount;
         class TezosLikeAccount : public api::TezosLikeAccount, public AbstractAccount {
-        public:
-
+          public:
             TezosLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                              int32_t index,
                              const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
@@ -96,16 +95,16 @@ namespace ledger {
 
             /// Return "true" if interpreting this Transaction added a new address in the keychain.
             /// Most common case is if the Transaction is a contract origination.
-            bool interpretTransaction(const TezosLikeBlockchainExplorerTransaction& transaction,
-                                      std::vector<Operation>& out);
+            bool interpretTransaction(const TezosLikeBlockchainExplorerTransaction &transaction,
+                                      std::vector<Operation> &out);
 
-            Try<int> bulkInsert(const std::vector<Operation>& operations);
+            Try<int> bulkInsert(const std::vector<Operation> &operations);
 
             /// Return "true" if interpreting this operation added a new address in the keychain.
             /// Most common case is if the Transaction is a contract origination.
             bool updateOriginatedAccounts(const Operation &operation);
 
-            bool putBlock(soci::session& sql, const TezosLikeBlockchainExplorer::Block &block);
+            bool putBlock(soci::session &sql, const TezosLikeBlockchainExplorer::Block &block);
 
             std::shared_ptr<TezosLikeKeychain> getKeychain() const;
 
@@ -130,9 +129,9 @@ namespace ledger {
                                          const std::shared_ptr<api::StringCallback> &callback) override;
 
             void _broadcastRawTransaction(const std::vector<uint8_t> &transaction,
-                                         const std::shared_ptr<api::StringCallback> &callback,
-                                         const std::shared_ptr<BigInt>& counter,
-                                         const std::string& correlationId) ;
+                                          const std::shared_ptr<api::StringCallback> &callback,
+                                          const std::shared_ptr<BigInt> &counter,
+                                          const std::string &correlationId);
 
             void broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
                                       const std::shared_ptr<api::StringCallback> &callback) override;
@@ -142,50 +141,50 @@ namespace ledger {
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
-            void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override;
+            void getEstimatedGasLimit(const std::string &address, const std::shared_ptr<api::BigIntCallback> &callback) override;
             FuturePtr<BigInt> getEstimatedGasLimit(const std::string &address);
 
-            void getStorage(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override;
+            void getStorage(const std::string &address, const std::shared_ptr<api::BigIntCallback> &callback) override;
             FuturePtr<BigInt> getStorage(const std::string &address);
 
             std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>> getOriginatedAccounts() override;
 
             void addOriginatedAccounts(soci::session &sql, const std::vector<TezosLikeOriginatedAccountDatabaseEntry> &originatedEntries);
 
-            void getFees(const std::shared_ptr<api::BigIntCallback> & callback) override;
+            void getFees(const std::shared_ptr<api::BigIntCallback> &callback) override;
             FuturePtr<BigInt> getFees();
 
-            void getGasPrice(const std::shared_ptr<api::BigIntCallback> & callback) override;
+            void getGasPrice(const std::shared_ptr<api::BigIntCallback> &callback) override;
             FuturePtr<BigInt> getGasPrice();
 
-            FuturePtr<GasLimit> estimateGasLimit(const std::shared_ptr<TezosLikeTransactionApi>& tx, double adjustment_factor = 1.1);
+            FuturePtr<GasLimit> estimateGasLimit(const std::shared_ptr<TezosLikeTransactionApi> &tx, double adjustment_factor = 1.1);
 
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
-            void incrementOptimisticCounter(std::shared_ptr<TezosLikeTransactionApi> tx, const std::shared_ptr<BigInt>& explorerCounter);
+            void incrementOptimisticCounter(std::shared_ptr<TezosLikeTransactionApi> tx, const std::shared_ptr<BigInt> &explorerCounter);
 
-            void saveOptimisticCounter(const std::shared_ptr<BigInt>& counter, const std::string& txHash);
+            void saveOptimisticCounter(const std::shared_ptr<BigInt> &counter, const std::string &txHash);
 
-            void getCurrentDelegate(const std::shared_ptr<api::StringCallback> & callback) override;
+            void getCurrentDelegate(const std::shared_ptr<api::StringCallback> &callback) override;
             Future<std::string> getCurrentDelegate();
 
-            void getTokenBalance(const std::string& tokenAddress, const std::shared_ptr<api::BigIntCallback>& callback) override;
+            void getTokenBalance(const std::string &tokenAddress, const std::shared_ptr<api::BigIntCallback> &callback) override;
 
-            const std::string& getAccountAddress() const; 
+            const std::string &getAccountAddress() const;
 
             /// Return a common trace prefix for logs
             /// TODO: Upstream tracePrefix() to AbstractAccount and use that everywhere
             std::string tracePrefix() const;
 
-            std::string computeOperationUid(const std::shared_ptr<api::TezosLikeTransaction> & transaction) const override;
-        
-        private:
+            std::string computeOperationUid(const std::shared_ptr<api::TezosLikeTransaction> &transaction) const override;
+
+          private:
             std::shared_ptr<TezosLikeAccount> getSelf();
             void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                          const std::shared_ptr<api::StringCallback> &callback,
-                                         const std::string& correlationId);
+                                         const std::string &correlationId);
 
-            std::pair<api::OperationType, std::string> getOperationTypeAndUidAdditional(const std::string& sender, const std::string& receiver, const std::string& originatedAccountId, const std::string& originatedAccountAddress) const;
+            std::pair<api::OperationType, std::string> getOperationTypeAndUidAdditional(const std::string &sender, const std::string &receiver, const std::string &originatedAccountId, const std::string &originatedAccountAddress) const;
 
             std::shared_ptr<TezosLikeKeychain> _keychain;
             std::string _accountAddress;
@@ -196,6 +195,6 @@ namespace ledger {
             std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>> _originatedAccounts;
             uint64_t _currentBlockHeight;
         };
-    }
-}
-#endif //LEDGER_CORE_TEZOSLIKEACCOUNT_H
+    } // namespace core
+} // namespace ledger
+#endif // LEDGER_CORE_TEZOSLIKEACCOUNT_H

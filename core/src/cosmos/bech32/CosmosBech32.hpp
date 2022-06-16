@@ -50,7 +50,8 @@ namespace ledger {
             std::vector<uint8_t> expandHrp(const std::string &hrp) const override;
 
             std::string encode(
-                const std::vector<uint8_t> &hash, const std::vector<uint8_t> &version) const override;
+                const std::vector<uint8_t> &hash,
+                const std::vector<uint8_t> &version) const override;
 
             std::pair<std::vector<uint8_t>, std::vector<uint8_t>> decode(
                 const std::string &str) const override;

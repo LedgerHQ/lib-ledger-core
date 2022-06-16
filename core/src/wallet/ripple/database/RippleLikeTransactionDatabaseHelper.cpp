@@ -45,7 +45,6 @@ namespace ledger {
         bool RippleLikeTransactionDatabaseHelper::getTransactionByHash(soci::session &sql,
                                                                        const std::string &hash,
                                                                        RippleLikeBlockchainExplorerTransaction &tx) {
-
             rowset<row> rows = (sql.prepare << "SELECT  tx.hash, tx.value, tx.time, "
                                                " tx.sender, tx.receiver, tx.fees, tx.confirmations, "
                                                "block.height, block.hash, block.time, block.currency_name, "
@@ -68,20 +67,20 @@ namespace ledger {
         bool RippleLikeTransactionDatabaseHelper::inflateTransaction(soci::session &sql,
                                                                      const soci::row &row,
                                                                      RippleLikeBlockchainExplorerTransaction &tx) {
-            tx.hash = row.get<std::string>(0);
-            tx.value = BigInt::fromHex(row.get<std::string>(1));
-            tx.receivedAt = row.get<std::chrono::system_clock::time_point>(2);
-            tx.sender = row.get<std::string>(3);
-            tx.receiver = row.get<std::string>(4);
-            tx.fees = BigInt::fromHex(row.get<std::string>(5));
+            tx.hash          = row.get<std::string>(0);
+            tx.value         = BigInt::fromHex(row.get<std::string>(1));
+            tx.receivedAt    = row.get<std::chrono::system_clock::time_point>(2);
+            tx.sender        = row.get<std::string>(3);
+            tx.receiver      = row.get<std::string>(4);
+            tx.fees          = BigInt::fromHex(row.get<std::string>(5));
             tx.confirmations = get_number<uint64_t>(row, 6);
             if (row.get_indicator(7) != i_null) {
                 RippleLikeBlockchainExplorer::Block block;
-                block.height = get_number<uint64_t>(row, 7);
-                block.hash = row.get<std::string>(8);
-                block.time = row.get<std::chrono::system_clock::time_point>(9);
+                block.height       = get_number<uint64_t>(row, 7);
+                block.hash         = row.get<std::string>(8);
+                block.time         = row.get<std::chrono::system_clock::time_point>(9);
                 block.currencyName = row.get<std::string>(10);
-                tx.block = block;
+                tx.block           = block;
             }
 
             if (row.get_indicator(11) != i_null &&
@@ -121,7 +120,7 @@ namespace ledger {
         std::string RippleLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
                                                                         const std::string &accountUid,
                                                                         const RippleLikeBlockchainExplorerTransaction &tx) {
-            auto blockUid = tx.block.map<std::string>([](const RippleLikeBlockchainExplorer::Block &block) {
+            auto blockUid    = tx.block.map<std::string>([](const RippleLikeBlockchainExplorer::Block &block) {
                 return block.getUid();
             });
 
@@ -140,7 +139,7 @@ namespace ledger {
                     BlockDatabaseHelper::putBlock(sql, tx.block.getValue());
                 }
                 auto hexValue = tx.value.toHexString();
-                auto hexFees = tx.fees.toHexString();
+                auto hexFees  = tx.fees.toHexString();
                 sql
                     << "INSERT INTO ripple_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :confirmations, :sequence, :destination_tag, :status)",
                     use(rippleTxUid),
@@ -176,7 +175,6 @@ namespace ledger {
             soci::session &sql,
             const std::string &accountUid,
             const std::chrono::system_clock::time_point &date) {
-
             OperationDatabaseHelper::eraseDataSince(sql, accountUid, date,
                                                     "ripple_operations", "ripple_transactions");
         }

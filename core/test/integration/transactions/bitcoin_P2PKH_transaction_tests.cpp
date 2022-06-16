@@ -49,9 +49,9 @@ struct BitcoinMakeP2PKHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
         testData.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
-        testData.walletName = randomWalletName();
+        testData.walletName   = randomWalletName();
         testData.currencyName = "bitcoin";
-        testData.inflate_btc = ledger::testing::medium_xpub::inflate;
+        testData.inflate_btc  = ledger::testing::medium_xpub::inflate;
     }
 };
 
@@ -81,16 +81,16 @@ struct BitcoinStardustTransaction : public BitcoinMakeBaseTransaction {
 
         testData.configuration = DynamicObject::newInstance();
         testData.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
-        testData.walletName = randomWalletName();
+        testData.walletName   = randomWalletName();
         testData.currencyName = "bitcoin_stardust";
-        testData.inflate_btc = ledger::testing::medium_xpub::inflate;
+        testData.inflate_btc  = ledger::testing::medium_xpub::inflate;
     }
 
     void recreate() override {
         pool = newDefaultPool();
         pool->addCurrency(bitcoinStardust);
-        wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
-        account = testData.inflate_btc(pool, wallet);
+        wallet   = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        account  = testData.inflate_btc(pool, wallet);
         currency = wallet->getCurrency();
     }
 };
@@ -102,11 +102,11 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
 
     builder->sendToAddress(api::Amount::fromLong(currency, 20000000), "36v1GRar68bBEyvGxi9RQvdP6Rgvdwn2C2");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
-    //builder->excludeUtxo("beabf89d72eccdcb895373096a402ae48930aa54d2b9e4d01a05e8f068e9ea49", 0);
+    // builder->excludeUtxo("beabf89d72eccdcb895373096a402ae48930aa54d2b9e4d01a05e8f068e9ea49", 0);
     builder->setFeesPerByte(api::Amount::fromLong(currency, 61));
-    auto f = builder->build();
-    auto tx = uv::wait(f);
-    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
+    auto f           = builder->build();
+    auto tx          = uv::wait(f);
+    auto parsedTx    = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
     auto rawPrevious = uv::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
     EXPECT_EQ(tx->serialize(), parsedTx->serialize());
     //    EXPECT_EQ(
@@ -142,7 +142,7 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutputAndFakeSigna
     builder->sendToAddress(api::Amount::fromLong(currency, 10000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
-    auto f = builder->build();
+    auto f  = builder->build();
     auto tx = uv::wait(f);
     tx->getInputs()[0]->pushToScriptSig({5, 'h', 'e', 'l', 'l', 'o'});
     std::cout << hex::toString(tx->serialize()) << std::endl;
@@ -153,16 +153,16 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutputAndFakeSigna
 }
 
 TEST_F(BitcoinMakeP2PKHTransaction, OptimizeSize) {
-    auto builder = tx_builder();
+    auto builder              = tx_builder();
     const int64_t feesPerByte = 20;
     builder->sendToAddress(api::Amount::fromLong(currency, 10000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
     builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, feesPerByte));
-    auto f = builder->build();
+    auto f  = builder->build();
     auto tx = uv::wait(f);
     tx->getInputs()[0]->pushToScriptSig({5, 'h', 'e', 'l', 'l', 'o'});
     auto transactionSize = tx->serialize().size();
-    auto fees = tx->getFees();
+    auto fees            = tx->getFees();
     EXPECT_TRUE(fees->toLong() >= transactionSize * feesPerByte);
 }
 
@@ -171,7 +171,7 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithMultipleInputs) {
     builder->sendToAddress(api::Amount::fromLong(currency, 100000000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
-    auto f = builder->build();
+    auto f  = builder->build();
     auto tx = uv::wait(f);
     std::cout << hex::toString(tx->serialize()) << std::endl;
     //    EXPECT_EQ(
@@ -181,11 +181,11 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithMultipleInputs) {
 }
 
 TEST_F(BitcoinMakeP2PKHTransaction, Toto) {
-    std::shared_ptr<AbstractWallet> w = uv::wait(pool->createWallet("my_btc_wallet_toto", "bitcoin_testnet", DynamicObject::newInstance()));
+    std::shared_ptr<AbstractWallet> w        = uv::wait(pool->createWallet("my_btc_wallet_toto", "bitcoin_testnet", DynamicObject::newInstance()));
     api::ExtendedKeyAccountCreationInfo info = uv::wait(w->getNextExtendedKeyAccountCreationInfo());
     info.extendedKeys.push_back("tpubDCJarhe7f951cUufTWeGKh1w6hDgdBcJfvQgyMczbxWvwvLdryxZuchuNK3KmTKXwBNH6Ze6tHGrUqvKGJd1VvSZUhTVx58DrLn9hR16DVr");
     std::shared_ptr<AbstractAccount> account = std::dynamic_pointer_cast<AbstractAccount>(uv::wait(w->newAccountWithExtendedKeyInfo(info)));
-    std::shared_ptr<BitcoinLikeAccount> bla = std::dynamic_pointer_cast<BitcoinLikeAccount>(account);
+    std::shared_ptr<BitcoinLikeAccount> bla  = std::dynamic_pointer_cast<BitcoinLikeAccount>(account);
     Promise<Unit> p;
     auto s = bla->synchronize();
     s->subscribe(bla->getContext(), make_receiver([=](const std::shared_ptr<api::Event> &event) mutable {
@@ -197,17 +197,17 @@ TEST_F(BitcoinMakeP2PKHTransaction, Toto) {
                                api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT);
                      p.success(unit);
                  }));
-    Unit u = uv::wait(p.getFuture());
+    Unit u       = uv::wait(p.getFuture());
 
     auto builder = std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(bla->buildTransaction(false));
     builder->sendToAddress(api::Amount::fromLong(currency, 1000), "ms8C1x7qHa3WJM986NKyx267i2LFGaHRZn");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
-    auto f = builder->build();
+    auto f  = builder->build();
     auto tx = uv::wait(f);
     std::cout << hex::toString(tx->serialize()) << std::endl;
     std::cout << tx->getOutputs()[0]->getAddress().value_or("NOP") << std::endl;
-    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
+    auto parsedTx    = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
     auto rawPrevious = uv::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
     std::cout << hex::toString(parsedTx->serialize()) << std::endl;
     std::cout << parsedTx->getInputs().size() << std::endl;
@@ -219,9 +219,9 @@ TEST_F(BitcoinMakeP2PKHTransaction, Toto) {
 struct BCHMakeP2PKHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
-        testData.walletName = randomWalletName();
-        testData.currencyName = "bitcoin_cash";
-        testData.inflate_btc = ledger::testing::bch_xpub::inflate;
+        testData.walletName    = randomWalletName();
+        testData.currencyName  = "bitcoin_cash";
+        testData.inflate_btc   = ledger::testing::bch_xpub::inflate;
     }
 };
 
@@ -231,16 +231,16 @@ TEST_F(BCHMakeP2PKHTransaction, CreateStandardP2SHWithOneOutput) {
         builder->sendToAddress(api::Amount::fromLong(currency, 5000), toAddress);
         builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
         builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
-        auto f = builder->build();
-        auto tx = uv::wait(f);
+        auto f            = builder->build();
+        auto tx           = uv::wait(f);
         auto serializedTx = tx->serialize();
-        auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx, 0);
+        auto parsedTx     = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx, 0);
         EXPECT_EQ(serializedTx, parsedTx->serialize());
         return hex::toString(tx->serialize());
     };
 
     // https://explorer.bitcoin.com/bch/address/14RYdhaFU9fMH25e6CgkRrBRjZBvEvKxne
-    auto legacySerializeTx = buildBCHTxWithAddress("14RYdhaFU9fMH25e6CgkRrBRjZBvEvKxne");
+    auto legacySerializeTx      = buildBCHTxWithAddress("14RYdhaFU9fMH25e6CgkRrBRjZBvEvKxne");
     auto cashAddressSerializeTx = buildBCHTxWithAddress("bitcoincash:qqjce3pqczzukajdqc27psjnd26lyz2d5yg2cfjtxe");
     EXPECT_EQ(legacySerializeTx, cashAddressSerializeTx);
 }
@@ -248,14 +248,13 @@ TEST_F(BCHMakeP2PKHTransaction, CreateStandardP2SHWithOneOutput) {
 struct ZCASHMakeP2PKHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
-        testData.walletName = randomWalletName();
-        testData.currencyName = "zcash";
-        testData.inflate_btc = ledger::testing::zec_xpub::inflate;
+        testData.walletName    = randomWalletName();
+        testData.currencyName  = "zcash";
+        testData.inflate_btc   = ledger::testing::zec_xpub::inflate;
     }
 };
 
 TEST_F(ZCASHMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
-
     auto bus = account->synchronize();
     bus->subscribe(getTestExecutionContext(),
                    make_receiver([=](const std::shared_ptr<api::Event> &event) {
@@ -273,7 +272,7 @@ TEST_F(ZCASHMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
     builder->sendToAddress(api::Amount::fromLong(currency, 2000), "t1MepQJABxoWarqMvgBHGiFprtuvA47Hiv8");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
-    auto f = builder->build();
+    auto f  = builder->build();
     auto tx = uv::wait(f);
     cout << hex::toString(tx->serialize()) << endl;
     auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 40000000);
@@ -283,10 +282,10 @@ TEST_F(ZCASHMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
 }
 
 TEST_F(ZCASHMakeP2PKHTransaction, ParseSignedRawTransaction) {
-    //Tx hash 4858a0a3d5f1de0c0f5729f25c3501bda946093aed07f842e53a90ac65d66f70
-    auto hash = "4858a0a3d5f1de0c0f5729f25c3501bda946093aed07f842e53a90ac65d66f70";
+    // Tx hash 4858a0a3d5f1de0c0f5729f25c3501bda946093aed07f842e53a90ac65d66f70
+    auto hash  = "4858a0a3d5f1de0c0f5729f25c3501bda946093aed07f842e53a90ac65d66f70";
     auto strTx = "0100000001f8355b0761296d28e29bd39833fe8c6558120037498dfdedabf41890e65c68dc010000006b483045022100a13ae06b36e3d4e90c7b9265bfff296b98d79c9970d7ef4964eb26d23ab44a5f022024155e86bde7a2322b1395d904c5fa007a925bc02f7d60623bde56a8b09bbb680121032d1d22333719a013313e538557971639f8c167fa5be8089dd2e996d704fb580cffffffff02a0860100000000001976a91407c4358a95e07e570d67857e12086fd6b1ee873688acf24f1600000000001976a9143c1a6afff1941911e0b524ffcd2a15de6e68b6d188ac00000000";
-    auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(currency, hex::toByteArray(strTx), 0);
+    auto tx    = BitcoinLikeTransactionApi::parseRawSignedTransaction(currency, hex::toByteArray(strTx), 0);
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
     EXPECT_EQ(tx->getHash(), hash);
     EXPECT_GT(tx->getInputs().size(), 0);
@@ -296,7 +295,7 @@ TEST_F(ZCASHMakeP2PKHTransaction, ParseSignedRawTransaction) {
     EXPECT_EQ(tx->getOutputs()[1]->getAddress().value_or(""), "t1PMQCQ36ccBJeEdFXJh4nnU34rPyDimANE");
 }
 
-//TODO: activate when adding expiryHeight and extraData to serialized transaction (refer to BitcoinLikeTransactionApi::serializeEpilogue)
+// TODO: activate when adding expiryHeight and extraData to serialized transaction (refer to BitcoinLikeTransactionApi::serializeEpilogue)
 /*
 TEST_F(ZCASHMakeP2SHTransaction, ParseSignedRawTransactionOverwinter) {
     //Tx hash 69d831ac9c59f7d7077c1ae6d85daa7b7094a6f70e57b77cc17ab325bba218ab

@@ -43,16 +43,16 @@ using namespace std;
 
 struct RippleMakeTransaction : public RippleMakeBaseTransaction {
     void SetUpConfig() override {
-        auto configuration = DynamicObject::newInstance();
+        auto configuration     = DynamicObject::newInstance();
         testData.configuration = configuration;
-        testData.walletName = randomWalletName();
-        testData.currencyName = "ripple";
-        testData.inflate_xrp = ledger::testing::xrp::inflate;
+        testData.walletName    = randomWalletName();
+        testData.currencyName  = "ripple";
+        testData.inflate_xrp   = ledger::testing::xrp::inflate;
     }
 };
 
 TEST_F(RippleMakeTransaction, CreateTx) {
-    auto builder = tx_builder();
+    auto builder  = tx_builder();
 
     auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
@@ -68,41 +68,41 @@ TEST_F(RippleMakeTransaction, CreateTx) {
         getTestExecutionContext()->stop();
     });
 
-    auto bus = account->synchronize();
+    auto bus      = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
 
     getTestExecutionContext()->waitUntilStopped();
 
-    auto balance = uv::wait(account->getBalance());
-    auto fromDate = "2018-01-01T13:38:23Z";
-    auto toDate = DateUtils::toJSON(DateUtils::now());
+    auto balance        = uv::wait(account->getBalance());
+    auto fromDate       = "2018-01-01T13:38:23Z";
+    auto toDate         = DateUtils::toJSON(DateUtils::now());
     auto balanceHistory = uv::wait(account->getBalanceHistory(fromDate, toDate, api::TimePeriod::MONTH));
 
     EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), balance->toLong());
 
     builder->setFees(api::Amount::fromLong(currency, 10));
     builder->sendToAddress(api::Amount::fromLong(currency, 220000), "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k");
-    auto f = builder->build();
-    auto tx = uv::wait(f);
+    auto f       = builder->build();
+    auto tx      = uv::wait(f);
 
     auto destTag = tx->getDestinationTag();
     EXPECT_EQ(destTag.value_or(0), 0);
     auto lastLedgerSequence = tx->getLedgerSequence();
     EXPECT_TRUE(lastLedgerSequence->intValue() > 0);
 
-    auto serializedTx = tx->serialize();
-    auto parsedTx = RippleLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx);
+    auto serializedTx       = tx->serialize();
+    auto parsedTx           = RippleLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx);
     auto serializedParsedTx = parsedTx->serialize();
     EXPECT_EQ(serializedTx, serializedParsedTx);
 
-    auto date = "2000-03-27T09:10:22Z";
+    auto date         = "2000-03-27T09:10:22Z";
     auto formatedDate = DateUtils::fromJSON(date);
 
-    //Delete account
-    auto code = uv::wait(wallet->eraseDataSince(formatedDate));
+    // Delete account
+    auto code         = uv::wait(wallet->eraseDataSince(formatedDate));
     EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
-    //Check if account was successfully deleted
+    // Check if account was successfully deleted
     auto newAccountCount = uv::wait(wallet->getAccountCount());
     EXPECT_EQ(newAccountCount, 0);
     {
@@ -112,21 +112,21 @@ TEST_F(RippleMakeTransaction, CreateTx) {
         EXPECT_EQ(result, false);
     }
 
-    //Delete wallet
+    // Delete wallet
     auto walletCode = uv::wait(pool->eraseDataSince(formatedDate));
     EXPECT_EQ(walletCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
-    //Check if wallet was successfully deleted
+    // Check if wallet was successfully deleted
     auto walletCount = uv::wait(pool->getWalletCount());
     EXPECT_EQ(walletCount, 0);
 }
 
 TEST_F(RippleMakeTransaction, ParseSignedRawTransaction) {
     // round-trip
-    //Tx hash AF4BB95DE86A640B90B2AF3C696EF26EFE7DD71864CC959D8030B448DD48E756
-    auto strTx = "12000022800000002400000001201b02a2618f6140000000014fb18068400000000000000a73210215a9ee08a4b4747e27f348365f93beb5897fa7e8776bedae2cb56917dcdbbf2f74473045022100f2ab61ec941462d692514bfddb00bc0d31ba7da66981193e67a04e90578c18b1022064a2375ecb5a68c22ee3038b783be6a9e1f2c882a8e8bbee43c4cfa93b536926811420237754a1727016188a1b7e52f2060f94339d128314dbc4ad4f38b60fa5624d0ddeddac209babbaa9d7";
+    // Tx hash AF4BB95DE86A640B90B2AF3C696EF26EFE7DD71864CC959D8030B448DD48E756
+    auto strTx   = "12000022800000002400000001201b02a2618f6140000000014fb18068400000000000000a73210215a9ee08a4b4747e27f348365f93beb5897fa7e8776bedae2cb56917dcdbbf2f74473045022100f2ab61ec941462d692514bfddb00bc0d31ba7da66981193e67a04e90578c18b1022064a2375ecb5a68c22ee3038b783be6a9e1f2c882a8e8bbee43c4cfa93b536926811420237754a1727016188a1b7e52f2060f94339d128314dbc4ad4f38b60fa5624d0ddeddac209babbaa9d7";
     auto txBytes = hex::toByteArray(strTx);
-    auto tx = api::RippleLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::RIPPLE, txBytes);
+    auto tx      = api::RippleLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::RIPPLE, txBytes);
 
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 
@@ -143,9 +143,9 @@ TEST_F(RippleMakeTransaction, ParseSignedRawTransaction) {
 TEST_F(RippleMakeTransaction, ParseSignedRawTransactionWithMemo) {
     // round-trip
     // TX hash BB7B32E859BFA9B9620D62CD89057FD0E0E396416799FCFE71AEB9201372A130
-    auto strTx = "12000022800000002400000002201b02a096316140000000000186a068400000000000000c732102ed9b4f4e73ea076b90b62ebd4863e71edaf255df611d8268c32fef525a6aa72e74463044022074e53eb13b15cc9b876bbb752913a4aab6dfdb330e83110a54eb2f7eb128f51202205ccf6885a77b2c5af6d5132c1417338447226fce1509e223dfdad613f42748d581140d53c4229ab611e29d3207e87b8a5851b63487978314550fc62003e785dc231a1058a05e56e3f09cf4e6f9ea7c06636c69656e747d08726d2d312e322e34e1f1";
+    auto strTx   = "12000022800000002400000002201b02a096316140000000000186a068400000000000000c732102ed9b4f4e73ea076b90b62ebd4863e71edaf255df611d8268c32fef525a6aa72e74463044022074e53eb13b15cc9b876bbb752913a4aab6dfdb330e83110a54eb2f7eb128f51202205ccf6885a77b2c5af6d5132c1417338447226fce1509e223dfdad613f42748d581140d53c4229ab611e29d3207e87b8a5851b63487978314550fc62003e785dc231a1058a05e56e3f09cf4e6f9ea7c06636c69656e747d08726d2d312e322e34e1f1";
     auto txBytes = hex::toByteArray(strTx);
-    auto tx = api::RippleLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::RIPPLE, txBytes);
+    auto tx      = api::RippleLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::RIPPLE, txBytes);
 
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 
@@ -170,9 +170,9 @@ TEST_F(RippleMakeTransaction, ParseSignedRawTransactionWithMemo) {
 TEST_F(RippleMakeTransaction, ParseSignedRawTransactionWithDestinationTag) {
     // round-trip
     // TX hash 9A52BD8B76BE2FADCEEE9AFFA6413689F47C82EE9A39DC641AAD26F468533459
-    auto strTx = "1200002280000000240004aa082ea2de6f1f201b02cb941361400000004e21388068400000000000000c732102ecc1e3a8a7dd1f1bb768a1d59749e543669afabbe50c9e488aec70501c58f629744630440220382671f591917c2d626769d78af18b7aaca96c064cf83ca8d9184d1689fbab05022054c98645eb4a7a26244663418482728822e0a5242977d82690fd8c2193a5b8d88114d5edb1787948d73ce6dc97887a7426043c3134a08314d3a0f1993876211f413d4edf0a70cee0c8212db8";
+    auto strTx   = "1200002280000000240004aa082ea2de6f1f201b02cb941361400000004e21388068400000000000000c732102ecc1e3a8a7dd1f1bb768a1d59749e543669afabbe50c9e488aec70501c58f629744630440220382671f591917c2d626769d78af18b7aaca96c064cf83ca8d9184d1689fbab05022054c98645eb4a7a26244663418482728822e0a5242977d82690fd8c2193a5b8d88114d5edb1787948d73ce6dc97887a7426043c3134a08314d3a0f1993876211f413d4edf0a70cee0c8212db8";
     auto txBytes = hex::toByteArray(strTx);
-    auto tx = api::RippleLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::RIPPLE, txBytes);
+    auto tx      = api::RippleLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::RIPPLE, txBytes);
 
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 

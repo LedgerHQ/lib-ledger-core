@@ -39,8 +39,8 @@ namespace ledger {
             const api::RippleLikeNetworkParameters &parameters,
             const std::shared_ptr<api::DynamicObject> &configuration) : DedicatedContext(context),
                                                                         RippleLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
-            _http = http;
-            _parameters = parameters;
+            _http            = http;
+            _parameters      = parameters;
             _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v2");
         }
 
@@ -51,13 +51,12 @@ namespace ledger {
 
         Future<std::shared_ptr<BigInt>>
         ApiRippleLikeBlockchainExplorer::getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) {
-
             if (addresses.size() != 1) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "ApiRippleLikeBlockchainExplorer::getBalance can only be called with one address");
             }
 
             std::string addressesStr = addresses[0]->toBase58();
-            auto size = addresses.size();
+            auto size                = addresses.size();
 
             return _http->GET(fmt::format("/{}/accounts/{}/balances", _explorerVersion, addressesStr))
                 .json()
@@ -70,7 +69,7 @@ namespace ledger {
                     }
                     std::string strBalance;
                     auto size = json["balances"].Size();
-                    //Find XRP balance
+                    // Find XRP balance
                     for (int i = 0; i < size; i++) {
                         if (json["balances"][i]["currency"] == "XRP") {
                             strBalance = json["balances"][i]["value"].GetString();

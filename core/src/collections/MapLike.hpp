@@ -148,4 +148,4 @@ namespace ledger {
         using Map = MapLike<K, V, std::unordered_map<K, V>>;
     } // namespace core
 } // namespace ledger
-#endif //LEDGER_CORE_MAPLIKE_HPP
+#endif // LEDGER_CORE_MAPLIKE_HPP

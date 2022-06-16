@@ -79,8 +79,8 @@ namespace ledger {
                                                           _paginationMarkerLedger,
                                                           _paginationMarkerSeq);
                     _paginationMarkerLedger = "";
-                    _paginationMarkerSeq = "";
-                    _inPaginationMarker = false;
+                    _paginationMarkerSeq    = "";
+                    _inPaginationMarker     = false;
                 }
 
                 PROXY_PARSE_TXS(EndObject, memberCount)
@@ -121,4 +121,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_RIPPLELIKETRANSACTIONSBULKPARSER_H
+#endif // LEDGER_CORE_RIPPLELIKETRANSACTIONSBULKPARSER_H

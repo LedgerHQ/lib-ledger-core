@@ -81,7 +81,7 @@ namespace ledger {
                         {0x08}};
                     return BITCOIN_CASH;
                 } else if (networkIdentifier == "dgb") {
-                    //https://github.com/digibyte/digibyte/blob/master/src/bech32.cpp
+                    // https://github.com/digibyte/digibyte/blob/master/src/bech32.cpp
                     static const Bech32Struct DIGIBYTE = {
                         "digibyte",
                         "dgb",
@@ -92,7 +92,7 @@ namespace ledger {
                         {0x00}};
                     return DIGIBYTE;
                 } else if (networkIdentifier == "ltc") {
-                    //https://github.com/litecoin-project/litecoin/blob/master/src/bech32.cpp
+                    // https://github.com/litecoin-project/litecoin/blob/master/src/bech32.cpp
                     static const Bech32Struct LITECOIN = {
                         "litecoin",
                         "ltc",
@@ -129,8 +129,8 @@ namespace ledger {
                     }
                     strings::join(strGenerator, generator, separator);
                     auto P2WPKHVersion = hex::toString(params.P2WPKHVersion);
-                    auto P2WSHVersion = hex::toString(params.P2WSHVersion);
-                    auto generatorStr = generator.str();
+                    auto P2WSHVersion  = hex::toString(params.P2WSHVersion);
+                    auto generatorStr  = generator.str();
                     sql << "INSERT INTO bech32_parameters VALUES(:name, :hrp, :separator, :generator, :p2wpkh_version, :p2wsh_version)",
                         use(params.name),
                         use(params.hrp),

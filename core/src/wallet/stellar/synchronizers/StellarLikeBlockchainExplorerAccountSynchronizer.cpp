@@ -71,9 +71,9 @@ namespace ledger {
         }
 
         void StellarLikeBlockchainExplorerAccountSynchronizer::synchronizeAccount(const std::shared_ptr<StellarLikeAccount> &account) {
-            auto self = shared_from_this();
+            auto self        = shared_from_this();
             auto preferences = account->getInternalPreferences()->getSubPreferences("StellarLikeBlockchainExplorerAccountSynchronizer");
-            auto state = preferences
+            auto state       = preferences
                              ->template getObject<StellarLikeBlockchainExplorerAccountSynchronizer::SavedState>("state")
                              // provide default state if none exists yet
                              .getValueOr(SavedState{});
@@ -84,7 +84,7 @@ namespace ledger {
         void StellarLikeBlockchainExplorerAccountSynchronizer::synchronizeAccount(const std::shared_ptr<StellarLikeAccount> &account,
                                                                                   StellarLikeBlockchainExplorerAccountSynchronizer::SavedState &state) {
             auto address = account->getKeychain()->getAddress()->toString();
-            auto self = shared_from_this();
+            auto self    = shared_from_this();
 
             _explorer->getAccount(address)
                 .onComplete(account->getContext(), [self, account, state](const Try<std::shared_ptr<stellar::Account>> &accountInfo) mutable {
@@ -104,7 +104,7 @@ namespace ledger {
             const std::shared_ptr<StellarLikeAccount> &account,
             StellarLikeBlockchainExplorerAccountSynchronizer::SavedState &state) {
             auto address = account->getKeychain()->getAddress()->toString();
-            auto self = shared_from_this();
+            auto self    = shared_from_this();
             _explorer->getTransactions(address, state.transactionPagingToken)
                 .onComplete(account->getContext(), [self, account, state](const Try<stellar::TransactionVector> &txs) mutable {
                     if (txs.isFailure()) {

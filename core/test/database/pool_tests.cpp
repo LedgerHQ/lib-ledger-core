@@ -62,8 +62,8 @@ static const std::unordered_set<std::string> ALL_TABLE_NAMES = {
 
 TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+    auto resolver   = std::make_shared<NativePathResolver>();
+    auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, nullptr, "test")
         .onComplete(dispatcher->getMainExecutionContext(), [&](const TryPtr<DatabaseSessionPool> &result) {
             EXPECT_TRUE(result.isSuccess());
@@ -87,22 +87,22 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
 
 TEST(DatabaseSessionPool, InitializeCurrencies) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-    auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    auto pool = WalletPool::newInstance(
-        "my_pool",
-        "",
-        nullptr,
-        nullptr,
-        resolver,
-        printer,
-        dispatcher,
-        nullptr,
-        backend,
-        api::DynamicObject::newInstance(),
-        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-        std::make_shared<ledger::core::test::MemPreferencesBackend>());
+    auto resolver   = std::make_shared<NativePathResolver>();
+    auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+    auto printer    = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    auto pool       = WalletPool::newInstance(
+              "my_pool",
+              "",
+              nullptr,
+              nullptr,
+              resolver,
+              printer,
+              dispatcher,
+              nullptr,
+              backend,
+              api::DynamicObject::newInstance(),
+              std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+              std::make_shared<ledger::core::test::MemPreferencesBackend>());
 
     api::Currency bitcoin;
 

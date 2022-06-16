@@ -66,7 +66,7 @@ class WebSocketClientTest : public Test {
         Mock::AllowLeak(engine.get());
     }
 
-    const std::string url = "uri://some_address";
+    const std::string url     = "uri://some_address";
     const std::string message = "Hello from websocket";
     MockHandler mockHandler;
     std::shared_ptr<MockApiWebSocketClient> engine;
@@ -75,7 +75,7 @@ class WebSocketClientTest : public Test {
 };
 
 TEST_F(WebSocketClientTest, InjectionIsDone) {
-    //Injection happened once
+    // Injection happened once
     EXPECT_CALL(*engine, connect(StrEq(url), _)).Times(1);
     // callback was not called
     EXPECT_CALL(mockHandler, Handle(_, _, _, _)).Times(0);

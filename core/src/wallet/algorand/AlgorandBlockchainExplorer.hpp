@@ -44,7 +44,6 @@ namespace ledger {
         namespace algorand {
 
             class BlockchainExplorer : public ConfigurationMatchable, public DedicatedContext {
-
               public:
                 BlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
                                    const std::shared_ptr<HttpClient> &http,
@@ -63,7 +62,7 @@ namespace ledger {
 
                 Future<model::TransactionsBulk> getTransactionsForAddress(const std::string &address,
                                                                           const Option<uint64_t> &firstRound = Option<uint64_t>(),
-                                                                          const Option<uint64_t> &lastRound = Option<uint64_t>()) const;
+                                                                          const Option<uint64_t> &lastRound  = Option<uint64_t>()) const;
 
                 Future<model::TransactionParams> getTransactionParams() const;
 

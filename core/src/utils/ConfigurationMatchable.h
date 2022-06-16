@@ -49,4 +49,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_CONFIGURATIONMATCHABLE_H
+#endif // LEDGER_CORE_CONFIGURATIONMATCHABLE_H

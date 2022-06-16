@@ -38,4 +38,4 @@
 #include <api/RippleLikeNetworkParameters.hpp>
 #include <api/TezosLikeNetworkParameters.hpp>
 
-#endif //LEDGER_CORE_NETWORKS_HPP
+#endif // LEDGER_CORE_NETWORKS_HPP

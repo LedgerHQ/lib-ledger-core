@@ -83,7 +83,7 @@ namespace ledger {
         PROXY_PARSE_TEZOS_WS(String, str, length, copy) {
             auto value = std::string(str, length);
             if (getLastKey() == "block_height") {
-                BigInt bigIntValue = BigInt::fromString(value);
+                BigInt bigIntValue    = BigInt::fromString(value);
                 _result->block.height = bigIntValue.toUint64();
             }
         }
@@ -91,7 +91,6 @@ namespace ledger {
     };
 
     bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-
         auto value = std::string(str, length);
         if (getLastKey() == "type") {
             _result->type = value;
@@ -135,4 +134,4 @@ namespace ledger {
 }
 }
 
-#endif //LEDGER_CORE_TEZOSLIKEWEBSOCKETNOTIFICATIONPARSER_H
+#endif // LEDGER_CORE_TEZOSLIKEWEBSOCKETNOTIFICATIONPARSER_H

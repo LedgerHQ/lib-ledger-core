@@ -40,12 +40,12 @@ namespace ledger {
 
         namespace ASN1 {
             static const uint8_t SEQUENCE = 0x30;
-            static const uint8_t INTEGER = 0x02;
+            static const uint8_t INTEGER  = 0x02;
         }; // namespace ASN1
 
         /**
          * @brief Represent a DER packed signature
-         * 
+         *
          */
         struct DER {
             std::vector<uint8_t> r;
@@ -53,14 +53,14 @@ namespace ledger {
 
             /**
              * @brief Serialize the DER signature as a raw bytes sequence
-             * 
-             * @return std::vector<uint8_t> 
+             *
+             * @return std::vector<uint8_t>
              */
             std::vector<uint8_t> toBytes();
 
             /**
              * @brief Parse a raw DER signature
-             * 
+             *
              * @param raw A DER signature as bytes
              * @return DER A Parsed DER
              */
@@ -69,4 +69,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_DER_HPP
+#endif // LEDGER_CORE_DER_HPP

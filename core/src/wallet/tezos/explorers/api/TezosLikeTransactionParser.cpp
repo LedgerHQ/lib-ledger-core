@@ -168,8 +168,8 @@ namespace ledger {
                     _transaction->hash = value;
                 } else if (_lastKey == "block_hash" || _lastKey == "block") {
                     TezosLikeBlockchainExplorer::Block block;
-                    block.hash = value;
-                    block.currencyName = currencies::TEZOS.name;
+                    block.hash          = value;
+                    block.currencyName  = currencies::TEZOS.name;
                     _transaction->block = block;
                 } else if (_lastKey == "timestamp" || _lastKey == "time") {
                     auto pos = value.find('+');
@@ -180,7 +180,7 @@ namespace ledger {
                     if (posZ == std::string::npos) {
                         value = value + "Z";
                     }
-                    auto date = DateUtils::fromJSON(value);
+                    auto date                = DateUtils::fromJSON(value);
                     _transaction->receivedAt = date;
                     if (_transaction->block.hasValue()) {
                         _transaction->block.getValue().time = date;

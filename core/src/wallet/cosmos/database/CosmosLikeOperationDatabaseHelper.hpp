@@ -54,14 +54,14 @@ namespace ledger {
                                     " FROM operations AS op "
                                     " WHERE op.account_uid = :uid ORDER BY op.date",
                      use(accountUid));
-                const auto COL_AMT = 0;
+                const auto COL_AMT  = 0;
                 const auto COL_FEES = 1;
                 const auto COL_TYPE = 2;
                 const auto COL_DATE = 3;
                 const auto COL_SEND = 4;
                 const auto COL_RECV = 5;
 
-                auto filterList = [&](const std::vector<std::string> &list) -> bool {
+                auto filterList     = [&](const std::vector<std::string> &list) -> bool {
                     for (auto &elem : list) {
                         if (filter(elem)) {
                             return true;
@@ -72,8 +72,8 @@ namespace ledger {
 
                 std::size_t c = 0;
                 for (auto &row : rows) {
-                    auto type = api::from_string<api::OperationType>(row.get<std::string>(COL_TYPE));
-                    auto senders = strings::split(row.get<std::string>(COL_SEND), ",");
+                    auto type       = api::from_string<api::OperationType>(row.get<std::string>(COL_TYPE));
+                    auto senders    = strings::split(row.get<std::string>(COL_SEND), ",");
                     auto recipients = strings::split(row.get<std::string>(COL_RECV), ",");
                     if ((type == api::OperationType::SEND && row.get_indicator(COL_SEND) != i_null &&
                          filterList(senders)) ||
@@ -84,9 +84,9 @@ namespace ledger {
                         Operation operation;
 
                         operation.amount = BigInt::fromHex(row.get<std::string>(COL_AMT));
-                        operation.fees = BigInt::fromHex(row.get<std::string>(COL_FEES));
-                        operation.type = type;
-                        operation.date = DateUtils::fromJSON(row.get<std::string>(COL_DATE));
+                        operation.fees   = BigInt::fromHex(row.get<std::string>(COL_FEES));
+                        operation.type   = type;
+                        operation.date   = DateUtils::fromJSON(row.get<std::string>(COL_DATE));
 
                         operations.push_back(operation);
 

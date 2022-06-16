@@ -56,10 +56,10 @@ namespace ledger {
                                                const std::shared_ptr<DynamicObject> &configuration,
                                                const DerivationScheme &scheme)
             : AbstractWallet(name, network, pool, configuration, scheme) {
-            _explorer = explorer;
-            _keychainFactory = keychainFactory;
+            _explorer            = explorer;
+            _keychainFactory     = keychainFactory;
             _synchronizerFactory = synchronizer;
-            _coinType = scheme.getCoinType() ? scheme.getCoinType() : network.bip44CoinType;
+            _coinType            = scheme.getCoinType() ? scheme.getCoinType() : network.bip44CoinType;
         }
 
         bool EthereumLikeWallet::isSynchronizing() {
@@ -105,16 +105,15 @@ namespace ledger {
 
         FuturePtr<ledger::core::api::Account>
         EthereumLikeWallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
-
             if (info.extendedKeys.empty()) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Empty extended keys passed to newAccountWithExtendedKeyInfo");
             }
 
-            auto self = getSelf();
+            auto self   = getSelf();
             auto scheme = getDerivationScheme();
             scheme.setCoinType(_coinType).setAccountIndex(info.index);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-            auto index = info.index;
+            auto index    = info.index;
             return async<std::shared_ptr<api::Account>>([=]() -> std::shared_ptr<api::Account> {
                 auto keychain = self->_keychainFactory->build(
                     index,
@@ -146,7 +145,7 @@ namespace ledger {
             auto accountScheme = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX);
             // To handle all exotic paths we should avoid private derivations
             // So if node or/and address level are hardened, then they are included in account's derivation path
-            auto path = scheme.getPath();
+            auto path          = scheme.getPath();
             auto hardenedDepth = path.getDepth();
             while (hardenedDepth) {
                 if (path.isHardened(hardenedDepth - 1)) {
@@ -163,7 +162,7 @@ namespace ledger {
             auto self = std::dynamic_pointer_cast<EthereumLikeWallet>(shared_from_this());
             return async<api::ExtendedKeyAccountCreationInfo>([self, accountIndex]() -> api::ExtendedKeyAccountCreationInfo {
                 api::ExtendedKeyAccountCreationInfo info;
-                info.index = accountIndex;
+                info.index  = accountIndex;
                 auto scheme = self->getDerivationScheme();
                 scheme.setCoinType(self->_coinType).setAccountIndex(accountIndex);
                 auto keychainEngine = self->getConfiguration()->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::ConfigurationDefaults::DEFAULT_KEYCHAIN);
@@ -184,7 +183,7 @@ namespace ledger {
             return getExtendedKeyAccountCreationInfo(accountIndex).map<api::AccountCreationInfo>(getContext(), [self, accountIndex](const api::ExtendedKeyAccountCreationInfo info) -> api::AccountCreationInfo {
                 api::AccountCreationInfo result;
                 result.index = accountIndex;
-                auto length = info.derivations.size();
+                auto length  = info.derivations.size();
                 for (auto i = 0; i < length; i++) {
                     DerivationPath path(info.derivations[i]);
                     auto owner = info.owners[i];
@@ -209,7 +208,7 @@ namespace ledger {
             auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfig(), entry.address,
                                                       getAccountInternalPreferences(entry.index), getCurrency());
 
-            auto account = std::make_shared<EthereumLikeAccount>(shared_from_this(),
+            auto account  = std::make_shared<EthereumLikeAccount>(shared_from_this(),
                                                                  entry.index,
                                                                  _explorer,
                                                                  _synchronizerFactory(),

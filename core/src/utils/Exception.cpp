@@ -35,8 +35,8 @@
 const ledger::core::optional<ledger::core::api::Error> ledger::core::Exception::NO_CORE_ERROR;
 
 ledger::core::Exception::Exception(api::ErrorCode code, const std::string &message, Option<std::shared_ptr<void>> userData) {
-    _code = code;
-    _message = message;
+    _code     = code;
+    _message  = message;
     _userData = userData;
 }
 

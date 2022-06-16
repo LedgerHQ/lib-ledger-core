@@ -43,8 +43,8 @@ namespace ledger {
           public:
             LedgerApiParser() : _parser(_lastKey) {
                 _statusCode = 0;
-                _depth = 0;
-                _result = std::make_shared<ResultType>();
+                _depth      = 0;
+                _result     = std::make_shared<ResultType>();
                 _parser.init(_result.get());
             }
 
@@ -205,4 +205,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_LEDGERAPIPARSER_HPP
+#endif // LEDGER_CORE_LEDGERAPIPARSER_HPP

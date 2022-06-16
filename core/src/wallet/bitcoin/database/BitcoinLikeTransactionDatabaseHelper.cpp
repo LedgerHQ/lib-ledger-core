@@ -82,20 +82,20 @@ namespace ledger {
                                                                       const soci::row &row,
                                                                       const std::string &accountUid,
                                                                       BitcoinLikeBlockchainExplorerTransaction &out) {
-            out.hash = row.get<std::string>(0);
-            out.version = (uint32_t)row.get<int32_t>(1);
+            out.hash       = row.get<std::string>(0);
+            out.version    = (uint32_t)row.get<int32_t>(1);
             out.receivedAt = row.get<std::chrono::system_clock::time_point>(2);
-            out.lockTime = (uint64_t)row.get<int>(3);
+            out.lockTime   = (uint64_t)row.get<int>(3);
             if (row.get_indicator(4) != i_null) {
                 BitcoinLikeBlockchainExplorer::Block block;
-                block.hash = row.get<std::string>(4);
-                block.height = get_number<uint64_t>(row, 5);
-                block.time = row.get<std::chrono::system_clock::time_point>(6);
+                block.hash         = row.get<std::string>(4);
+                block.height       = get_number<uint64_t>(row, 5);
+                block.time         = row.get<std::chrono::system_clock::time_point>(6);
                 block.currencyName = row.get<std::string>(7);
-                out.block = block;
+                out.block          = block;
             }
 
-            auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, out.hash);
+            auto btcTxUid               = BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, out.hash);
 
             // Fetch inputs
             rowset<soci::row> inputRows = (sql.prepare << "SELECT ti.input_idx, i.previous_output_idx, i.previous_tx_hash, i.amount, i.address, i.coinbase,"
@@ -106,25 +106,25 @@ namespace ledger {
                                            use(btcTxUid));
             for (auto &inputRow : inputRows) {
                 BitcoinLikeBlockchainExplorerInput input;
-                input.index = get_number<uint64_t>(inputRow, 0);
+                input.index                 = get_number<uint64_t>(inputRow, 0);
                 input.previousTxOutputIndex = inputRow.get<Option<int>>(1).map<uint32_t>([](const int &v) {
                     return (uint32_t)v;
                 });
-                input.previousTxHash = inputRow.get<Option<std::string>>(2);
-                input.value = inputRow.get<Option<long long>>(3).map<BigInt>([](const unsigned long long &v) {
+                input.previousTxHash        = inputRow.get<Option<std::string>>(2);
+                input.value                 = inputRow.get<Option<long long>>(3).map<BigInt>([](const unsigned long long &v) {
                     return BigInt(v);
                 });
-                input.address = inputRow.get<Option<std::string>>(4);
-                input.coinbase = inputRow.get<Option<std::string>>(5);
-                input.sequence = get_number<uint32_t>(inputRow, 6);
+                input.address               = inputRow.get<Option<std::string>>(4);
+                input.coinbase              = inputRow.get<Option<std::string>>(5);
+                input.sequence              = get_number<uint32_t>(inputRow, 6);
                 out.inputs.push_back(input);
             }
 
             // Fetch outputs
-            //Check if the output belongs to this account
-            //solve case of 2 accounts in DB one as sender and one as receiver
-            //of same transaction (filter on account_uid won't solve the issue because
-            //bitcoin_outputs going to external accounts have NULL account_uid)
+            // Check if the output belongs to this account
+            // solve case of 2 accounts in DB one as sender and one as receiver
+            // of same transaction (filter on account_uid won't solve the issue because
+            // bitcoin_outputs going to external accounts have NULL account_uid)
             rowset<soci::row> outputRows = (sql.prepare << "SELECT idx, amount, script, address, block_height, replaceable "
                                                            "FROM bitcoin_outputs WHERE transaction_hash = :hash AND transaction_uid = :tx_uid "
                                                            "ORDER BY idx",
@@ -134,7 +134,7 @@ namespace ledger {
                 BitcoinLikeBlockchainExplorerOutput output;
                 output.index = (uint64_t)outputRow.get<int>(0);
                 output.value.assignScalar(outputRow.get<long long>(1));
-                output.script = outputRow.get<std::string>(2);
+                output.script  = outputRow.get<std::string>(2);
                 output.address = outputRow.get<Option<std::string>>(3);
                 if (outputRow.get_indicator(4) != i_null) {
                     output.blockHeight = soci::get_number<uint64_t>(outputRow, 4);
@@ -192,7 +192,6 @@ namespace ledger {
             soci::session &sql,
             const std::string &accountUid,
             const std::chrono::system_clock::time_point &date) {
-
             rowset<std::string> rows = (sql.prepare << "SELECT transaction_uid FROM bitcoin_operations AS bop "
                                                        "JOIN operations AS op ON bop.uid = op.uid "
                                                        "WHERE op.account_uid = :uid AND op.date >= :date",

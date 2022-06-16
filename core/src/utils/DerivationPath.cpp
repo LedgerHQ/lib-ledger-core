@@ -52,12 +52,12 @@ namespace ledger {
 
         std::vector<uint32_t> DerivationPath::parse(const std::string &path) {
             std::string currentNode = "";
-            bool hardened = false;
-            bool lastCharWasZero = false;
-            bool nextIntIsInHex = false;
+            bool hardened           = false;
+            bool lastCharWasZero    = false;
+            bool nextIntIsInHex     = false;
             std::vector<uint32_t> result;
-            int sepCount = 0;
-            int index = 0;
+            int sepCount     = 0;
+            int index        = 0;
 
             auto pushSegment = [&]() {
                 if (currentNode.size() == 0 && sepCount > 0) {
@@ -77,7 +77,7 @@ namespace ledger {
                     result.push_back(value);
                 }
                 nextIntIsInHex = false;
-                hardened = false;
+                hardened       = false;
                 currentNode.clear();
                 sepCount += 1;
             };
@@ -88,7 +88,7 @@ namespace ledger {
                 } else if (c == '\'') {
                     hardened = true;
                 } else if (lastCharWasZero && (c == 'x' || c == 'X')) {
-                    nextIntIsInHex = true;
+                    nextIntIsInHex  = true;
                     lastCharWasZero = false;
                 } else if (c == 'm') {
                     if (index > 0) {

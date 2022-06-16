@@ -66,13 +66,13 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
             std::stringstream additionalBIPs;
             std::string separator(";");
             strings::join(params.AdditionalBIPs, additionalBIPs, separator);
-            auto BIPs = additionalBIPs.str();
-            auto hexP2PKHVersion = hex::toString(params.P2PKHVersion);
-            auto hexP2SHVersion = hex::toString(params.P2SHVersion);
-            auto hexXPUBVersion = hex::toString(params.XPUBVersion);
-            auto feePolicy = api::to_string(params.FeePolicy);
-            auto dustPolicy = api::to_string(params.DustPolicy);
-            auto sigHash = hex::toString(params.SigHash);
+            auto BIPs                      = additionalBIPs.str();
+            auto hexP2PKHVersion           = hex::toString(params.P2PKHVersion);
+            auto hexP2SHVersion            = hex::toString(params.P2SHVersion);
+            auto hexXPUBVersion            = hex::toString(params.XPUBVersion);
+            auto feePolicy                 = api::to_string(params.FeePolicy);
+            auto dustPolicy                = api::to_string(params.DustPolicy);
+            auto sigHash                   = hex::toString(params.SigHash);
             auto useTimestampedTransaction = static_cast<int>(params.UsesTimestampedTransaction);
             sql
                 << "INSERT INTO bitcoin_currencies VALUES(:name, :identifier, :p2pkh, :p2sh, :xpub, :dust, :fee_policy, :prefix, :use_timestamped_transaction, :delay, :sigHashType, :additionalBIPs, :dust_policy)",
@@ -97,9 +97,9 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
             std::stringstream additionalCIPs;
             std::string separator(",");
             strings::join(params.AdditionalCIPs, additionalCIPs, separator);
-            auto CIPs = additionalCIPs.str();
-            auto hexXPUBVersion = hex::toString(params.XPUBVersion);
-            auto hexPubKeyPrefix = hex::toString(params.PubKeyPrefix);
+            auto CIPs             = additionalCIPs.str();
+            auto hexXPUBVersion   = hex::toString(params.XPUBVersion);
+            auto hexPubKeyPrefix  = hex::toString(params.PubKeyPrefix);
             auto hexAddressPrefix = hex::toString(params.AddressPrefix);
             sql << "INSERT INTO cosmos_currencies VALUES(:name, :identifier, :xpub, "
                    ":pubkey_prefix, :address_prefix, :message_prefix, :chain_id, "
@@ -115,7 +115,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
             std::stringstream additionalEIPs;
             std::string separator(";");
             strings::join(params.AdditionalEIPs, additionalEIPs, separator);
-            auto EIPs = additionalEIPs.str();
+            auto EIPs        = additionalEIPs.str();
             auto xpubVersion = hex::toString(params.XPUBVersion);
             sql << "INSERT INTO ethereum_currencies VALUES(:name, :identifier, :chainID, :xpub, :prefix, :additionalBIPs)",
                 use(currency.name),
@@ -132,7 +132,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
             std::stringstream additionalRIPs;
             std::string separator(";");
             strings::join(params.AdditionalRIPs, additionalRIPs, separator);
-            auto RIPs = additionalRIPs.str();
+            auto RIPs        = additionalRIPs.str();
             auto xpubVersion = hex::toString(params.XPUBVersion);
             sql << "INSERT INTO ripple_currencies VALUES(:name, :identifier, :xpub, :prefix, :additionalRIPs)",
                 use(currency.name),
@@ -147,9 +147,9 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
             std::stringstream additionalTIPs;
             std::string separator(";");
             strings::join(params.AdditionalTIPs, additionalTIPs, separator);
-            auto TIPs = additionalTIPs.str();
-            auto xpubVersion = hex::toString(params.XPUBVersion);
-            auto implicitPrefix = hex::toString(params.ImplicitPrefix);
+            auto TIPs             = additionalTIPs.str();
+            auto xpubVersion      = hex::toString(params.XPUBVersion);
+            auto implicitPrefix   = hex::toString(params.ImplicitPrefix);
             auto originatedPrefix = hex::toString(params.OriginatedPrefix);
             sql << "INSERT INTO tezos_currencies VALUES(:name, :identifier, :xpub, :implicit_prefix, :originated_prefix, :prefix, :additionalTIPs)",
                 use(currency.name),
@@ -176,7 +176,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
 
             std::stringstream seps;
             std::string separator(";");
-            auto addrVersion = hex::toString(params.Version);
+            auto addrVersion      = hex::toString(params.Version);
             auto muxedAddrVersion = hex::toString(params.MuxedVersion);
             strings::join(params.AdditionalSEPs, seps, separator);
             auto SEPs = seps.str();
@@ -202,7 +202,6 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
 
 bool ledger::core::CurrenciesDatabaseHelper::insertERC20Token(soci::session &sql,
                                                               const ledger::core::api::ERC20Token &token) {
-
     auto count = 0;
     sql << "SELECT COUNT(*) FROM erc20_tokens WHERE contract_address = :address",
         soci::use(token.contractAddress),
@@ -224,9 +223,9 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
     for (auto &currency_row : rows) {
         auto offset = 0;
         api::Currency currency;
-        currency.name = currency_row.get<std::string>(0);
-        currency.walletType = api::from_string<api::WalletType>(currency_row.get<std::string>(1));
-        currency.bip44CoinType = currency_row.get<int32_t>(2);
+        currency.name             = currency_row.get<std::string>(0);
+        currency.walletType       = api::from_string<api::WalletType>(currency_row.get<std::string>(1));
+        currency.bip44CoinType    = currency_row.get<int32_t>(2);
         currency.paymentUriScheme = currency_row.get_indicator(3) == i_null ? "" : currency_row.get<std::string>(3);
         switch (currency.walletType) {
         case api::WalletType::BITCOIN: {
@@ -239,22 +238,22 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                                     use(currency.name));
             for (auto &btc_row : btc_rows) {
                 api::BitcoinLikeNetworkParameters params;
-                params.P2PKHVersion = hex::toByteArray(btc_row.get<std::string>(0));
-                params.P2SHVersion = hex::toByteArray(btc_row.get<std::string>(1));
-                params.XPUBVersion = hex::toByteArray(btc_row.get<std::string>(2));
+                params.P2PKHVersion                   = hex::toByteArray(btc_row.get<std::string>(0));
+                params.P2SHVersion                    = hex::toByteArray(btc_row.get<std::string>(1));
+                params.XPUBVersion                    = hex::toByteArray(btc_row.get<std::string>(2));
                 /*
-                     * On Linux, if we use int64_t, we get std::bad_cast exception thrown,
-                     * so we replace by a long long (which is supported by soci (soci::dt_long_long))
-                     */
-                params.Dust = btc_row.get<long long>(3);
-                params.FeePolicy = api::from_string<api::BitcoinLikeFeePolicy>(btc_row.get<std::string>(4));
-                params.UsesTimestampedTransaction = btc_row.get<int>(5) == 1;
-                params.MessagePrefix = btc_row.get<std::string>(6);
-                params.Identifier = btc_row.get<std::string>(7);
-                params.TimestampDelay = btc_row.get<long long>(8);
-                params.SigHash = hex::toByteArray(btc_row.get<std::string>(9));
-                params.AdditionalBIPs = strings::split(btc_row.get<std::string>(10), ",");
-                params.DustPolicy = api::from_string<api::BitcoinLikeDustPolicy>(btc_row.get<std::string>(11));
+                 * On Linux, if we use int64_t, we get std::bad_cast exception thrown,
+                 * so we replace by a long long (which is supported by soci (soci::dt_long_long))
+                 */
+                params.Dust                           = btc_row.get<long long>(3);
+                params.FeePolicy                      = api::from_string<api::BitcoinLikeFeePolicy>(btc_row.get<std::string>(4));
+                params.UsesTimestampedTransaction     = btc_row.get<int>(5) == 1;
+                params.MessagePrefix                  = btc_row.get<std::string>(6);
+                params.Identifier                     = btc_row.get<std::string>(7);
+                params.TimestampDelay                 = btc_row.get<long long>(8);
+                params.SigHash                        = hex::toByteArray(btc_row.get<std::string>(9));
+                params.AdditionalBIPs                 = strings::split(btc_row.get<std::string>(10), ",");
+                params.DustPolicy                     = api::from_string<api::BitcoinLikeDustPolicy>(btc_row.get<std::string>(11));
                 currency.bitcoinLikeNetworkParameters = params;
             }
             break;
@@ -271,13 +270,13 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                  use(currency.name));
             for (auto &cosmos_row : cosmos_rows) {
                 api::CosmosLikeNetworkParameters params;
-                params.Identifier = cosmos_row.get<std::string>(1);
-                params.XPUBVersion = hex::toByteArray(cosmos_row.get<std::string>(2));
-                params.PubKeyPrefix = hex::toByteArray(cosmos_row.get<std::string>(3));
-                params.AddressPrefix = hex::toByteArray(cosmos_row.get<std::string>(4));
-                params.MessagePrefix = cosmos_row.get<std::string>(5);
-                params.ChainId = cosmos_row.get<std::string>(6);
-                params.AdditionalCIPs = strings::split(cosmos_row.get<std::string>(7), ",");
+                params.Identifier                    = cosmos_row.get<std::string>(1);
+                params.XPUBVersion                   = hex::toByteArray(cosmos_row.get<std::string>(2));
+                params.PubKeyPrefix                  = hex::toByteArray(cosmos_row.get<std::string>(3));
+                params.AddressPrefix                 = hex::toByteArray(cosmos_row.get<std::string>(4));
+                params.MessagePrefix                 = cosmos_row.get<std::string>(5);
+                params.ChainId                       = cosmos_row.get<std::string>(6);
+                params.AdditionalCIPs                = strings::split(cosmos_row.get<std::string>(7), ",");
                 currency.cosmosLikeNetworkParameters = params;
             }
             break;
@@ -291,11 +290,11 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                                     use(currency.name));
             for (auto &eth_row : eth_rows) {
                 api::EthereumLikeNetworkParameters params;
-                params.ChainID = eth_row.get<std::string>(0);
-                params.XPUBVersion = hex::toByteArray(eth_row.get<std::string>(1));
-                params.MessagePrefix = eth_row.get<std::string>(2);
-                params.Identifier = eth_row.get<std::string>(3);
-                params.AdditionalEIPs = strings::split(eth_row.get<std::string>(4), ",");
+                params.ChainID                         = eth_row.get<std::string>(0);
+                params.XPUBVersion                     = hex::toByteArray(eth_row.get<std::string>(1));
+                params.MessagePrefix                   = eth_row.get<std::string>(2);
+                params.Identifier                      = eth_row.get<std::string>(3);
+                params.AdditionalEIPs                  = strings::split(eth_row.get<std::string>(4), ",");
                 currency.ethereumLikeNetworkParameters = params;
             }
 
@@ -310,10 +309,10 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                                        use(currency.name));
             for (auto &ripple_row : ripple_rows) {
                 api::RippleLikeNetworkParameters params;
-                params.XPUBVersion = hex::toByteArray(ripple_row.get<std::string>(0));
-                params.MessagePrefix = ripple_row.get<std::string>(1);
-                params.Identifier = ripple_row.get<std::string>(2);
-                params.AdditionalRIPs = strings::split(ripple_row.get<std::string>(3), ",");
+                params.XPUBVersion                   = hex::toByteArray(ripple_row.get<std::string>(0));
+                params.MessagePrefix                 = ripple_row.get<std::string>(1);
+                params.Identifier                    = ripple_row.get<std::string>(2);
+                params.AdditionalRIPs                = strings::split(ripple_row.get<std::string>(3), ",");
                 currency.rippleLikeNetworkParameters = params;
             }
 
@@ -328,12 +327,12 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                                       use(currency.name));
             for (auto &tezos_row : tezos_rows) {
                 api::TezosLikeNetworkParameters params;
-                params.XPUBVersion = hex::toByteArray(tezos_row.get<std::string>(0));
-                params.ImplicitPrefix = hex::toByteArray(tezos_row.get<std::string>(1));
-                params.OriginatedPrefix = hex::toByteArray(tezos_row.get<std::string>(2));
-                params.MessagePrefix = tezos_row.get<std::string>(3);
-                params.Identifier = tezos_row.get<std::string>(4);
-                params.AdditionalTIPs = strings::split(tezos_row.get<std::string>(5), ",");
+                params.XPUBVersion                  = hex::toByteArray(tezos_row.get<std::string>(0));
+                params.ImplicitPrefix               = hex::toByteArray(tezos_row.get<std::string>(1));
+                params.OriginatedPrefix             = hex::toByteArray(tezos_row.get<std::string>(2));
+                params.MessagePrefix                = tezos_row.get<std::string>(3);
+                params.Identifier                   = tezos_row.get<std::string>(4);
+                params.AdditionalTIPs               = strings::split(tezos_row.get<std::string>(5), ",");
                 currency.tezosLikeNetworkParameters = params;
             }
 
@@ -347,8 +346,8 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                                          use(currency.name));
             for (auto &algorand_row : algorand_rows) {
                 api::AlgorandNetworkParameters params;
-                params.genesisID = algorand_row.get<std::string>(0);
-                params.genesisHash = algorand_row.get<std::string>(1);
+                params.genesisID                   = algorand_row.get<std::string>(0);
+                params.genesisHash                 = algorand_row.get<std::string>(1);
                 currency.algorandNetworkParameters = params;
             }
             break;
@@ -362,13 +361,13 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                                         use(currency.name));
             for (auto &stellar_row : stellar_rows) {
                 api::StellarLikeNetworkParameters params;
-                params.Identifier = stellar_row.get<std::string>(0);
-                params.Version = hex::toByteArray(stellar_row.get<std::string>(1));
-                params.BaseFee = soci::get_number<int64_t>(stellar_row, 2);
-                params.BaseReserve = soci::get_number<int64_t>(stellar_row, 3);
-                params.NetworkPassphrase = stellar_row.get<std::string>(4);
-                params.AdditionalSEPs = strings::split(stellar_row.get<std::string>(5), ",");
-                params.MuxedVersion = hex::toByteArray(stellar_row.get<std::string>(6));
+                params.Identifier                     = stellar_row.get<std::string>(0);
+                params.Version                        = hex::toByteArray(stellar_row.get<std::string>(1));
+                params.BaseFee                        = soci::get_number<int64_t>(stellar_row, 2);
+                params.BaseReserve                    = soci::get_number<int64_t>(stellar_row, 3);
+                params.NetworkPassphrase              = stellar_row.get<std::string>(4);
+                params.AdditionalSEPs                 = strings::split(stellar_row.get<std::string>(5), ",");
+                params.MuxedVersion                   = hex::toByteArray(stellar_row.get<std::string>(6));
                 currency.stellarLikeNetworkParameters = params;
             }
             break;
@@ -380,14 +379,13 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
 }
 
 void ledger::core::CurrenciesDatabaseHelper::getAllUnits(soci::session &sql, ledger::core::api::Currency &currency) {
-
     rowset<row> rows = (sql.prepare << "SELECT name, magnitude, symbol, code FROM units WHERE currency_name = :currency", use(currency.name));
     for (auto &row : rows) {
         api::CurrencyUnit unit;
-        unit.name = row.get<std::string>(0);
+        unit.name            = row.get<std::string>(0);
         unit.numberOfDecimal = row.get<int32_t>(1);
-        unit.symbol = row.get<std::string>(2);
-        unit.code = row.get<std::string>(3);
+        unit.symbol          = row.get<std::string>(2);
+        unit.code            = row.get<std::string>(3);
         currency.units.push_back(unit);
     }
 }

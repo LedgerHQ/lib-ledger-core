@@ -39,7 +39,7 @@ using namespace std;
 
 using namespace ledger::core;
 
-//TODO: use toString method on encoders
+// TODO: use toString method on encoders
 
 TEST(RLPTests, SimpleCases) {
     auto rlpVector = std::make_shared<RLPListEncoder>();
@@ -59,7 +59,6 @@ TEST(RLPTests, SimpleCases) {
 }
 
 TEST(RLPTests, RecursiveEmptyLists) {
-
     //[[]]
     auto rlpVector1 = std::make_shared<RLPListEncoder>();
     rlpVector1->append(std::make_shared<RLPListEncoder>());
@@ -89,7 +88,6 @@ TEST(RLPTests, RecursiveEmptyLists) {
 }
 
 TEST(RLPTests, SuccessiveEmptyLists) {
-
     //[[], [], []]
     auto rlpVector = std::make_shared<RLPListEncoder>();
     rlpVector->append(std::make_shared<RLPListEncoder>());
@@ -115,19 +113,18 @@ TEST(RLPTests, List) {
 }
 
 TEST(RLPTests, RecursiveLists) {
-
     //["Vires"]
     auto viresList = std::make_shared<RLPListEncoder>();
     viresList->append("Vires");
 
     //[["in"]]
-    auto rlpVector1 = std::make_shared<RLPListEncoder>();
+    auto rlpVector1  = std::make_shared<RLPListEncoder>();
     auto rlpVector11 = std::make_shared<RLPListEncoder>();
     rlpVector11->append("in");
     rlpVector1->append(rlpVector11);
 
     //[["numeris"]]
-    auto rlpVector2 = std::make_shared<RLPListEncoder>();
+    auto rlpVector2  = std::make_shared<RLPListEncoder>();
     auto rlpVector21 = std::make_shared<RLPListEncoder>();
     rlpVector21->append("numeris");
     rlpVector2->append(rlpVector21);
@@ -153,15 +150,15 @@ TEST(RLPTests, RecursiveLists) {
 }
 
 TEST(RLPTests, Tx) {
-    //f8473086323030303030883230303030303030aa3078453846374463314131324631383064343963383044316333446245666634386565333862443144418632303030303000010000
+    // f8473086323030303030883230303030303030aa3078453846374463314131324631383064343963383044316333446245666634386565333862443144418632303030303000010000
     std::string tx = "f8473086323030303030883230303030303030aa3078453846374463314131324631383064343963383044316333446245666634386565333862443144418632303030303000010000";
-    auto decoder = RLPDecoder::decode(hex::toByteArray(tx));
+    auto decoder   = RLPDecoder::decode(hex::toByteArray(tx));
     EXPECT_EQ(hex::toString(decoder->encode()), tx);
 }
 
 TEST(RLPTests, BigInt) {
-    auto bigInt = std::shared_ptr<BigInt>(BigInt::from_hex("100102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
-    auto encoder = std::make_shared<RLPStringEncoder>(hex::toByteArray(bigInt->toHexString()));
+    auto bigInt         = std::shared_ptr<BigInt>(BigInt::from_hex("100102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
+    auto encoder        = std::make_shared<RLPStringEncoder>(hex::toByteArray(bigInt->toHexString()));
     std::string sBigInt = "a0100102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
     EXPECT_EQ(hex::toString(encoder->encode()), sBigInt);
 }

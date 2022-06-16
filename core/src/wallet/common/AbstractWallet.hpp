@@ -139,10 +139,10 @@ namespace ledger {
             void updateBalanceCache(size_t accountIndex, Amount balance);
             void invalidateBalanceCache(size_t accountIndex);
 
-            virtual FuturePtr<api::Account> newAccountWithInfo(const api::AccountCreationInfo &info) = 0;
+            virtual FuturePtr<api::Account> newAccountWithInfo(const api::AccountCreationInfo &info)                       = 0;
             virtual FuturePtr<api::Account> newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) = 0;
-            virtual Future<api::ExtendedKeyAccountCreationInfo> getExtendedKeyAccountCreationInfo(int32_t accountIndex) = 0;
-            virtual Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) = 0;
+            virtual Future<api::ExtendedKeyAccountCreationInfo> getExtendedKeyAccountCreationInfo(int32_t accountIndex)    = 0;
+            virtual Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex)                          = 0;
             virtual Future<api::AccountCreationInfo> getNextAccountCreationInfo();
             virtual Future<api::ExtendedKeyAccountCreationInfo> getNextExtendedKeyAccountCreationInfo();
 
@@ -185,4 +185,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_ABSTRACTWALLET_HPP
+#endif // LEDGER_CORE_ABSTRACTWALLET_HPP

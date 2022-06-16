@@ -39,7 +39,7 @@ namespace ledger {
 
         TrustIndicator::TrustIndicator() {
             _weight = 0;
-            _level = api::TrustLevel::DROPPED;
+            _level  = api::TrustLevel::DROPPED;
         }
 
         TrustIndicator &TrustIndicator::setTrustWeight(int32_t weight) {

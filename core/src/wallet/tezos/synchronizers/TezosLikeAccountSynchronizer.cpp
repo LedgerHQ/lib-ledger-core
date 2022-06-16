@@ -72,12 +72,12 @@ namespace ledger {
                     savedState.getValue().halfBatchSize = static_cast<uint32_t>(halfBatchSize);
                     for (auto i = 0; i <= newBatchCount; i++) {
                         tezos::AccountSynchronizationBatchSavedState s;
-                        s.blockHash = block.blockHash;
+                        s.blockHash   = block.blockHash;
                         s.blockHeight = block.blockHeight;
                         savedState.getValue().batches.push_back(s);
                     }
                 } else if (savedState.isEmpty()) {
-                    savedState = Option<tezos::AccountSynchronizationSavedState>(tezos::AccountSynchronizationSavedState());
+                    savedState                          = Option<tezos::AccountSynchronizationSavedState>(tezos::AccountSynchronizationSavedState());
                     savedState.getValue().halfBatchSize = static_cast<uint32_t>(halfBatchSize);
                 }
             }
@@ -94,8 +94,8 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_lock);
             if (!_currentAccount) {
                 _currentAccount = account;
-                _notifier = std::make_shared<ProgressNotifier<tezos::AccountSynchronizationContext>>();
-                auto self = shared_from_this();
+                _notifier       = std::make_shared<ProgressNotifier<tezos::AccountSynchronizationContext>>();
+                auto self       = shared_from_this();
                 performSynchronization(account).onComplete(getContext(), [self](const auto &result) {
                     std::lock_guard<std::mutex> l(self->_lock);
                     if (result.isFailure()) {
@@ -103,7 +103,7 @@ namespace ledger {
                     } else {
                         self->_notifier->success(result.getValue());
                     }
-                    self->_notifier = nullptr;
+                    self->_notifier       = nullptr;
                     self->_currentAccount = nullptr;
                 });
 
@@ -115,23 +115,23 @@ namespace ledger {
 
         Future<tezos::AccountSynchronizationContext>
         TezosLikeAccountSynchronizer::performSynchronization(const std::shared_ptr<TezosLikeAccount> &account) {
-            auto buddy = std::make_shared<tezos::SynchronizationBuddy>();
-            buddy->account = account;
+            auto buddy         = std::make_shared<tezos::SynchronizationBuddy>();
+            buddy->account     = account;
             buddy->preferences = std::static_pointer_cast<AbstractAccount>(account)
                                      ->getInternalPreferences()
                                      ->getSubPreferences("TezosLikeAccountSynchronizer");
-            auto loggerPurpose = fmt::format("synchronize_{}", account->getAccountUid());
-            auto tracePrefix = account->tracePrefix();
+            auto loggerPurpose        = fmt::format("synchronize_{}", account->getAccountUid());
+            auto tracePrefix          = account->tracePrefix();
             buddy->synchronizationTag = tracePrefix;
-            buddy->logger = logger::trace(loggerPurpose, tracePrefix, account->logger());
-            buddy->startDate = DateUtils::now();
-            buddy->wallet = account->getWallet();
-            buddy->configuration = account->getWallet()->getConfig();
-            buddy->halfBatchSize = static_cast<uint32_t>(buddy->configuration
+            buddy->logger             = logger::trace(loggerPurpose, tracePrefix, account->logger());
+            buddy->startDate          = DateUtils::now();
+            buddy->wallet             = account->getWallet();
+            buddy->configuration      = account->getWallet()->getConfig();
+            buddy->halfBatchSize      = static_cast<uint32_t>(buddy->configuration
                                                              ->getInt(api::Configuration::SYNCHRONIZATION_HALF_BATCH_SIZE)
                                                              .value_or(api::ConfigurationDefaults::KEYCHAIN_DEFAULT_OBSERVABLE_RANGE));
-            buddy->keychain = account->getKeychain();
-            buddy->savedState = buddy->preferences->getObject<tezos::AccountSynchronizationSavedState>("state");
+            buddy->keychain           = account->getKeychain();
+            buddy->savedState         = buddy->preferences->getObject<tezos::AccountSynchronizationSavedState>("state");
             buddy->logger->info(
                 "Starting synchronization for account#{} ({}) of wallet {} at {}",
                 account->getIndex(),
@@ -143,11 +143,10 @@ namespace ledger {
                 buddy->logger);
 
             fullSyncBenchmarker->start();
-            //Check if reorganization happened
+            // Check if reorganization happened
             soci::session sql(buddy->wallet->getDatabase()->getPool());
             if (buddy->savedState.nonEmpty()) {
-
-                //Get deepest block saved in batches to be part of reorg
+                // Get deepest block saved in batches to be part of reorg
                 auto sortedBatches = buddy->savedState.getValue().batches;
                 std::sort(
                     sortedBatches.begin(),
@@ -157,9 +156,9 @@ namespace ledger {
                         return lhs.blockHeight < rhs.blockHeight;
                     });
 
-                auto currencyName = buddy->wallet->getCurrency().name;
-                size_t index = 0;
-                //Reorg can't happen until genesis block, safely initialize with 0
+                auto currencyName                 = buddy->wallet->getCurrency().name;
+                size_t index                      = 0;
+                // Reorg can't happen until genesis block, safely initialize with 0
                 uint64_t deepestFailedBlockHeight = 0;
                 while (index < sortedBatches.size() &&
                        !BlockDatabaseHelper::blockExists(sql, sortedBatches[index].blockHash, currencyName)) {
@@ -167,15 +166,15 @@ namespace ledger {
                     index++;
                 }
 
-                //Case of reorg, update savedState's batches
+                // Case of reorg, update savedState's batches
                 if (deepestFailedBlockHeight > 0) {
-                    //Get last block (in DB) which contains current account's operations
+                    // Get last block (in DB) which contains current account's operations
                     auto previousBlock = AccountDatabaseHelper::getLastBlockWithOperations(
                         sql, buddy->account->getAccountUid());
                     for (auto &batch : buddy->savedState.getValue().batches) {
                         if (batch.blockHeight >= deepestFailedBlockHeight) {
                             batch.blockHeight = previousBlock.nonEmpty() ? static_cast<uint32_t>(previousBlock.getValue().height) : 0;
-                            batch.blockHash = previousBlock.nonEmpty() ? previousBlock.getValue().blockHash : "";
+                            batch.blockHash   = previousBlock.nonEmpty() ? previousBlock.getValue().blockHash : "";
                         }
                     }
                 }
@@ -250,10 +249,10 @@ namespace ledger {
                 buddy->savedState.getValue().batches.push_back(tezos::AccountSynchronizationBatchSavedState());
             }
 
-            auto self = shared_from_this();
+            auto self        = shared_from_this();
             auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
 
-            auto benchmark = std::make_shared<Benchmarker>(
+            auto benchmark   = std::make_shared<Benchmarker>(
                 fmt::format("full_batch/{}", buddy->synchronizationTag),
                 buddy->logger);
             benchmark->start();
@@ -274,7 +273,7 @@ namespace ledger {
                         buddy->logger->info(
                             "Recovering from failing synchronization : {}", exception.getMessage());
 
-                        //A block reorganization happened
+                        // A block reorganization happened
                         if (exception.getErrorCode() == api::ErrorCode::BLOCK_NOT_FOUND &&
                             buddy->savedState.nonEmpty()) {
                             buddy->logger->info("Recovering from reorganization");
@@ -302,14 +301,13 @@ namespace ledger {
                                                            // when we fail on reorg we try without sync token
                                                            buddy->token = Option<void *>();
                                                        }
-                                                       //Get its block/block height
-                                                       auto &failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
+                                                       // Get its block/block height
+                                                       auto &failedBatch            = buddy->savedState.getValue().batches[currentBatchIndex];
                                                        auto const failedBlockHeight = failedBatch.blockHeight;
-                                                       auto const failedBlockHash = failedBatch.blockHash;
+                                                       auto const failedBlockHash   = failedBatch.blockHash;
 
                                                        if (failedBlockHeight > 0) {
-
-                                                           //Delete data related to failedBlock (and all blocks above it)
+                                                           // Delete data related to failedBlock (and all blocks above it)
                                                            buddy->logger->info(
                                                                "Deleting blocks above block height: {}", failedBlockHeight);
 
@@ -328,24 +326,24 @@ namespace ledger {
                                                                    // Remove failed blocks and associated operations/transactions
                                                                    AccountDatabaseHelper::removeBlockOperation(sql, buddy->account->getAccountUid(), blockToDelete);
 
-                                                                   //Get last block not part from reorg
-                                                                   auto lastBlock = BlockDatabaseHelper::getLastBlock(sql, buddy->wallet->getCurrency().name);
+                                                                   // Get last block not part from reorg
+                                                                   auto lastBlock          = BlockDatabaseHelper::getLastBlock(sql, buddy->wallet->getCurrency().name);
 
-                                                                   //Resync from the "beginning" if no last block in DB
+                                                                   // Resync from the "beginning" if no last block in DB
                                                                    int64_t lastBlockHeight = 0;
                                                                    std::string lastBlockHash;
                                                                    if (lastBlock.nonEmpty()) {
                                                                        lastBlockHeight = lastBlock.getValue().height;
-                                                                       lastBlockHash = lastBlock.getValue().blockHash;
+                                                                       lastBlockHash   = lastBlock.getValue().blockHash;
                                                                    }
                                                                    // update reorganization block height until found the valid one
                                                                    buddy->context.reorgBlockHeight = lastBlockHeight;
 
-                                                                   //Update savedState's batches
+                                                                   // Update savedState's batches
                                                                    for (auto &batch : buddy->savedState.getValue().batches) {
                                                                        if (batch.blockHeight > lastBlockHeight) {
                                                                            batch.blockHeight = static_cast<uint32_t>(lastBlockHeight);
-                                                                           batch.blockHash = lastBlockHash;
+                                                                           batch.blockHash   = lastBlockHash;
                                                                        }
                                                                    }
                                                                    tr.commit();
@@ -362,14 +360,14 @@ namespace ledger {
                                                                }
                                                            }
 
-                                                           //Save new savedState
+                                                           // Save new savedState
                                                            buddy->preferences->editor()->putObject<tezos::AccountSynchronizationSavedState>(
                                                                                            "state", buddy->savedState.getValue())
                                                                ->commit();
 
-                                                           //Synchronize same batch now with an existing block (of hash lastBlockHash)
-                                                           //if failedBatch was not the deepest block part of that reorg, this recursive call
-                                                           //will ensure to get (and delete from DB) to the deepest failed block (part of reorg)
+                                                           // Synchronize same batch now with an existing block (of hash lastBlockHash)
+                                                           // if failedBatch was not the deepest block part of that reorg, this recursive call
+                                                           // will ensure to get (and delete from DB) to the deepest failed block (part of reorg)
                                                            buddy->logger->info("Relaunch synchronization after recovering from reorganization");
 
                                                            return self->synchronizeBatches(currentBatchIndex, buddy);
@@ -397,7 +395,7 @@ namespace ledger {
             buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
 
             Option<std::string> blockHash;
-            auto self = shared_from_this();
+            auto self        = shared_from_this();
             auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
 
             if (batchState.blockHeight > 0) {
@@ -435,9 +433,9 @@ namespace ledger {
                             buddy->logger);
 
                         auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
-                        //self->transactions.insert(self->transactions.end(), bulk->transactions.begin(), bulk->transactions.end());
+                        // self->transactions.insert(self->transactions.end(), bulk->transactions.begin(), bulk->transactions.end());
                         buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
-                        auto count = 0;
+                        auto count              = 0;
 
                         // NEW CODE
                         Option<Block> lastBlock = Option<Block>::NONE;
@@ -453,28 +451,28 @@ namespace ledger {
                             }
 
                             /*
-                     * This call goes to TezosLikeAccount::interpretTransaction, which might add new originatedAccounts
-                     * through updateOriginatedAccounts.
-                     * BUT
-                     * synchronizeBatch is called before TezosLikeAccount::_originatedAccounts is looped over
-                     * in TezosLikeAccount::synchronize(). So it should be fine.
-                     * Fine meaning "all originated accounts added by this interpretTransaction
-                     * call will get their own syncHeight (from an OperationQuery db request), and be properly
-                     * resynchronized from their start by TezosLikeAccount::synchronize method."
-                     */
+                             * This call goes to TezosLikeAccount::interpretTransaction, which might add new originatedAccounts
+                             * through updateOriginatedAccounts.
+                             * BUT
+                             * synchronizeBatch is called before TezosLikeAccount::_originatedAccounts is looped over
+                             * in TezosLikeAccount::synchronize(). So it should be fine.
+                             * Fine meaning "all originated accounts added by this interpretTransaction
+                             * call will get their own syncHeight (from an OperationQuery db request), and be properly
+                             * resynchronized from their start by TezosLikeAccount::synchronize method."
+                             */
                             addedNewAddressInBatch = buddy->account->interpretTransaction(tx, operations);
 
-                            //Update first pendingTxHash in savedState
-                            auto it = buddy->transactionsToDrop.find(tx.hash);
+                            // Update first pendingTxHash in savedState
+                            auto it                = buddy->transactionsToDrop.find(tx.hash);
                             if (it != buddy->transactionsToDrop.end()) {
-                                //If block non empty, tx is no longer pending
+                                // If block non empty, tx is no longer pending
                                 if (tx.block.nonEmpty()) {
                                     buddy->savedState.getValue().pendingTxsHash.erase(it->first);
-                                } else { //Otherwise tx is in mempool but pending
+                                } else { // Otherwise tx is in mempool but pending
                                     buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
                                 }
                             }
-                            //Remove from tx to drop
+                            // Remove from tx to drop
                             buddy->transactionsToDrop.erase(tx.hash);
                         }
                         interpretBenchmark->stop();
@@ -505,7 +503,7 @@ namespace ledger {
 
                         if (bulk->transactions.size() > 0 && lastBlock.nonEmpty()) {
                             batchState.blockHeight = static_cast<uint32_t>(lastBlock.getValue().height);
-                            batchState.blockHash = lastBlock.getValue().hash;
+                            batchState.blockHash   = lastBlock.getValue().hash;
                             buddy->preferences->editor()->putObject<tezos::AccountSynchronizationSavedState>(
                                                             "state", buddy->savedState.getValue())
                                 ->commit();
@@ -522,23 +520,23 @@ namespace ledger {
 
         Future<Unit> TezosLikeAccountSynchronizer::synchronizeMempool(
             const std::shared_ptr<tezos::SynchronizationBuddy> &buddy) {
-            //Delete dropped txs from DB
+            // Delete dropped txs from DB
             soci::session sql(buddy->wallet->getDatabase()->getPool());
             for (auto &tx : buddy->transactionsToDrop) {
-                //Check if tx is pending
+                // Check if tx is pending
                 auto it = buddy->savedState.getValue().pendingTxsHash.find(tx.first);
                 if (it == buddy->savedState.getValue().pendingTxsHash.end()) {
-                    //soci::transaction tr(sql);
+                    // soci::transaction tr(sql);
                     buddy->logger->info("Drop transaction {}", tx.first);
                     buddy->logger->info("Deleting operation from DB {}", tx.second);
                     try {
                         sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
-                        //tr.commit();
+                        // tr.commit();
                     } catch (std::exception &ex) {
                         buddy->logger->info(
                             "Failed to delete operation from DB {} reason: {}, rollback ...",
                             tx.second, ex.what());
-                        //tr.rollback();
+                        // tr.rollback();
                     }
                 }
             }
@@ -567,7 +565,7 @@ namespace ledger {
             soci::session &sql,
             std::shared_ptr<tezos::SynchronizationBuddy> &buddy,
             const std::string &accountUid) {
-            //Get all transactions in DB that may be dropped (txs without block_uid)
+            // Get all transactions in DB that may be dropped (txs without block_uid)
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, xtz_op.transaction_hash FROM operations AS op "
                                                            "LEFT OUTER JOIN tezos_operations AS xtz_op ON xtz_op.uid = op.uid "
                                                            "WHERE op.block_uid IS NULL AND op.account_uid = :uid ",

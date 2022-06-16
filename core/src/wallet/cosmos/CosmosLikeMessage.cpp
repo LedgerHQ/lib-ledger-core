@@ -365,7 +365,7 @@ namespace ledger {
             } else if (_msgData.type == kMsgCreateValidator) {
                 const auto &content = boost::get<cosmos::MsgCreateValidator>(_msgData.content);
 
-                auto jsonDesc = rapidjson::Value(rapidjson::kObjectType);
+                auto jsonDesc       = rapidjson::Value(rapidjson::kObjectType);
                 addString(kMoniker, content.descr.moniker, jsonDesc, allocator);
                 addOptionalString(kIdentity, content.descr.identity, jsonDesc, allocator);
                 addOptionalString(kWebsite, content.descr.website, jsonDesc, allocator);
@@ -394,7 +394,7 @@ namespace ledger {
 
                 if (content.descr) {
                     auto description = content.descr.value();
-                    auto jsonDesc = rapidjson::Value(rapidjson::kObjectType);
+                    auto jsonDesc    = rapidjson::Value(rapidjson::kObjectType);
                     addString(kMoniker, description.moniker, jsonDesc, allocator);
                     addOptionalString(kIdentity, description.identity, jsonDesc, allocator);
                     addOptionalString(kWebsite, description.website, jsonDesc, allocator);
@@ -438,7 +438,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgSend(
             const api::CosmosLikeMsgSend &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgSend;
+            msg.type    = kMsgSend;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -455,7 +455,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgDelegate(
             const api::CosmosLikeMsgDelegate &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgDelegate;
+            msg.type    = kMsgDelegate;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -472,7 +472,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgUndelegate(
             const api::CosmosLikeMsgUndelegate &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgUndelegate;
+            msg.type    = kMsgUndelegate;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -489,7 +489,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgBeginRedelegate(
             const api::CosmosLikeMsgBeginRedelegate &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgBeginRedelegate;
+            msg.type    = kMsgBeginRedelegate;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -506,7 +506,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgSubmitProposal(
             const api::CosmosLikeMsgSubmitProposal &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgSubmitProposal;
+            msg.type    = kMsgSubmitProposal;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -523,7 +523,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgVote(
             const api::CosmosLikeMsgVote &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgVote;
+            msg.type    = kMsgVote;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -540,7 +540,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgDeposit(
             const api::CosmosLikeMsgDeposit &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgDeposit;
+            msg.type    = kMsgDeposit;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -557,7 +557,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgWithdrawDelegationReward(
             const api::CosmosLikeMsgWithdrawDelegationReward &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgWithdrawDelegationReward;
+            msg.type    = kMsgWithdrawDelegationReward;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -576,7 +576,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgMultiSend(
             const api::CosmosLikeMsgMultiSend &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgMultiSend;
+            msg.type    = kMsgMultiSend;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -593,7 +593,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgCreateValidator(
             const api::CosmosLikeMsgCreateValidator &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgCreateValidator;
+            msg.type    = kMsgCreateValidator;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -610,7 +610,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgEditValidator(
             const api::CosmosLikeMsgEditValidator &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgEditValidator;
+            msg.type    = kMsgEditValidator;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -627,7 +627,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgSetWithdrawAddress(
             const api::CosmosLikeMsgSetWithdrawAddress &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgSetWithdrawAddress;
+            msg.type    = kMsgSetWithdrawAddress;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -644,7 +644,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgWithdrawDelegatorReward(
             const api::CosmosLikeMsgWithdrawDelegatorReward &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgWithdrawDelegatorReward;
+            msg.type    = kMsgWithdrawDelegatorReward;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -662,7 +662,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgWithdrawValidatorCommission(
             const api::CosmosLikeMsgWithdrawValidatorCommission &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgWithdrawValidatorCommission;
+            msg.type    = kMsgWithdrawValidatorCommission;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }
@@ -681,7 +681,7 @@ namespace ledger {
         std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgUnjail(
             const api::CosmosLikeMsgUnjail &msgContent) {
             cosmos::Message msg;
-            msg.type = kMsgUnjail;
+            msg.type    = kMsgUnjail;
             msg.content = msgContent;
             return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
         }

@@ -40,13 +40,13 @@ class AlgorandExplorerTest : public BaseFixture {
     void SetUp() override {
         BaseFixture::SetUp();
 
-        auto worker = dispatcher->getSerialExecutionContext("worker");
+        auto worker           = dispatcher->getSerialExecutionContext("worker");
         auto threadpoolWorker = dispatcher->getThreadPoolExecutionContext("threadpoolWorker");
         // NOTE: we run the tests on the staging environment which is on the TestNet
-        auto client = std::make_shared<HttpClient>("https://algorand.coin.staging.aws.ledger.com", http, worker, threadpoolWorker);
+        auto client           = std::make_shared<HttpClient>("https://algorand.coin.staging.aws.ledger.com", http, worker, threadpoolWorker);
 
         // NOTE: we run the tests on the staging environment which is on the TestNet
-        auto configuration = DynamicObject::newInstance();
+        auto configuration    = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
 
         explorer = std::make_shared<BlockchainExplorer>(
@@ -65,7 +65,6 @@ class AlgorandExplorerTest : public BaseFixture {
 };
 
 TEST_F(AlgorandExplorerTest, GetBlock) {
-
     uint64_t blockHeight = 6000000; // Some arbitrary block
     std::chrono::system_clock::time_point blockTime(std::chrono::seconds(1586345796));
 
@@ -77,17 +76,15 @@ TEST_F(AlgorandExplorerTest, GetBlock) {
 }
 
 TEST_F(AlgorandExplorerTest, GetLatestBlock) {
-
     api::Block block = uv::wait(explorer->getLatestBlock());
 
     EXPECT_FALSE(block.blockHash.empty());
     EXPECT_GT(block.height, 7000000);
-    //EXPECT_GT(block.time.time_since_epoch().count(), 1593455156000000000); // Fails on CI with different system clock
+    // EXPECT_GT(block.time.time_since_epoch().count(), 1593455156000000000); // Fails on CI with different system clock
 }
 
 TEST_F(AlgorandExplorerTest, GetAccount) {
-
-    auto address = ::algorand::Address(OBELIX_ADDRESS);
+    auto address           = ::algorand::Address(OBELIX_ADDRESS);
     model::Account account = uv::wait(explorer->getAccount(address.toString()));
 
     EXPECT_EQ(account.address, address.toString());
@@ -96,8 +93,8 @@ TEST_F(AlgorandExplorerTest, GetAccount) {
     EXPECT_GT(account.amountWithoutPendingRewards, 0);
     // Pending rewards should be tested only on a frozen seed,
     // Because they will get back to 0 after every transaction
-    //EXPECT_GT(account.pendingRewards, 0);
-    //EXPECT_GT(account.rewards, 0);
+    // EXPECT_GT(account.pendingRewards, 0);
+    // EXPECT_GT(account.rewards, 0);
 
     EXPECT_FALSE(account.assetsAmounts.empty());
     EXPECT_NE(account.assetsAmounts.find(342836), account.assetsAmounts.end());
@@ -108,26 +105,25 @@ TEST_F(AlgorandExplorerTest, GetAccount) {
 }
 
 TEST_F(AlgorandExplorerTest, GetPaymentTransaction) {
-    auto txRef = paymentTransaction();
+    auto txRef            = paymentTransaction();
     model::Transaction tx = uv::wait(explorer->getTransactionById(*txRef.header.id));
     assertSameTransaction(txRef, tx);
 }
 
 TEST_F(AlgorandExplorerTest, DISABLED_GetAssetConfigTransaction) {
-    auto txRef = assetConfigTransaction();
+    auto txRef            = assetConfigTransaction();
     model::Transaction tx = uv::wait(explorer->getTransactionById(*txRef.header.id));
     assertSameTransaction(txRef, tx);
 }
 
 TEST_F(AlgorandExplorerTest, DISABLED_GetAssetTransferTransaction) {
-    auto txRef = assetTransferTransaction();
+    auto txRef            = assetTransferTransaction();
     model::Transaction tx = uv::wait(explorer->getTransactionById(*txRef.header.id));
     assertSameTransaction(txRef, tx);
 }
 
 TEST_F(AlgorandExplorerTest, DISABLED_GetAccountTransactions) {
-
-    auto address = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM"; // Obelix
+    auto address                = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM"; // Obelix
     model::TransactionsBulk txs = uv::wait(explorer->getTransactionsForAddress(address, 0));
 
     for (const auto &tx : txs.transactions) {

@@ -37,241 +37,241 @@ namespace ledger {
         namespace cosmos {
             namespace constants {
                 // Explorer endpoints.
-                constexpr char kGaiaAccountEndpoint[] = "/auth/accounts/{}";
-                constexpr char kGaiaBalancesEndpoint[] = "/bank/balances/{}";
-                constexpr char kGaiaBlocksEndpoint[] = "/blocks/{}";
-                constexpr char kGaiaDelegationsEndpoint[] = "/staking/delegators/{}/delegations";
-                constexpr char kGaiaDistInfoEndpoint[] = "/distribution/validators/{}";
-                constexpr char kGaiaLatestBlockEndpoint[] = "/blocks/latest";
-                constexpr char kGaiaQueryRedelegationsEndpoint[] = "/staking/redelegations";
-                constexpr char kGaiaRedelegationsEndpoint[] = "/staking/delegators/{}/redelegations";
-                constexpr char kGaiaRewardsEndpoint[] = "/distribution/delegators/{}/rewards";
-                constexpr char kGaiaSignInfoEndpoint[] = "/slashing/validators/{}/signing_info";
-                constexpr char kGaiaTransactionEndpoint[] = "/txs/{}";
+                constexpr char kGaiaAccountEndpoint[]                  = "/auth/accounts/{}";
+                constexpr char kGaiaBalancesEndpoint[]                 = "/bank/balances/{}";
+                constexpr char kGaiaBlocksEndpoint[]                   = "/blocks/{}";
+                constexpr char kGaiaDelegationsEndpoint[]              = "/staking/delegators/{}/delegations";
+                constexpr char kGaiaDistInfoEndpoint[]                 = "/distribution/validators/{}";
+                constexpr char kGaiaLatestBlockEndpoint[]              = "/blocks/latest";
+                constexpr char kGaiaQueryRedelegationsEndpoint[]       = "/staking/redelegations";
+                constexpr char kGaiaRedelegationsEndpoint[]            = "/staking/delegators/{}/redelegations";
+                constexpr char kGaiaRewardsEndpoint[]                  = "/distribution/delegators/{}/rewards";
+                constexpr char kGaiaSignInfoEndpoint[]                 = "/slashing/validators/{}/signing_info";
+                constexpr char kGaiaTransactionEndpoint[]              = "/txs/{}";
                 constexpr char kGaiaTransactionsWithPageLimitEnpoint[] = "/txs?{}&page={}&limit={}";
-                constexpr char kGaiaTransfersEndpoint[] = "/bank/accounts/{}/transfers";
-                constexpr char kGaiaUnbondingsEndpoint[] = "/staking/delegators/{}/unbonding_delegations";
-                constexpr char kGaiaValidatorInfoEndpoint[] = "/staking/validators/{}";
-                constexpr char kGaiaWithdrawAddressEndpoint[] = "/distribution/delegators/{}/withdraw_address";
+                constexpr char kGaiaTransfersEndpoint[]                = "/bank/accounts/{}/transfers";
+                constexpr char kGaiaUnbondingsEndpoint[]               = "/staking/delegators/{}/unbonding_delegations";
+                constexpr char kGaiaValidatorInfoEndpoint[]            = "/staking/validators/{}";
+                constexpr char kGaiaWithdrawAddressEndpoint[]          = "/distribution/delegators/{}/withdraw_address";
 
                 // use raw char array here to be compliant with rapidjson
-                constexpr char kMsgBeginRedelegate[] = "cosmos-sdk/MsgBeginRedelegate";
-                constexpr char kMsgDelegate[] = "cosmos-sdk/MsgDelegate";
-                constexpr char kMsgDeposit[] = "cosmos-sdk/MsgDeposit";
-                constexpr char kMsgSend[] = "cosmos-sdk/MsgSend";
-                constexpr char kMsgSubmitProposal[] = "cosmos-sdk/MsgSubmitProposal";
-                constexpr char kMsgUndelegate[] = "cosmos-sdk/MsgUndelegate";
-                constexpr char kMsgVote[] = "cosmos-sdk/MsgVote";
-                constexpr char kMsgWithdrawDelegationReward[] = "cosmos-sdk/MsgWithdrawDelegationReward";
-                constexpr char kMsgMultiSend[] = "cosmos-sdk/MsgMultiSend";
-                constexpr char kMsgCreateValidator[] = "cosmos-sdk/MsgCreateValidator";
-                constexpr char kMsgEditValidator[] = "cosmos-sdk/MsgEditValidator";
-                constexpr char kMsgSetWithdrawAddress[] = "cosmos-sdk/MsgSetWithdrawAddress";
-                constexpr char kMsgWithdrawDelegatorReward[] = "cosmos-sdk/MsgWithdrawDelegatorReward";
-                constexpr char kMsgWithdrawValidatorCommission[] = "cosmos-sdk/MsgWithdrawValidatorCommission";
-                constexpr char kMsgUnjail[] = "cosmos-sdk/MsgUnjail";
-                constexpr char kMsgFees[] = "internal/MsgFees";
+                constexpr char kMsgBeginRedelegate[]                   = "cosmos-sdk/MsgBeginRedelegate";
+                constexpr char kMsgDelegate[]                          = "cosmos-sdk/MsgDelegate";
+                constexpr char kMsgDeposit[]                           = "cosmos-sdk/MsgDeposit";
+                constexpr char kMsgSend[]                              = "cosmos-sdk/MsgSend";
+                constexpr char kMsgSubmitProposal[]                    = "cosmos-sdk/MsgSubmitProposal";
+                constexpr char kMsgUndelegate[]                        = "cosmos-sdk/MsgUndelegate";
+                constexpr char kMsgVote[]                              = "cosmos-sdk/MsgVote";
+                constexpr char kMsgWithdrawDelegationReward[]          = "cosmos-sdk/MsgWithdrawDelegationReward";
+                constexpr char kMsgMultiSend[]                         = "cosmos-sdk/MsgMultiSend";
+                constexpr char kMsgCreateValidator[]                   = "cosmos-sdk/MsgCreateValidator";
+                constexpr char kMsgEditValidator[]                     = "cosmos-sdk/MsgEditValidator";
+                constexpr char kMsgSetWithdrawAddress[]                = "cosmos-sdk/MsgSetWithdrawAddress";
+                constexpr char kMsgWithdrawDelegatorReward[]           = "cosmos-sdk/MsgWithdrawDelegatorReward";
+                constexpr char kMsgWithdrawValidatorCommission[]       = "cosmos-sdk/MsgWithdrawValidatorCommission";
+                constexpr char kMsgUnjail[]                            = "cosmos-sdk/MsgUnjail";
+                constexpr char kMsgFees[]                              = "internal/MsgFees";
 
-                constexpr char kAccountNumber[] = "account_number";
-                constexpr char kAddress[] = "address";
-                constexpr char kAmount[] = "amount";
-                constexpr char kBalance[] = "balance";
-                constexpr char kBaseReq[] = "base_req";
-                constexpr char kChainId[] = "chain_id";
-                constexpr char kCoins[] = "coins";
-                constexpr char kCommission[] = "commission";
-                constexpr char kCommissionRate[] = "rate";
-                constexpr char kCommissionRates[] = "commission_rates";
-                constexpr char kCommissionMaxRate[] = "max_rate";
-                constexpr char kCommissionMaxChangeRate[] = "max_change_rate";
-                constexpr char kCompletionTime[] = "completion_time";
-                constexpr char kConsensusPubkey[] = "consensus_pubkey";
-                constexpr char kContent[] = "content";
-                constexpr char kCount[] = "count";
-                constexpr char kCreationHeight[] = "creation_height";
-                constexpr char kDelegatorAddress[] = "delegator_address";
-                constexpr char kDenom[] = "denom";
-                constexpr char kDepositor[] = "depositor";
-                constexpr char kDescription[] = "description";
-                constexpr char kDetails[] = "details";
-                constexpr char kEditValCommissionRate[] = "commission_rate";
-                constexpr char kEntries[] = "entries";
-                constexpr char kFee[] = "fee";
-                constexpr char kFees[] = "fees";
-                constexpr char kFrom[] = "from";
-                constexpr char kFromAddress[] = "from_address";
-                constexpr char kGas[] = "gas";
-                constexpr char kGasAdjustment[] = "gas_adjustment";
-                constexpr char kGasEstimate[] = "gas_estimate";
-                constexpr char kGasUsed[] = "gas_used";
-                constexpr char kHeight[] = "height";
-                constexpr char kIdentity[] = "identity";
-                constexpr char kIndexOffset[] = "index_offset";
-                constexpr char kInitialBalance[] = "initial_balance";
-                constexpr char kInitialDeposit[] = "initial_deposit";
-                constexpr char kInputs[] = "inputs";
-                constexpr char kJailed[] = "jailed";
-                constexpr char kJailedUntil[] = "jailed_until";
-                constexpr char kLog[] = "log";
-                constexpr char kLogs[] = "logs";
-                constexpr char kMaxHeight[] = "maxheight";
-                constexpr char kMemo[] = "memo";
-                constexpr char kMessage[] = "msg";
-                constexpr char kMessages[] = "msgs";
-                constexpr char kMinHeight[] = "minheight";
-                constexpr char kMinSelfDelegation[] = "min_self_delegation";
-                constexpr char kMissedBlocksCounter[] = "missed_blocks_counter";
-                constexpr char kMoniker[] = "moniker";
-                constexpr char kMsgIndex[] = "msg_index";
-                constexpr char kOperatorAddress[] = "operator_address";
-                constexpr char kOption[] = "option";
-                constexpr char kOutputs[] = "outputs";
-                constexpr char kProposalId[] = "proposal_id";
-                constexpr char kProposer[] = "proposer";
-                constexpr char kPubKey[] = "pub_key";
-                constexpr char kResult[] = "result";
-                constexpr char kReward[] = "reward";
-                constexpr char kRewards[] = "rewards";
-                constexpr char kSelfBondRewards[] = "self_bond_rewards";
-                constexpr char kSequence[] = "sequence";
-                constexpr char kSignature[] = "signature";
-                constexpr char kSimulate[] = "simulate";
-                constexpr char kSignatures[] = "signatures";
-                constexpr char kStartHeight[] = "start_height";
-                constexpr char kStatus[] = "status";
-                constexpr char kSuccess[] = "success";
-                constexpr char kTimestamp[] = "timestamp";
-                constexpr char kTitle[] = "title";
-                constexpr char kToAddress[] = "to_address";
-                constexpr char kTokens[] = "tokens";
-                constexpr char kTombstoned[] = "tombstoned";
-                constexpr char kTotal[] = "total";
-                constexpr char kTotalCount[] = "total_count";
-                constexpr char kTxArray[] = "txs";
-                constexpr char kTxHash[] = "txhash";
-                constexpr char kTx[] = "tx";
-                constexpr char kType[] = "type";
-                constexpr char kUnbondingHeight[] = "unbonding_height";
-                constexpr char kUnbondingTime[] = "unbonding_time";
-                constexpr char kUpdateTime[] = "update_time";
-                constexpr char kValCommission[] = "val_commission";
-                constexpr char kValidatorAddress[] = "validator_address";
-                constexpr char kValidatorDstAddress[] = "validator_dst_address";
-                constexpr char kValidatorSrcAddress[] = "validator_src_address";
-                constexpr char kValue[] = "value";
-                constexpr char kVoter[] = "voter";
-                constexpr char kWebsite[] = "website";
-                constexpr char kWithdrawAddress[] = "withdraw_address";
+                constexpr char kAccountNumber[]                        = "account_number";
+                constexpr char kAddress[]                              = "address";
+                constexpr char kAmount[]                               = "amount";
+                constexpr char kBalance[]                              = "balance";
+                constexpr char kBaseReq[]                              = "base_req";
+                constexpr char kChainId[]                              = "chain_id";
+                constexpr char kCoins[]                                = "coins";
+                constexpr char kCommission[]                           = "commission";
+                constexpr char kCommissionRate[]                       = "rate";
+                constexpr char kCommissionRates[]                      = "commission_rates";
+                constexpr char kCommissionMaxRate[]                    = "max_rate";
+                constexpr char kCommissionMaxChangeRate[]              = "max_change_rate";
+                constexpr char kCompletionTime[]                       = "completion_time";
+                constexpr char kConsensusPubkey[]                      = "consensus_pubkey";
+                constexpr char kContent[]                              = "content";
+                constexpr char kCount[]                                = "count";
+                constexpr char kCreationHeight[]                       = "creation_height";
+                constexpr char kDelegatorAddress[]                     = "delegator_address";
+                constexpr char kDenom[]                                = "denom";
+                constexpr char kDepositor[]                            = "depositor";
+                constexpr char kDescription[]                          = "description";
+                constexpr char kDetails[]                              = "details";
+                constexpr char kEditValCommissionRate[]                = "commission_rate";
+                constexpr char kEntries[]                              = "entries";
+                constexpr char kFee[]                                  = "fee";
+                constexpr char kFees[]                                 = "fees";
+                constexpr char kFrom[]                                 = "from";
+                constexpr char kFromAddress[]                          = "from_address";
+                constexpr char kGas[]                                  = "gas";
+                constexpr char kGasAdjustment[]                        = "gas_adjustment";
+                constexpr char kGasEstimate[]                          = "gas_estimate";
+                constexpr char kGasUsed[]                              = "gas_used";
+                constexpr char kHeight[]                               = "height";
+                constexpr char kIdentity[]                             = "identity";
+                constexpr char kIndexOffset[]                          = "index_offset";
+                constexpr char kInitialBalance[]                       = "initial_balance";
+                constexpr char kInitialDeposit[]                       = "initial_deposit";
+                constexpr char kInputs[]                               = "inputs";
+                constexpr char kJailed[]                               = "jailed";
+                constexpr char kJailedUntil[]                          = "jailed_until";
+                constexpr char kLog[]                                  = "log";
+                constexpr char kLogs[]                                 = "logs";
+                constexpr char kMaxHeight[]                            = "maxheight";
+                constexpr char kMemo[]                                 = "memo";
+                constexpr char kMessage[]                              = "msg";
+                constexpr char kMessages[]                             = "msgs";
+                constexpr char kMinHeight[]                            = "minheight";
+                constexpr char kMinSelfDelegation[]                    = "min_self_delegation";
+                constexpr char kMissedBlocksCounter[]                  = "missed_blocks_counter";
+                constexpr char kMoniker[]                              = "moniker";
+                constexpr char kMsgIndex[]                             = "msg_index";
+                constexpr char kOperatorAddress[]                      = "operator_address";
+                constexpr char kOption[]                               = "option";
+                constexpr char kOutputs[]                              = "outputs";
+                constexpr char kProposalId[]                           = "proposal_id";
+                constexpr char kProposer[]                             = "proposer";
+                constexpr char kPubKey[]                               = "pub_key";
+                constexpr char kResult[]                               = "result";
+                constexpr char kReward[]                               = "reward";
+                constexpr char kRewards[]                              = "rewards";
+                constexpr char kSelfBondRewards[]                      = "self_bond_rewards";
+                constexpr char kSequence[]                             = "sequence";
+                constexpr char kSignature[]                            = "signature";
+                constexpr char kSimulate[]                             = "simulate";
+                constexpr char kSignatures[]                           = "signatures";
+                constexpr char kStartHeight[]                          = "start_height";
+                constexpr char kStatus[]                               = "status";
+                constexpr char kSuccess[]                              = "success";
+                constexpr char kTimestamp[]                            = "timestamp";
+                constexpr char kTitle[]                                = "title";
+                constexpr char kToAddress[]                            = "to_address";
+                constexpr char kTokens[]                               = "tokens";
+                constexpr char kTombstoned[]                           = "tombstoned";
+                constexpr char kTotal[]                                = "total";
+                constexpr char kTotalCount[]                           = "total_count";
+                constexpr char kTxArray[]                              = "txs";
+                constexpr char kTxHash[]                               = "txhash";
+                constexpr char kTx[]                                   = "tx";
+                constexpr char kType[]                                 = "type";
+                constexpr char kUnbondingHeight[]                      = "unbonding_height";
+                constexpr char kUnbondingTime[]                        = "unbonding_time";
+                constexpr char kUpdateTime[]                           = "update_time";
+                constexpr char kValCommission[]                        = "val_commission";
+                constexpr char kValidatorAddress[]                     = "validator_address";
+                constexpr char kValidatorDstAddress[]                  = "validator_dst_address";
+                constexpr char kValidatorSrcAddress[]                  = "validator_src_address";
+                constexpr char kValue[]                                = "value";
+                constexpr char kVoter[]                                = "voter";
+                constexpr char kWebsite[]                              = "website";
+                constexpr char kWithdrawAddress[]                      = "withdraw_address";
 
                 // Explorer specific constants
-                constexpr char kBlockMeta[] = "block_meta";
-                constexpr char kBlockId[] = "block_id";
-                constexpr char kHash[] = "hash";
-                constexpr char kHeader[] = "header";
-                constexpr char kTime[] = "time";
-                constexpr char kMode[] = "mode";
+                constexpr char kBlockMeta[]                            = "block_meta";
+                constexpr char kBlockId[]                              = "block_id";
+                constexpr char kHash[]                                 = "hash";
+                constexpr char kHeader[]                               = "header";
+                constexpr char kTime[]                                 = "time";
+                constexpr char kMode[]                                 = "mode";
 
                 // cosmos/cosmos-sdk Event / Attribute types as of
                 // https://github.com/cosmos/cosmos-sdk/tree/43137ee893cefbdb2aacd25ef4ec39eacf6ae70c
 
                 // Common in all messages
-                constexpr char kEventTypeMessage[] = "message";
+                constexpr char kEventTypeMessage[]                     = "message";
 
-                constexpr char kAttributeKeyAction[] = "action";
-                constexpr char kAttributeKeyModule[] = "module";
-                constexpr char kAttributeKeySender[] = "sender";
-                constexpr char kAttributeKeyAmount[] = "amount";
-                constexpr char kAttributeWithdrawDelegationReward[] = "withdraw_delegator_reward";
+                constexpr char kAttributeKeyAction[]                   = "action";
+                constexpr char kAttributeKeyModule[]                   = "module";
+                constexpr char kAttributeKeySender[]                   = "sender";
+                constexpr char kAttributeKeyAmount[]                   = "amount";
+                constexpr char kAttributeWithdrawDelegationReward[]    = "withdraw_delegator_reward";
 
-                constexpr char kPubKeySecp256k1[] = "tendermint/PubKeySecp256k1";
+                constexpr char kPubKeySecp256k1[]                      = "tendermint/PubKeySecp256k1";
 
                 // Staking
-                constexpr char kEventTypeCompleteUnbonding[] = "complete_unbonding";
-                constexpr char kEventTypeCompleteRedelegation[] = "complete_redelegation";
-                constexpr char kEventTypeCreateValidator[] = "create_validator";
-                constexpr char kEventTypeEditValidator[] = "edit_validator";
-                constexpr char kEventTypeDelegate[] = "delegate";
-                constexpr char kEventTypeUnbond[] = "unbond";
-                constexpr char kEventTypeRedelegate[] = "redelegate";
+                constexpr char kEventTypeCompleteUnbonding[]           = "complete_unbonding";
+                constexpr char kEventTypeCompleteRedelegation[]        = "complete_redelegation";
+                constexpr char kEventTypeCreateValidator[]             = "create_validator";
+                constexpr char kEventTypeEditValidator[]               = "edit_validator";
+                constexpr char kEventTypeDelegate[]                    = "delegate";
+                constexpr char kEventTypeUnbond[]                      = "unbond";
+                constexpr char kEventTypeRedelegate[]                  = "redelegate";
 
-                constexpr char kAttributeKeyValidator[] = "validator";
-                constexpr char kAttributeKeyCommissionRate[] = "commission_rate";
-                constexpr char kAttributeKeyMinSelfDelegation[] = "min_self_delegation";
-                constexpr char kAttributeKeySrcValidator[] = "source_validator";
-                constexpr char kAttributeKeyDstValidator[] = "destination_validator";
-                constexpr char kAttributeKeyDelegator[] = "delegator";
-                constexpr char kAttributeKeyCompletionTime[] = "completion_time";
-                constexpr char kAttributeValueStakingCategory[] = "staking";
+                constexpr char kAttributeKeyValidator[]                = "validator";
+                constexpr char kAttributeKeyCommissionRate[]           = "commission_rate";
+                constexpr char kAttributeKeyMinSelfDelegation[]        = "min_self_delegation";
+                constexpr char kAttributeKeySrcValidator[]             = "source_validator";
+                constexpr char kAttributeKeyDstValidator[]             = "destination_validator";
+                constexpr char kAttributeKeyDelegator[]                = "delegator";
+                constexpr char kAttributeKeyCompletionTime[]           = "completion_time";
+                constexpr char kAttributeValueStakingCategory[]        = "staking";
 
                 // Distribution
-                constexpr char kEventTypeSetWithdrawAddress[] = "set_withdraw_address";
-                constexpr char kEventTypeRewards[] = "rewards";
-                constexpr char kEventTypeCommission[] = "commission";
-                constexpr char kEventTypeWithdrawRewards[] = "withdraw_rewards";
-                constexpr char kEventTypeWithdrawCommission[] = "withdraw_commission";
-                constexpr char kEventTypeProposerReward[] = "proposer_reward";
+                constexpr char kEventTypeSetWithdrawAddress[]          = "set_withdraw_address";
+                constexpr char kEventTypeRewards[]                     = "rewards";
+                constexpr char kEventTypeCommission[]                  = "commission";
+                constexpr char kEventTypeWithdrawRewards[]             = "withdraw_rewards";
+                constexpr char kEventTypeWithdrawCommission[]          = "withdraw_commission";
+                constexpr char kEventTypeProposerReward[]              = "proposer_reward";
 
-                constexpr char kAttributeKeyWithdrawAddress[] = "withdraw_address";
+                constexpr char kAttributeKeyWithdrawAddress[]          = "withdraw_address";
 
-                constexpr char kAttributeValueDistributionCategory[] = "distribution";
+                constexpr char kAttributeValueDistributionCategory[]   = "distribution";
 
                 // gov
-                constexpr char kEventTypeSubmitProposal[] = "submit_proposal";
-                constexpr char kEventTypeProposalDeposit[] = "proposal_deposit";
-                constexpr char kEventTypeProposalVote[] = "proposal_vote";
-                constexpr char kEventTypeInactiveProposal[] = "inactive_proposal";
-                constexpr char kEventTypeActiveProposal[] = "active_proposal";
+                constexpr char kEventTypeSubmitProposal[]              = "submit_proposal";
+                constexpr char kEventTypeProposalDeposit[]             = "proposal_deposit";
+                constexpr char kEventTypeProposalVote[]                = "proposal_vote";
+                constexpr char kEventTypeInactiveProposal[]            = "inactive_proposal";
+                constexpr char kEventTypeActiveProposal[]              = "active_proposal";
 
-                constexpr char kAttributeKeyProposalResult[] = "proposal_result";
-                constexpr char kAttributeKeyOption[] = "option";
-                constexpr char kAttributeKeyProposalID[] = "proposal_id";
-                constexpr char kAttributeKeyVotingPeriodStart[] = "voting_period_start";
-                constexpr char kAttributeValueGovernanceCategory[] = "governance";
-                constexpr char kAttributeValueProposalDropped[] = "proposal_dropped";   // didn't meet min deposit
-                constexpr char kAttributeValueProposalPassed[] = "proposal_passed";     // met vote quorum
-                constexpr char kAttributeValueProposalRejected[] = "proposal_rejected"; // didn't meet vote quorum
-                constexpr char kAttributeValueProposalFailed[] = "proposal_failed";     // error on proposal handler
-                constexpr char kAttributeKeyProposalType[] = "proposal_type";
+                constexpr char kAttributeKeyProposalResult[]           = "proposal_result";
+                constexpr char kAttributeKeyOption[]                   = "option";
+                constexpr char kAttributeKeyProposalID[]               = "proposal_id";
+                constexpr char kAttributeKeyVotingPeriodStart[]        = "voting_period_start";
+                constexpr char kAttributeValueGovernanceCategory[]     = "governance";
+                constexpr char kAttributeValueProposalDropped[]        = "proposal_dropped";  // didn't meet min deposit
+                constexpr char kAttributeValueProposalPassed[]         = "proposal_passed";   // met vote quorum
+                constexpr char kAttributeValueProposalRejected[]       = "proposal_rejected"; // didn't meet vote quorum
+                constexpr char kAttributeValueProposalFailed[]         = "proposal_failed";   // error on proposal handler
+                constexpr char kAttributeKeyProposalType[]             = "proposal_type";
 
-                constexpr char kVoteOptionAbstain[] = "Abstain";
-                constexpr char kVoteOptionNo[] = "No";
-                constexpr char kVoteOptionNoWithVeto[] = "NoWithVeto";
-                constexpr char kVoteOptionYes[] = "Yes";
+                constexpr char kVoteOptionAbstain[]                    = "Abstain";
+                constexpr char kVoteOptionNo[]                         = "No";
+                constexpr char kVoteOptionNoWithVeto[]                 = "NoWithVeto";
+                constexpr char kVoteOptionYes[]                        = "Yes";
 
                 // bank
-                constexpr char kEventTypeTransfer[] = "transfer";
+                constexpr char kEventTypeTransfer[]                    = "transfer";
 
-                constexpr char kAttributeKeyRecipient[] = "recipient";
+                constexpr char kAttributeKeyRecipient[]                = "recipient";
 
-                constexpr char kAttributeValueBankCategory[] = "bank";
+                constexpr char kAttributeValueBankCategory[]           = "bank";
 
                 // crisis
-                constexpr char kEventTypeInvariant[] = "invariant";
+                constexpr char kEventTypeInvariant[]                   = "invariant";
 
-                constexpr char kAttributeValueCrisis[] = "crisis";
-                constexpr char kAttributeKeyRoute[] = "route";
+                constexpr char kAttributeValueCrisis[]                 = "crisis";
+                constexpr char kAttributeKeyRoute[]                    = "route";
 
                 // slashing
-                constexpr char kEventTypeSlash[] = "slash";
-                constexpr char kEventTypeLiveness[] = "liveness";
+                constexpr char kEventTypeSlash[]                       = "slash";
+                constexpr char kEventTypeLiveness[]                    = "liveness";
 
-                constexpr char kAttributeKeyAddress[] = "address";
-                constexpr char kAttributeKeyHeight[] = "height";
-                constexpr char kAttributeKeyPower[] = "power";
-                constexpr char kAttributeKeyReason[] = "reason";
-                constexpr char kAttributeKeyJailed[] = "jailed";
-                constexpr char kAttributeKeyMissedBlocks[] = "missed_blocks";
+                constexpr char kAttributeKeyAddress[]                  = "address";
+                constexpr char kAttributeKeyHeight[]                   = "height";
+                constexpr char kAttributeKeyPower[]                    = "power";
+                constexpr char kAttributeKeyReason[]                   = "reason";
+                constexpr char kAttributeKeyJailed[]                   = "jailed";
+                constexpr char kAttributeKeyMissedBlocks[]             = "missed_blocks";
 
-                constexpr char kAttributeValueDoubleSign[] = "double_sign";
-                constexpr char kAttributeValueMissingSignature[] = "missing_signature";
-                constexpr char kAttributeValueSlashingCategory[] = "slashing";
+                constexpr char kAttributeValueDoubleSign[]             = "double_sign";
+                constexpr char kAttributeValueMissingSignature[]       = "missing_signature";
+                constexpr char kAttributeValueSlashingCategory[]       = "slashing";
 
                 // mint
-                constexpr char kEventTypeMint[] = "mint";
+                constexpr char kEventTypeMint[]                        = "mint";
 
-                constexpr char kAttributeKeyBondedRatio[] = "bonded_ratio";
-                constexpr char kAttributeKeyInflation[] = "inflation";
-                constexpr char kAttributeKeyAnnualProvisions[] = "annual_provisions";
+                constexpr char kAttributeKeyBondedRatio[]              = "bonded_ratio";
+                constexpr char kAttributeKeyInflation[]                = "inflation";
+                constexpr char kAttributeKeyAnnualProvisions[]         = "annual_provisions";
             } // namespace constants
 
             static constexpr const char *msgTypeToChars(MsgType type) {

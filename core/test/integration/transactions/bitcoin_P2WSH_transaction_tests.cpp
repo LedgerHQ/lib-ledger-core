@@ -43,11 +43,11 @@ struct BitcoinMakeTransactionFromNativeSegwitToP2WSH : public BitcoinMakeBaseTra
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
         testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
-        //https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
+        // https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
         testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "84'/<coin_type>'/<account>'/<node>/<address>");
-        testData.walletName = randomWalletName();
+        testData.walletName   = randomWalletName();
         testData.currencyName = "bitcoin";
-        testData.inflate_btc = ledger::testing::txes_to_wpkh::inflate;
+        testData.inflate_btc  = ledger::testing::txes_to_wpkh::inflate;
     }
 };
 
@@ -91,9 +91,9 @@ TEST_F(BitcoinMakeTransactionFromNativeSegwitToP2WSH, CreateStandardP2WSHWithOne
 struct BitcoinMakeTransactionFromLegacyToP2WSH : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
-        testData.walletName = randomWalletName();
-        testData.currencyName = "bitcoin";
-        testData.inflate_btc = ledger::testing::medium_xpub::inflate;
+        testData.walletName    = randomWalletName();
+        testData.currencyName  = "bitcoin";
+        testData.inflate_btc   = ledger::testing::medium_xpub::inflate;
     }
 };
 
@@ -125,8 +125,8 @@ TEST_F(BitcoinMakeTransactionFromLegacyToP2WSH, CreateStandardP2WSHWithOneOutput
 
     std::vector<uint8_t> tx_bin = generatedTx->serialize();
 
-    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(),
-                                                                               tx_bin, 0);
+    auto parsedTx               = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(),
+                                                                                             tx_bin, 0);
 
     EXPECT_TRUE(verifyTransactionOutputs(parsedTx, output_descrs));
     // Values in inputs are missing after parsing. Here we can test only outputs.
@@ -135,7 +135,7 @@ TEST_F(BitcoinMakeTransactionFromLegacyToP2WSH, CreateStandardP2WSHWithOneOutput
 }
 
 TEST_F(BitcoinMakeTransactionFromLegacyToP2WSH, ParseSignedTx) {
-    auto hash = "94236be7808bc824ae3c531ee4cdf26559d6cf40cb6541f38153c54701fb0ea7";
+    auto hash   = "94236be7808bc824ae3c531ee4cdf26559d6cf40cb6541f38153c54701fb0ea7";
     auto sender = "bc1qsqe7gwppjngklwjd2lp8kde0cpglerldadudcua3efr7a0tf3ucs995hxa";
     std::vector<std::string> receivers{"bc1qmxalhet27lzt07tq5uxhagg8z4538k095f4s5u2znh67p972v5mswsecmn", "bc1qhfrga6jkrvnrq8jv7606xj77fttqeq08puze7pzu4xnejvgqffxs96j3cx"};
 

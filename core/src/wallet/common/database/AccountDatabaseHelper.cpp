@@ -63,7 +63,7 @@ namespace ledger {
         }
 
         bool AccountDatabaseHelper::accountExists(soci::session &sql, const std::string &walletUid, int32_t index) {
-            auto uid = createAccountUid(walletUid, index);
+            auto uid      = createAccountUid(walletUid, index);
             int64_t count = 0L;
             sql << "SELECT COUNT(*) FROM accounts WHERE uid = :uid", use(uid), into(count);
             return count == 1L;
@@ -76,7 +76,7 @@ namespace ledger {
         }
 
         int32_t AccountDatabaseHelper::computeNextAccountIndex(soci::session &sql, const std::string &walletUid) {
-            //TODO: Enhance performance for huge wallets by reducing the select range.
+            // TODO: Enhance performance for huge wallets by reducing the select range.
             int32_t currentIndex = 0;
             rowset<int32_t> rows = (sql.prepare << "SELECT idx FROM accounts WHERE wallet_uid = :uid ORDER BY idx", use(walletUid));
             for (auto &idx : rows) {
@@ -101,7 +101,7 @@ namespace ledger {
         }
 
         Option<api::Block> AccountDatabaseHelper::getLastBlockWithOperations(soci::session &sql, const std::string &accountUid) {
-            //Get block_uid of most recent operation from DB
+            // Get block_uid of most recent operation from DB
             rowset<row> rows = (sql.prepare << "SELECT op.block_uid, b.hash, b.height, b.time, b.currency_name "
                                                "FROM operations AS op "
                                                "JOIN blocks AS b ON op.block_uid = b.uid "
@@ -109,9 +109,9 @@ namespace ledger {
                                 use(accountUid));
             for (auto &row : rows) {
                 auto block_uid = row.get<std::string>(0);
-                auto hash = row.get<std::string>(1);
-                auto height = get_number<int64_t>(row, 2);
-                auto time = row.get<std::chrono::system_clock::time_point>(3);
+                auto hash      = row.get<std::string>(1);
+                auto height    = get_number<int64_t>(row, 2);
+                auto time      = row.get<std::chrono::system_clock::time_point>(3);
                 return Option<api::Block>(
                     api::Block(hash, block_uid, time, row.get<std::string>(4), height));
             }

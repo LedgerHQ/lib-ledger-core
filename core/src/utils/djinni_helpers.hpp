@@ -36,4 +36,4 @@
         source.identifier, source.P2PKHVersion, source.P2SHVersion, source.XPUBVersion, source.usesFeePerBytePolicy, \
         source.BIP44CoinType, source.PaymentUriScheme)
 
-#endif //LEDGER_CORE_DJINNI_HELPERS_HPP
+#endif // LEDGER_CORE_DJINNI_HELPERS_HPP

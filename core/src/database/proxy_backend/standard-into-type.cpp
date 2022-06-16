@@ -45,8 +45,8 @@ using namespace ledger::core;
 
 void proxy_standard_into_type_backend::define_by_pos(int &position, void *data, details::exchange_type type) {
     _position = position++;
-    _data = data;
-    _type = type;
+    _data     = data;
+    _type     = type;
 }
 
 void proxy_standard_into_type_backend::pre_fetch() {
@@ -61,7 +61,6 @@ void proxy_standard_into_type_backend::post_fetch(bool gotData, bool calledFromF
     auto index = _position - 1;
 
     if (_statement._lastRow->isNullAtPos(index)) {
-
         *ind = i_null;
         return;
     }
@@ -102,7 +101,7 @@ void proxy_standard_into_type_backend::post_fetch(bool gotData, bool calledFromF
     case details::x_rowid:
         throw soci_error("Unsupported type statement in select statement");
     case details::x_blob: {
-        auto b = GET(Blob, std::shared_ptr<api::DatabaseBlob>);
+        auto b    = GET(Blob, std::shared_ptr<api::DatabaseBlob>);
         auto blob = dynamic_cast<proxy_blob_backend *>(static_cast<soci::blob *>(_data)->get_backend());
         blob->setBlob(b);
         break;

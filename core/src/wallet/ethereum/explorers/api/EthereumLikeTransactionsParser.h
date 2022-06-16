@@ -41,7 +41,7 @@ namespace ledger {
         class EthereumLikeTransactionsParser : public AbstractTransactionsParser<EthereumLikeBlockchainExplorerTransaction, EthereumLikeTransactionParser> {
           public:
             EthereumLikeTransactionsParser(std::string &lastKey) : _transactionParser(lastKey) {
-                _arrayDepth = 0;
+                _arrayDepth  = 0;
                 _objectDepth = 0;
             }
 
@@ -56,4 +56,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_ETHEREUMLIKETRANSACTIONSPARSER_H
+#endif // LEDGER_CORE_ETHEREUMLIKETRANSACTIONSPARSER_H

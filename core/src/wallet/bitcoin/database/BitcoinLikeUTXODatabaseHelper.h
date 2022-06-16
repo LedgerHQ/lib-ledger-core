@@ -39,7 +39,7 @@
 namespace ledger {
     namespace core {
         class BitcoinLikeUTXODatabaseHelper {
-            BitcoinLikeUTXODatabaseHelper() = delete;
+            BitcoinLikeUTXODatabaseHelper()  = delete;
 
             ~BitcoinLikeUTXODatabaseHelper() = delete;
 
@@ -49,9 +49,11 @@ namespace ledger {
             static std::size_t UTXOcount(soci::session &sql, const std::string &accountUid, std::function<bool(const std::string &address)> filter);
 
             static std::vector<BitcoinLikeUtxo> queryAllUtxos(
-                soci::session &session, std::string const &accountUid, api::Currency const &currency);
+                soci::session &session,
+                std::string const &accountUid,
+                api::Currency const &currency);
         };
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKEUTXODATABASEHELPER_H
+#endif // LEDGER_CORE_BITCOINLIKEUTXODATABASEHELPER_H

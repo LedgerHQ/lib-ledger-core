@@ -46,14 +46,14 @@ namespace ledger {
             // Each digit in converted is a byte.
             std::vector<uint8_t> converted;
             int const fromBits = 5;
-            int const toBits = 8;
-            bool const pad = false;
-            auto result = Bech32::convertBits(
-                std::vector<uint8_t>(decoded.second.begin() + _offsetConversion, decoded.second.end()),
-                fromBits,
-                toBits,
-                pad,
-                converted);
+            int const toBits   = 8;
+            bool const pad     = false;
+            auto result        = Bech32::convertBits(
+                       std::vector<uint8_t>(decoded.second.begin() + _offsetConversion, decoded.second.end()),
+                       fromBits,
+                       toBits,
+                       pad,
+                       converted);
             if (!result || converted.size() < 2 || converted.size() > 40 ||
                 (decoded.second[0] == 0 && converted.size() != 20 && converted.size() != 32)) {
                 throw Exception(
@@ -67,8 +67,8 @@ namespace ledger {
             uint32_t chk = 1;
             for (size_t i = 0; i < values.size(); ++i) {
                 uint8_t top = chk >> 25;
-                chk = (chk & 0x1ffffff) << 5 ^ values[i];
-                auto index = 0;
+                chk         = (chk & 0x1ffffff) << 5 ^ values[i];
+                auto index  = 0;
                 for (auto &gen : _bech32Params.generator) {
                     chk ^= (-((top >> index) & 1) & gen);
                     index++;
@@ -81,8 +81,8 @@ namespace ledger {
             std::vector<uint8_t> ret;
             ret.resize(hrp.size() * 2 + 1);
             for (size_t i = 0; i < hrp.size(); ++i) {
-                unsigned char c = hrp[i];
-                ret[i] = c >> 5;
+                unsigned char c         = hrp[i];
+                ret[i]                  = c >> 5;
                 ret[i + hrp.size() + 1] = c & 0x1f;
             }
             ret[hrp.size()] = 0;
@@ -90,13 +90,14 @@ namespace ledger {
         }
 
         std::string CosmosBech32::encode(
-            const std::vector<uint8_t> &hash, const std::vector<uint8_t> &version) const {
+            const std::vector<uint8_t> &hash,
+            const std::vector<uint8_t> &version) const {
             // Convert the "hash" number from base256 (bytearray) to base32
             // Each digit in data is a byte.
             std::vector<uint8_t> data(hash);
             int const fromBits = 8;
-            int const toBits = 5;
-            bool const pad = true;
+            int const toBits   = 5;
+            bool const pad     = true;
             std::vector<uint8_t> converted;
             converted.insert(converted.end(), version.begin(), version.end());
             // After this converted is [ version(base256) || hash(base32) ]

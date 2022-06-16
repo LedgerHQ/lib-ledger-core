@@ -46,7 +46,6 @@ namespace ledger {
     namespace core {
         template <class NetworkParameters>
         class AbstractExtendedPublicKey {
-
           public:
             static inline DeterministicPublicKey _derive(int index, const std::vector<uint32_t> &childNums, const DeterministicPublicKey &key) {
                 if (index >= childNums.size()) {
@@ -73,8 +72,8 @@ namespace ledger {
                 if (parentPublicKey) {
                     SECP256k1Point ppp(parentPublicKey.value());
                     HashAlgorithm hashAlgorithm(params.Identifier);
-                    auto hash = hashAlgorithm.bytesToBytesHash(ppp.toByteArray(true));
-                    hash = RIPEMD160::hash(hash);
+                    auto hash         = hashAlgorithm.bytesToBytesHash(ppp.toByteArray(true));
+                    hash              = RIPEMD160::hash(hash);
                     parentFingerprint = ((hash[0] & 0xFFU) << 24) |
                                         ((hash[1] & 0xFFU) << 16) |
                                         ((hash[2] & 0xFFU) << 8) |
@@ -90,7 +89,7 @@ namespace ledger {
                        const std::string &xpubBase58,
                        const Option<std::string> &path,
                        const std::string &networkBase58Dictionary = "") {
-                //xpubBase58 should be composed of version(4) || depth(1) || fingerprint(4) || index(4) || chain(32) || key(33)
+                // xpubBase58 should be composed of version(4) || depth(1) || fingerprint(4) || index(4) || chain(32) || key(33)
                 auto config = std::make_shared<DynamicObject>();
                 config->putString("networkIdentifier", params.Identifier);
                 if (!networkBase58Dictionary.empty()) {
@@ -101,21 +100,21 @@ namespace ledger {
                     throw decodeResult.getFailure();
                 BytesReader reader(decodeResult.getValue());
 
-                //4 bytes of version
+                // 4 bytes of version
                 auto version = reader.read(params.XPUBVersion.size());
                 if (version != params.XPUBVersion) {
                     throw Exception(api::ErrorCode::INVALID_NETWORK_ADDRESS_VERSION, "Provided network parameters and address version do not match.");
                 }
-                //1 byte of depth
-                auto depth = reader.readNextByte();
-                //4 bytes of fingerprint
+                // 1 byte of depth
+                auto depth       = reader.readNextByte();
+                // 4 bytes of fingerprint
                 auto fingerprint = reader.readNextBeUint();
-                //4 bytes of child's index
-                auto childNum = reader.readNextBeUint();
-                //32 bytes of chaincode
-                auto chainCode = reader.read(32);
-                //33 bytes of publicKey
-                auto publicKey = reader.readUntilEnd();
+                // 4 bytes of child's index
+                auto childNum    = reader.readNextBeUint();
+                // 32 bytes of chaincode
+                auto chainCode   = reader.read(32);
+                // 33 bytes of publicKey
+                auto publicKey   = reader.readUntilEnd();
                 return DeterministicPublicKey(publicKey, chainCode, childNum, depth, fingerprint, params.Identifier);
             }
 
@@ -132,12 +131,12 @@ namespace ledger {
             }
 
           protected:
-            virtual const NetworkParameters &params() const = 0;
+            virtual const NetworkParameters &params() const      = 0;
             virtual const DeterministicPublicKey &getKey() const = 0;
-            virtual const DerivationPath &getPath() const = 0;
-            virtual const api::Currency &getCurrency() const = 0;
+            virtual const DerivationPath &getPath() const        = 0;
+            virtual const api::Currency &getCurrency() const     = 0;
         };
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_ABSTRACTEXTENDEDPUBLICKEY_H
+#endif // LEDGER_CORE_ABSTRACTEXTENDEDPUBLICKEY_H

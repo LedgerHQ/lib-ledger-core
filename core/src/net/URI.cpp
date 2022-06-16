@@ -40,11 +40,11 @@ namespace ledger {
             std::regex ex("(http|https)://([^/ :]+):?([^/ ]*)(/?[^ #?]*)\\x3f?([^ #]*)#?([^ ]*)");
             std::cmatch what;
             if (regex_match(uri.toCString(), what, ex)) {
-                _scheme = std::string(what[1].first, what[1].second);
-                _domain = std::string(what[2].first, what[2].second);
-                _port = std::string(what[3].first, what[3].second);
-                _path = std::string(what[4].first, what[4].second);
-                _query = std::string(what[5].first, what[5].second);
+                _scheme   = std::string(what[1].first, what[1].second);
+                _domain   = std::string(what[2].first, what[2].second);
+                _port     = std::string(what[3].first, what[3].second);
+                _path     = std::string(what[4].first, what[4].second);
+                _query    = std::string(what[5].first, what[5].second);
                 _fragment = std::string(what[6].first, what[6].second);
             }
         }

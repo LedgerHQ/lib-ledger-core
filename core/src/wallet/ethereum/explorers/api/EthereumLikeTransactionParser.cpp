@@ -141,7 +141,7 @@ namespace ledger {
         bool EthereumLikeTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(RawNumber, str, length, copy) {
                 std::string number(str, length);
-                BigInt value = BigInt::fromString(number);
+                BigInt value      = BigInt::fromString(number);
                 bool isInternalTx = currentObject == "actions" && !_transaction->internalTransactions.empty();
                 if (_lastKey == "gas_used") {
                     if (isInternalTx) {
@@ -187,7 +187,7 @@ namespace ledger {
                     return hex::toByteArray(tmpData);
                 };
 
-                //All addresses are lower cased, we get EIP55 format
+                // All addresses are lower cased, we get EIP55 format
                 if ((_lastKey == "from" || _lastKey == "to" || _lastKey == "contract") && value.size() > 2) {
                     value = Base58::encodeWithEIP55(value);
                 }
@@ -239,7 +239,7 @@ namespace ledger {
         }
 
         void EthereumLikeTransactionParser::init(EthereumLikeBlockchainExplorerTransaction *transaction) {
-            _transaction = transaction;
+            _transaction             = transaction;
             // Default receivedAt to `now`, in case the explorer doesn't return it.
             _transaction->receivedAt = std::chrono::system_clock::now();
         }

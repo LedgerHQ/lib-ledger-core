@@ -46,4 +46,4 @@ class MemoryDatabaseProxy : public ledger::core::api::DatabaseEngine {
     std::shared_ptr<ConnectionPool> _pool;
 };
 
-#endif //LEDGER_CORE_MEMORYDATABASEPROXY_H
+#endif // LEDGER_CORE_MEMORYDATABASEPROXY_H

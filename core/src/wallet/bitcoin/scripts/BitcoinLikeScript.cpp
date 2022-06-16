@@ -100,7 +100,7 @@ namespace ledger {
             for (auto &chunk : _chunks) {
                 if (chunk.isBytes()) {
                     auto &bytes = chunk.getBytes();
-                    auto size = bytes.size();
+                    auto size   = bytes.size();
                     if (size <= 0x75) {
                         writer.writeByte((uint8_t)size).writeByteArray(bytes);
                     } else if (size <= 0xFF) {
@@ -137,7 +137,7 @@ namespace ledger {
             }
 
             auto &additionalBIPS = currency.bitcoinLikeNetworkParameters.value().AdditionalBIPs;
-            auto it = std::find(additionalBIPS.begin(), additionalBIPS.end(), "BIP115");
+            auto it              = std::find(additionalBIPS.begin(), additionalBIPS.end(), "BIP115");
             if (it != additionalBIPS.end()) {
                 script << hex::toByteArray(networks::BIP115_PARAMETERS.blockHash)
                        << networks::BIP115_PARAMETERS.blockHeight
@@ -181,7 +181,7 @@ namespace ledger {
 
         const BitcoinLikeScriptChunk &BitcoinLikeScript::operator[](int index) const {
             auto size = this->size();
-            auto it = _chunks.begin();
+            auto it   = _chunks.begin();
             for (auto i = 0; i < index; i++)
                 it++;
             return *it; // Make it breakable on purpose if you are trying to fetch something which doesn't exist the list will throw an exception
@@ -192,18 +192,18 @@ namespace ledger {
             const auto &params = currency.bitcoinLikeNetworkParameters.value();
             HashAlgorithm hashAlgorithm(params.Identifier);
             if (isP2SH()) {
-                //Signed : <ScriptSig> <PubKey>
+                // Signed : <ScriptSig> <PubKey>
                 if (_configuration.isSigned) {
                     std::vector<uint8_t> script = {0x00, 0x14};
-                    //Hash160 of public key
-                    auto publicKeyHash160 = HASH160::hash((*this)[1].getBytes(), hashAlgorithm);
+                    // Hash160 of public key
+                    auto publicKeyHash160       = HASH160::hash((*this)[1].getBytes(), hashAlgorithm);
                     script.insert(script.end(), publicKeyHash160.begin(), publicKeyHash160.end());
                     return Option<BitcoinLikeAddress>(
                         BitcoinLikeAddress(currency,
                                            HASH160::hash(script, hashAlgorithm),
                                            api::KeychainEngines::BIP49_P2SH));
                 }
-                //Unsigned : OP_HASH160 <PubKeyHash> OP_EQUAL
+                // Unsigned : OP_HASH160 <PubKeyHash> OP_EQUAL
                 return Option<BitcoinLikeAddress>(
                     BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP49_P2SH));
             } else if (isP2PKH()) {

@@ -41,7 +41,7 @@ namespace ledger {
         class TransactionsParser : public AbstractTransactionsParser<BitcoinLikeBlockchainExplorerTransaction, TransactionParser> {
           public:
             TransactionsParser(std::string &lastKey) : _transactionParser(lastKey) {
-                _arrayDepth = 0;
+                _arrayDepth  = 0;
                 _objectDepth = 0;
             }
 
@@ -69,4 +69,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_TRANSACTIONSPARSER_HPP
+#endif // LEDGER_CORE_TRANSACTIONSPARSER_HPP

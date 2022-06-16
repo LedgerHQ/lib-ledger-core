@@ -55,15 +55,15 @@ namespace ledger {
                                                          const std::string &protocolUpdate) : _currency(currency),
                                                                                               _protocolUpdate(protocolUpdate),
                                                                                               _needReveal(false) {
-            _block = std::make_shared<TezosLikeBlockApi>(Block{});
-            _type = api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
+            _block  = std::make_shared<TezosLikeBlockApi>(Block{});
+            _type   = api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
             _status = 0;
         }
 
         TezosLikeTransactionApi::TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation,
                                                          const std::string &protocolUpdate) : _needReveal(false) {
             auto &tx = operation->getBackend().tezosTransaction.getValue();
-            _time = tx.receivedAt;
+            _time    = tx.receivedAt;
 
             if (tx.block.nonEmpty()) {
                 _block = std::make_shared<TezosLikeBlockApi>(tx.block.getValue());
@@ -71,24 +71,24 @@ namespace ledger {
                 _block = nullptr;
             }
 
-            _hash = tx.hash;
+            _hash                = tx.hash;
 
-            _currency = operation->getAccount()->getWallet()->getCurrency();
+            _currency            = operation->getAccount()->getWallet()->getCurrency();
 
-            _transactionFees = std::make_shared<Amount>(_currency, 0, tx.fees);
+            _transactionFees     = std::make_shared<Amount>(_currency, 0, tx.fees);
             _transactionGasLimit = std::make_shared<Amount>(_currency, 0, tx.gas_limit);
-            _value = std::make_shared<Amount>(_currency, 0, tx.value);
+            _value               = std::make_shared<Amount>(_currency, 0, tx.value);
 
-            _receiver = TezosLikeAddress::fromBase58(tx.receiver, _currency);
-            _sender = TezosLikeAddress::fromBase58(tx.sender, _currency);
+            _receiver            = TezosLikeAddress::fromBase58(tx.receiver, _currency);
+            _sender              = TezosLikeAddress::fromBase58(tx.sender, _currency);
 
-            _type = tx.type;
+            _type                = tx.type;
 
-            _revealedPubKey = tx.publicKey;
-            _revealFees = std::make_shared<Amount>(_currency, 0, tx.fees);
-            _revealGasLimit = std::make_shared<Amount>(_currency, 0, tx.gas_limit);
+            _revealedPubKey      = tx.publicKey;
+            _revealFees          = std::make_shared<Amount>(_currency, 0, tx.fees);
+            _revealGasLimit      = std::make_shared<Amount>(_currency, 0, tx.gas_limit);
 
-            _status = tx.status;
+            _status              = tx.status;
         }
 
         api::TezosOperationTag TezosLikeTransactionApi::getType() const {
@@ -185,7 +185,7 @@ namespace ledger {
             // TODO: extract this into a setDERSignature method
             if (signature.size() != SIGNATURE_SIZE_BYTES) {
                 auto der = DER::fromRaw(signature);
-                decoded = der.toBytes();
+                decoded  = der.toBytes();
             }
 
             // Decoded bytes-only signature should be 64 bytes
@@ -226,7 +226,7 @@ namespace ledger {
             auto params = _currency.tezosLikeNetworkParameters.value_or(networks::getTezosLikeNetworkParameters("tezos"));
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params.Identifier);
-            auto decoded = Base58::checkAndDecode(_block->getHash(), config);
+            auto decoded   = Base58::checkAndDecode(_block->getHash(), config);
             // Remove 2 first bytes (of version)
             auto blockHash = std::vector<uint8_t>{decoded.getValue().begin() + 2, decoded.getValue().end()};
             writer.writeByteArray(blockHash);
@@ -594,14 +594,14 @@ namespace ledger {
         TezosLikeTransactionApi &
         TezosLikeTransactionApi::setSender(const std::shared_ptr<api::TezosLikeAddress> &sender, api::TezosCurve curve) {
             _senderCurve = curve;
-            _sender = sender;
+            _sender      = sender;
             return *this;
         }
 
         TezosLikeTransactionApi &
         TezosLikeTransactionApi::setReceiver(const std::shared_ptr<api::TezosLikeAddress> &receiver, api::TezosCurve curve) {
             _receiverCurve = curve;
-            _receiver = receiver;
+            _receiver      = receiver;
             return *this;
         }
 
@@ -664,7 +664,7 @@ namespace ledger {
 
         TezosLikeTransactionApi &TezosLikeTransactionApi::setManagerAddress(const std::string &managerAddress, api::TezosCurve curve) {
             _managerAddress = managerAddress;
-            _managerCurve = curve;
+            _managerCurve   = curve;
             return *this;
         }
 
@@ -691,7 +691,7 @@ namespace ledger {
         }
 
         std::string TezosLikeTransactionApi::setCorrelationId(const std::string &newId) {
-            auto oldId = _correlationId;
+            auto oldId     = _correlationId;
             _correlationId = newId;
             return oldId;
         }

@@ -47,4 +47,4 @@ class IntegrationEnvironment {
     static IntegrationEnvironment *_instance;
 };
 
-#endif //LEDGER_CORE_INTEGRATIONENVIRONMENT_H
+#endif // LEDGER_CORE_INTEGRATIONENVIRONMENT_H

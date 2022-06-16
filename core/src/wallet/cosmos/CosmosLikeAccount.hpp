@@ -108,7 +108,9 @@ namespace ledger {
             Future<AbstractAccount::AddressList> getFreshPublicAddresses() override;
 
             Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(
-                const std::string &start, const std::string &end, api::TimePeriod precision) override;
+                const std::string &start,
+                const std::string &end,
+                api::TimePeriod precision) override;
 
             Future<api::ErrorCode> eraseDataSince(
                 const std::chrono::system_clock::time_point &date) override;
@@ -255,44 +257,52 @@ namespace ledger {
             /// \param [out] out the Operation to fill
             /// \param [in] innerSendMsg the cosmos send message to use, unwrapped.
             void fillOperationTypeAmountFromSend(
-                CosmosLikeOperation &out, const cosmos::MsgSend &innerSendMsg) const;
+                CosmosLikeOperation &out,
+                const cosmos::MsgSend &innerSendMsg) const;
             /// Set the type and the amount of an Operation from an unwrapped cosmos MultiSend Message.
             /// \param [out] out the Operation to fill
             /// \param [in] innerMultiSendMsg the cosmos multiSend message to use, unwrapped.
             void fillOperationTypeAmountFromMultiSend(
-                CosmosLikeOperation &out, const cosmos::MsgMultiSend &innerMultiSendMsg) const;
+                CosmosLikeOperation &out,
+                const cosmos::MsgMultiSend &innerMultiSendMsg) const;
             /// Set the type and the amount of an Operation from an unwrapped cosmos Delegate Message.
             /// \param [out] out the Operation to fill
             /// \param [in] innerDelegateMsg the cosmos delegate message to use, unwrapped.
             void fillOperationTypeAmountFromDelegate(
-                CosmosLikeOperation &out, const cosmos::MsgDelegate &innerDelegateMsg) const;
+                CosmosLikeOperation &out,
+                const cosmos::MsgDelegate &innerDelegateMsg) const;
             /// Set the type and the amount of an Operation from an unwrapped cosmos Undelegate Message.
             /// \param [out] out the Operation to fill
             /// \param [in] innerUndelegateMsg the cosmos undelegate message to use, unwrapped.
             void fillOperationTypeAmountFromUndelegate(
-                CosmosLikeOperation &out, const cosmos::MsgUndelegate &innerUndelegateMsg) const;
+                CosmosLikeOperation &out,
+                const cosmos::MsgUndelegate &innerUndelegateMsg) const;
             /// Set the type and the amount of an Operation from an unwrapped cosmos BeginRedelegate
             /// Message.
             /// \param [out] out the Operation to fill
             /// \param [in] innerBeginRedelegateMsg the
             /// cosmos beginRedelegate message to use, unwrapped.
             void fillOperationTypeAmountFromBeginRedelegate(
-                CosmosLikeOperation &out, const cosmos::MsgBeginRedelegate &innerBeginRedelegateMsg) const;
+                CosmosLikeOperation &out,
+                const cosmos::MsgBeginRedelegate &innerBeginRedelegateMsg) const;
             /// Set the type and the amount of an Operation from an unwrapped cosmos SubmitProposal Message.
             /// \param [out] out the Operation to fill
             /// \param [in] innerSubmitProposalMsg the cosmos submitProposal message to use, unwrapped.
             void fillOperationTypeAmountFromSubmitProposal(
-                CosmosLikeOperation &out, const cosmos::MsgSubmitProposal &innerSubmitProposalMsg) const;
+                CosmosLikeOperation &out,
+                const cosmos::MsgSubmitProposal &innerSubmitProposalMsg) const;
             /// Set the type and the amount of an Operation from an unwrapped cosmos Deposit Message.
             /// \param [out] out the Operation to fill
             /// \param [in] innerDepositMsg the cosmos deposit message to use, unwrapped.
             void fillOperationTypeAmountFromDeposit(
-                CosmosLikeOperation &out, const cosmos::MsgDeposit &innerDepositMsg) const;
+                CosmosLikeOperation &out,
+                const cosmos::MsgDeposit &innerDepositMsg) const;
             /// Set the type and the amount of an Operation from an unwrapped cosmos Fees Message.
             /// \param [out] out the Operation to fill
             /// \param [in] innerFeesMsg the cosmos fees message to use, unwrapped.
             void fillOperationTypeAmountFromFees(
-                CosmosLikeOperation &out, const cosmos::MsgFees &innerFeesMsg) const;
+                CosmosLikeOperation &out,
+                const cosmos::MsgFees &innerFeesMsg) const;
 
             /// Compute the exact fees paid for the Transaction, applying the consumed gas ratio if available.
             /// \param [in] tx A Cosmos Transaction to compute the fees from

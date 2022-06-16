@@ -43,7 +43,7 @@ namespace ledger {
         EthereumLikeOperation::EthereumLikeOperation(const std::shared_ptr<OperationApi> &baseOp)
             : _internalTxsRetrieved(false) {
             _transaction = std::make_shared<EthereumLikeTransactionApi>(baseOp);
-            _backend = baseOp;
+            _backend     = baseOp;
         }
 
         std::shared_ptr<api::EthereumLikeTransaction> EthereumLikeOperation::getTransaction() {
@@ -54,19 +54,19 @@ namespace ledger {
         EthereumLikeOperation::getInternalTransactions() {
             if (!_internalTxsRetrieved) {
                 soci::session sql(_backend->getAccount()->getWallet()->getDatabase()->getPool());
-                auto uid = _backend->getUid();
+                auto uid                               = _backend->getUid();
                 soci::rowset<soci::row> internalTxRows = (sql.prepare << "SELECT type, value, sender, "
                                                                          "receiver, gas_limit, gas_used, input_data "
                                                                          "FROM internal_operations WHERE ethereum_operation_uid = :uid ",
                                                           soci::use(uid));
                 for (auto &row : internalTxRows) {
                     InternalTx internalTx;
-                    internalTx.type = api::from_string<api::OperationType>(row.get<std::string>(0));
-                    internalTx.value = BigInt::fromHex(row.get<std::string>(1));
-                    internalTx.from = row.get<std::string>(2);
-                    internalTx.to = row.get<std::string>(3);
-                    internalTx.gasLimit = BigInt::fromHex(row.get<std::string>(4));
-                    internalTx.gasUsed = BigInt::fromHex(row.get<std::string>(5));
+                    internalTx.type      = api::from_string<api::OperationType>(row.get<std::string>(0));
+                    internalTx.value     = BigInt::fromHex(row.get<std::string>(1));
+                    internalTx.from      = row.get<std::string>(2);
+                    internalTx.to        = row.get<std::string>(3);
+                    internalTx.gasLimit  = BigInt::fromHex(row.get<std::string>(4));
+                    internalTx.gasUsed   = BigInt::fromHex(row.get<std::string>(5));
                     internalTx.inputData = hex::toByteArray(row.get<std::string>(6));
                     _internalTxs.push_back(std::make_shared<InternalTransaction>(internalTx));
                 }

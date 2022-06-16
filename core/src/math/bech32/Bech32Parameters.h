@@ -78,4 +78,4 @@ namespace ledger {
         } // namespace Bech32Parameters
     }     // namespace core
 } // namespace ledger
-#endif //LEDGER_CORE_BECH32PARAMETERS_H
+#endif // LEDGER_CORE_BECH32PARAMETERS_H

@@ -80,13 +80,13 @@ namespace ledger {
             if (_currentSyncEventBus != nullptr)
                 return _currentSyncEventBus;
 
-            auto eventPublisher = std::make_shared<EventPublisher>(getContext());
+            auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
-            auto self = std::dynamic_pointer_cast<StellarLikeAccount>(shared_from_this());
-            auto synchronizer = _params.synchronizer;
+            auto self            = std::dynamic_pointer_cast<StellarLikeAccount>(shared_from_this());
+            auto synchronizer    = _params.synchronizer;
 
-            //Update current block height (needed to compute trust level)
+            // Update current block height (needed to compute trust level)
             _params.explorer->getLastLedger().onComplete(getContext(),
                                                          [self, eventPublisher, synchronizer](const TryPtr<stellar::Ledger> &l) mutable {
                                                              if (l.isSuccess()) {
@@ -94,14 +94,14 @@ namespace ledger {
                                                                  self->putLedger(sql, *l.getValue());
                                                                  self->_currentLedgerHeight = l.getValue()->height;
                                                              }
-                                                             auto future = synchronizer->synchronize(self)->getFuture();
+                                                             auto future    = synchronizer->synchronize(self)->getFuture();
                                                              auto startTime = DateUtils::now();
                                                              eventPublisher->postSticky(
                                                                  std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
                                                                  0);
                                                              future.onComplete(self->getContext(), [eventPublisher, self, startTime](const auto &result) {
                                                                  api::EventCode code;
-                                                                 auto payload = std::make_shared<DynamicObject>();
+                                                                 auto payload  = std::make_shared<DynamicObject>();
                                                                  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                                                                                      DateUtils::now() - startTime)
                                                                                      .count();
@@ -149,7 +149,7 @@ namespace ledger {
                                                   return balance.assetType == "native";
                                               });
 
-                BigInt amount = (balanceIt != account.balances.end()) ? balanceIt->value : BigInt::ZERO;
+                BigInt amount  = (balanceIt != account.balances.end()) ? balanceIt->value : BigInt::ZERO;
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, amount);
             });
         }
@@ -166,7 +166,7 @@ namespace ledger {
             auto self = getSelf();
             return async<std::vector<std::shared_ptr<api::Amount>>>([=]() -> std::vector<std::shared_ptr<api::Amount>> {
                 auto startDate = DateUtils::fromJSON(start);
-                auto endDate = DateUtils::fromJSON(end);
+                auto endDate   = DateUtils::fromJSON(end);
                 if (startDate >= endDate) {
                     throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
                                          "Start date should be strictly lower than end date");
@@ -176,12 +176,12 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain = self->getKeychain();
+                auto keychain                                   = self->getKeychain();
                 std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
                     return keychain->contains(addr);
                 };
 
-                //Get operations related to an account
+                // Get operations related to an account
                 OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
 
                 auto lowerDate = startDate;
@@ -191,7 +191,6 @@ namespace ledger {
                 std::size_t operationsCount = 0;
                 BigInt sum;
                 while (lowerDate <= endDate && operationsCount < operations.size()) {
-
                     auto operation = operations[operationsCount];
                     while (operation.date > upperDate && lowerDate < endDate) {
                         lowerDate = DateUtils::incrementDate(lowerDate, precision);
@@ -228,9 +227,9 @@ namespace ledger {
         }
 
         Future<api::ErrorCode> StellarLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point &date) {
-            auto log = logger();
+            auto log        = logger();
             auto accountUid = getAccountUid();
-            auto self = getSelf();
+            auto self       = getSelf();
             return async<api::ErrorCode>([=]() {
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 StellarLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
@@ -272,26 +271,26 @@ namespace ledger {
             }
             int createdOperations = 0;
             Operation operation;
-            operation.accountUid = getAccountUid();
+            operation.accountUid   = getAccountUid();
             operation.currencyName = getWallet()->getCurrency().name;
-            operation.date = tx.createdAt;
-            operation.walletType = getWallet()->getWalletType();
-            operation.walletUid = getWallet()->getWalletUid();
-            operation.trust = std::make_shared<TrustIndicator>();
+            operation.date         = tx.createdAt;
+            operation.walletType   = getWallet()->getWalletType();
+            operation.walletUid    = getWallet()->getWalletUid();
+            operation.trust        = std::make_shared<TrustIndicator>();
             operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
 
             Block block;
             block.currencyName = getWallet()->getCurrency().name;
-            block.time = tx.createdAt;
-            block.height = tx.ledger;
-            block.hash = fmt::format("{}", block.height);
+            block.time         = tx.createdAt;
+            block.height       = tx.ledger;
+            block.hash         = fmt::format("{}", block.height);
 
-            operation.block = block;
-            operation.fees = tx.feePaid;
+            operation.block    = block;
+            operation.fees     = tx.feePaid;
             operation.senders.emplace_back(tx.sourceAccount);
 
-            auto accountAddress = getKeychain()->getAddress()->toString();
-            auto networkParams = getWallet()->getCurrency().stellarLikeNetworkParameters.value();
+            auto accountAddress     = getKeychain()->getAddress()->toString();
+            auto networkParams      = getWallet()->getCurrency().stellarLikeNetworkParameters.value();
             auto muxedAccountToAddr = [&](const stellar::xdr::MuxedAccount &acc) {
                 return StellarLikeAddress::convertMuxedAccountToAddress(acc, networkParams);
             };
@@ -300,28 +299,28 @@ namespace ledger {
             };
 
             auto putOp = [&](api::OperationType type, stellar::Operation stellarOperation) {
-                operation.type = type;
+                operation.type        = type;
                 stellarOperation.from = operation.senders[0];
                 if (!operation.recipients.empty())
                     stellarOperation.to = operation.recipients[0];
                 operation.stellarOperation = {stellarOperation, tx};
                 operation.refreshUid();
-                //OperationDatabaseHelper::putOperation(sql, operation);
+                // OperationDatabaseHelper::putOperation(sql, operation);
                 createdOperations += 1;
-                //emitNewOperationEvent(operation);
+                // emitNewOperationEvent(operation);
                 out.push_back(operation);
             };
 
             auto opIndex = 0;
             for (const auto &op : operations) {
                 stellar::Operation stellarOperation;
-                stellarOperation.createdAt = tx.createdAt;
-                stellarOperation.transactionFee = tx.feePaid;
-                stellarOperation.transactionSequence = tx.sourceAccountSequence;
-                stellarOperation.transactionHash = tx.hash;
+                stellarOperation.createdAt             = tx.createdAt;
+                stellarOperation.transactionFee        = tx.feePaid;
+                stellarOperation.transactionSequence   = tx.sourceAccountSequence;
+                stellarOperation.transactionHash       = tx.hash;
                 stellarOperation.transactionSuccessful = tx.successful;
-                stellarOperation.id = (BigInt(tx.pagingToken) + BigInt(opIndex + 1)).toString();
-                stellarOperation.type = op.type;
+                stellarOperation.id                    = (BigInt(tx.pagingToken) + BigInt(opIndex + 1)).toString();
+                stellarOperation.type                  = op.type;
                 if (op.sourceAccount.nonEmpty()) {
                     operation.senders[0] = muxedAccountToAddr(op.sourceAccount.getValue());
                 }
@@ -367,9 +366,9 @@ namespace ledger {
                     stellar::xdrAssetToAsset(sop.destAsset, networkParams, stellarOperation.asset);
                     stellar::Asset sourceAsset;
                     stellar::xdrAssetToAsset(sop.sendAsset, networkParams, sourceAsset);
-                    stellarOperation.sourceAsset = sourceAsset;
+                    stellarOperation.sourceAsset  = sourceAsset;
                     stellarOperation.sourceAmount = BigInt(sop.sendMax);
-                    stellarOperation.amount = BigInt(sop.destAmount);
+                    stellarOperation.amount       = BigInt(sop.destAmount);
                     if (operation.senders[0] == accountAddress &&
                         sop.sendAsset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
                         operation.amount = BigInt(sop.sendMax);
@@ -476,7 +475,7 @@ namespace ledger {
         }
 
         FuturePtr<Amount> StellarLikeAccount::getBaseReserve() {
-            auto self = getSelf();
+            auto self                         = getSelf();
             auto queryLastLedgerAndGetReserve = [=]() -> std::shared_ptr<Amount> {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 stellar::Ledger lgr;

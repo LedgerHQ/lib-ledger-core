@@ -34,8 +34,8 @@ namespace ledger {
     namespace core {
 
         HttpClient::HttpClient(const std::string &baseUrl, const std::shared_ptr<api::HttpClient> &client, const std::shared_ptr<api::ExecutionContext> &sequentialContext, const std::shared_ptr<api::ExecutionContext> &threadpoolContext) {
-            _baseUrl = baseUrl;
-            _client = client;
+            _baseUrl           = baseUrl;
+            _client            = client;
             _sequentialContext = sequentialContext;
             _threadpoolContext = threadpoolContext;
             if (_baseUrl.back() != '/') {
@@ -83,7 +83,8 @@ namespace ledger {
                                               const std::experimental::optional<std::vector<uint8_t>> body,
                                               const std::unordered_map<std::string, std::string> &headers,
                                               const std::string &baseUrl) {
-            auto url = baseUrl.empty() ? _baseUrl : baseUrl.back() != '/' ? baseUrl + "/" : baseUrl;
+            auto url = baseUrl.empty() ? _baseUrl : baseUrl.back() != '/' ? baseUrl + "/"
+                                                                          : baseUrl;
             if (path.front() == '/') {
                 url += std::string(path.data() + 1);
             } else {
@@ -109,15 +110,15 @@ namespace ledger {
         }
 
         HttpRequest::HttpRequest(api::HttpMethod method, const std::string &url, const std::unordered_map<std::string, std::string> &headers, const std::experimental::optional<std::vector<uint8_t>> &body, const std::shared_ptr<api::HttpClient> &client, const std::shared_ptr<api::ExecutionContext> &sequentialContext, const std::shared_ptr<api::ExecutionContext> &threadpoolContext, const Option<std::shared_ptr<spdlog::logger>> &logger) {
-            _method = method;
-            _url = url;
-            _headers = headers;
-            _body = body;
-            _client = client;
+            _method            = method;
+            _url               = url;
+            _headers           = headers;
+            _body              = body;
+            _client            = client;
             _sequentialContext = sequentialContext;
             _threadpoolContext = threadpoolContext;
-            _context = _sequentialContext;
-            _logger = logger;
+            _context           = _sequentialContext;
+            _logger            = logger;
         }
 
         HttpRequest::ApiRequest::ApiRequest(const std::shared_ptr<const ledger::core::HttpRequest> &self) {
@@ -158,7 +159,7 @@ namespace ledger {
                                })
                 .map<JsonResult>(_context, [parseNumbersAsString, ignoreStatusCode](const std::shared_ptr<api::HttpUrlConnection> &co) {
                     std::shared_ptr<api::HttpUrlConnection> connection = co;
-                    auto doc = std::make_shared<rapidjson::Document>();
+                    auto doc                                           = std::make_shared<rapidjson::Document>();
                     HttpUrlConnectionInputStream is(connection);
                     if (parseNumbersAsString) {
                         doc->ParseStream<rapidjson::kParseNumbersAsStringsFlag>(is);

@@ -47,12 +47,12 @@ namespace ledger {
                 using ObjectEncoder = std::function<void(Encoder &)>;
 
                 /**
-                * Create an encoder for the given object. This function must have a
-                * specialization for each types to encode.
-                * @tparam T The class of the object to encode
-                * @param object The object to encode
-                * @return A function able to encode the object
-                */
+                 * Create an encoder for the given object. This function must have a
+                 * specialization for each types to encode.
+                 * @tparam T The class of the object to encode
+                 * @param object The object to encode
+                 * @return A function able to encode the object
+                 */
                 template <class T>
                 ObjectEncoder make_encoder(const T &object);
 
@@ -127,4 +127,4 @@ namespace ledger {
     }         // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_XDRENCODER_HPP
+#endif // LEDGER_CORE_XDRENCODER_HPP

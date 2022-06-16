@@ -58,7 +58,7 @@ namespace ledger {
         void EthereumLikeBlockchainExplorerAccountSynchronizer::updateTransactionsToDrop(soci::session &sql,
                                                                                          std::shared_ptr<SynchronizationBuddy> &buddy,
                                                                                          const std::string &accountUid) {
-            //Get all transactions in DB that may be dropped (txs without block_uid)
+            // Get all transactions in DB that may be dropped (txs without block_uid)
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, eth_op.transaction_hash FROM operations AS op "
                                                            "LEFT OUTER JOIN ethereum_operations AS eth_op ON eth_op.uid = op.uid "
                                                            "WHERE op.block_uid IS NULL AND op.account_uid = :uid ",

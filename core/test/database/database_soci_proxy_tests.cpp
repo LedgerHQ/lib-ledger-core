@@ -69,14 +69,14 @@ static T random(T seed) {
 }
 #define RAND(var_name) (var_name = random(var_name))
 
-static const std::string DB_KEY = "test_key";
+static const std::string DB_KEY     = "test_key";
 static const std::string DB_NEW_KEY = "test_new_key";
 class SociProxyBaseTest : public ::testing::Test {
   protected:
     void SetUp() override {
         Test::SetUp();
         auto engine = std::make_shared<MemoryDatabaseProxy>();
-        _backend = std::make_shared<ProxyBackend>(engine);
+        _backend    = std::make_shared<ProxyBackend>(engine);
         _backend->enableQueryLogging(true);
         auto dbName = fmt::format("test_db_{}", std::chrono::system_clock::now().time_since_epoch().count());
         std::cout << "initializing database " << dbName << std::endl;
@@ -145,10 +145,10 @@ class SociProxyBaseTest : public ::testing::Test {
     }
 
     std::vector<People> generateData(int count, bool withPicture = false) {
-        int64_t Long = 0xDEADBEEFC0FFEL; // Random sentence
-        int Int = 1337;                  // Because 1337 is always random
-        uint8_t Byte = 0x0F;
-        int id = 1;
+        int64_t Long  = 0xDEADBEEFC0FFEL; // Random sentence
+        int Int       = 1337;             // Because 1337 is always random
+        uint8_t Byte  = 0x0F;
+        int id        = 1;
         double Double = 55.67891;
         std::vector<People> people;
         while (count > 0) {
@@ -189,7 +189,7 @@ class SociProxyTest : public SociProxyBaseTest {
     void SetUp() override {
         Test::SetUp();
         auto engine = std::make_shared<MemoryDatabaseProxy>();
-        _backend = std::make_shared<ProxyBackend>(engine);
+        _backend    = std::make_shared<ProxyBackend>(engine);
         _backend->enableQueryLogging(true);
         dbName = ":memory:";
         _backend->init(nullptr, dbName, DB_KEY, sql);
@@ -270,13 +270,13 @@ TEST_F(SociProxyTest, SelectWithRows) {
     });
     insertPeople(sql, people);
     soci::rowset<soci::row> rows = (sql.prepare << "SELECT id, name, age, grade FROM people ORDER by id");
-    auto it = people.begin();
+    auto it                      = people.begin();
     for (const auto &row : rows) {
         const auto &expected = *it;
         People retrieved;
-        retrieved.id = row.get<int>(0);
-        retrieved.name = row.get<std::string>(1);
-        retrieved.age = row.get<long long>(2);
+        retrieved.id    = row.get<int>(0);
+        retrieved.name  = row.get<std::string>(1);
+        retrieved.age   = row.get<long long>(2);
         retrieved.grade = row.get<double>(3);
         EXPECT_EQ(expected.name, retrieved.name);
         EXPECT_EQ(expected.age, retrieved.age);
@@ -325,7 +325,7 @@ TEST_F(SociProxyTest, SelectAllFields) {
 
     soci::rowset<soci::row> rows = (sql.prepare << "SELECT * FROM people WHERE age = :age AND name = :name AND grade = :grade AND id = :id",
                                     soci::use(witness.age), soci::use(witness.name), soci::use(witness.grade), soci::use(witness.id));
-    auto &row = *rows.begin();
+    auto &row                    = *rows.begin();
     People retrieved;
     bool hasPicture = false;
     for (size_t i = 0; i < row.size(); i++) {

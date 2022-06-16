@@ -45,12 +45,12 @@ namespace ledger {
 
         EthereumLikeTransactionApi::EthereumLikeTransactionApi(const api::Currency &currency) {
             _currency = currency;
-            _status = 0;
+            _status   = 0;
         }
 
         EthereumLikeTransactionApi::EthereumLikeTransactionApi(const std::shared_ptr<OperationApi> &operation) {
             auto &tx = operation->getBackend().ethereumTransaction.getValue();
-            _time = tx.receivedAt;
+            _time    = tx.receivedAt;
 
             if (tx.block.nonEmpty()) {
                 _block = std::make_shared<EthereumLikeBlockApi>(tx.block.getValue());
@@ -58,23 +58,23 @@ namespace ledger {
                 _block = nullptr;
             }
 
-            _hash = tx.hash;
+            _hash        = tx.hash;
 
-            _currency = operation->getAccount()->getWallet()->getCurrency();
+            _currency    = operation->getAccount()->getWallet()->getCurrency();
 
-            _gasPrice = std::make_shared<Amount>(_currency, 0, tx.gasPrice);
-            _gasLimit = std::make_shared<Amount>(_currency, 0, tx.gasLimit);
-            _gasUsed = std::make_shared<Amount>(_currency, 0, tx.gasUsed.getValue());
-            _value = std::make_shared<Amount>(_currency, 0, tx.value);
+            _gasPrice    = std::make_shared<Amount>(_currency, 0, tx.gasPrice);
+            _gasLimit    = std::make_shared<Amount>(_currency, 0, tx.gasLimit);
+            _gasUsed     = std::make_shared<Amount>(_currency, 0, tx.gasUsed.getValue());
+            _value       = std::make_shared<Amount>(_currency, 0, tx.value);
 
-            _nonce = std::make_shared<BigInt>((int64_t)tx.nonce);
-            _data = tx.inputData;
-            _status = tx.status;
-            _receiver = EthereumLikeAddress::fromEIP55(tx.receiver, _currency);
-            _sender = EthereumLikeAddress::fromEIP55(tx.sender, _currency);
+            _nonce       = std::make_shared<BigInt>((int64_t)tx.nonce);
+            _data        = tx.inputData;
+            _status      = tx.status;
+            _receiver    = EthereumLikeAddress::fromEIP55(tx.receiver, _currency);
+            _sender      = EthereumLikeAddress::fromEIP55(tx.sender, _currency);
 
             auto vBigInt = BigInt(_currency.ethereumLikeNetworkParameters.value().ChainID) * BigInt(2) + BigInt(36);
-            _vSignature = hex::toByteArray(vBigInt.toHexString());
+            _vSignature  = hex::toByteArray(vBigInt.toHexString());
         }
 
         std::string EthereumLikeTransactionApi::getHash() {
@@ -129,7 +129,7 @@ namespace ledger {
         }
 
         std::string EthereumLikeTransactionApi::setCorrelationId(const std::string &newId) {
-            auto oldId = _correlationId;
+            auto oldId     = _correlationId;
             _correlationId = newId;
             return oldId;
         }
@@ -142,19 +142,19 @@ namespace ledger {
 
         void EthereumLikeTransactionApi::setDERSignature(const std::vector<uint8_t> &signature) {
             BytesReader reader(signature);
-            //DER prefix
+            // DER prefix
             reader.readNextByte();
-            //Total length
+            // Total length
             reader.readNextVarInt();
-            //Nb of elements for R
+            // Nb of elements for R
             reader.readNextByte();
-            //R length
-            auto rSize = reader.readNextVarInt();
+            // R length
+            auto rSize  = reader.readNextVarInt();
             _rSignature = reader.read(rSize);
-            //Nb of elements for S
+            // Nb of elements for S
             reader.readNextByte();
-            //S length
-            auto sSize = reader.readNextVarInt();
+            // S length
+            auto sSize  = reader.readNextVarInt();
             _sSignature = reader.read(sSize);
         }
 
@@ -163,7 +163,7 @@ namespace ledger {
         }
 
         std::vector<uint8_t> EthereumLikeTransactionApi::serialize() {
-            //Construct RLP object from tx
+            // Construct RLP object from tx
             RLPListEncoder txList;
             std::vector<uint8_t> empty;
             if (_nonce->toUint64() == 0) {
@@ -175,7 +175,7 @@ namespace ledger {
             txList.append(hex::toByteArray(gasPrice.toHexString()));
             BigInt gasLimit(_gasLimit->toString());
             txList.append(hex::toByteArray(gasLimit.toHexString()));
-            auto receiver = _receiver->toEIP55();
+            auto receiver  = _receiver->toEIP55();
             auto sReceiver = receiver.substr(2, receiver.size() - 2);
             txList.append(hex::toByteArray(sReceiver));
             BigInt value(_value->toString());

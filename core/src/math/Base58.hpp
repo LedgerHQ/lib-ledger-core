@@ -43,7 +43,7 @@ namespace ledger {
     namespace core {
         class Base58 {
           public:
-            Base58() = delete;
+            Base58()  = delete;
             ~Base58() = delete;
 
             static std::string encode(const std::vector<uint8_t> &bytes, const std::shared_ptr<api::DynamicObject> &config);
@@ -62,4 +62,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BASE58_HPP
+#endif // LEDGER_CORE_BASE58_HPP

@@ -57,7 +57,7 @@ namespace ledger {
             return [=](const BitcoinLikeTransactionBuildRequest &r) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
                 return self->async<std::shared_ptr<Buddy>>([=]() {
                                logger->info("{} Constructing BitcoinLikeTransactionBuildFunction with blockHeight: {}", CORRELATIONID_PREFIX(r.correlationId), currentBlockHeight);
-                               auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency, r.correlationId, keychain->getKeychainEngine(), currentBlockHeight);
+                               auto tx              = std::make_shared<BitcoinLikeTransactionApi>(self->_currency, r.correlationId, keychain->getKeychainEngine(), currentBlockHeight);
                                auto filteredGetUtxo = createFilteredUtxoFunction(r, keychain, getUtxo);
                                return std::make_shared<Buddy>(r, filteredGetUtxo, getTransaction, explorer, keychain, logger, tx, partial);
                            })
@@ -83,23 +83,23 @@ namespace ledger {
 
         Future<Unit> BitcoinLikeUtxoPicker::fillOutputs(const std::shared_ptr<Buddy> &buddy) {
             // Fill reception outputs
-            auto params = getCurrency().bitcoinLikeNetworkParameters.value();
+            auto params      = getCurrency().bitcoinLikeNetworkParameters.value();
             auto outputIndex = 0;
             for (auto &output : buddy->request.outputs) {
                 auto amount = std::get<0>(output);
-                //Set right amount if we are in wipe mode
+                // Set right amount if we are in wipe mode
                 if (buddy->request.wipe) {
                     amount = std::make_shared<ledger::core::BigInt>(buddy->outputAmount);
                 }
-                auto script = std::dynamic_pointer_cast<BitcoinLikeScriptApi>(std::get<1>(output))->getScript();
+                auto script  = std::dynamic_pointer_cast<BitcoinLikeScriptApi>(std::get<1>(output))->getScript();
                 auto address = script.parseAddress(getCurrency()).map<std::string>([](const BitcoinLikeAddress &addr) {
                     return addr.getStringAddress();
                 });
                 BitcoinLikeBlockchainExplorerOutput out;
-                out.index = static_cast<uint64_t>(outputIndex);
-                out.value = *amount;
-                out.address = address;
-                out.script = hex::toString(script.serialize());
+                out.index                                           = static_cast<uint64_t>(outputIndex);
+                out.value                                           = *amount;
+                out.address                                         = address;
+                out.script                                          = hex::toString(script.serialize());
                 std::shared_ptr<api::DerivationPath> derivationPath = nullptr;
                 if (address.nonEmpty()) {
                     auto path = buddy->keychain->getAddressDerivationPath(out.address.getValue());
@@ -126,15 +126,15 @@ namespace ledger {
                 // TODO implement use specific change address
                 auto changeAddress = buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE)->toString();
 
-                auto amount = buddy->changeAmount;
-                auto script = BitcoinLikeScript::fromAddress(changeAddress, _currency);
+                auto amount        = buddy->changeAmount;
+                auto script        = BitcoinLikeScript::fromAddress(changeAddress, _currency);
                 BitcoinLikeBlockchainExplorerOutput out;
-                out.index = static_cast<uint64_t>(buddy->transaction->getOutputs().size());
-                out.value = amount;
-                out.address = Option<std::string>(changeAddress).toOptional();
-                out.script = hex::toString(script.serialize());
+                out.index                                           = static_cast<uint64_t>(buddy->transaction->getOutputs().size());
+                out.value                                           = amount;
+                out.address                                         = Option<std::string>(changeAddress).toOptional();
+                out.script                                          = hex::toString(script.serialize());
                 std::shared_ptr<api::DerivationPath> derivationPath = nullptr;
-                auto path = buddy->keychain->getAddressDerivationPath(changeAddress);
+                auto path                                           = buddy->keychain->getAddressDerivationPath(changeAddress);
                 if (path.nonEmpty()) {
                     derivationPath = std::make_shared<DerivationPathApi>(DerivationPath(path.getValue()));
                 }
@@ -148,7 +148,7 @@ namespace ledger {
             if (buddy->isPartial) {
                 return Future<Unit>::successful(unit);
             }
-            //Set timestamp
+            // Set timestamp
             buddy->explorer->getTimestamp().onComplete(getContext(), [=](const Try<int64_t> &timestamp) {
                 if (timestamp.isSuccess()) {
                     buddy->transaction->setTimestamp(timestamp.getValue());
@@ -164,7 +164,7 @@ namespace ledger {
         Future<Unit> BitcoinLikeUtxoPicker::fillInputs(const std::shared_ptr<Buddy> &buddy) {
             buddy->logger->info("Filling inputs");
 
-            auto self = shared_from_this();
+            auto self        = shared_from_this();
 
             auto performFill = [self, buddy](auto performFill, auto index) {
                 if (index >= buddy->request.inputs.size()) {
@@ -244,10 +244,9 @@ namespace ledger {
         BitcoinLikeUtxoPicker::createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest &request,
                                                           const std::shared_ptr<BitcoinLikeKeychain> &keychain,
                                                           const BitcoinLikeGetUtxoFunction &getUtxo) {
-
             const auto basicTransactionSize = BitcoinLikeTransactionApi::estimateSize(1, 1, getCurrency(), keychain->getKeychainEngine());
-            int64_t dustAmount = BitcoinLikeTransactionApi::computeDustAmount(getCurrency(), basicTransactionSize.Max);
-            auto minAmount = dustAmount;
+            int64_t dustAmount              = BitcoinLikeTransactionApi::computeDustAmount(getCurrency(), basicTransactionSize.Max);
+            auto minAmount                  = dustAmount;
             return [=]() -> Future<std::vector<BitcoinLikeUtxo>> {
                 return getUtxo().map<std::vector<BitcoinLikeUtxo>>(getContext(), [=](auto const &utxos) {
                     auto const isNotExcluded = [&](auto const &currentUtxo) {

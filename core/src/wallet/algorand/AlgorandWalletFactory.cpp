@@ -43,7 +43,7 @@ namespace ledger {
         namespace algorand {
 
             // Aliases for long constants names
-            const std::string ALGORAND_API_ENDPOINT = "https://algorand.coin.ledger.com";
+            const std::string ALGORAND_API_ENDPOINT  = "https://algorand.coin.ledger.com";
             const std::string ALGORAND_NODE_EXPLORER = api::AlgorandBlockchainExplorerEngines::ALGORAND_NODE;
 
             WalletFactory::WalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool) : AbstractWalletFactory(currency, pool) {}
@@ -80,7 +80,7 @@ namespace ledger {
                 {
                     if (syncEngine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
                         std::weak_ptr<WalletPool> weakPool = pool;
-                        synchronizerFactory = Option<AlgorandAccountSynchronizerFactory>([weakPool, explorer]() {
+                        synchronizerFactory                = Option<AlgorandAccountSynchronizerFactory>([weakPool, explorer]() {
                             auto pool = weakPool.lock();
                             if (!pool) {
                                 throw make_exception(api::ErrorCode::NULL_POINTER, "Pool was released.");
@@ -113,7 +113,6 @@ namespace ledger {
 
             std::shared_ptr<BlockchainExplorer>
             WalletFactory::getExplorer(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration) {
-
                 auto it = _runningExplorers.begin();
                 while (it != _runningExplorers.end()) {
                     auto explorer = it->lock();
@@ -128,12 +127,12 @@ namespace ledger {
 
                 std::shared_ptr<BlockchainExplorer> explorer = nullptr;
 
-                auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE).value_or(ALGORAND_NODE_EXPLORER);
+                auto engine                                  = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE).value_or(ALGORAND_NODE_EXPLORER);
                 if (engine == ALGORAND_NODE_EXPLORER) {
                     auto &networkParams = networks::getAlgorandNetworkParameters(getCurrency().name);
-                    auto pool = getPool();
-                    auto http = pool->getHttpClient(
-                        configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value_or(ALGORAND_API_ENDPOINT));
+                    auto pool           = getPool();
+                    auto http           = pool->getHttpClient(
+                                  configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value_or(ALGORAND_API_ENDPOINT));
                     auto context = pool->getDispatcher()->getSerialExecutionContext(
                         fmt::format("{}-{}-explorer", ALGORAND_NODE_EXPLORER, networkParams.genesisHash));
 

@@ -74,7 +74,7 @@ namespace ledger {
             struct AccountSynchronizationContext {
                 Option<uint32_t> reorgBlockHeight;
                 uint32_t lastBlockHeight = 0;
-                uint32_t newOperations = 0;
+                uint32_t newOperations   = 0;
             };
 
             struct SynchronizationBuddy {

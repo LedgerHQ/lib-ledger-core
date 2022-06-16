@@ -49,7 +49,6 @@ namespace ledger {
     namespace core {
 
         class RippleLikeKeychain : public api::Keychain {
-
           public:
             using Address = std::shared_ptr<RippleLikeAddress>;
 
@@ -119,4 +118,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_RIPPLELIKEKEYCHAIN_H
+#endif // LEDGER_CORE_RIPPLELIKEKEYCHAIN_H

@@ -66,4 +66,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_OUTPUTPARSER_HPP
+#endif // LEDGER_CORE_OUTPUTPARSER_HPP

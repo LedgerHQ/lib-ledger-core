@@ -133,5 +133,8 @@ StatementMacros:
 TabWidth:        8
 UseCRLF:         false
 UseTab:          Never
+SpacesInLineCommentPrefix:
+  Minimum: 1
+  Maximum: -1
 ...
 

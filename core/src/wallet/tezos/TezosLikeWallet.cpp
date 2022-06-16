@@ -60,8 +60,8 @@ namespace ledger {
                                          const std::shared_ptr<DynamicObject> &configuration,
                                          const DerivationScheme &scheme)
             : AbstractWallet(name, network, pool, configuration, scheme) {
-            _explorer = explorer;
-            _keychainFactory = keychainFactory;
+            _explorer            = explorer;
+            _keychainFactory     = keychainFactory;
             _synchronizerFactory = synchronizer;
             // TODO This is a dirty patch because Tezos uses the AbstractBlockchainExplorer and synchronizer
             // Most of the code of these classes were made for BTC and offer very few advantage for simpler
@@ -120,7 +120,7 @@ namespace ledger {
 
         Future<api::AccountCreationInfo> TezosLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
             auto scheme = getDerivationScheme();
-            auto path = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
+            auto path   = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
             return Future<api::AccountCreationInfo>::successful(api::AccountCreationInfo{accountIndex, {"main"}, {path.toString()}, {}, {}});
         }
 
@@ -139,7 +139,7 @@ namespace ledger {
                                                       getConfig(),
                                                       entry.publicKey,
                                                       getAccountInternalPreferences(entry.index), getCurrency());
-            auto account = std::make_shared<TezosLikeAccount>(shared_from_this(),
+            auto account  = std::make_shared<TezosLikeAccount>(shared_from_this(),
                                                               entry.index,
                                                               _explorer,
                                                               _synchronizerFactory(),

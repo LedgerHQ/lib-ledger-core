@@ -36,4 +36,4 @@
 class LedgerCoreImpl {
 };
 
-#endif //LEDGER_CORE_LEDGERCOREIMPL_HPP
+#endif // LEDGER_CORE_LEDGERCOREIMPL_HPP

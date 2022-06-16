@@ -47,7 +47,6 @@ namespace ledger {
         bool EthereumLikeTransactionDatabaseHelper::getTransactionByHash(soci::session &sql,
                                                                          const std::string &hash,
                                                                          EthereumLikeBlockchainExplorerTransaction &tx) {
-
             rowset<row> rows = (sql.prepare << "SELECT  tx.hash, tx.value, tx.nonce, tx.time, tx.input_data, tx.gas_price, "
                                                "tx.gas_limit, tx.gas_used, tx.sender, tx.receiver, tx.confirmations, tx.status, "
                                                "block.hash, block.height, block.time, block.currency_name "
@@ -67,28 +66,28 @@ namespace ledger {
         bool EthereumLikeTransactionDatabaseHelper::inflateTransaction(soci::session &sql,
                                                                        const soci::row &row,
                                                                        EthereumLikeBlockchainExplorerTransaction &tx) {
-            tx.hash = row.get<std::string>(0);
-            tx.value = BigInt::fromHex(row.get<std::string>(1));
-            tx.nonce = BigInt(row.get<std::string>(2)).toUint64();
-            tx.receivedAt = row.get<std::chrono::system_clock::time_point>(3);
-            tx.inputData = hex::toByteArray(row.get<std::string>(4));
+            tx.hash          = row.get<std::string>(0);
+            tx.value         = BigInt::fromHex(row.get<std::string>(1));
+            tx.nonce         = BigInt(row.get<std::string>(2)).toUint64();
+            tx.receivedAt    = row.get<std::chrono::system_clock::time_point>(3);
+            tx.inputData     = hex::toByteArray(row.get<std::string>(4));
 
-            tx.gasPrice = BigInt::fromHex(row.get<std::string>(5));
-            tx.gasLimit = BigInt::fromHex(row.get<std::string>(6));
-            tx.gasUsed = BigInt::fromHex(row.get<std::string>(7));
+            tx.gasPrice      = BigInt::fromHex(row.get<std::string>(5));
+            tx.gasLimit      = BigInt::fromHex(row.get<std::string>(6));
+            tx.gasUsed       = BigInt::fromHex(row.get<std::string>(7));
 
-            tx.sender = row.get<std::string>(8);
-            tx.receiver = row.get<std::string>(9);
+            tx.sender        = row.get<std::string>(8);
+            tx.receiver      = row.get<std::string>(9);
 
             tx.confirmations = get_number<uint64_t>(row, 10);
-            tx.status = get_number<uint64_t>(row, 11);
+            tx.status        = get_number<uint64_t>(row, 11);
             if (row.get_indicator(12) != i_null) {
                 EthereumLikeBlockchainExplorer::Block block;
-                block.hash = row.get<std::string>(12);
-                block.height = get_number<uint64_t>(row, 13);
-                block.time = row.get<std::chrono::system_clock::time_point>(14);
+                block.hash         = row.get<std::string>(12);
+                block.height       = get_number<uint64_t>(row, 13);
+                block.time         = row.get<std::chrono::system_clock::time_point>(14);
                 block.currencyName = row.get<std::string>(15);
-                tx.block = block;
+                tx.block           = block;
             }
 
             return true;
@@ -131,10 +130,10 @@ namespace ledger {
                 }
 
                 auto txInputData = hex::toString(tx.inputData);
-                auto hexTxValue = tx.value.toHexString();
+                auto hexTxValue  = tx.value.toHexString();
                 auto hexGasPrice = tx.gasPrice.toHexString();
                 auto hexGasLimit = tx.gasLimit.toHexString();
-                auto hexGasUsed = tx.gasUsed.getValueOr(BigInt::ZERO).toHexString();
+                auto hexGasUsed  = tx.gasUsed.getValueOr(BigInt::ZERO).toHexString();
                 sql << "INSERT INTO ethereum_transactions VALUES(:tx_uid, :hash, :nonce, :value, :block_uid, :time, :sender, :receiver, :input_data, :gasPrice, :gasLimit, :gasUsed, :confirmations, :status)",
                     use(ethTxUid),
                     use(tx.hash),
@@ -159,7 +158,6 @@ namespace ledger {
             soci::session &sql,
             const std::string &accountUid,
             const std::chrono::system_clock::time_point &date) {
-
             OperationDatabaseHelper::eraseDataSince(sql, accountUid, date,
                                                     "ethereum_operations", "ethereum_transactions");
         }

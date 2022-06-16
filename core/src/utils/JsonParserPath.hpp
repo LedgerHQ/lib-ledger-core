@@ -120,7 +120,7 @@ namespace ledger {
              * e.g "/foo/\*" { "foo" : {bar: ***} }
              * @param path
              * @return
-            */
+             */
             bool match(const JsonParserPathMatcher &matcher) const;
 
             JsonParserPathView view(int depth);
@@ -177,9 +177,9 @@ namespace ledger {
              */
             std::string toString() const;
             /**
-            * Transform this object ot its string representation.
-            * @return
-            */
+             * Transform this object ot its string representation.
+             * @return
+             */
             std::string toString(int depth) const;
 
             inline const JsonParserPathNode &getCurrent() const;
@@ -221,4 +221,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_JSONPARSERPATH_HPP
+#endif // LEDGER_CORE_JSONPARSERPATH_HPP

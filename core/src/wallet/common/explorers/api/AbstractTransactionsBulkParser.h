@@ -120,7 +120,7 @@ namespace ledger {
 
           protected:
             virtual TxsParser &getTransactionsParser() = 0;
-            virtual std::string &getLastKey() = 0;
+            virtual std::string &getLastKey()          = 0;
             int _depth;
             BlockchainExplorerTransactionsBulk *_bulk;
         };
@@ -128,4 +128,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_ABSTRACTTRANSACTIONSBULKPARSER_H
+#endif // LEDGER_CORE_ABSTRACTTRANSACTIONSBULKPARSER_H

@@ -41,7 +41,6 @@ namespace ledger {
         namespace algorand {
 
             class Address : public AbstractAddress {
-
               public:
                 // Currency-generic constructors
                 Address(const api::Currency &currency, const std::vector<uint8_t> &pubKey);

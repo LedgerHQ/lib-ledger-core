@@ -51,7 +51,7 @@ namespace ledger {
                 const std::shared_ptr<api::PathResolver> &resolver,
                 const std::shared_ptr<api::LogPrinter> &printer,
                 std::size_t maxSize = DEFAULT_MAX_SIZE,
-                bool enabled = true);
+                bool enabled        = true);
 
             static std::shared_ptr<spdlog::logger> trace(
                 const std::string &purpose,
@@ -64,4 +64,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_LOGGER_HPP
+#endif // LEDGER_CORE_LOGGER_HPP

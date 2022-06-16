@@ -44,8 +44,8 @@ namespace ledger {
           public:
             ConditionQueryFilter(const std::string &fieldName, const std::string &symbol, const T &value, const std::string &prefix) : ManagedObject<ConditionQueryFilter<T>>() {
                 _fieldName = std::move(fieldName);
-                _symbol = std::move(symbol);
-                _value = value;
+                _symbol    = std::move(symbol);
+                _value     = value;
                 if (!prefix.empty()) {
                     _prefixedName = fmt::format("{}.{}", prefix, _fieldName);
                 } else {
@@ -110,4 +110,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_CONDITIONQUERYFILTER_H
+#endif // LEDGER_CORE_CONDITIONQUERYFILTER_H

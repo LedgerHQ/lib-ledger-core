@@ -44,7 +44,7 @@ namespace ledger {
             const api::RippleLikeNetworkParameters &parameters,
             const std::shared_ptr<api::DynamicObject> &configuration) : DedicatedContext(context),
                                                                         RippleLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
-            _http = http;
+            _http       = http;
             _parameters = parameters;
         }
 
@@ -83,28 +83,28 @@ namespace ledger {
         NodeRippleLikeBlockchainExplorer::getServerState(const std::string &field) {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("server_state");
-            auto requestBody = bodyRequest.getString();
+            auto requestBody         = bodyRequest.getString();
             bool parseNumberAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
                 .json(parseNumberAsString)
                 .mapPtr<BigInt>(getContext(), [field](const HttpRequest::JsonResult &result) {
                     auto &json = *std::get<1>(result);
-                    //Is there a result field ?
+                    // Is there a result field ?
                     if (!json.IsObject() || !json.HasMember("result") ||
                         !json["result"].IsObject()) {
                         throw make_exception(api::ErrorCode::HTTP_ERROR,
                                              "Failed to get base reserve from network, no (or malformed) field \"result\" in response");
                     }
 
-                    //Is there an info field ?
+                    // Is there an info field ?
                     auto resultObj = json["result"].GetObject();
                     if (!resultObj.HasMember("state") || !resultObj["state"].IsObject()) {
                         throw make_exception(api::ErrorCode::HTTP_ERROR,
                                              "Failed to get base reserve from network, no (or malformed) field \"state\" in response");
                     }
 
-                    //Is there a validated_ledger field ?
+                    // Is there a validated_ledger field ?
                     auto infoObj = resultObj["state"].GetObject();
                     if (!infoObj.HasMember("validated_ledger") || !infoObj["validated_ledger"].IsObject()) {
                         throw make_exception(api::ErrorCode::HTTP_ERROR,
@@ -186,7 +186,7 @@ namespace ledger {
                         !json["result"].IsObject()) {
                         throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get raw transaction, no (or malformed) field \"result\" in response");
                     }
-                    //Is there a tx field ?
+                    // Is there a tx field ?
                     auto resultObj = json["result"].GetObject();
                     if (!resultObj.HasMember("tx") || !resultObj["tx"].IsString()) {
                         throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get raw transaction, no (or malformed) field \"tx\" in response");
@@ -246,7 +246,7 @@ namespace ledger {
                         auto bulk = result.getRight();
 
                         if (!bulk->paginationMarker.empty()) {
-                            bulk->hasNext = true;
+                            bulk->hasNext           = true;
                             self->_paginationMarker = bulk->paginationMarker;
                         } else {
                             self->_paginationMarker = "";
@@ -304,28 +304,28 @@ namespace ledger {
             bodyRequest.setMethod("account_info");
             bodyRequest.pushParameter("account", address);
             bodyRequest.pushParameter("ledger_index", std::string("validated"));
-            auto requestBody = bodyRequest.getString();
+            auto requestBody         = bodyRequest.getString();
             bool parseNumberAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
                 .json(parseNumberAsString)
                 .mapPtr<BigInt>(getContext(), [address, key, defaultValue](const HttpRequest::JsonResult &result) {
                     auto &json = *std::get<1>(result);
-                    //Is there a result field ?
+                    // Is there a result field ?
                     if (!json.IsObject() || !json.HasMember("result") ||
                         !json["result"].IsObject()) {
                         throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"result\" in response",
                                              key, address);
                     }
 
-                    //Is there an account_data field ?
+                    // Is there an account_data field ?
                     auto resultObj = json["result"].GetObject();
                     if (!resultObj.HasMember("account_data") || !resultObj["account_data"].IsObject()) {
                         // Case of account not found (not activated yet)
                         return std::make_shared<BigInt>(defaultValue);
                     }
 
-                    //Is there an field with key name ?
+                    // Is there an field with key name ?
                     auto accountObj = resultObj["account_data"].GetObject();
                     if (!accountObj.HasMember(key.c_str()) || !accountObj[key.c_str()].IsString()) {
                         throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"{}\" in response",

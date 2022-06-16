@@ -62,12 +62,12 @@ namespace ledger {
                                 use(accountUid));
             for (auto &row : rows) {
                 if (entry.address.empty()) {
-                    entry.index = row.get<int32_t>(0);
+                    entry.index   = row.get<int32_t>(0);
                     entry.address = row.get<std::string>(1);
                 }
                 if (row.get_indicator(2) != i_null) {
                     ERC20LikeAccountDatabaseEntry erc20Entry;
-                    erc20Entry.uid = row.get<std::string>(2);
+                    erc20Entry.uid             = row.get<std::string>(2);
                     erc20Entry.contractAddress = row.get<std::string>(3);
                     entry.erc20Accounts.emplace_back(erc20Entry);
                 }
@@ -83,10 +83,10 @@ namespace ledger {
             if (count > 0) {
                 soci::rowset<soci::row> rows = (sql.prepare << "SELECT name, symbol, number_of_decimal FROM erc20_tokens WHERE contract_address = :contract_address", soci::use(contractAddress));
                 for (auto &row : rows) {
-                    auto name = row.get<std::string>(0);
-                    auto symbol = row.get<std::string>(1);
+                    auto name             = row.get<std::string>(0);
+                    auto symbol           = row.get<std::string>(1);
                     auto numberOfDecimals = row.get<int32_t>(2);
-                    erc20Token = api::ERC20Token(name, symbol, contractAddress, numberOfDecimals);
+                    erc20Token            = api::ERC20Token(name, symbol, contractAddress, numberOfDecimals);
                 }
             } else {
                 erc20Token = api::ERC20Token("UNKNOWN_TOKEN", "UNKNOWN", contractAddress, 0);

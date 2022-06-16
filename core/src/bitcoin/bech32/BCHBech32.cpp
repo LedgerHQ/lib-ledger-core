@@ -37,7 +37,7 @@ namespace ledger {
             uint64_t chk = 1;
             for (size_t i = 0; i < values.size(); ++i) {
                 uint64_t top = chk >> 35;
-                chk = (chk & 0x07ffffffff) << 5 ^ values[i];
+                chk          = (chk & 0x07ffffffff) << 5 ^ values[i];
                 size_t index = 0;
                 for (auto &gen : _bech32Params.generator) {
                     chk ^= (-((top >> index) & 1) & gen);
@@ -52,7 +52,7 @@ namespace ledger {
             ret.resize(hrp.size() + 1);
             for (size_t i = 0; i < hrp.size(); ++i) {
                 unsigned char c = hrp[i];
-                ret[i] = c & 0x1f;
+                ret[i]          = c & 0x1f;
             }
             ret[hrp.size()] = 0;
             return ret;
@@ -77,7 +77,7 @@ namespace ledger {
             }
             std::vector<uint8_t> converted;
             int fromBits = 5, toBits = 8;
-            bool pad = false;
+            bool pad    = false;
             auto result = Bech32::convertBits(decoded.second,
                                               fromBits,
                                               toBits,

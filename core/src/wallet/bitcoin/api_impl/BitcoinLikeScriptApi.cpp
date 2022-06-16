@@ -70,7 +70,7 @@ namespace ledger {
         BitcoinLikeScriptChunkApi::BitcoinLikeScriptChunkApi(const std::shared_ptr<BitcoinLikeScriptApi> &script,
                                                              int index) : _chunk(chunkOf(script, index)) {
             _script = script;
-            _index = index;
+            _index  = index;
         }
 
         optional<api::BitcoinLikeOperator> BitcoinLikeScriptChunkApi::getOperator() {

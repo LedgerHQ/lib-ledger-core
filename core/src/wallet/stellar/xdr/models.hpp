@@ -48,33 +48,33 @@ namespace ledger {
                 // user is attempting any invalid operation
 
                 enum class CryptoKeyType : uint32_t {
-                    KEY_TYPE_ED25519 = 0,
-                    KEY_TYPE_PRE_AUTH_TX = 1,
-                    KEY_TYPE_HASH_X = 2,
+                    KEY_TYPE_ED25519       = 0,
+                    KEY_TYPE_PRE_AUTH_TX   = 1,
+                    KEY_TYPE_HASH_X        = 2,
                     // MUXED enum values for supported type are derived from the enum values
                     // above by ORing them with 0x100
                     KEY_TYPE_MUXED_ED25519 = 0x100
                 };
 
                 enum class PublicKeyType : uint32_t {
-                    PUBLIC_KEY_TYPE_ED25519 = static_cast<uint32_t>(CryptoKeyType::KEY_TYPE_ED25519),
+                    PUBLIC_KEY_TYPE_ED25519       = static_cast<uint32_t>(CryptoKeyType::KEY_TYPE_ED25519),
                     PUBLIC_KEY_TYPE_MUXED_ED25519 = static_cast<uint32_t>(CryptoKeyType::KEY_TYPE_MUXED_ED25519)
                 };
 
-                using uint256 = std::array<uint8_t, 32>;
+                using uint256        = std::array<uint8_t, 32>;
                 using SequenceNumber = int64_t;
-                using TimePoint = uint64_t;
-                using Hash = std::array<uint8_t, 32>;
-                using DataValue = std::vector<uint8_t>;
+                using TimePoint      = uint64_t;
+                using Hash           = std::array<uint8_t, 32>;
+                using DataValue      = std::vector<uint8_t>;
 
                 // String types (CHECK THE VALIDITY OF THE DATA BEFORE SETTING!)
-                using string32 = std::string; // Max 32 chars
-                using string28 = std::string; // Max 28 chars
-                using string64 = std::string; // Max 64 chars
+                using string32       = std::string; // Max 32 chars
+                using string28       = std::string; // Max 28 chars
+                using string64       = std::string; // Max 64 chars
 
                 // Signature
-                using SignatureHint = std::array<uint8_t, 4>;
-                using Signature = std::vector<uint8_t>; // Max length == 64
+                using SignatureHint  = std::array<uint8_t, 4>;
+                using Signature      = std::vector<uint8_t>; // Max length == 64
 
                 // TimeBounds structure
                 struct TimeBounds {
@@ -107,10 +107,10 @@ namespace ledger {
 
                 // Memo union
                 enum class MemoType : uint32_t {
-                    MEMO_NONE = 0,
-                    MEMO_TEXT = 1,
-                    MEMO_ID = 2,
-                    MEMO_HASH = 3,
+                    MEMO_NONE   = 0,
+                    MEMO_TEXT   = 1,
+                    MEMO_ID     = 2,
+                    MEMO_HASH   = 3,
                     MEMO_RETURN = 4
                 };
 
@@ -122,12 +122,12 @@ namespace ledger {
                 };
 
                 // Asset union
-                using AssetCode4 = std::array<uint8_t, 4>;
+                using AssetCode4  = std::array<uint8_t, 4>;
                 using AssetCode12 = std::array<uint8_t, 12>;
 
                 enum class AssetType : uint32_t {
-                    ASSET_TYPE_NATIVE = 0,
-                    ASSET_TYPE_CREDIT_ALPHANUM4 = 1,
+                    ASSET_TYPE_NATIVE            = 0,
+                    ASSET_TYPE_CREDIT_ALPHANUM4  = 1,
                     ASSET_TYPE_CREDIT_ALPHANUM12 = 2
                 };
 
@@ -145,9 +145,9 @@ namespace ledger {
 
                 // Signer key union
                 enum class SignerKeyType : uint32_t {
-                    SIGNER_KEY_TYPE_ED25519 = static_cast<uint32_t>(CryptoKeyType::KEY_TYPE_ED25519),
+                    SIGNER_KEY_TYPE_ED25519     = static_cast<uint32_t>(CryptoKeyType::KEY_TYPE_ED25519),
                     SIGNER_KEY_TYPE_PRE_AUTH_TX = static_cast<uint32_t>(CryptoKeyType::KEY_TYPE_PRE_AUTH_TX),
-                    SIGNER_KEY_TYPE_HASH_X = static_cast<uint32_t>(CryptoKeyType::KEY_TYPE_HASH_X)
+                    SIGNER_KEY_TYPE_HASH_X      = static_cast<uint32_t>(CryptoKeyType::KEY_TYPE_HASH_X)
                 };
 
                 struct SignerKey {
@@ -283,19 +283,19 @@ namespace ledger {
                     SequenceNumber bumpTo;
                 };
 
-                enum class OperationType : uint32_t { CREATE_ACCOUNT = 0,
-                                                      PAYMENT = 1,
-                                                      PATH_PAYMENT = 2,
-                                                      MANAGE_OFFER = 3,
+                enum class OperationType : uint32_t { CREATE_ACCOUNT       = 0,
+                                                      PAYMENT              = 1,
+                                                      PATH_PAYMENT         = 2,
+                                                      MANAGE_OFFER         = 3,
                                                       CREATE_PASSIVE_OFFER = 4,
-                                                      SET_OPTIONS = 5,
-                                                      CHANGE_TRUST = 6,
-                                                      ALLOW_TRUST = 7,
-                                                      ACCOUNT_MERGE = 8,
-                                                      INFLATION = 9,
-                                                      MANAGE_DATA = 10,
-                                                      BUMP_SEQUENCE = 11,
-                                                      MANAGE_BUY_OFFER = 12,
+                                                      SET_OPTIONS          = 5,
+                                                      CHANGE_TRUST         = 6,
+                                                      ALLOW_TRUST          = 7,
+                                                      ACCOUNT_MERGE        = 8,
+                                                      INFLATION            = 9,
+                                                      MANAGE_DATA          = 10,
+                                                      BUMP_SEQUENCE        = 11,
+                                                      MANAGE_BUY_OFFER     = 12,
                                                       num_types };
 
                 using OperationVariant = boost::variant<
@@ -339,12 +339,12 @@ namespace ledger {
                     TransactionV0() : fee(0), seqNum(0){};
                 };
 
-                //a transaction is a container for a set of operations
-                // - is executed by an account
-                // - fees are collected from the account
-                // - operations are executed in order as one ACID transaction
-                //   either all operations are applied or none are
-                //   if any returns a failing code
+                // a transaction is a container for a set of operations
+                //  - is executed by an account
+                //  - fees are collected from the account
+                //  - operations are executed in order as one ACID transaction
+                //    either all operations are applied or none are
+                //    if any returns a failing code
                 struct Transaction {
                     // account used to run the transaction
                     MuxedAccount sourceAccount;
@@ -368,8 +368,8 @@ namespace ledger {
 
                 // Transaction envelope type enum
                 enum class EnvelopeType : uint32_t {
-                    ENVELOPE_TYPE_TX_V0 = 0,
-                    ENVELOPE_TYPE_TX = 2,
+                    ENVELOPE_TYPE_TX_V0       = 0,
+                    ENVELOPE_TYPE_TX          = 2,
                     ENVELOPE_TYPE_TX_FEE_BUMP = 54
                 };
 
@@ -419,4 +419,4 @@ namespace ledger {
     }         // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_MODELS_HPP
+#endif // LEDGER_CORE_MODELS_HPP

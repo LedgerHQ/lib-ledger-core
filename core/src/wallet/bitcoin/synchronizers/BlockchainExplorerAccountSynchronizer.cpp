@@ -43,10 +43,10 @@ namespace ledger {
 
         constexpr auto ADDRESS_BATCH_SIZE = 10;
 
-        using Transaction = BitcoinLikeBlockchainExplorerTransaction;
-        using Input = BitcoinLikeBlockchainExplorerInput;
-        using CommonBuddy = BlockchainExplorerAccountSynchronizer::SynchronizationBuddy;
-        using TransactionMap = std::unordered_map<std::string, std::pair<Transaction, bool /* replaceable */>>;
+        using Transaction                 = BitcoinLikeBlockchainExplorerTransaction;
+        using Input                       = BitcoinLikeBlockchainExplorerInput;
+        using CommonBuddy                 = BlockchainExplorerAccountSynchronizer::SynchronizationBuddy;
+        using TransactionMap              = std::unordered_map<std::string, std::pair<Transaction, bool /* replaceable */>>;
 
         struct BitcoinSynchronizationBuddy : public CommonBuddy {
             std::vector<BitcoinLikeBlockchainExplorerTransaction> mempoolTransaction;
@@ -63,18 +63,18 @@ namespace ledger {
         void BlockchainExplorerAccountSynchronizer::updateTransactionsToDrop(soci::session &sql,
                                                                              std::shared_ptr<SynchronizationBuddy> &buddy,
                                                                              const std::string &accountUid) {
-            //Get all transactions in DB that may be dropped (txs without block_uid)
+            // Get all transactions in DB that may be dropped (txs without block_uid)
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.date, btc_op.transaction_hash FROM operations AS op "
                                                            "LEFT OUTER JOIN bitcoin_operations AS btc_op ON btc_op.uid = op.uid "
                                                            "WHERE op.block_uid IS NULL AND op.account_uid = :uid ",
                                             soci::use(accountUid));
-            const auto OP_UID_COL = 0;
-            const auto OP_DATE_COL = 1;
-            const auto TX_HASH_COL = 2;
+            const auto OP_UID_COL        = 0;
+            const auto OP_DATE_COL       = 1;
+            const auto TX_HASH_COL       = 2;
 
             // Create predicate function that returns true if the transaction should be saved from `transactionsToDrop` pruning
-            auto gracePeriod = buddy->account->getWallet()->getMempoolGracePeriod();
-            auto isGraced = [gracePeriod, buddy](const auto &row, int date_col_index) -> bool {
+            auto gracePeriod             = buddy->account->getWallet()->getMempoolGracePeriod();
+            auto isGraced                = [gracePeriod, buddy](const auto &row, int date_col_index) -> bool {
                 if (row.get_indicator(date_col_index) == soci::i_null) {
                     const auto txHash = row.template get<std::string>(date_col_index);
                     buddy->logger->warn("Mempool transaction (or optimistic update) is missing a date : {}, it won't be graced.", txHash);
@@ -82,7 +82,7 @@ namespace ledger {
                 }
 
                 const auto date = DateUtils::fromJSON(row.template get<std::string>(date_col_index));
-                const auto age = (std::chrono::system_clock::now() - date);
+                const auto age  = (std::chrono::system_clock::now() - date);
                 return age < gracePeriod;
             };
 
@@ -142,7 +142,7 @@ namespace ledger {
             if (transaction.block.isEmpty()) {
                 std::static_pointer_cast<BitcoinSynchronizationBuddy>(buddy)->mempoolTransaction.emplace_back(
                     transaction);
-                auto keychain = buddy->account->getKeychain();
+                auto keychain          = buddy->account->getKeychain();
                 auto const markAddress = [&keychain](auto &txIo) {
                     auto flag = 0;
 
@@ -183,12 +183,12 @@ namespace ledger {
                     continue;
                 }
                 bool replaceable = false;
-                bool replaced = false;
+                bool replaced    = false;
                 for (const auto &input : tx.inputs) {
                     if (!input.previousTxHash || !input.previousTxOutputIndex)
                         continue;
                     auto inputId = fmt::format("{}{}", input.previousTxHash.getValue(), input.previousTxOutputIndex.getValue());
-                    auto entry = txByIntputs.find(inputId);
+                    auto entry   = txByIntputs.find(inputId);
                     if (entry == txByIntputs.end()) {
                         txByIntputs[inputId] = std::make_pair(tx.hash, input.sequence);
                     } else if (!isInputReplaced(input, std::get<1>(entry->second))) {
@@ -295,17 +295,17 @@ namespace ledger {
             std::vector<Future<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>> batches;
             for (int currentBatchIndex = 0; currentBatchIndex < nbBatch; currentBatchIndex++) {
                 auto pair = getHashkeyAndBlockhash(currentBatchIndex, buddy);
-                auto key = pair.first;
+                auto key  = pair.first;
                 if (_cachedTransactionBulks.find(key) != _cachedTransactionBulks.end())
                     continue;
-                int from = currentBatchIndex * buddy->halfBatchSize * 2;
-                int to = (currentBatchIndex + 1) * buddy->halfBatchSize * 2;
-                auto batch = std::vector<std::string>(this->_addresses.begin() + from, this->_addresses.begin() + to);
+                int from       = currentBatchIndex * buddy->halfBatchSize * 2;
+                int to         = (currentBatchIndex + 1) * buddy->halfBatchSize * 2;
+                auto batch     = std::vector<std::string>(this->_addresses.begin() + from, this->_addresses.begin() + to);
                 auto blockhash = pair.second;
                 batches.emplace_back(_explorer->getTransactions(batch, blockhash, optional<void *>()));
                 _hashkeys.emplace_back(key);
             }
-            if (batches.size() == 0) { //return an empty std::vector if no need to request the explorer
+            if (batches.size() == 0) { // return an empty std::vector if no need to request the explorer
                 return Future<std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>>::async(buddy->account->getContext(),
                                                                                                                     [=]() -> std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>> {
                                                                                                                         return std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>();
@@ -365,7 +365,7 @@ namespace ledger {
                     .halfBatchSize = (uint32_t)halfBatchSize;
                 for (auto i = 0; i <= newBatchCount; i++) {
                     BlockchainExplorerAccountSynchronizationBatchSavedState s;
-                    s.blockHash = block.blockHash;
+                    s.blockHash   = block.blockHash;
                     s.blockHeight = block.blockHeight;
                     savedState.getValue().batches.push_back(s);
                 }
@@ -381,8 +381,8 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_lock);
             if (!_currentAccount) {
                 _currentAccount = account;
-                _notifier = std::make_shared<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>>();
-                auto self = getSharedFromThis();
+                _notifier       = std::make_shared<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>>();
+                auto self       = getSharedFromThis();
                 performSynchronization(account).onComplete(getSynchronizerContext(), [self](auto const &result) {
                     std::lock_guard<std::mutex> l(self->_lock);
                     if (result.isFailure()) {
@@ -390,7 +390,7 @@ namespace ledger {
                     } else {
                         self->_notifier->success(result.getValue());
                     }
-                    self->_notifier = nullptr;
+                    self->_notifier       = nullptr;
                     self->_currentAccount = nullptr;
                 });
 
@@ -401,20 +401,20 @@ namespace ledger {
         };
 
         Future<BlockchainExplorerAccountSynchronizationResult> BlockchainExplorerAccountSynchronizer::performSynchronization(const std::shared_ptr<BitcoinLikeAccount> &account) {
-            auto buddy = makeSynchronizationBuddy();
-            buddy->account = account;
-            buddy->preferences = std::static_pointer_cast<AbstractAccount>(account)->getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer");
-            auto loggerPurpose = fmt::format("synchronize_{}", account->getAccountUid());
-            auto tracePrefix = fmt::format("{}/{}/{}", account->getWallet()->getPool()->getName(), account->getWallet()->getName(), account->getIndex());
+            auto buddy                = makeSynchronizationBuddy();
+            buddy->account            = account;
+            buddy->preferences        = std::static_pointer_cast<AbstractAccount>(account)->getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer");
+            auto loggerPurpose        = fmt::format("synchronize_{}", account->getAccountUid());
+            auto tracePrefix          = fmt::format("{}/{}/{}", account->getWallet()->getPool()->getName(), account->getWallet()->getName(), account->getIndex());
             buddy->synchronizationTag = tracePrefix;
-            buddy->logger = logger::trace(loggerPurpose, tracePrefix, account->logger());
-            buddy->startDate = DateUtils::now();
-            buddy->wallet = account->getWallet();
-            buddy->configuration = std::static_pointer_cast<AbstractAccount>(account)->getWallet()->getConfig();
-            buddy->halfBatchSize = (uint32_t)buddy->configuration
+            buddy->logger             = logger::trace(loggerPurpose, tracePrefix, account->logger());
+            buddy->startDate          = DateUtils::now();
+            buddy->wallet             = account->getWallet();
+            buddy->configuration      = std::static_pointer_cast<AbstractAccount>(account)->getWallet()->getConfig();
+            buddy->halfBatchSize      = (uint32_t)buddy->configuration
                                        ->getInt(api::Configuration::SYNCHRONIZATION_HALF_BATCH_SIZE)
                                        .value_or(api::ConfigurationDefaults::KEYCHAIN_DEFAULT_OBSERVABLE_RANGE);
-            buddy->keychain = account->getKeychain();
+            buddy->keychain   = account->getKeychain();
             buddy->savedState = buddy->preferences
                                     ->template getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
             buddy->logger
@@ -423,33 +423,32 @@ namespace ledger {
                        account->getKeychain()->getRestoreKey(),
                        account->getWallet()->getName(), DateUtils::toJSON(buddy->startDate));
 
-            //Check if reorganization happened
+            // Check if reorganization happened
             soci::session sql(buddy->wallet->getDatabase()->getPool());
             if (buddy->savedState.nonEmpty()) {
-
-                //Get deepest block saved in batches to be part of reorg
+                // Get deepest block saved in batches to be part of reorg
                 auto sortedBatches = buddy->savedState.getValue().batches;
                 std::sort(sortedBatches.begin(), sortedBatches.end(), [](const BlockchainExplorerAccountSynchronizationBatchSavedState &lhs, const BlockchainExplorerAccountSynchronizationBatchSavedState &rhs) -> bool {
                     return lhs.blockHeight < rhs.blockHeight;
                 });
 
-                auto currencyName = buddy->wallet->getCurrency().name;
-                size_t index = 0;
-                //Reorg can't happen until genesis block, safely initialize with 0
+                auto currencyName                 = buddy->wallet->getCurrency().name;
+                size_t index                      = 0;
+                // Reorg can't happen until genesis block, safely initialize with 0
                 uint64_t deepestFailedBlockHeight = 0;
                 while (index < sortedBatches.size() && !BlockDatabaseHelper::blockExists(sql, sortedBatches[index].blockHash, currencyName)) {
                     deepestFailedBlockHeight = sortedBatches[index].blockHeight;
                     index++;
                 }
 
-                //Case of reorg, update savedState's batches
+                // Case of reorg, update savedState's batches
                 if (deepestFailedBlockHeight > 0) {
-                    //Get last block (in DB) which contains current account's operations
+                    // Get last block (in DB) which contains current account's operations
                     auto previousBlock = AccountDatabaseHelper::getLastBlockWithOperations(sql, buddy->account->getAccountUid());
                     for (auto &batch : buddy->savedState.getValue().batches) {
                         if (batch.blockHeight >= deepestFailedBlockHeight) {
                             batch.blockHeight = previousBlock.nonEmpty() ? (uint32_t)previousBlock.getValue().height : 0;
-                            batch.blockHash = previousBlock.nonEmpty() ? previousBlock.getValue().blockHash : "";
+                            batch.blockHash   = previousBlock.nonEmpty() ? previousBlock.getValue().blockHash : "";
                         }
                     }
                 }
@@ -499,10 +498,10 @@ namespace ledger {
                     // get the last block height treated during the synchronization
                     // std::max_element returns an iterator hence the indirection here
                     // We use an constant iterator variable for readability purpose
-                    auto const batchIt = std::max_element(
-                        std::cbegin(batches),
-                        std::cend(batches),
-                        [](auto const &lhs, auto const &rhs) {
+                    auto const batchIt  = std::max_element(
+                         std::cbegin(batches),
+                         std::cend(batches),
+                         [](auto const &lhs, auto const &rhs) {
                             return lhs.blockHeight < rhs.blockHeight;
                         });
                     soci::session sql(buddy->wallet->getDatabase()->getPool());
@@ -531,10 +530,10 @@ namespace ledger {
             buddy->logger->info("Detecting addresses for batch {}", currentBatchIndex);
             auto self = getSharedFromThis();
             auto from = currentBatchIndex / 2 * buddy->halfBatchSize;
-            auto to = (currentBatchIndex + 1) * buddy->halfBatchSize - 1;
+            auto to   = (currentBatchIndex + 1) * buddy->halfBatchSize - 1;
             buddy->logger->info("From address index {}", from);
             buddy->logger->info("To address index {}", to);
-            auto batch = buddy->keychain->getAllObservableAddressString(from, to);
+            auto batch                = buddy->keychain->getAllObservableAddressString(from, to);
             auto lastAddressesinBatch = std::vector<std::string>(batch.end() - 2 * buddy->halfBatchSize, batch.end());
             self->_addresses.insert(self->_addresses.end(), batch.begin(), batch.end());
             self->_explorerBenchmark->start();
@@ -565,15 +564,15 @@ namespace ledger {
                 buddy->savedState.getValue().batches.push_back(BlockchainExplorerAccountSynchronizationBatchSavedState());
             }
 
-            auto self = getSharedFromThis();
+            auto self        = getSharedFromThis();
             auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
 
             return synchronizeBatch(currentBatchIndex, buddy).template flatMap<Unit>(buddy->account->getContext(), [=](const bool &hadTransactions) -> Future<Unit> {
                                                                  buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
 
-                                                                 //Sync stops if there are no more batches in savedState and last batch has no transactions
-                                                                 //But we may want to force sync of accounts within KEYCHAIN_OBSERVABLE_RANGE
-                                                                 auto discoveredAddresses = currentBatchIndex * buddy->halfBatchSize;
+                                                                 // Sync stops if there are no more batches in savedState and last batch has no transactions
+                                                                 // But we may want to force sync of accounts within KEYCHAIN_OBSERVABLE_RANGE
+                                                                 auto discoveredAddresses     = currentBatchIndex * buddy->halfBatchSize;
                                                                  auto lastDiscoverableAddress = buddy->configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE).value_or(buddy->halfBatchSize);
                                                                  if (!done || (done && hadTransactions) || lastDiscoverableAddress > discoveredAddresses) {
                                                                      return self->synchronizeBatches(currentBatchIndex + 1, buddy);
@@ -583,7 +582,7 @@ namespace ledger {
                                                              })
                 .recoverWith(ImmediateExecutionContext::INSTANCE, [=](const Exception &exception) -> Future<Unit> {
                     buddy->logger->info("Recovering from failing synchronization : {}", exception.getMessage());
-                    //A block reorganization happened
+                    // A block reorganization happened
                     if (exception.getErrorCode() == api::ErrorCode::BLOCK_NOT_FOUND &&
                         buddy->savedState.nonEmpty()) {
                         buddy->logger->info("Recovering from reorganization");
@@ -592,21 +591,19 @@ namespace ledger {
                         });
 
                         return startSession.template flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=](void *const session) {
-                                               //Get its block/block height
-                                               auto &failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
+                                               // Get its block/block height
+                                               auto &failedBatch            = buddy->savedState.getValue().batches[currentBatchIndex];
                                                auto const failedBlockHeight = failedBatch.blockHeight;
-                                               auto const failedBlockHash = failedBatch.blockHash;
+                                               auto const failedBlockHash   = failedBatch.blockHash;
 
                                                if (failedBlockHeight > 0) {
-
-                                                   //Delete data related to failedBlock (and all blocks above it)
+                                                   // Delete data related to failedBlock (and all blocks above it)
                                                    buddy->logger->info("Deleting blocks above block height: {}", failedBlockHeight);
 
                                                    soci::session sql(buddy->wallet->getDatabase()->getPool());
                                                    {
                                                        soci::transaction tr(sql);
                                                        try {
-
                                                            soci::rowset<std::string> rows_block = (sql.prepare << "SELECT uid FROM blocks where height >= :failedBlockHeight",
                                                                                                    soci::use(failedBlockHeight));
 
@@ -618,25 +615,25 @@ namespace ledger {
                                                            // Remove failed blocks and associated operations/transactions
                                                            AccountDatabaseHelper::removeBlockOperation(sql, buddy->account->getAccountUid(), blockToDelete);
 
-                                                           //Get last block not part from reorg
-                                                           auto lastBlock = BlockDatabaseHelper::getLastBlock(sql,
-                                                                                                              buddy->wallet->getCurrency().name);
+                                                           // Get last block not part from reorg
+                                                           auto lastBlock          = BlockDatabaseHelper::getLastBlock(sql,
+                                                                                                                       buddy->wallet->getCurrency().name);
 
-                                                           //Resync from the "beginning" if no last block in DB
+                                                           // Resync from the "beginning" if no last block in DB
                                                            int64_t lastBlockHeight = 0;
                                                            std::string lastBlockHash;
                                                            if (lastBlock.nonEmpty()) {
                                                                lastBlockHeight = lastBlock.getValue().height;
-                                                               lastBlockHash = lastBlock.getValue().blockHash;
+                                                               lastBlockHash   = lastBlock.getValue().blockHash;
                                                            }
                                                            // update reorganization block height until found the valid one
                                                            buddy->context.reorgBlockHeight = lastBlockHeight;
 
-                                                           //Update savedState's batches
+                                                           // Update savedState's batches
                                                            for (auto &batch : buddy->savedState.getValue().batches) {
                                                                if (batch.blockHeight > lastBlockHeight) {
                                                                    batch.blockHeight = (uint32_t)lastBlockHeight;
-                                                                   batch.blockHash = lastBlockHash;
+                                                                   batch.blockHash   = lastBlockHash;
                                                                }
                                                            }
                                                            tr.commit();
@@ -653,14 +650,14 @@ namespace ledger {
                                                        }
                                                    }
 
-                                                   //Save new savedState
+                                                   // Save new savedState
                                                    buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>(
                                                                                    "state", buddy->savedState.getValue())
                                                        ->commit();
 
-                                                   //Synchronize same batch now with an existing block (of hash lastBlockHash)
-                                                   //if failedBatch was not the deepest block part of that reorg, this recursive call
-                                                   //will ensure to get (and delete from DB) to the deepest failed block (part of reorg)
+                                                   // Synchronize same batch now with an existing block (of hash lastBlockHash)
+                                                   // if failedBatch was not the deepest block part of that reorg, this recursive call
+                                                   // will ensure to get (and delete from DB) to the deepest failed block (part of reorg)
                                                    buddy->logger->info("Relaunch synchronization after recovering from reorganization");
 
                                                    return self->synchronizeBatches(currentBatchIndex, buddy);
@@ -680,10 +677,10 @@ namespace ledger {
         };
 
         Future<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>> BlockchainExplorerAccountSynchronizer::getTransactionBulk(int currentBatchIndex, const std::shared_ptr<SynchronizationBuddy> &buddy) {
-            int from = currentBatchIndex * buddy->halfBatchSize * 2;
-            int to = (currentBatchIndex + 1) * buddy->halfBatchSize * 2;
+            int from  = currentBatchIndex * buddy->halfBatchSize * 2;
+            int to    = (currentBatchIndex + 1) * buddy->halfBatchSize * 2;
             auto pair = getHashkeyAndBlockhash(currentBatchIndex, buddy);
-            auto it = this->_cachedTransactionBulks.find(pair.first);
+            auto it   = this->_cachedTransactionBulks.find(pair.first);
             if (it == this->_cachedTransactionBulks.end()) {
                 auto batch = std::vector<std::string>(this->_addresses.begin() + from, this->_addresses.begin() + to);
                 return _explorer->getTransactions(batch, pair.second, optional<void *>());
@@ -713,9 +710,9 @@ namespace ledger {
                     self->_explorerBenchmark->stop();
                     auto interpretBenchmark = NEW_BENCHMARK("interpret_operations");
 
-                    auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
+                    auto &batchState        = buddy->savedState.getValue().batches[currentBatchIndex];
                     buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
-                    auto count = 0;
+                    auto count              = 0;
 
                     Option<Block> lastBlock = Option<Block>::NONE;
                     std::vector<Operation> operations;
@@ -730,17 +727,17 @@ namespace ledger {
 
                         self->interpretTransaction(tx, buddy, operations);
 
-                        //Update first pendingTxHash in savedState
+                        // Update first pendingTxHash in savedState
                         auto it = buddy->transactionsToDrop.find(tx.hash);
                         if (it != buddy->transactionsToDrop.end()) {
-                            //If block non empty, tx is no longer pending
+                            // If block non empty, tx is no longer pending
                             if (tx.block.nonEmpty()) {
                                 buddy->savedState.getValue().pendingTxsHash.erase(it->first);
-                            } else { //Otherwise tx is in mempool but pending
+                            } else { // Otherwise tx is in mempool but pending
                                 buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
                             }
                         }
-                        //Remove from tx to drop
+                        // Remove from tx to drop
                         buddy->transactionsToDrop.erase(tx.hash);
                     }
                     interpretBenchmark->stop();
@@ -761,7 +758,7 @@ namespace ledger {
                     // Get the last block
                     if (bulk->transactions.size() > 0 && lastBlock.nonEmpty()) {
                         batchState.blockHeight = (uint32_t)lastBlock.getValue().height;
-                        batchState.blockHash = lastBlock.getValue().hash;
+                        batchState.blockHash   = lastBlock.getValue().hash;
                         buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
                     }
 
@@ -773,7 +770,7 @@ namespace ledger {
                     }
                 });
         }
-        //Hashkey = currentBatchIndex + last blockHash in batch
+        // Hashkey = currentBatchIndex + last blockHash in batch
         std::pair<std::string, Option<std::string>> BlockchainExplorerAccountSynchronizer::getHashkeyAndBlockhash(int currentBatchIndex, const std::shared_ptr<SynchronizationBuddy> &buddy) {
             Option<std::string> blockHash;
             if (currentBatchIndex < buddy->savedState.getValue().batches.size()) {

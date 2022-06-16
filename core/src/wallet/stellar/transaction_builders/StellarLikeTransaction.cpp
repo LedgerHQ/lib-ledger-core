@@ -63,7 +63,7 @@ namespace ledger {
             envTypeEncoder << static_cast<int32_t>(stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX);
             auto encodedEnvType = envTypeEncoder.toByteArray();
 
-            auto offset = networkId.size() + encodedEnvType.size();
+            auto offset         = networkId.size() + encodedEnvType.size();
             auto rawTransaction = std::vector<uint8_t>(signatureBase.begin() + offset, signatureBase.end());
 
             stellar::xdr::Transaction tx;
@@ -71,7 +71,7 @@ namespace ledger {
             txDecoder >> tx;
 
             stellar::xdr::TransactionV1Envelope preEnvelope;
-            preEnvelope.tx = tx;
+            preEnvelope.tx                             = tx;
             stellar::xdr::TransactionEnvelope envelope = stellar::xdr::wrap(preEnvelope);
 
             return std::make_shared<StellarLikeTransaction>(currency, envelope);
@@ -134,9 +134,9 @@ namespace ledger {
                     _currency.stellarLikeNetworkParameters.value());
             } else {
                 const auto &envelope = getEnvelopeV1();
-                address = StellarLikeAddress::convertMuxedAccountToAddress(
-                    envelope.tx.sourceAccount,
-                    _currency.stellarLikeNetworkParameters.value());
+                address              = StellarLikeAddress::convertMuxedAccountToAddress(
+                                 envelope.tx.sourceAccount,
+                                 _currency.stellarLikeNetworkParameters.value());
             }
 
             return std::make_shared<StellarLikeAddress>(address, _currency, Option<std::string>());
@@ -200,7 +200,7 @@ namespace ledger {
         }
 
         std::string StellarLikeTransaction::setCorrelationId(const std::string &newId) {
-            auto oldId = _correlationId;
+            auto oldId     = _correlationId;
             _correlationId = newId;
             return oldId;
         }

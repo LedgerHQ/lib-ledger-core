@@ -63,7 +63,8 @@ namespace ledger {
         };
 
         using TezosLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::TezosLikeTransaction>>(
-            const TezosLikeTransactionBuildRequest &, const std::shared_ptr<TezosLikeBlockchainExplorer> &)>;
+            const TezosLikeTransactionBuildRequest &,
+            const std::shared_ptr<TezosLikeBlockchainExplorer> &)>;
 
         class TezosLikeTransactionBuilder : public api::TezosLikeTransactionBuilder,
                                             public std::enable_shared_from_this<TezosLikeTransactionBuilder> {
@@ -127,4 +128,4 @@ namespace ledger {
         };
     } // namespace core
 } // namespace ledger
-#endif //LEDGER_CORE_TEZOSLIKETRANSACTIONBUILDER_H
+#endif // LEDGER_CORE_TEZOSLIKETRANSACTIONBUILDER_H

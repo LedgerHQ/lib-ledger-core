@@ -55,7 +55,9 @@ namespace ledger {
             // Build a URL encoded filter for gaia REST event-like filters
             // eventType.attributeKey=value
             static TransactionFilter filterWithAttribute(
-                const char eventType[], const char attributeKey[], const std::string &value);
+                const char eventType[],
+                const char attributeKey[],
+                const std::string &value);
 
             // Concatenate multiple URL encoded filters
             static TransactionFilter fuseFilters(std::initializer_list<boost::string_view> filters);
@@ -74,7 +76,9 @@ namespace ledger {
 
             // Helper function to get transactions following a given filter.
             FuturePtr<cosmos::TransactionsBulk> getTransactions(
-                const TransactionFilter &filter, int page, int limit) const;
+                const TransactionFilter &filter,
+                int page,
+                int limit) const;
 
             // Single transaction querier (found by hash)
             FuturePtr<cosmos::Transaction> getTransactionByHash(const std::string &hash) override;
@@ -84,7 +88,7 @@ namespace ledger {
             FuturePtr<cosmos::TransactionsBulk> getTransactions(
                 const std::vector<std::string> &addresses,
                 uint32_t fromBlockHeight = 0,
-                Option<void *> session = Option<void *>()) override;
+                Option<void *> session   = Option<void *>()) override;
             FuturePtr<ledger::core::Block> getCurrentBlock() const override;
             [[noreturn]] Future<Bytes> getRawTransaction(const String &transactionHash) override;
             FuturePtr<cosmos::Transaction> getTransactionByHash(
@@ -147,15 +151,18 @@ namespace ledger {
             // Get all transactions relevant to an address
             // Concatenates multiple API calls for all relevant transaction types
             FuturePtr<cosmos::TransactionsBulk> getTransactionsForAddress(
-                const std::string &address, uint32_t fromBlockHeight = 0) const;
+                const std::string &address,
+                uint32_t fromBlockHeight = 0) const;
 
             // Get all transactions relevant to a list of addresses
             // Concatenates multiple API calls for all relevant transaction types
             FuturePtr<cosmos::TransactionsBulk> getTransactionsForAddresses(
-                const std::vector<std::string> &addresses, uint32_t fromBlockHeight = 0) const;
+                const std::vector<std::string> &addresses,
+                uint32_t fromBlockHeight = 0) const;
 
             Future<BigInt> genericPostRequestForSimulation(
-                const std::string &endpoint, const std::string &transaction) const;
+                const std::string &endpoint,
+                const std::string &transaction) const;
 
             Future<BigInt> getEstimatedGasLimit(
                 const std::shared_ptr<api::CosmosLikeTransaction> &transaction,

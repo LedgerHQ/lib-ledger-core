@@ -67,18 +67,18 @@ namespace ledger {
 
             virtual bool markAsUsed(const std::vector<std::string> &addresses);
             virtual bool markAsUsed(const std::string &address, bool needExtendKeychain = true);
-            virtual bool markPathAsUsed(const DerivationPath &path, bool needExtendKeychain = true) = 0;
+            virtual bool markPathAsUsed(const DerivationPath &path, bool needExtendKeychain = true)                = 0;
 
-            virtual std::vector<Address> getAllObservableAddresses(uint32_t from, uint32_t to) = 0;
-            virtual std::vector<std::string> getAllObservableAddressString(uint32_t from, uint32_t to) = 0;
+            virtual std::vector<Address> getAllObservableAddresses(uint32_t from, uint32_t to)                     = 0;
+            virtual std::vector<std::string> getAllObservableAddressString(uint32_t from, uint32_t to)             = 0;
             virtual std::vector<Address> getAllObservableAddresses(KeyPurpose purpose, uint32_t from, uint32_t to) = 0;
 
-            virtual Address getFreshAddress(KeyPurpose purpose) = 0;
-            virtual std::vector<Address> getFreshAddresses(KeyPurpose purpose, size_t n) = 0;
+            virtual Address getFreshAddress(KeyPurpose purpose)                                                    = 0;
+            virtual std::vector<Address> getFreshAddresses(KeyPurpose purpose, size_t n)                           = 0;
 
-            virtual Option<KeyPurpose> getAddressPurpose(const std::string &address) const = 0;
-            virtual Option<std::string> getAddressDerivationPath(const std::string &address) const = 0;
-            virtual bool isEmpty() const = 0;
+            virtual Option<KeyPurpose> getAddressPurpose(const std::string &address) const                         = 0;
+            virtual Option<std::string> getAddressDerivationPath(const std::string &address) const                 = 0;
+            virtual bool isEmpty() const                                                                           = 0;
 
             int getAccountIndex() const;
             const api::BitcoinLikeNetworkParameters &getNetworkParameters() const;
@@ -93,11 +93,11 @@ namespace ledger {
             bool isSegwit() const;
             bool isNativeSegwit() const;
 
-            virtual std::string getRestoreKey() const = 0;
-            virtual int32_t getObservableRangeSize() const = 0;
+            virtual std::string getRestoreKey() const               = 0;
+            virtual int32_t getObservableRangeSize() const          = 0;
             virtual bool contains(const std::string &address) const = 0;
-            virtual std::vector<Address> getAllAddresses() = 0;
-            virtual int32_t getOutputSizeAsSignedTxInput() const = 0;
+            virtual std::vector<Address> getAllAddresses()          = 0;
+            virtual int32_t getOutputSizeAsSignedTxInput() const    = 0;
 
             static bool isSegwit(const std::string &keychainEngine);
             static bool isNativeSegwit(const std::string &keychainEngine);
@@ -117,4 +117,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKEKEYCHAIN_HPP
+#endif // LEDGER_CORE_BITCOINLIKEKEYCHAIN_HPP

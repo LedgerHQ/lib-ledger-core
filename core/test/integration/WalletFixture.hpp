@@ -48,10 +48,10 @@ class WalletFixture : public BaseFixture {
 
 #ifdef PG_SUPPORT
         const bool usePostgreSQL = true;
-        auto poolConfig = DynamicObject::newInstance();
+        auto poolConfig          = DynamicObject::newInstance();
         poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
         const auto dbName = randomDBName();
-        pool = newDefaultPool(dbName, "", poolConfig, usePostgreSQL);
+        pool              = newDefaultPool(dbName, "", poolConfig, usePostgreSQL);
 #else
         pool = newDefaultPool();
 #endif
@@ -66,7 +66,7 @@ class WalletFixture : public BaseFixture {
     }
 
     void registerCurrency(api::Currency const &currency) {
-        //auto walletFactory = std::make_shared<WalletFactory>(currency, pool);
+        // auto walletFactory = std::make_shared<WalletFactory>(currency, pool);
 
         // wait(pool->addCurrency(currency));
         // walletStore->registerFactory(currency, walletFactory);

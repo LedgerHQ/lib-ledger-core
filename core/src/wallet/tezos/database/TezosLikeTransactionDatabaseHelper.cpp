@@ -48,7 +48,6 @@ namespace ledger {
                                                                       const std::string &hash,
                                                                       const std::string &operationUid,
                                                                       TezosLikeBlockchainExplorerTransaction &tx) {
-
             rowset<row> rows = (sql.prepare << "SELECT tx.hash, tx.value, tx.time, "
                                                " tx.sender, tx.receiver, tx.fees, tx.gas_limit, tx.storage_limit, tx.confirmations, tx.type, tx.public_key, tx.originated_account, tx.status, "
                                                "block.height, block.hash, block.time, block.currency_name "
@@ -69,17 +68,17 @@ namespace ledger {
         bool TezosLikeTransactionDatabaseHelper::inflateTransaction(soci::session &sql,
                                                                     const soci::row &row,
                                                                     TezosLikeBlockchainExplorerTransaction &tx) {
-            tx.hash = row.get<std::string>(0);
-            tx.value = BigInt::fromHex(row.get<std::string>(1));
-            tx.receivedAt = row.get<std::chrono::system_clock::time_point>(2);
-            tx.sender = row.get<std::string>(3);
-            tx.receiver = row.get<std::string>(4);
-            tx.fees = BigInt::fromHex(row.get<std::string>(5));
-            tx.gas_limit = BigInt::fromHex(row.get<std::string>(6));
+            tx.hash          = row.get<std::string>(0);
+            tx.value         = BigInt::fromHex(row.get<std::string>(1));
+            tx.receivedAt    = row.get<std::chrono::system_clock::time_point>(2);
+            tx.sender        = row.get<std::string>(3);
+            tx.receiver      = row.get<std::string>(4);
+            tx.fees          = BigInt::fromHex(row.get<std::string>(5));
+            tx.gas_limit     = BigInt::fromHex(row.get<std::string>(6));
             tx.storage_limit = BigInt::fromHex(row.get<std::string>(7));
             tx.confirmations = get_number<uint64_t>(row, 8);
-            tx.type = api::from_string<api::TezosOperationTag>(row.get<std::string>(9));
-            auto pubKey = row.get<std::string>(10);
+            tx.type          = api::from_string<api::TezosOperationTag>(row.get<std::string>(9));
+            auto pubKey      = row.get<std::string>(10);
             if (!pubKey.empty()) {
                 tx.publicKey = pubKey;
             }
@@ -91,11 +90,11 @@ namespace ledger {
             tx.status = get_number<uint64_t>(row, 12);
             if (row.get_indicator(13) != i_null) {
                 TezosLikeBlockchainExplorer::Block block;
-                block.height = get_number<uint64_t>(row, 13);
-                block.hash = row.get<std::string>(14);
-                block.time = row.get<std::chrono::system_clock::time_point>(15);
+                block.height       = get_number<uint64_t>(row, 13);
+                block.hash         = row.get<std::string>(14);
+                block.time         = row.get<std::chrono::system_clock::time_point>(15);
                 block.currencyName = row.get<std::string>(16);
-                tx.block = block;
+                tx.block           = block;
             }
 
             return true;
@@ -118,7 +117,7 @@ namespace ledger {
         std::string TezosLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
                                                                        const std::string &accountUid,
                                                                        const TezosLikeBlockchainExplorerTransaction &tx) {
-            auto blockUid = tx.block.map<std::string>([](const TezosLikeBlockchainExplorer::Block &block) {
+            auto blockUid   = tx.block.map<std::string>([](const TezosLikeBlockchainExplorer::Block &block) {
                 return block.getUid();
             });
 
@@ -137,12 +136,12 @@ namespace ledger {
                 if (tx.block.nonEmpty()) {
                     BlockDatabaseHelper::putBlock(sql, tx.block.getValue());
                 }
-                auto hexValue = tx.value.toHexString();
-                auto hexFees = tx.fees.toHexString();
-                auto hexGasLimit = tx.gas_limit.toHexString();
+                auto hexValue        = tx.value.toHexString();
+                auto hexFees         = tx.fees.toHexString();
+                auto hexGasLimit     = tx.gas_limit.toHexString();
                 auto hexStorageLimit = tx.storage_limit.toHexString();
-                auto type = api::to_string(tx.type);
-                auto pubKey = tx.publicKey.getValueOr("");
+                auto type            = api::to_string(tx.type);
+                auto pubKey          = tx.publicKey.getValueOr("");
 
                 std::string sOrigAccount;
                 if (tx.originatedAccount.hasValue()) {
@@ -176,7 +175,6 @@ namespace ledger {
             soci::session &sql,
             const std::string &accountUid,
             const std::chrono::system_clock::time_point &date) {
-
             OperationDatabaseHelper::eraseDataSince(sql, accountUid, date,
                                                     "tezos_operations", "tezos_transactions");
         }

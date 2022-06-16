@@ -35,10 +35,10 @@ class AccountInfoTests : public BaseFixture {
 };
 
 TEST_F(AccountInfoTests, FirstAccountInfo) {
-    auto pool = newDefaultPool();
+    auto pool             = newDefaultPool();
     const auto walletName = "my_wallet_firstaccountinfo";
-    auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto wallet           = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
+    auto info             = uv::wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners[0], "main");
     EXPECT_EQ(info.derivations[0], "44'/0'");
@@ -48,22 +48,22 @@ TEST_F(AccountInfoTests, FirstAccountInfo) {
 }
 
 TEST_F(AccountInfoTests, FirstEthAccountInfo) {
-    auto pool = newDefaultPool();
+    auto pool             = newDefaultPool();
     const auto walletName = "my_wallet_firstaccountinfo";
-    auto wallet = uv::wait(pool->createWallet(walletName, "ethereum", DynamicObject::newInstance()));
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto wallet           = uv::wait(pool->createWallet(walletName, "ethereum", DynamicObject::newInstance()));
+    auto info             = uv::wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners[0], "main");
     EXPECT_EQ(info.derivations[0], "44'/60'/0'");
-    //api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>"
+    // api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>"
     uv::wait(pool->deleteWallet(walletName));
 }
 
 TEST_F(AccountInfoTests, FirstXRPAccountInfo) {
-    auto pool = newDefaultPool();
+    auto pool             = newDefaultPool();
     const auto walletName = "my_wallet_firstaccountinfo";
-    auto wallet = uv::wait(pool->createWallet(walletName, "ripple", DynamicObject::newInstance()));
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto wallet           = uv::wait(pool->createWallet(walletName, "ripple", DynamicObject::newInstance()));
+    auto info             = uv::wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners.size(), 1);
     EXPECT_EQ(info.derivations.size(), 1);
@@ -73,10 +73,10 @@ TEST_F(AccountInfoTests, FirstXRPAccountInfo) {
 }
 
 TEST_F(AccountInfoTests, DISABLED_FirstXTZAccountInfo) {
-    auto pool = newDefaultPool();
+    auto pool             = newDefaultPool();
     const auto walletName = "my_wallet_firstaccountinfo";
-    auto wallet = uv::wait(pool->createWallet(walletName, "tezos", DynamicObject::newInstance()));
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto wallet           = uv::wait(pool->createWallet(walletName, "tezos", DynamicObject::newInstance()));
+    auto info             = uv::wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners.size(), 1);
     EXPECT_EQ(info.derivations.size(), 1);
@@ -88,10 +88,10 @@ TEST_F(AccountInfoTests, DISABLED_FirstXTZAccountInfo) {
 TEST_F(AccountInfoTests, FirstEthCustomDerivationAccountInfo) {
     auto config = DynamicObject::newInstance();
     config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>");
-    auto pool = newDefaultPool();
+    auto pool             = newDefaultPool();
     const auto walletName = "my_wallet_firstaccountinfo";
-    auto wallet = uv::wait(pool->createWallet(walletName, "ethereum", DynamicObject::newInstance()));
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto wallet           = uv::wait(pool->createWallet(walletName, "ethereum", DynamicObject::newInstance()));
+    auto info             = uv::wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners[0], "main");
     EXPECT_EQ(info.derivations[0], "44'/60'/0'");
@@ -99,10 +99,10 @@ TEST_F(AccountInfoTests, FirstEthCustomDerivationAccountInfo) {
 }
 
 TEST_F(AccountInfoTests, AnotherAccountInfo) {
-    auto pool = newDefaultPool();
+    auto pool             = newDefaultPool();
     const auto walletName = "my_wallet_firstaccountinfo";
-    auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
-    auto info = uv::wait(wallet->getAccountCreationInfo(20));
+    auto wallet           = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
+    auto info             = uv::wait(wallet->getAccountCreationInfo(20));
     EXPECT_EQ(info.index, 20);
     EXPECT_EQ(info.owners[0], "main");
     EXPECT_EQ(info.derivations[0], "44'/0'");
@@ -112,12 +112,12 @@ TEST_F(AccountInfoTests, AnotherAccountInfo) {
 }
 
 TEST_F(AccountInfoTests, DISABLED_GetAddressFromRange) {
-    auto pool = newDefaultPool();
+    auto pool             = newDefaultPool();
     const auto walletName = "my_wallet_addressFromRange";
-    auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
-    auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
+    auto wallet           = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
+    auto account          = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
 
-    auto freshAddresses = uv::wait(account->getFreshPublicAddresses());
+    auto freshAddresses   = uv::wait(account->getFreshPublicAddresses());
 
     auto from = 10, to = 100;
     auto addresses = uv::wait(account->getAddresses(from, to));

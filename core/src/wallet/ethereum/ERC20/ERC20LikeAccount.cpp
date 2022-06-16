@@ -143,7 +143,7 @@ namespace ledger {
         BigInt ERC20LikeAccount::accumulateBalanceWithOperation(
             const BigInt &balance,
             api::ERC20LikeOperation &op) {
-            auto ty = op.getOperationType();
+            auto ty    = op.getOperationType();
             auto value = BigInt(op.getValue()->toString(DECIMAL_NUM_BASE));
 
             switch (ty) {
@@ -168,7 +168,7 @@ namespace ledger {
             op->setSender(row.get<std::string>(8));
             op->setReceiver(row.get<std::string>(9));
             if (row.get_indicator(10) != soci::i_null) {
-                auto data = row.get<std::string>(10);
+                auto data      = row.get<std::string>(10);
                 auto dataArray = hex::toByteArray(data);
                 op->setData(dataArray);
             }
@@ -254,9 +254,9 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
             }
             const auto &accountUid = localAccount->getAccountUid();
-            auto filter = std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", _accountUid, "e");
-            auto wallet = localAccount->getWallet();
-            auto query = std::make_shared<ERC20OperationQuery>(
+            auto filter            = std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", _accountUid, "e");
+            auto wallet            = localAccount->getWallet();
+            auto query             = std::make_shared<ERC20OperationQuery>(
                 filter,
                 wallet->getDatabase(),
                 wallet->getPool()->getThreadPoolExecutionContext(),
@@ -292,22 +292,22 @@ namespace ledger {
         }
 
         Future<ERC20LikeOperationList> ERC20LikeAccount::getAllOperations(int32_t from, int32_t to, bool ascending) {
-            auto parent = acquireParent();
+            auto parent                  = acquireParent();
             const std::string accountUid = _accountUid;
             return Future<ERC20LikeOperationList>::async(parent->getContext(), [=]() -> ERC20LikeOperationList {
                 soci::session sql(parent->getWallet()->getDatabase()->getReadonlyPool());
-                auto size = to - from;
+                auto size         = to - from;
                 std::string order = ascending ? "ASC" : "DESC";
-                auto query = fmt::format(
-                    "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
-                    " op.type, op.hash, op.nonce, op.value,"
-                    " op.date, op.sender, op.receiver, op.input_data,"
-                    " op.gas_price, op.gas_limit, op.gas_used, op.status, op.block_height"
-                    " FROM erc20_operations AS op"
-                    " WHERE op.account_uid = :account_uid"
-                    " ORDER BY op.date {}"
-                    " LIMIT :to OFFSET :from",
-                    order);
+                auto query        = fmt::format(
+                           "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
+                                  " op.type, op.hash, op.nonce, op.value,"
+                                  " op.date, op.sender, op.receiver, op.input_data,"
+                                  " op.gas_price, op.gas_limit, op.gas_used, op.status, op.block_height"
+                                  " FROM erc20_operations AS op"
+                                  " WHERE op.account_uid = :account_uid"
+                                  " ORDER BY op.date {}"
+                                  " LIMIT :to OFFSET :from",
+                           order);
                 soci::rowset<soci::row> rows = (sql.prepare << query, soci::use(accountUid),
                                                 soci::use(size), soci::use(from));
 
@@ -322,7 +322,7 @@ namespace ledger {
         }
 
         FuturePtr<ERC20LikeOperation> ERC20LikeAccount::getOperation(const std::string &uid) {
-            auto parent = acquireParent();
+            auto parent            = acquireParent();
             std::string accountUid = _accountUid;
             return FuturePtr<ERC20LikeOperation>::async(parent->getContext(), [=]() {
                 soci::session sql(parent->getWallet()->getDatabase()->getReadonlyPool());
@@ -355,11 +355,11 @@ namespace ledger {
 
         Future<ERC20LikeOperationList>
         ERC20LikeAccount::getOperationsFromBlockHeight(int32_t from, int32_t to, int64_t fromBlockHeight) {
-            auto parent = acquireParent();
+            auto parent            = acquireParent();
             std::string accountUid = _accountUid;
             return Future<ERC20LikeOperationList>::async(parent->getContext(), [=]() -> ERC20LikeOperationList {
                 soci::session sql(parent->getWallet()->getDatabase()->getReadonlyPool());
-                auto size = to - from;
+                auto size                    = to - from;
                 soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
                                                                " op.type, op.hash, op.nonce, op.value,"
                                                                " op.date, op.sender, op.receiver, op.input_data,"

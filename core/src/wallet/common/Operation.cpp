@@ -48,9 +48,9 @@ namespace ledger {
             } else if (rippleTransaction.nonEmpty()) {
                 txId = computeTransactionId(rippleTransaction.getValue().hash);
             } else if (tezosTransaction.nonEmpty()) {
-                const auto &tx = tezosTransaction.getValue();
+                const auto &tx       = tezosTransaction.getValue();
                 std::string txIdBase = fmt::format("{}", tx.counter);
-                txId = computeTransactionId(txIdBase, tx.type, additional);
+                txId                 = computeTransactionId(txIdBase, tx.type, additional);
             } else if (stellarOperation.nonEmpty()) {
                 txId = computeTransactionId(stellarOperation.getValue().operation.transactionHash);
             } else {

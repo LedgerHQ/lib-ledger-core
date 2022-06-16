@@ -9,6 +9,6 @@ jobs:
       - name: Run clang-format style check for C/C++/Protobuf programs.
         uses: jidicula/clang-format-action@v4.5.0
         with:
-          clang-format-version: '12'
+          clang-format-version: '14'
           check-path: 'core'
           exclude-regex: '"(core\/lib|core\/test\/lib)"'

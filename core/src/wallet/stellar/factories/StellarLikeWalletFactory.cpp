@@ -59,10 +59,10 @@ namespace ledger {
             DerivationScheme scheme(STRING(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'"));
 
             // Configure keychain factory
-            params.keychainFactory = std::make_shared<StellarLikeKeychainFactory>();
+            params.keychainFactory     = std::make_shared<StellarLikeKeychainFactory>();
 
             // Configure explorer
-            params.blockchainExplorer = getExplorer(entry);
+            params.blockchainExplorer  = getExplorer(entry);
             // Configure observer
 
             // Configure synchronizer
@@ -83,7 +83,7 @@ namespace ledger {
             std::shared_ptr<StellarLikeBlockchainExplorer> explorer;
             if (engine == api::StellarConfiguration::HORIZON_EXPLORER_ENGINE) {
                 auto baseUrl = STRING(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, api::StellarConfiguration::HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL);
-                explorer = std::make_shared<HorizonBlockchainExplorer>(getPool()->getDispatcher()->getSerialExecutionContext("stellar_explorer"), getPool()->getHttpClient(baseUrl), entry.configuration);
+                explorer     = std::make_shared<HorizonBlockchainExplorer>(getPool()->getDispatcher()->getSerialExecutionContext("stellar_explorer"), getPool()->getHttpClient(baseUrl), entry.configuration);
             }
             return explorer;
         }

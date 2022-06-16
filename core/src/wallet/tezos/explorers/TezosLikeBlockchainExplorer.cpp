@@ -85,21 +85,21 @@ namespace ledger {
 
             // Increment counter if needs revelation
             // Arf BigInts ...
-            auto counter = tx->toReveal() ? (BigInt(tx->getCounter()->toString(10)) + BigInt(1)).toString() : tx->getCounter()->toString(10);
-            auto bodyString = fmt::format("{{\"branch\":\"{}\","
-                                          "\"contents\":[{{\"kind\":\"transaction\","
-                                          "\"fee\":\"{}\",\"gas_limit\":\"{}\",\"storage_limit\":\"{}\","
-                                          "\"amount\":\"{}\",\"destination\":\"{}\",{},"
-                                          "\"source\":\"{}\",\"counter\":\"{}\"}}]}}",
-                                          tx->getBlockHash().value_or(""),
-                                          tx->getFees()->toString(),
-                                          "27000",
-                                          tx->getStorageLimit()->toString(10),
-                                          0,
-                                          tx->getSender()->toBase58(),
-                                          params,
-                                          tx->getManagerAddress(),
-                                          counter);
+            auto counter                    = tx->toReveal() ? (BigInt(tx->getCounter()->toString(10)) + BigInt(1)).toString() : tx->getCounter()->toString(10);
+            auto bodyString                 = fmt::format("{{\"branch\":\"{}\","
+                                                                          "\"contents\":[{{\"kind\":\"transaction\","
+                                                                          "\"fee\":\"{}\",\"gas_limit\":\"{}\",\"storage_limit\":\"{}\","
+                                                                          "\"amount\":\"{}\",\"destination\":\"{}\",{},"
+                                                                          "\"source\":\"{}\",\"counter\":\"{}\"}}]}}",
+                                                          tx->getBlockHash().value_or(""),
+                                                          tx->getFees()->toString(),
+                                                          "27000",
+                                                          tx->getStorageLimit()->toString(10),
+                                                          0,
+                                                          tx->getSender()->toBase58(),
+                                                          params,
+                                                          tx->getManagerAddress(),
+                                                          counter);
             const bool parseNumbersAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return http->POST("/chains/main/blocks/head/helpers/forge/operations",
@@ -301,7 +301,7 @@ namespace ledger {
                     auto ecode = exception.getErrorCode();
                     // Tezos RPC returns a 500 when the transaction is not valid (bad counter, no
                     // balance, etc.) so we rethrow the tezos node error for easier debugging
-                    auto body = std::static_pointer_cast<HttpRequest::JsonResult>(
+                    auto body  = std::static_pointer_cast<HttpRequest::JsonResult>(
                         exception.getUserData().getValue());
                     const auto &json = *std::get<1>(*body);
                     rapidjson::StringBuffer buffer;

@@ -43,7 +43,8 @@ namespace ledger {
             }
 
             explicit CosmosLikeReward(
-                const cosmos::Reward &rewardData, const std::string &delegatorAddress);
+                const cosmos::Reward &rewardData,
+                const std::string &delegatorAddress);
 
             std::string getDelegatorAddress() const override;
 

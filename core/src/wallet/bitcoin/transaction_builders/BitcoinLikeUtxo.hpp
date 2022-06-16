@@ -54,7 +54,7 @@ namespace ledger {
             Option<uint64_t> blockHeight;
 
             operator BitcoinLikeBlockchainExplorerOutput() const;
-            BitcoinLikeUtxo() = default;
+            BitcoinLikeUtxo()  = default;
             ~BitcoinLikeUtxo() = default;
         };
 

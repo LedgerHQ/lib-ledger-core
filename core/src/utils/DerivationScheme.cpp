@@ -52,7 +52,7 @@ namespace ledger {
                 }
                 DerivationSchemeNode node;
                 node.hardened = segment.back() == '\'';
-                node.value = 0;
+                node.value    = 0;
                 if (node.hardened) {
                     segment.erase(segment.end() - 1, segment.end());
                 }
@@ -83,7 +83,7 @@ namespace ledger {
             // Account & node level both should be set to be used by keychain.
             // Account level always comes before node level
             auto itAccountLevel = std::find_if(_scheme.begin(), _scheme.end(), [](const DerivationSchemeNode &node) { return node.level == DerivationSchemeLevel::ACCOUNT_INDEX; });
-            auto itNodeLevel = std::find_if(itAccountLevel, _scheme.end(), [](const DerivationSchemeNode &node) { return node.level == DerivationSchemeLevel::NODE; });
+            auto itNodeLevel    = std::find_if(itAccountLevel, _scheme.end(), [](const DerivationSchemeNode &node) { return node.level == DerivationSchemeLevel::NODE; });
             if (itNodeLevel == _scheme.end() && _scheme.size() <= 5) {
                 static std::vector<DerivationSchemeLevel> schemeLevel{DerivationSchemeLevel::UNDEFINED,
                                                                       DerivationSchemeLevel::COIN_TYPE,
@@ -109,7 +109,7 @@ namespace ledger {
         }
 
         DerivationScheme DerivationScheme::getSchemeFrom(DerivationSchemeLevel level) {
-            auto it = _scheme.begin();
+            auto it  = _scheme.begin();
             auto end = _scheme.end();
             while (it != end) {
                 if (it->level == level) {
@@ -122,14 +122,14 @@ namespace ledger {
         }
 
         DerivationScheme DerivationScheme::shift(int n) {
-            auto it = _scheme.begin() + n;
-            auto end = _scheme.end();
+            auto it     = _scheme.begin() + n;
+            auto end    = _scheme.end();
             auto scheme = std::vector<DerivationSchemeNode>(it, end);
             return DerivationScheme(scheme);
         }
 
         DerivationScheme DerivationScheme::getSchemeTo(DerivationSchemeLevel level) const {
-            auto it = _scheme.begin();
+            auto it  = _scheme.begin();
             auto end = _scheme.end();
             while (it != end) {
                 if (it->level == level) {

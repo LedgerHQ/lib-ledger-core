@@ -45,4 +45,4 @@ namespace ledger {
         };
     } // namespace core
 } // namespace ledger
-#endif //LEDGER_CORE_P2WPKHBITCOINLIKEKEYCHAIN_H
+#endif // LEDGER_CORE_P2WPKHBITCOINLIKEKEYCHAIN_H

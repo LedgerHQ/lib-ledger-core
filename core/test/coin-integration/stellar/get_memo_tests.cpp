@@ -50,7 +50,7 @@ inline void expectThrowInvalidMemoType(StellarLikeMemo *obj, T (StellarLikeMemo:
 
 TEST_F(StellarFixture, GetMemoText) {
     stellar::xdr::Memo memo;
-    memo.type = stellar::xdr::MemoType::MEMO_TEXT;
+    memo.type    = stellar::xdr::MemoType::MEMO_TEXT;
     memo.content = "Hello world";
 
     StellarLikeMemo api(memo);
@@ -66,7 +66,7 @@ TEST_F(StellarFixture, GetMemoText) {
 
 TEST_F(StellarFixture, GetMemoId) {
     stellar::xdr::Memo memo;
-    memo.type = stellar::xdr::MemoType::MEMO_ID;
+    memo.type    = stellar::xdr::MemoType::MEMO_ID;
     memo.content = 12345678901234567890UL;
 
     StellarLikeMemo api(memo);
@@ -81,12 +81,12 @@ TEST_F(StellarFixture, GetMemoId) {
 }
 
 TEST_F(StellarFixture, GetMemoHash) {
-    auto bytesHex = std::string("1cc91667fc80e79caae59d3e5b29551ee528e9a4548307d1428901db71e459f6");
+    auto bytesHex    = std::string("1cc91667fc80e79caae59d3e5b29551ee528e9a4548307d1428901db71e459f6");
     auto bytesVector = hex::toByteArray(bytesHex);
     stellar::xdr::Hash bytesArray;
     std::copy(bytesVector.begin(), bytesVector.end(), bytesArray.begin());
     stellar::xdr::Memo memo;
-    memo.type = stellar::xdr::MemoType::MEMO_HASH;
+    memo.type    = stellar::xdr::MemoType::MEMO_HASH;
     memo.content = bytesArray;
 
     StellarLikeMemo api(memo);
@@ -101,12 +101,12 @@ TEST_F(StellarFixture, GetMemoHash) {
 }
 
 TEST_F(StellarFixture, GetMemoReturn) {
-    auto bytesHex = std::string("1cc91667fc80e79caae59d3e5b29551ee528e9a4548307d1428901db71e459f6");
+    auto bytesHex    = std::string("1cc91667fc80e79caae59d3e5b29551ee528e9a4548307d1428901db71e459f6");
     auto bytesVector = hex::toByteArray(bytesHex);
     stellar::xdr::Hash bytesArray;
     std::copy(bytesVector.begin(), bytesVector.end(), bytesArray.begin());
     stellar::xdr::Memo memo;
-    memo.type = stellar::xdr::MemoType::MEMO_RETURN;
+    memo.type    = stellar::xdr::MemoType::MEMO_RETURN;
     memo.content = bytesArray;
 
     StellarLikeMemo api(memo);

@@ -38,12 +38,14 @@ namespace ledger {
         static HashAlgorithm COSMOS_HASH_ALGO("cosmos");
 
         CosmosLikeKeychain::CosmosLikeKeychain(
-            const std::vector<uint8_t> &pubKey, const DerivationPath &path, const api::Currency &currency) {
+            const std::vector<uint8_t> &pubKey,
+            const DerivationPath &path,
+            const api::Currency &currency) {
             _pubKey = pubKey;
             std::vector<uint8_t> payload{0xEB, 0x5A, 0xE9, 0x87, (uint8_t)_pubKey.size()};
             payload.insert(payload.end(), _pubKey.begin(), _pubKey.end());
             auto hash160 = HASH160::hash(_pubKey, COSMOS_HASH_ALGO);
-            _address = std::make_shared<CosmosLikeAddress>(
+            _address     = std::make_shared<CosmosLikeAddress>(
                 currency,
                 hash160,
                 std::vector<uint8_t>(),
@@ -70,12 +72,15 @@ namespace ledger {
         }
 
         std::vector<CosmosLikeKeychain::Address> CosmosLikeKeychain::getAllObservableAddresses(
-            uint32_t from, uint32_t to) {
+            uint32_t from,
+            uint32_t to) {
             return {_address};
         }
 
         std::shared_ptr<CosmosLikeKeychain> CosmosLikeKeychain::restore(
-            const DerivationPath &path, const api::Currency &currency, const std::string &restoreKey) {
+            const DerivationPath &path,
+            const api::Currency &currency,
+            const std::string &restoreKey) {
             auto p = CosmosBech32(api::CosmosBech32Type::PUBLIC_KEY).decode(restoreKey);
             std::vector<uint8_t> pubKey(std::get<1>(p).begin() + 5, std::get<1>(p).end());
             return std::make_shared<CosmosLikeKeychain>(pubKey, path, currency);

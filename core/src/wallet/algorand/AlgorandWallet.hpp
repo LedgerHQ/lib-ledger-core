@@ -43,7 +43,6 @@ namespace ledger {
             using AccountSynchronizerFactory = std::function<std::shared_ptr<AccountSynchronizer>()>;
 
             class Wallet : public api::AlgorandWallet, public AbstractWallet {
-
               public:
                 Wallet(
                     const std::string &name,

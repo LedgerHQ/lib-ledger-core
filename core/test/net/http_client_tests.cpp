@@ -58,8 +58,8 @@ using namespace ledger::core;
 
 TEST(HttpClient, GET) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
-    auto worker = dispatcher->getSerialExecutionContext("worker");
+    auto client     = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto worker     = dispatcher->getSerialExecutionContext("worker");
     ledger::core::HttpClient http("http://127.0.0.1:8000", client, worker, nullptr);
     {
         auto server = std::make_shared<MongooseSimpleRestServer>(dispatcher->getSerialExecutionContext("server"));
@@ -77,7 +77,7 @@ TEST(HttpClient, GET) {
             http.GET("/say/hello/toto/please")().foreach (dispatcher->getMainExecutionContext(),
                                                           [dispatcher, &server](const std::shared_ptr<api::HttpUrlConnection> connection) {
                                                               auto body = connection->readBody();
-                                                              auto res = std::string((char *)(body.data->data()), body.data->size());
+                                                              auto res  = std::string((char *)(body.data->data()), body.data->size());
                                                               EXPECT_EQ(200, connection->getStatusCode());
                                                               EXPECT_EQ("Hello toto", res);
                                                               std::cout << res << std::endl;
@@ -94,8 +94,8 @@ TEST(HttpClient, GET) {
 
 TEST(HttpClient, GETJson) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
-    auto worker = dispatcher->getSerialExecutionContext("worker");
+    auto client     = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto worker     = dispatcher->getSerialExecutionContext("worker");
     ledger::core::HttpClient http("http://127.0.0.1:8000", client, worker, nullptr);
     {
         auto server = std::make_shared<MongooseSimpleRestServer>(dispatcher->getSerialExecutionContext("server"));
@@ -129,8 +129,8 @@ TEST(HttpClient, GETJson) {
 
 TEST(HttpClient, GETJsonError) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
-    auto worker = dispatcher->getSerialExecutionContext("worker");
+    auto client     = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto worker     = dispatcher->getSerialExecutionContext("worker");
     ledger::core::HttpClient http("http://127.0.0.1:8000", client, worker, nullptr);
     {
         auto server = std::make_shared<MongooseSimpleRestServer>(dispatcher->getSerialExecutionContext("server"));
@@ -165,8 +165,8 @@ TEST(HttpClient, GETJsonError) {
 
 TEST(HttpClient, POST) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
-    auto worker = dispatcher->getSerialExecutionContext("worker");
+    auto client     = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto worker     = dispatcher->getSerialExecutionContext("worker");
     ledger::core::HttpClient http("http://127.0.0.1:8000", client, worker, nullptr);
     {
         auto server = std::make_shared<MongooseSimpleRestServer>(dispatcher->getSerialExecutionContext("server"));
@@ -184,7 +184,7 @@ TEST(HttpClient, POST) {
             http.POST("/next/century/postal/service", body)().foreach (dispatcher->getMainExecutionContext(),
                                                                        [dispatcher, &server](const std::shared_ptr<api::HttpUrlConnection> connection) {
                                                                            auto body = connection->readBody();
-                                                                           auto res = std::string((char *)(body.data->data()), body.data->size());
+                                                                           auto res  = std::string((char *)(body.data->data()), body.data->size());
                                                                            EXPECT_EQ(200, connection->getStatusCode());
                                                                            EXPECT_EQ(BIG_TEXT, res);
                                                                            server->stop();
@@ -241,8 +241,8 @@ TEST(HttpClient, GETWithSax) {
     };
 
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
-    auto worker = dispatcher->getSerialExecutionContext("worker");
+    auto client     = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto worker     = dispatcher->getSerialExecutionContext("worker");
     ledger::core::HttpClient http("http://127.0.0.1:8000", client, worker, nullptr);
     {
         auto server = std::make_shared<MongooseSimpleRestServer>(dispatcher->getSerialExecutionContext("server"));
@@ -323,8 +323,8 @@ TEST(HttpClient, GETWithSaxError) {
     };
 
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto client = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
-    auto worker = dispatcher->getSerialExecutionContext("worker");
+    auto client     = std::make_shared<MongooseHttpClient>(dispatcher->getSerialExecutionContext("client"));
+    auto worker     = dispatcher->getSerialExecutionContext("worker");
     ledger::core::HttpClient http("http://127.0.0.1:8000", client, worker, nullptr);
     {
         auto server = std::make_shared<MongooseSimpleRestServer>(dispatcher->getSerialExecutionContext("server"));

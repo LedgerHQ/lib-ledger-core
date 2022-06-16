@@ -73,7 +73,7 @@ namespace ledger {
                                   .value_or(api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION);
                 if (engine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
                     std::weak_ptr<WalletPool> p = pool;
-                    synchronizerFactory = Option<EthereumLikeAccountSynchronizerFactory>([p, explorer]() {
+                    synchronizerFactory         = Option<EthereumLikeAccountSynchronizerFactory>([p, explorer]() {
                         auto pool = p.lock();
                         if (!pool) {
                             throw make_exception(api::ErrorCode::NULL_POINTER, "Pool was released.");
@@ -115,7 +115,7 @@ namespace ledger {
                 }
             }
 
-            auto pool = getPool();
+            auto pool   = getPool();
             auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
                               .value_or(api::BlockchainExplorerEngines::LEDGER_API);
             std::shared_ptr<EthereumLikeBlockchainExplorer> explorer = nullptr;
@@ -125,10 +125,10 @@ namespace ledger {
                                      api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
                         .value_or(api::ConfigurationDefaults::BLOCKCHAIN_DEFAULT_API_ENDPOINT));
                 auto &networkParams = getCurrency().ethereumLikeNetworkParameters.value();
-                auto context = pool->getDispatcher()->getSerialExecutionContext(
-                    fmt::format("{}-{}-explorer",
-                                api::BlockchainExplorerEngines::LEDGER_API,
-                                networkParams.Identifier));
+                auto context        = pool->getDispatcher()->getSerialExecutionContext(
+                           fmt::format("{}-{}-explorer",
+                                       api::BlockchainExplorerEngines::LEDGER_API,
+                                       networkParams.Identifier));
                 explorer = std::make_shared<LedgerApiEthereumLikeBlockchainExplorer>(context, http, networkParams, configuration);
             }
             if (explorer)

@@ -126,18 +126,17 @@ namespace ledger {
 
         bool RippleLikeTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(RawNumber, str, length, copy) {
-
                 std::string number(str, length);
                 BigInt value = BigInt::fromString(number);
                 if (_lastKey == "confirmations") {
                     _transaction->confirmations = value.toUint64();
                 } else if (_lastKey == "ledger_index") {
                     RippleLikeBlockchainExplorer::Block block;
-                    block.height = value.toUint64();
-                    block.currencyName = currencies::RIPPLE.name;
+                    block.height        = value.toUint64();
+                    block.currencyName  = currencies::RIPPLE.name;
                     // Ledger index is not really a hash but since XRP doesn't have reorg
                     // it's safe to use ledger index as a unique hash.
-                    block.hash = number;
+                    block.hash          = number;
                     _transaction->block = block;
                 } else if (_lastKey == "DestinationTag") {
                     _transaction->destinationTag = Option<int64_t>(value.toInt64());
@@ -163,7 +162,7 @@ namespace ledger {
                 } else if (_lastKey == "Destination") {
                     _transaction->receiver = value;
                 } else if (_lastKey == "Amount") {
-                    BigInt valueBigInt = BigInt::fromString(value);
+                    BigInt valueBigInt  = BigInt::fromString(value);
                     _transaction->value = valueBigInt;
                 } else if (_lastKey == "Fee") {
                     BigInt valueBigInt = BigInt::fromString(value);

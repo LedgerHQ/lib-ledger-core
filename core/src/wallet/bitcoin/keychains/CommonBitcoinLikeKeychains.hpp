@@ -90,7 +90,7 @@ namespace ledger {
 
             /**
              * @brief Get the State object from user preferences
-             * 
+             *
              * @return persisted state
              */
             KeychainPersistentState getState() const;
@@ -110,4 +110,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_COMMONBITCOINLIKEKEYCHAINS_H
+#endif // LEDGER_CORE_COMMONBITCOINLIKEKEYCHAINS_H

@@ -46,7 +46,7 @@ namespace ledger {
                                                                const std::shared_ptr<DynamicObject> &configuration,
                                                                const api::ExtendedKeyAccountCreationInfo &info,
                                                                const std::shared_ptr<Preferences> &accountPreferences,
-                                                               const api::Currency &currency) = 0;
+                                                               const api::Currency &currency)   = 0;
             virtual std::shared_ptr<BitcoinLikeKeychain> restore(int32_t index,
                                                                  const DerivationPath &path,
                                                                  const std::shared_ptr<DynamicObject> &configuration,
@@ -57,4 +57,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKEKEYCHAINFACTORY_H
+#endif // LEDGER_CORE_BITCOINLIKEKEYCHAINFACTORY_H

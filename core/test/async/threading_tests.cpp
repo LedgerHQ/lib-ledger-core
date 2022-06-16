@@ -52,7 +52,7 @@ unsigned long getCurrentThreadId() {
 
 TEST(Threading, DoSomethingOnSerialQueue) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    int var = 0;
+    int var         = 0;
 
     auto mainThread = getCurrentThreadId();
     dispatcher->getThreadPoolExecutionContext("worker")->execute(make_runnable([&]() {
@@ -70,7 +70,7 @@ TEST(Threading, DoSomethingOnSerialQueueWithDelay) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
 
     uint64_t before = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    uint64_t after = before;
+    uint64_t after  = before;
 
     auto mainThread = getCurrentThreadId();
 
@@ -89,7 +89,7 @@ TEST(Threading, DoSomethingOnSerialQueueWithDelay) {
 
 TEST(Threading, DoSomethingOnThreadPoolSerialQueue) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>(2);
-    auto cpt = 0;
+    auto cpt        = 0;
     std::mutex mutex;
     std::condition_variable condition;
 

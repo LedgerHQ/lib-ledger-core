@@ -49,7 +49,7 @@ namespace ledger {
                                                            RippleLikeAccountDatabaseEntry &entry) {
             rowset<row> rows = (sql.prepare << "SELECT idx, address FROM ripple_accounts WHERE uid = :uid", use(accountUid));
             for (auto &row : rows) {
-                entry.index = row.get<int32_t>(0);
+                entry.index   = row.get<int32_t>(0);
                 entry.address = row.get<std::string>(1);
                 return true;
             }

@@ -105,4 +105,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_WALLETPOOL_API_HPP
+#endif // LEDGER_CORE_WALLETPOOL_API_HPP

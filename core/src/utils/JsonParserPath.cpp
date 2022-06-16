@@ -75,7 +75,7 @@ namespace ledger {
         std::string JsonParserPath::toString(int depth) const {
             std::stringstream ss;
             const JsonParserPathNode *parent = nullptr;
-            auto iterations = 0;
+            auto iterations                  = 0;
             for (const auto &node : _path) {
                 iterations += 1;
                 if (iterations - 1 < depth)
@@ -111,8 +111,8 @@ namespace ledger {
             auto node = _path.begin();
             std::advance(node, depth);
             const JsonParserPathNode *parent = nullptr;
-            auto element = matcher.getElements().begin();
-            auto elementEnd = matcher.getElements().end();
+            auto element                     = matcher.getElements().begin();
+            auto elementEnd                  = matcher.getElements().end();
             while (node != _path.end() && element != elementEnd) {
                 if (element->filter == JsonParserPathMatcherFilter::MATCH_ALL) {
                     return true;
@@ -178,7 +178,7 @@ namespace ledger {
 
         JsonParserPathMatcher::JsonParserPathMatcher(const std::string &filter) {
             char buffer[64]; // Assume max key size is sizeof(buffer)
-            auto offset = 0;
+            auto offset        = 0;
             auto emplace_value = [&]() {
                 if (offset == 0 || _elements.empty())
                     return;

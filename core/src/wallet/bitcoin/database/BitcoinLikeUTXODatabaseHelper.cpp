@@ -42,10 +42,10 @@ namespace ledger {
     namespace core {
 
         std::size_t BitcoinLikeUTXODatabaseHelper::UTXOcount(soci::session &sql, const std::string &accountUid, std::function<bool(const std::string &address)> filter) {
-            rowset<row> rows = (sql.prepare << "SELECT o.address FROM bitcoin_outputs AS o "
-                                               " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
-                                               " AND i.previous_output_idx = o.idx"
-                                               " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid",
+            rowset<row> rows  = (sql.prepare << "SELECT o.address FROM bitcoin_outputs AS o "
+                                                " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
+                                                " AND i.previous_output_idx = o.idx"
+                                                " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid",
                                 use(accountUid));
             std::size_t count = 0;
             for (auto &row : rows) {
@@ -70,11 +70,11 @@ namespace ledger {
                 if (row.get_indicator(0) != i_null && filter(row.get<std::string>(0))) {
                     BitcoinLikeBlockchainExplorerOutput output;
 
-                    output.address = row.get<Option<std::string>>(0);
-                    output.index = get_number<uint64_t>(row, 1);
+                    output.address         = row.get<Option<std::string>>(0);
+                    output.index           = get_number<uint64_t>(row, 1);
                     output.transactionHash = row.get<std::string>(2);
-                    output.value = row.get<BigInt>(3);
-                    output.script = row.get<std::string>(4);
+                    output.value           = row.get<BigInt>(3);
+                    output.script          = row.get<std::string>(4);
                     if (row.get_indicator(5) != i_null) {
                         output.blockHeight = soci::get_number<uint64_t>(row, 5);
                     }
@@ -86,7 +86,9 @@ namespace ledger {
         }
 
         std::vector<BitcoinLikeUtxo> BitcoinLikeUTXODatabaseHelper::queryAllUtxos(
-            soci::session &session, std::string const &accountUid, api::Currency const &currency) {
+            soci::session &session,
+            std::string const &accountUid,
+            api::Currency const &currency) {
             soci::rowset<soci::row> rows = (session.prepare << "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height "
                                                                "FROM bitcoin_outputs AS o "
                                                                "LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid AND i.previous_output_idx = o.idx "

@@ -56,28 +56,28 @@ void TezosMakeBaseTransaction::SetUp() {
 
 void TezosMakeBaseTransaction::recreate() {
     SetUpConfig();
-    pool = newDefaultPool();
-    wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
-    account = testData.inflate_xtz(pool, wallet);
+    pool     = newDefaultPool();
+    wallet   = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+    account  = testData.inflate_xtz(pool, wallet);
     currency = wallet->getCurrency();
 }
 
 void TezosMakeBaseTransaction::TearDown() {
     BaseFixture::TearDown();
-    pool = nullptr;
-    wallet = nullptr;
+    pool    = nullptr;
+    wallet  = nullptr;
     account = nullptr;
 }
 
 void TezosMakeBaseTransaction::broadcast(std::shared_ptr<TezosLikeTransactionApi> tx) {
-    dispatcher = std::make_shared<uv::UvThreadDispatcher>();
+    dispatcher    = std::make_shared<uv::UvThreadDispatcher>();
     auto callback = std::make_shared<Callback>(dispatcher);
     account->broadcastTransaction(tx, callback);
     dispatcher->waitUntilStopped();
 }
 
 void TezosMakeBaseTransaction::broadcast(const std::vector<uint8_t> &raw) {
-    dispatcher = std::make_shared<uv::UvThreadDispatcher>();
+    dispatcher    = std::make_shared<uv::UvThreadDispatcher>();
     auto callback = std::make_shared<Callback>(dispatcher);
     account->broadcastRawTransaction(raw, callback);
     dispatcher->waitUntilStopped();
@@ -91,10 +91,10 @@ struct TransactionTest : public TezosBaseTest {};
 
 TEST_F(TransactionTest, DISABLED_ParseUnsignedRawRevealTransaction) {
     // round-trip
-    auto strTx = "03a43f08f2b1d38e7c2762fc1b123b3ab772ae34669c2b541a0f7e96a104341e94070000d2e495a7ab40156d0a7c35b73d2530a3470fc870ea0902904e0000cda3081bd81219ec494b29068dcfd19e427fed9a66abcdc9e9e99ca6478f60e9";
+    auto strTx   = "03a43f08f2b1d38e7c2762fc1b123b3ab772ae34669c2b541a0f7e96a104341e94070000d2e495a7ab40156d0a7c35b73d2530a3470fc870ea0902904e0000cda3081bd81219ec494b29068dcfd19e427fed9a66abcdc9e9e99ca6478f60e9";
     auto txBytes = hex::toByteArray(strTx);
-    auto tx = api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
-        ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
+    auto tx      = api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
+             ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
 
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 
@@ -108,10 +108,10 @@ TEST_F(TransactionTest, DISABLED_ParseUnsignedRawRevealTransaction) {
 
 TEST_F(TransactionTest, DISABLED_ParseUnsignedRawOriginationTransaction) {
     // round-trip
-    auto strTx = "03a43f08f2b1d38e7c2762fc1b123b3ab772ae34669c2b541a0f7e96a104341e94090000d2e495a7ab40156d0a7c35b73d2530a3470fc870920903f44e950200d2e495a7ab40156d0a7c35b73d2530a3470fc8708094ebdc03ffff0000";
+    auto strTx   = "03a43f08f2b1d38e7c2762fc1b123b3ab772ae34669c2b541a0f7e96a104341e94090000d2e495a7ab40156d0a7c35b73d2530a3470fc870920903f44e950200d2e495a7ab40156d0a7c35b73d2530a3470fc8708094ebdc03ffff0000";
     auto txBytes = hex::toByteArray(strTx);
-    auto tx = api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
-        ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
+    auto tx      = api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
+             ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
 
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 
@@ -125,10 +125,10 @@ TEST_F(TransactionTest, DISABLED_ParseUnsignedRawOriginationTransaction) {
 
 TEST_F(TransactionTest, DISABLED_ParseUnsignedRawDelegationTransaction) {
     // round-trip
-    auto strTx = "037d8d230a91d1fb8391727f37a1bfeb332b7f249c78315ea4ae934e2103a826630a01d315f72434520d43d415f0dff4632519501d2d9400890902f44e00ff008bd703c4a2d91b8f1d79455be9b99c2693e931fd";
+    auto strTx   = "037d8d230a91d1fb8391727f37a1bfeb332b7f249c78315ea4ae934e2103a826630a01d315f72434520d43d415f0dff4632519501d2d9400890902f44e00ff008bd703c4a2d91b8f1d79455be9b99c2693e931fd";
     auto txBytes = hex::toByteArray(strTx);
-    auto tx = api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
-        ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
+    auto tx      = api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
+             ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
 
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 
@@ -144,10 +144,10 @@ TEST_F(TransactionTest, DISABLED_ParseUnsignedRawDelegationTransaction) {
 // Reference https://tzscan.io/ooPbtVVy7TZLoRirGsCgyy6Esyqm3Kj22QvEVpAmEXX3vHBGbF8
 TEST_F(TransactionTest, DISABLED_ParseSignedRawDelegationTransaction) {
     // round-trip
-    auto strTx = "4fd4dca725498e819cc4dd6a87adcfb98770f600558d5d097d1a48b2324a9a2e080000bbdd4268871d1751a601fe66603324714266bf558c0bdeff4ebc50ac02a08d0601583f106387cb85212812b738cae45b497551bf9a00007dc21f46b94d6b432c881b78e1fee917ef0fd382571a5d5f1bf1c5aa90d62a02777eeebac53e3fe9bbcf4501cc2ee0cb1dbe65ec24c869a4715d84f65cfdc101";
+    auto strTx   = "4fd4dca725498e819cc4dd6a87adcfb98770f600558d5d097d1a48b2324a9a2e080000bbdd4268871d1751a601fe66603324714266bf558c0bdeff4ebc50ac02a08d0601583f106387cb85212812b738cae45b497551bf9a00007dc21f46b94d6b432c881b78e1fee917ef0fd382571a5d5f1bf1c5aa90d62a02777eeebac53e3fe9bbcf4501cc2ee0cb1dbe65ec24c869a4715d84f65cfdc101";
     auto txBytes = hex::toByteArray(strTx);
-    auto tx = api::TezosLikeTransactionBuilder::parseRawSignedTransaction(
-        ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
+    auto tx      = api::TezosLikeTransactionBuilder::parseRawSignedTransaction(
+             ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
 
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 

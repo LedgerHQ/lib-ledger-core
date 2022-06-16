@@ -79,7 +79,7 @@ namespace ledger {
                                                " WHERE op.account_uid = :uid ORDER BY op.date",
                                 use(accountUid));
 
-            auto filterList = [&](const std::vector<std::string> &list) -> bool {
+            auto filterList  = [&](const std::vector<std::string> &list) -> bool {
                 for (auto &elem : list) {
                     if (filter(elem)) {
                         return true;
@@ -90,17 +90,17 @@ namespace ledger {
 
             std::size_t c = 0;
             for (auto &row : rows) {
-                auto type = api::from_string<api::OperationType>(row.get<std::string>(2));
-                auto senders = strings::split(row.get<std::string>(4), ",");
+                auto type       = api::from_string<api::OperationType>(row.get<std::string>(2));
+                auto senders    = strings::split(row.get<std::string>(4), ",");
                 auto recipients = strings::split(row.get<std::string>(5), ",");
                 if ((type == api::OperationType::SEND && row.get_indicator(4) != i_null && filterList(senders)) ||
                     (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients))) {
                     Operation operation;
 
                     operation.amount = BigInt::fromHex(row.get<std::string>(0));
-                    operation.fees = BigInt::fromHex(row.get<std::string>(1));
-                    operation.type = type;
-                    operation.date = DateUtils::fromJSON(row.get<std::string>(3));
+                    operation.fees   = BigInt::fromHex(row.get<std::string>(1));
+                    operation.type   = type;
+                    operation.date   = DateUtils::fromJSON(row.get<std::string>(3));
 
                     operations.push_back(operation);
 
@@ -127,7 +127,6 @@ namespace ledger {
             const std::chrono::system_clock::time_point &date,
             const std::string &specificOperationsTableName,
             const std::string &specificTransactionsTableName) {
-
             rowset<std::string> rows = (sql.prepare << "SELECT transaction_uid FROM " << specificOperationsTableName << " AS sop "
                                                                                                                         "JOIN operations AS op ON sop.uid = op.uid "
                                                                                                                         "WHERE op.account_uid = :uid AND op.date >= :date",

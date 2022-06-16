@@ -120,4 +120,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_DYNAMICOBJECT_HPP
+#endif // LEDGER_CORE_DYNAMICOBJECT_HPP

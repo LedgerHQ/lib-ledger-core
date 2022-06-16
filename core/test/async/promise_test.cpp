@@ -37,7 +37,7 @@ using namespace ledger::core;
 
 TEST(Promise, Success) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
 
     Promise<std::string> promise;
 
@@ -52,7 +52,7 @@ TEST(Promise, Success) {
 
 TEST(Promise, Failure) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
 
     Promise<std::string> promise;
 
@@ -67,7 +67,7 @@ TEST(Promise, Failure) {
 
 TEST(Promise, Complete) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
 
     Promise<std::string> promise;
 
@@ -82,7 +82,7 @@ TEST(Promise, Complete) {
 
 TEST(Promise, CompleteWith) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
 
     Promise<std::string> promise;
 
@@ -99,7 +99,7 @@ TEST(Promise, CompleteWith) {
 
 TEST(Promise, CompleteWithFailure) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
 
     Promise<std::string> promise;
 
@@ -116,7 +116,7 @@ TEST(Promise, CompleteWithFailure) {
 
 TEST(Promise, TrySuccess) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
 
     Promise<std::string> promise;
 

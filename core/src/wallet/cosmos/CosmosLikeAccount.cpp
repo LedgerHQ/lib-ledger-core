@@ -102,7 +102,7 @@ namespace ledger {
             _explorer->getAccount(getAddress())
                 .onComplete(getContext(), [self](const TryPtr<cosmos::Account> &accountData) mutable {
                     if (accountData.isSuccess()) {
-                        self->_accountData = accountData.getValue();
+                        self->_accountData                          = accountData.getValue();
                         const CosmosLikeAccountDatabaseEntry update = {
                             0, // unused in
                             // CosmosLikeAccountDatabaseHelper::updateAccount
@@ -121,16 +121,17 @@ namespace ledger {
         }
 
         void CosmosLikeAccount::fillOperationTypeAmountFromSend(
-            CosmosLikeOperation &out, const cosmos::MsgSend &innerSendMsg) const {
+            CosmosLikeOperation &out,
+            const cosmos::MsgSend &innerSendMsg) const {
             const auto address = getAddress();
-            const auto &coins = innerSendMsg.amount;
+            const auto &coins  = innerSendMsg.amount;
             std::for_each(coins.begin(), coins.end(), [&](cosmos::Coin amount) {
                 out.amount = out.amount + BigInt::fromDecimal(amount.amount);
             });
-            const auto &sender = innerSendMsg.fromAddress;
+            const auto &sender   = innerSendMsg.fromAddress;
             const auto &receiver = innerSendMsg.toAddress;
-            out.senders = {sender};
-            out.recipients = {receiver};
+            out.senders          = {sender};
+            out.recipients       = {receiver};
             if (sender == address) {
                 out.type = api::OperationType::SEND;
             } else if (receiver == address) {
@@ -141,11 +142,12 @@ namespace ledger {
         }
 
         void CosmosLikeAccount::fillOperationTypeAmountFromMultiSend(
-            CosmosLikeOperation &out, const cosmos::MsgMultiSend &innerMultiSendMsg) const {
-            const auto address = getAddress();
+            CosmosLikeOperation &out,
+            const cosmos::MsgMultiSend &innerMultiSendMsg) const {
+            const auto address  = getAddress();
             // Check if the user has more inputs or outputs in the message
 
-            const auto &inputs = innerMultiSendMsg.inputs;
+            const auto &inputs  = innerMultiSendMsg.inputs;
             const auto &outputs = innerMultiSendMsg.outputs;
             BigInt recv_amount;
             BigInt sent_amount;
@@ -172,49 +174,53 @@ namespace ledger {
 
             if (recv_amount == sent_amount) {
                 out.amount = BigInt::ZERO;
-                out.type = api::OperationType::NONE;
+                out.type   = api::OperationType::NONE;
             } else if (recv_amount > sent_amount) {
                 out.amount = recv_amount - sent_amount;
-                out.type = api::OperationType::RECEIVE;
+                out.type   = api::OperationType::RECEIVE;
             } else { //  sent_amount > recv_amount
                 out.amount = sent_amount - recv_amount;
-                out.type = api::OperationType::SEND;
+                out.type   = api::OperationType::SEND;
             }
 
-            out.senders = senders;
+            out.senders    = senders;
             out.recipients = receivers;
         }
 
         void CosmosLikeAccount::fillOperationTypeAmountFromDelegate(
-            CosmosLikeOperation &out, const cosmos::MsgDelegate &innerDelegateMsg) const {
+            CosmosLikeOperation &out,
+            const cosmos::MsgDelegate &innerDelegateMsg) const {
             out.senders = {getAddress()};
-            out.amount = innerDelegateMsg.amount.amount;
-            out.type = api::OperationType::NONE;
+            out.amount  = innerDelegateMsg.amount.amount;
+            out.type    = api::OperationType::NONE;
         }
 
         void CosmosLikeAccount::fillOperationTypeAmountFromUndelegate(
-            CosmosLikeOperation &out, const cosmos::MsgUndelegate &innerUndelegateMsg) const {
+            CosmosLikeOperation &out,
+            const cosmos::MsgUndelegate &innerUndelegateMsg) const {
             out.senders = {getAddress()};
-            out.amount = innerUndelegateMsg.amount.amount;
-            out.type = api::OperationType::NONE;
+            out.amount  = innerUndelegateMsg.amount.amount;
+            out.type    = api::OperationType::NONE;
         }
 
         void CosmosLikeAccount::fillOperationTypeAmountFromBeginRedelegate(
-            CosmosLikeOperation &out, const cosmos::MsgBeginRedelegate &innerBeginRedelegateMsg) const {
+            CosmosLikeOperation &out,
+            const cosmos::MsgBeginRedelegate &innerBeginRedelegateMsg) const {
             out.senders = {getAddress()};
-            out.amount = innerBeginRedelegateMsg.amount.amount;
-            out.type = api::OperationType::NONE;
+            out.amount  = innerBeginRedelegateMsg.amount.amount;
+            out.type    = api::OperationType::NONE;
         }
 
         void CosmosLikeAccount::fillOperationTypeAmountFromSubmitProposal(
-            CosmosLikeOperation &out, const cosmos::MsgSubmitProposal &innerSubmitProposalMsg) const {
+            CosmosLikeOperation &out,
+            const cosmos::MsgSubmitProposal &innerSubmitProposalMsg) const {
             const auto address = getAddress();
-            const auto &coins = innerSubmitProposalMsg.initialDeposit;
+            const auto &coins  = innerSubmitProposalMsg.initialDeposit;
             std::for_each(coins.begin(), coins.end(), [&](const cosmos::Coin &amount) {
                 out.amount = out.amount + BigInt::fromDecimal(amount.amount);
             });
             const auto &sender = innerSubmitProposalMsg.proposer;
-            out.senders = {sender};
+            out.senders        = {sender};
             if (sender == address) {
                 out.type = api::OperationType::SEND;
             }
@@ -222,14 +228,15 @@ namespace ledger {
         }
 
         void CosmosLikeAccount::fillOperationTypeAmountFromDeposit(
-            CosmosLikeOperation &out, const cosmos::MsgDeposit &innerDepositMsg) const {
+            CosmosLikeOperation &out,
+            const cosmos::MsgDeposit &innerDepositMsg) const {
             const auto address = getAddress();
-            const auto &coins = innerDepositMsg.amount;
+            const auto &coins  = innerDepositMsg.amount;
             std::for_each(coins.begin(), coins.end(), [&](cosmos::Coin amount) {
                 out.amount = out.amount + BigInt::fromDecimal(amount.amount);
             });
             const auto &sender = innerDepositMsg.depositor;
-            out.senders = {sender};
+            out.senders        = {sender};
             if (sender == address) {
                 out.type = api::OperationType::SEND;
             }
@@ -237,9 +244,10 @@ namespace ledger {
         }
 
         void CosmosLikeAccount::fillOperationTypeAmountFromFees(
-            CosmosLikeOperation &out, const cosmos::MsgFees &innerFeesMsg) const {
+            CosmosLikeOperation &out,
+            const cosmos::MsgFees &innerFeesMsg) const {
             const auto address = getAddress();
-            out.amount = BigInt::fromDecimal(innerFeesMsg.fees.amount);
+            out.amount         = BigInt::fromDecimal(innerFeesMsg.fees.amount);
             if (innerFeesMsg.payerAddress == address) {
                 out.type = api::OperationType::SEND;
             } else {
@@ -249,7 +257,8 @@ namespace ledger {
         }
 
         void CosmosLikeAccount::setOperationTypeAndAmount(
-            CosmosLikeOperation &out, const cosmos::Message &msg) const {
+            CosmosLikeOperation &out,
+            const cosmos::Message &msg) const {
             const auto address = getAddress();
             switch (cosmos::stringToMsgType(msg.type.c_str())) {
             case api::CosmosLikeMsgType::MSGSEND: {
@@ -288,7 +297,7 @@ namespace ledger {
             case api::CosmosLikeMsgType::MSGUNJAIL:
             case api::CosmosLikeMsgType::UNSUPPORTED:
                 out.senders = {address};
-                out.type = api::OperationType::NONE;
+                out.type    = api::OperationType::NONE;
                 break;
             }
         }
@@ -321,7 +330,7 @@ namespace ledger {
 
             // out._account = shared_from_this();
             out.cosmosTransaction = Option<cosmos::OperationQueryResult>({tx, msg});
-            out.accountUid = getAccountUid();
+            out.accountUid        = getAccountUid();
 
             if (tx.block) {
                 out.block = Option<Block>(Block(tx.block.getValue()));
@@ -332,15 +341,15 @@ namespace ledger {
                 out.block.getValue().currencyName = wallet->getCurrency().name;
             }
             out.cosmosTransaction.getValue().tx.block = out.block;
-            out.currencyName = getWallet()->getCurrency().name;
-            out.date = tx.timestamp;
-            out.trust = std::make_shared<TrustIndicator>();
+            out.currencyName                          = getWallet()->getCurrency().name;
+            out.date                                  = tx.timestamp;
+            out.trust                                 = std::make_shared<TrustIndicator>();
             // Fees are computed as the amount only on the MSGFEES Message Type.
             if (cosmos::stringToMsgType(msg.type.c_str()) == api::CosmosLikeMsgType::MSGFEES) {
                 auto txFees = computeFeesForTransaction(tx);
-                out.amount = BigInt(txFees);
+                out.amount  = BigInt(txFees);
             }
-            out.fees = BigInt::ZERO;
+            out.fees      = BigInt::ZERO;
             out.walletUid = wallet->getWalletUid();
         }
 
@@ -349,8 +358,8 @@ namespace ledger {
             // AbstractBlockchainObserver::putTransaction) it makes it impossible to manage uids of nested
             // objects (eg. cosmos::Message). Writable copy of tx to allow to add uids.
 
-            auto tx = transaction;
-            tx.uid = CosmosLikeTransactionDatabaseHelper::createCosmosTransactionUid(getAccountUid(), tx.hash);
+            auto tx     = transaction;
+            tx.uid      = CosmosLikeTransactionDatabaseHelper::createCosmosTransactionUid(getAccountUid(), tx.hash);
 
             auto wallet = getWallet();
             if (wallet == nullptr) {
@@ -360,7 +369,7 @@ namespace ledger {
             for (auto msgIndex = 0; msgIndex < tx.messages.size(); msgIndex++) {
                 auto &msg = tx.messages[msgIndex];
                 auto &log = tx.logs[msgIndex];
-                msg.uid = CosmosLikeTransactionDatabaseHelper::createCosmosMessageUid(tx.uid, msgIndex);
+                msg.uid   = CosmosLikeTransactionDatabaseHelper::createCosmosMessageUid(tx.uid, msgIndex);
 
                 // Ignore the operation if this is a Fee operation, that _this_ Account did not pay
                 // inflateOperation adds the AccountUID in the operation otherwise, so when querying
@@ -413,7 +422,7 @@ namespace ledger {
 
         std::shared_ptr<api::OperationQuery> CosmosLikeAccount::queryOperations() {
             auto headFilter = api::QueryFilter::accountEq(getAccountUid());
-            auto query = std::make_shared<OperationQuery>(
+            auto query      = std::make_shared<OperationQuery>(
                 headFilter,
                 getWallet()->getDatabase(),
                 getWallet()->getContext(),
@@ -443,12 +452,14 @@ namespace ledger {
         }
 
         Future<std::vector<std::shared_ptr<api::Amount>>> CosmosLikeAccount::getBalanceHistory(
-            const std::string &start, const std::string &end, api::TimePeriod precision) {
+            const std::string &start,
+            const std::string &end,
+            api::TimePeriod precision) {
             auto self = std::dynamic_pointer_cast<CosmosLikeAccount>(shared_from_this());
             return async<std::vector<std::shared_ptr<api::Amount>>>(
                 [=]() -> std::vector<std::shared_ptr<api::Amount>> {
                     auto startDate = DateUtils::fromJSON(start);
-                    auto endDate = DateUtils::fromJSON(end);
+                    auto endDate   = DateUtils::fromJSON(end);
                     if (startDate >= endDate) {
                         throw make_exception(
                             api::ErrorCode::INVALID_DATE_FORMAT,
@@ -536,11 +547,11 @@ namespace ledger {
                 for (auto &batch : savedState.getValue().batches) {
                     if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
                         batch.blockHeight = (uint32_t)previousBlock.getValue().height;
-                        batch.blockHash = previousBlock.getValue().blockHash;
+                        batch.blockHash   = previousBlock.getValue().blockHash;
                     } else if (!previousBlock.nonEmpty()) { // if no previous block, sync should go back from
                                                             // genesis block
                         batch.blockHeight = 0;
-                        batch.blockHash = "";
+                        batch.blockHash   = "";
                     }
                 }
                 getInternalPreferences()
@@ -565,7 +576,7 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
             if (_currentSyncEventBus)
                 return _currentSyncEventBus;
-            auto eventPublisher = std::make_shared<EventPublisher>(getContext());
+            auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
             auto future =
@@ -631,7 +642,8 @@ namespace ledger {
         }
 
         void CosmosLikeAccount::broadcastRawTransaction(
-            const std::string &transaction, const std::shared_ptr<api::StringCallback> &callback) {
+            const std::string &transaction,
+            const std::shared_ptr<api::StringCallback> &callback) {
             broadcastRawTransaction(transaction, callback, "");
         }
 
@@ -655,7 +667,6 @@ namespace ledger {
         void CosmosLikeAccount::broadcastTransaction(
             const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
             const std::shared_ptr<api::StringCallback> &callback) {
-
             logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
             broadcastRawTransaction(transaction->serializeForBroadcast("block"), callback, transaction->getCorrelationId());
         }
@@ -667,10 +678,10 @@ namespace ledger {
 
         std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeAccount::buildTransaction(
             const std::string &senderAddress) {
-            auto self = std::dynamic_pointer_cast<CosmosLikeAccount>(shared_from_this());
+            auto self          = std::dynamic_pointer_cast<CosmosLikeAccount>(shared_from_this());
             auto buildFunction = [self](const CosmosLikeTransactionBuildRequest &request) {
                 auto currency = self->getWallet()->getCurrency();
-                auto tx = std::make_shared<CosmosLikeTransactionApi>();
+                auto tx       = std::make_shared<CosmosLikeTransactionApi>();
                 tx->setAccountNumber(self->_accountData->accountNumber);
                 tx->setCurrency(self->getWallet()->getCurrency());
                 tx->setFee(request.fee);
@@ -696,7 +707,8 @@ namespace ledger {
         }
 
         void CosmosLikeAccount::estimateGas(
-            const api::CosmosGasLimitRequest &request, const std::shared_ptr<api::BigIntCallback> &callback) {
+            const api::CosmosGasLimitRequest &request,
+            const std::shared_ptr<api::BigIntCallback> &callback) {
             auto tx = std::make_shared<CosmosLikeTransactionApi>();
             tx->setAccountNumber(_accountData->accountNumber);
             tx->setCurrency(getWallet()->getCurrency());

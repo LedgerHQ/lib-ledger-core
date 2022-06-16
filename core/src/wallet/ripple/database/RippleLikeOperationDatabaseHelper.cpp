@@ -169,7 +169,7 @@ namespace ledger {
                 auto blockUid = op.block.map<std::string>([](const auto &b) {
                     return b.getUid();
                 });
-                auto txUid = RippleLikeTransactionDatabaseHelper::createRippleTransactionUid(op.accountUid, tx.hash);
+                auto txUid    = RippleLikeTransactionDatabaseHelper::createRippleTransactionUid(op.accountUid, tx.hash);
                 txStmt.bindings.update(txUid, blockUid, tx);
                 memoStmt.bindings.update(tx);
                 rippleOpStmt.bindings.update(op.uid, txUid, tx.hash);

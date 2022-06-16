@@ -44,8 +44,8 @@ namespace ledger {
             const api::TezosLikeNetworkParameters &parameters,
             const std::shared_ptr<api::DynamicObject> &configuration) : DedicatedContext(context),
                                                                         TezosLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
-            _http = http;
-            _parameters = parameters;
+            _http            = http;
+            _parameters      = parameters;
             _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION)
                                    .value_or(api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_VERSION);
         }
@@ -58,7 +58,7 @@ namespace ledger {
                                      "Can only get balance of 1 address from Tezos Node, but got {} addresses", addresses.size());
             }
             bool parseNumbersAsString = true;
-            std::string addressesStr = addresses[0]->toBase58();
+            std::string addressesStr  = addresses[0]->toBase58();
             return _http->GET(fmt::format("blockchain/{}/{}/balance/{}",
                                           getExplorerVersion(),
                                           getNetworkParameters().Identifier,
@@ -81,7 +81,7 @@ namespace ledger {
                 .json(parseNumbersAsString)
                 .mapPtr<BigInt>(getContext(), [](const HttpRequest::JsonResult &result) {
                     auto &json = *std::get<1>(result);
-                    //Is there a fees field ?
+                    // Is there a fees field ?
                     if (!json.IsObject() || !json.HasMember("fees") ||
                         !json["fees"].IsString()) {
                         throw make_exception(api::ErrorCode::HTTP_ERROR,
@@ -153,7 +153,7 @@ namespace ledger {
             if (fromBlockHash.hasValue()) {
                 params = "&block_hash=" + fromBlockHash.getValue();
             }
-            auto self = shared_from_this();
+            auto self                    = shared_from_this();
             using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
             static std::vector<std::string> txTypes{"Transaction", "Reveal", "Origination", "Delegation"};
             // Note: we should get rid of this if we tweak explorer
@@ -225,7 +225,7 @@ namespace ledger {
                                                                                    const std::unordered_map<std::string, std::string> &params,
                                                                                    const std::string &fallbackValue) {
             bool parseNumbersAsString = true;
-            auto networkId = getNetworkParameters().Identifier;
+            auto networkId            = getNetworkParameters().Identifier;
 
             std::string p, separator = "?";
             for (auto &param : params) {
@@ -321,12 +321,12 @@ namespace ledger {
                 .map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
                     auto &connection = *std::get<0>(result);
                     if (connection.getStatusCode() == 404) {
-                        //an empty account
+                        // an empty account
                         return false;
                     } else if (connection.getStatusCode() < 200 || connection.getStatusCode() >= 300) {
                         throw Exception(api::ErrorCode::HTTP_ERROR, connection.getStatusText());
                     } else {
-                        auto &json = *std::get<1>(result);
+                        auto &json       = *std::get<1>(result);
 
                         // look for the is_funded field
                         const auto field = "is_funded";
@@ -348,7 +348,7 @@ namespace ledger {
                                           address))
                 .json(false)
                 .map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
-                    auto &json = *std::get<1>(result);
+                    auto &json       = *std::get<1>(result);
                     // look for the is_active_delegate field
                     const auto field = "is_active_delegate";
                     if (!json.IsObject() || !json.HasMember(field) ||

@@ -81,12 +81,12 @@ class CoinIntegrationFixture : public ::testing::Test {
         ::testing::Test::SetUp();
         FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
         dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-        resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
-        backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-        printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-        http = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
-        ws = std::make_shared<FakeWebSocketClient>();
-        rng = std::make_shared<OpenSSLRandomNumberGenerator>();
+        resolver   = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
+        backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+        printer    = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+        http       = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
+        ws         = std::make_shared<FakeWebSocketClient>();
+        rng        = std::make_shared<OpenSSLRandomNumberGenerator>();
     }
 
     void TearDown() override {
@@ -128,7 +128,7 @@ class CoinIntegrationFixture : public ::testing::Test {
     std::shared_ptr<Account> newAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                         int32_t index,
                                         const api::AccountCreationInfo &info) {
-        auto i = info;
+        auto i  = info;
         i.index = index;
         return std::dynamic_pointer_cast<Account>(uv::wait(wallet->newAccountWithInfo(i)));
     }
@@ -136,7 +136,7 @@ class CoinIntegrationFixture : public ::testing::Test {
     std::shared_ptr<Account> newAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                         int32_t index,
                                         const api::ExtendedKeyAccountCreationInfo &info) {
-        auto i = info;
+        auto i  = info;
         i.index = index;
         return std::dynamic_pointer_cast<Account>(uv::wait(wallet->newAccountWithExtendedKeyInfo(i)));
     }
@@ -152,8 +152,8 @@ class CoinIntegrationFixture : public ::testing::Test {
                                p.success(SynchronizationResult::OLD_ACCOUNT);
                            } else if (event->getCode() == api::EventCode::SYNCHRONIZATION_FAILED) {
                                api::ErrorCode code = api::ErrorCode::UNKNOWN;
-                               std::string reason = "Unknown error";
-                               auto payload = event->getPayload();
+                               std::string reason  = "Unknown error";
+                               auto payload        = event->getPayload();
                                if (payload && payload->getString(api::Account::EV_SYNC_ERROR_CODE)) {
                                    code = api::from_string<api::ErrorCode>(payload->getString(api::Account::EV_SYNC_ERROR_CODE).value());
                                }
@@ -175,4 +175,4 @@ class CoinIntegrationFixture : public ::testing::Test {
     std::shared_ptr<OpenSSLRandomNumberGenerator> rng;
 };
 
-#endif //LEDGER_CORE_COININTEGRATIONFIXTURE_HPP
+#endif // LEDGER_CORE_COININTEGRATIONFIXTURE_HPP

@@ -62,7 +62,6 @@ namespace ledger {
                                                const std::shared_ptr<api::RippleLikeExtendedPublicKey> &xpub,
                                                const std::shared_ptr<Preferences> &preferences)
             : RippleLikeKeychain(configuration, params, account, preferences) {
-
             _xpub = xpub;
             getAllObservableAddresses(0, 0);
         }
@@ -155,7 +154,6 @@ namespace ledger {
         }
 
         RippleLikeKeychain::Address RippleLikeKeychain::derive() {
-
             if (_address.empty()) {
                 _localPath = getDerivationScheme()
                                  .setCoinType(getCurrency().bip44CoinType)
@@ -163,27 +161,27 @@ namespace ledger {
                                  .toString();
 
                 auto cacheKey = fmt::format("path:{}", _localPath);
-                _address = getPreferences()->getString(cacheKey, "");
+                _address      = getPreferences()->getString(cacheKey, "");
                 if (_address.empty()) {
                     auto nodeScheme = getDerivationScheme()
                                           .getSchemeFrom(DerivationSchemeLevel::NODE);
-                    auto p = nodeScheme.getPath().getDepth() > 0 ? nodeScheme
+                    auto p               = nodeScheme.getPath().getDepth() > 0 ? nodeScheme
                                                                        .shift(1)
                                                                        .setCoinType(getCurrency().bip44CoinType)
                                                                        .getPath()
                                                                        .toString()
-                                                                 : "";
+                                                                               : "";
 
                     auto localNodeScheme = getDerivationScheme()
                                                .getSchemeTo(DerivationSchemeLevel::NODE)
                                                .setCoinType(getCurrency().bip44CoinType);
                     // If node level is hardened we don't derive according to it since private
                     // derivation are not supported
-                    auto xpub = localNodeScheme.getPath().getDepth() > 0 && localNodeScheme.getPath().isHardened(0) ? std::static_pointer_cast<RippleLikeExtendedPublicKey>(_xpub)->derive(DerivationPath("")) : std::static_pointer_cast<RippleLikeExtendedPublicKey>(_xpub)->derive(localNodeScheme.getPath());
+                    auto xpub      = localNodeScheme.getPath().getDepth() > 0 && localNodeScheme.getPath().isHardened(0) ? std::static_pointer_cast<RippleLikeExtendedPublicKey>(_xpub)->derive(DerivationPath("")) : std::static_pointer_cast<RippleLikeExtendedPublicKey>(_xpub)->derive(localNodeScheme.getPath());
 
                     auto strScheme = localNodeScheme.getPath().toString();
 
-                    _address = xpub->derive(p)->toBase58();
+                    _address       = xpub->derive(p)->toBase58();
                     // Feed path -> address cache
                     // Feed address -> path cache
                     getPreferences()

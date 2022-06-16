@@ -46,7 +46,7 @@ namespace ledger {
             rowset<row> rows = (sql.prepare << "SELECT idx, xpub FROM bitcoin_accounts WHERE uid = :uid", use(accountUid));
             for (auto &row : rows) {
                 entry.index = row.get<int32_t>(0);
-                entry.xpub = row.get<std::string>(1);
+                entry.xpub  = row.get<std::string>(1);
                 return true;
             }
             return false;

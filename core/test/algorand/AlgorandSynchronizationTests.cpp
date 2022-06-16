@@ -59,7 +59,7 @@ class AlgorandSynchronizationTest : public WalletFixture<WalletFactory> {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
 
-        auto wallet = std::dynamic_pointer_cast<Wallet>(uv::wait(pool->createWallet("test-wallet", "algorand", configuration)));
+        auto wallet    = std::dynamic_pointer_cast<Wallet>(uv::wait(pool->createWallet("test-wallet", "algorand", configuration)));
 
         auto nextIndex = uv::wait(wallet->getNextAccountIndex());
         EXPECT_EQ(nextIndex, 0);
@@ -71,7 +71,7 @@ class AlgorandSynchronizationTest : public WalletFixture<WalletFactory> {
             {algorand::Address::toPublicKey(accountAddress)},
             {hex::toByteArray("")});
 
-        _account = std::dynamic_pointer_cast<Account>(uv::wait(wallet->newAccountWithInfo(info)));
+        _account      = std::dynamic_pointer_cast<Account>(uv::wait(wallet->newAccountWithInfo(info)));
 
         auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
             fmt::print("Received event {}\n", api::to_string(event->getCode()));
@@ -84,7 +84,7 @@ class AlgorandSynchronizationTest : public WalletFixture<WalletFactory> {
             getTestExecutionContext()->stop();
         });
 
-        auto bus = _account->synchronize();
+        auto bus      = _account->synchronize();
         bus->subscribe(getTestExecutionContext(), receiver);
         getTestExecutionContext()->waitUntilStopped();
     }
@@ -107,7 +107,7 @@ TEST_F(AlgorandSynchronizationTest, DISABLED_AccountSynchronizationTest) {
     synchronizeAccount(OBELIX_ADDRESS);
 
     auto internalPreferences = _account->getInternalPreferences()->getSubPreferences("AlgorandAccountSynchronizer");
-    auto savedState = internalPreferences->template getObject<SavedState>("state");
+    auto savedState          = internalPreferences->template getObject<SavedState>("state");
     std::cout << ">>> Saved block round for next synchronization: " << savedState.getValue().round << std::endl;
     EXPECT_GT(savedState.getValue().round, 6000000);
 

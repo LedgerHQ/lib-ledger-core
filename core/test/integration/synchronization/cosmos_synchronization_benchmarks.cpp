@@ -87,14 +87,14 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
   public:
     void SetUp() override {
         BaseFixture::SetUp();
-        auto worker = dispatcher->getSerialExecutionContext("worker");
+        auto worker           = dispatcher->getSerialExecutionContext("worker");
         auto threadpoolWorker = dispatcher->getThreadPoolExecutionContext("threadpoolWorker");
-        auto client = std::make_shared<HttpClient>(
+        auto client           = std::make_shared<HttpClient>(
             api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT, http, worker, threadpoolWorker);
 
 #ifdef PG_SUPPORT
         const bool usePostgreSQL = true;
-        auto poolConfig = DynamicObject::newInstance();
+        auto poolConfig          = DynamicObject::newInstance();
         poolConfig->putString(
             api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
         pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
@@ -143,7 +143,7 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
             getTestExecutionContext()->stop();
         });
 
-        auto bus = account->synchronize();
+        auto bus      = account->synchronize();
         bus->subscribe(getTestExecutionContext(), receiver);
         getTestExecutionContext()->waitUntilStopped();
     }
@@ -165,7 +165,7 @@ TEST_F(CosmosWalletSyncBenchmark, DISABLED_Small) {
 
     auto start = std::chrono::system_clock::now();
     performSynchro(account);
-    auto end = std::chrono::system_clock::now();
+    auto end                           = std::chrono::system_clock::now();
     std::chrono::duration<double> diff = end - start;
     std::cout << "Time to synchronize " << SMALL_ADDRESS << " : " << diff.count() << " s\n";
 
@@ -173,7 +173,7 @@ TEST_F(CosmosWalletSyncBenchmark, DISABLED_Small) {
     auto ops =
         uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
                      ->execute());
-    end = std::chrono::system_clock::now();
+    end  = std::chrono::system_clock::now();
     diff = end - start;
     std::cout << "Time to query its " << ops.size() << " operations : " << diff.count() << " s\n";
 }
@@ -186,7 +186,7 @@ TEST_F(CosmosWalletSyncBenchmark, DISABLED_Medium) {
 
     auto start = std::chrono::system_clock::now();
     performSynchro(account);
-    auto end = std::chrono::system_clock::now();
+    auto end                           = std::chrono::system_clock::now();
     std::chrono::duration<double> diff = end - start;
     std::cout << "Time to synchronize " << MEDIUM_ADDRESS << " : " << diff.count() << " s\n";
 
@@ -194,7 +194,7 @@ TEST_F(CosmosWalletSyncBenchmark, DISABLED_Medium) {
     auto ops =
         uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
                      ->execute());
-    end = std::chrono::system_clock::now();
+    end  = std::chrono::system_clock::now();
     diff = end - start;
     std::cout << "Time to query its " << ops.size() << " operations : " << diff.count() << " s\n";
 }
@@ -207,7 +207,7 @@ TEST_F(CosmosWalletSyncBenchmark, DISABLED_Large) {
 
     auto start = std::chrono::system_clock::now();
     performSynchro(account);
-    auto end = std::chrono::system_clock::now();
+    auto end                           = std::chrono::system_clock::now();
     std::chrono::duration<double> diff = end - start;
     std::cout << "Time to synchronize " << LARGE_ADDRESS << " : " << diff.count() << " s\n";
 
@@ -215,7 +215,7 @@ TEST_F(CosmosWalletSyncBenchmark, DISABLED_Large) {
     auto ops =
         uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
                      ->execute());
-    end = std::chrono::system_clock::now();
+    end  = std::chrono::system_clock::now();
     diff = end - start;
     std::cout << "Time to query its " << ops.size() << " operations : " << diff.count() << " s\n";
 }
@@ -228,7 +228,7 @@ TEST_F(CosmosWalletSyncBenchmark, DISABLED_ExtraLarge) {
 
     auto start = std::chrono::system_clock::now();
     performSynchro(account);
-    auto end = std::chrono::system_clock::now();
+    auto end                           = std::chrono::system_clock::now();
     std::chrono::duration<double> diff = end - start;
     std::cout << "Time to synchronize " << EXTRA_LARGE_ADDRESS << " : " << diff.count() << " s\n";
 
@@ -236,7 +236,7 @@ TEST_F(CosmosWalletSyncBenchmark, DISABLED_ExtraLarge) {
     auto ops =
         uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
                      ->execute());
-    end = std::chrono::system_clock::now();
+    end  = std::chrono::system_clock::now();
     diff = end - start;
     std::cout << "Time to query its " << ops.size() << " operations : " << diff.count() << " s\n";
 }
@@ -249,7 +249,7 @@ TEST_F(CosmosWalletSyncBenchmark, DISABLED_Huge) {
 
     auto start = std::chrono::system_clock::now();
     performSynchro(account);
-    auto end = std::chrono::system_clock::now();
+    auto end                           = std::chrono::system_clock::now();
     std::chrono::duration<double> diff = end - start;
     std::cout << "Time to synchronize " << HUGE_ADDRESS << " : " << diff.count() << " s\n";
 
@@ -257,7 +257,7 @@ TEST_F(CosmosWalletSyncBenchmark, DISABLED_Huge) {
     auto ops =
         uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
                      ->execute());
-    end = std::chrono::system_clock::now();
+    end  = std::chrono::system_clock::now();
     diff = end - start;
     std::cout << "Time to query its " << ops.size() << " operations : " << diff.count() << " s\n";
 }

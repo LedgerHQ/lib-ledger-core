@@ -90,7 +90,7 @@ namespace ledger {
                                                                          const api::Currency &currency,
                                                                          const Option<std::string> &derivationPath) {
             auto &params = currency.rippleLikeNetworkParameters.value();
-            auto config = std::make_shared<DynamicObject>();
+            auto config  = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params.Identifier);
             config->putString("base58Dictionary", networks::RIPPLE_DIGITS);
             config->putBoolean("useNetworkDictionary", true);
@@ -100,7 +100,7 @@ namespace ledger {
             }
             auto value = decoded.getValue();
 
-            //Check decoded address size
+            // Check decoded address size
             if (value.size() <= 20) {
                 throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid address : Invalid base 58 format");
             }

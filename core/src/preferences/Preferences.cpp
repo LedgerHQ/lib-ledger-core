@@ -100,8 +100,8 @@ namespace ledger {
         std::vector<uint8_t> Preferences::wrapKey(const std::string &key) const {
             std::vector<uint8_t> wrappedKey(_keyPrefix.size() + key.size());
             auto wrappedKeyIndex = 0;
-            auto prefixSize = _keyPrefix.size();
-            auto keySize = key.size();
+            auto prefixSize      = _keyPrefix.size();
+            auto keySize         = key.size();
             for (auto i = 0; i < prefixSize; i++) {
                 wrappedKey[wrappedKeyIndex] = _keyPrefix[i];
                 wrappedKeyIndex += 1;
@@ -115,7 +115,7 @@ namespace ledger {
 
         std::shared_ptr<Preferences> Preferences::getSubPreferences(std::string prefix) const {
             std::vector<uint8_t> p = _keyPrefix;
-            auto prefixSize = prefix.size();
+            auto prefixSize        = prefix.size();
             for (auto i = 0; i < prefixSize; i++) {
                 p.push_back((uint8_t)prefix[i]);
             }

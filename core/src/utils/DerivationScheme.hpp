@@ -89,4 +89,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_DERIVATIONSCHEME_HPP
+#endif // LEDGER_CORE_DERIVATIONSCHEME_HPP

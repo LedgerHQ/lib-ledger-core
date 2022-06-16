@@ -62,10 +62,10 @@ namespace ledger {
                                              const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
                                              const std::shared_ptr<RippleLikeAccountSynchronizer> &synchronizer,
                                              const std::shared_ptr<RippleLikeKeychain> &keychain) : AbstractAccount(wallet, index) {
-            _explorer = explorer;
-            _synchronizer = synchronizer;
-            _keychain = keychain;
-            _accountAddress = keychain->getAddress()->toString();
+            _explorer              = explorer;
+            _synchronizer          = synchronizer;
+            _keychain              = keychain;
+            _accountAddress        = keychain->getAddress()->toString();
             _currentLedgerSequence = 0;
         }
 
@@ -86,13 +86,13 @@ namespace ledger {
         void RippleLikeAccount::inflateOperation(Operation &out,
                                                  const std::shared_ptr<const AbstractWallet> &wallet,
                                                  const RippleLikeBlockchainExplorerTransaction &tx) {
-            out.accountUid = getAccountUid();
-            out.block = tx.block;
+            out.accountUid        = getAccountUid();
+            out.block             = tx.block;
             out.rippleTransaction = Option<RippleLikeBlockchainExplorerTransaction>(tx);
-            out.currencyName = getWallet()->getCurrency().name;
-            out.walletType = getWalletType();
-            out.walletUid = wallet->getWalletUid();
-            out.date = tx.receivedAt;
+            out.currencyName      = getWallet()->getCurrency().name;
+            out.walletType        = getWalletType();
+            out.walletUid         = wallet->getWalletUid();
+            out.date              = tx.receivedAt;
             if (out.block.nonEmpty())
                 out.block.getValue().currencyName = wallet->getCurrency().name;
             out.rippleTransaction.getValue().block = out.block;
@@ -124,9 +124,9 @@ namespace ledger {
             operation.senders = std::move(senders);
             std::vector<std::string> receivers{transaction.receiver};
             operation.recipients = std::move(receivers);
-            operation.fees = transaction.fees;
-            operation.trust = std::make_shared<TrustIndicator>();
-            operation.date = transaction.receivedAt;
+            operation.fees       = transaction.fees;
+            operation.trust      = std::make_shared<TrustIndicator>();
+            operation.date       = transaction.receivedAt;
 
             if (_accountAddress == transaction.sender) {
                 setOperationAmount(operation, transaction);
@@ -158,10 +158,10 @@ namespace ledger {
         bool RippleLikeAccount::putBlock(soci::session &sql,
                                          const RippleLikeBlockchainExplorer::Block &block) {
             Block abstractBlock;
-            abstractBlock.hash = block.hash;
+            abstractBlock.hash         = block.hash;
             abstractBlock.currencyName = getWallet()->getCurrency().name;
-            abstractBlock.height = block.height;
-            abstractBlock.time = block.time;
+            abstractBlock.height       = block.height;
+            abstractBlock.time         = block.time;
             if (BlockDatabaseHelper::putBlock(sql, abstractBlock)) {
                 emitNewBlockEvent(abstractBlock);
                 return true;
@@ -180,7 +180,7 @@ namespace ledger {
             }
             std::vector<RippleLikeKeychain::Address> listAddresses{_keychain->getAddress()};
             auto currency = getWallet()->getCurrency();
-            auto self = getSelf();
+            auto self     = getSelf();
             return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [self, currency](const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
                 Amount b(currency, 0, BigInt(balance->toString()));
                 self->getWallet()->updateBalanceCache(self->getIndex(), b);
@@ -213,7 +213,7 @@ namespace ledger {
             auto self = std::dynamic_pointer_cast<RippleLikeAccount>(shared_from_this());
             return async<std::vector<std::shared_ptr<api::Amount>>>([=]() -> std::vector<std::shared_ptr<api::Amount>> {
                 auto startDate = DateUtils::fromJSON(start);
-                auto endDate = DateUtils::fromJSON(end);
+                auto endDate   = DateUtils::fromJSON(end);
                 if (startDate >= endDate) {
                     throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
                                          "Start date should be strictly lower than end date");
@@ -223,12 +223,12 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain = self->getKeychain();
+                auto keychain                                   = self->getKeychain();
                 std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
                     return keychain->contains(addr);
                 };
 
-                //Get operations related to an account
+                // Get operations related to an account
                 OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
 
                 auto lowerDate = startDate;
@@ -238,7 +238,6 @@ namespace ledger {
                 std::size_t operationsCount = 0;
                 BigInt sum;
                 while (lowerDate <= endDate && operationsCount < operations.size()) {
-
                     auto operation = operations[operationsCount];
                     while (operation.date > upperDate && lowerDate < endDate) {
                         lowerDate = DateUtils::incrementDate(lowerDate, precision);
@@ -283,8 +282,8 @@ namespace ledger {
 
             soci::session sql(getWallet()->getDatabase()->getPool());
 
-            //Update account's internal preferences (for synchronization)
-            // Clear synchronizer state
+            // Update account's internal preferences (for synchronization)
+            //  Clear synchronizer state
             eraseSynchronizerDataSince(sql, date);
 
             auto accountUid = getAccountUid();
@@ -303,15 +302,15 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
             if (_currentSyncEventBus)
                 return _currentSyncEventBus;
-            auto eventPublisher = std::make_shared<EventPublisher>(getContext());
+            auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
-            auto future = _synchronizer->synchronizeAccount(
-                                           std::static_pointer_cast<RippleLikeAccount>(shared_from_this()))
+            auto future          = _synchronizer->synchronizeAccount(
+                                                    std::static_pointer_cast<RippleLikeAccount>(shared_from_this()))
                               ->getFuture();
             auto self = std::static_pointer_cast<RippleLikeAccount>(shared_from_this());
 
-            //Update current block height (needed to compute trust level)
+            // Update current block height (needed to compute trust level)
             _explorer->getCurrentBlock().onComplete(getContext(),
                                                     [self](const TryPtr<RippleLikeBlockchainExplorer::Block> &block) mutable {
                                                         if (block.isSuccess()) {
@@ -327,7 +326,7 @@ namespace ledger {
                 0);
             future.onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
                 api::EventCode code;
-                auto payload = std::make_shared<DynamicObject>();
+                auto payload  = std::make_shared<DynamicObject>();
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                                     DateUtils::now() - startTime)
                                     .count();
@@ -372,16 +371,16 @@ namespace ledger {
             auto tx = RippleLikeTransactionBuilder::parseRawTransaction(account->getWallet()->getCurrency(), rawTx, true);
             RippleLikeBlockchainExplorerTransaction txExplorer;
             // It is an optimistic so it should be successful (but tx could fail but it will be updated when sync again )
-            auto sender = account->getKeychain()->getAddress()->toString();
-            txExplorer.status = 1;
-            txExplorer.hash = txHash;
-            txExplorer.value = BigInt(tx->getValue()->toString());
-            txExplorer.fees = BigInt(tx->getFees()->toString());
-            txExplorer.sequence = BigInt(tx->getSequence()->toString(10));
-            txExplorer.sender = sender;
-            txExplorer.receiver = tx->getReceiver()->toBase58();
-            txExplorer.receivedAt = std::chrono::system_clock::now();
-            txExplorer.memos = tx->getMemos();
+            auto sender               = account->getKeychain()->getAddress()->toString();
+            txExplorer.status         = 1;
+            txExplorer.hash           = txHash;
+            txExplorer.value          = BigInt(tx->getValue()->toString());
+            txExplorer.fees           = BigInt(tx->getFees()->toString());
+            txExplorer.sequence       = BigInt(tx->getSequence()->toString(10));
+            txExplorer.sender         = sender;
+            txExplorer.receiver       = tx->getReceiver()->toBase58();
+            txExplorer.receivedAt     = std::chrono::system_clock::now();
+            txExplorer.memos          = tx->getMemos();
             txExplorer.destinationTag = Option<int64_t>(tx->getDestinationTag());
             return txExplorer;
         }
@@ -389,10 +388,10 @@ namespace ledger {
         Future<std::string> RippleLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) {
             auto self = getSelf();
             return _explorer->pushTransaction(transaction, correlationId).map<std::string>(getContext(), [self, transaction](const String &seq) -> std::string {
-                auto txHash = seq.str();
-                //optimisticUpdate
+                auto txHash     = seq.str();
+                // optimisticUpdate
                 auto txExplorer = getXRPLikeBlockchainExplorerTxFromRawTx(self, txHash, transaction);
-                //Store in DB
+                // Store in DB
                 std::vector<Operation> operations;
                 self->interpretTransaction(txExplorer, operations);
                 self->bulkInsert(operations);
@@ -407,14 +406,12 @@ namespace ledger {
         }
 
         Future<std::string> RippleLikeAccount::broadcastTransaction(const std::shared_ptr<api::RippleLikeTransaction> &transaction) {
-
             logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
             return broadcastRawTransaction(transaction->serialize(), transaction->getCorrelationId());
         }
 
         std::shared_ptr<api::RippleLikeTransactionBuilder> RippleLikeAccount::buildTransaction() {
-
-            auto self = std::dynamic_pointer_cast<RippleLikeAccount>(shared_from_this());
+            auto self           = std::dynamic_pointer_cast<RippleLikeAccount>(shared_from_this());
 
             // TODO: rm this
             auto getTransaction = [self](
@@ -425,10 +422,10 @@ namespace ledger {
             auto buildFunction = [self](const RippleLikeTransactionBuildRequest &request,
                                         const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer) -> Future<std::shared_ptr<api::RippleLikeTransaction>> {
                 auto currency = self->getWallet()->getCurrency();
-                auto tx = std::make_shared<RippleLikeTransactionApi>(self->getWallet()->getCurrency());
+                auto tx       = std::make_shared<RippleLikeTransactionApi>(self->getWallet()->getCurrency());
                 tx->setValue(request.value);
                 tx->setFees(request.fees);
-                auto address = self->getKeychain()->getAddress();
+                auto address        = self->getKeychain()->getAddress();
                 auto accountAddress = std::dynamic_pointer_cast<RippleLikeAddress>(address);
                 tx->setSender(accountAddress);
                 tx->setReceiver(RippleLikeAddress::fromBase58(request.toAddress, currency));

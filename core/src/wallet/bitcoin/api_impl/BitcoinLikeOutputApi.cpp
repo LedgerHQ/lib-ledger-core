@@ -43,12 +43,12 @@ namespace ledger {
         BitcoinLikeOutputApi::BitcoinLikeOutputApi(const std::shared_ptr<OperationApi> &operation,
                                                    int32_t outputIndex) : _backend(operation) {
             _outputIndex = outputIndex;
-            _currency = operation->getAccount()->getWallet()->getCurrency();
+            _currency    = operation->getAccount()->getWallet()->getCurrency();
         }
 
         BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorerOutput &output, const api::Currency &currency) : _backend(output) {
             _outputIndex = static_cast<int32_t>(output.index);
-            _currency = currency;
+            _currency    = currency;
         }
 
         std::string BitcoinLikeOutputApi::getTransactionHash() {

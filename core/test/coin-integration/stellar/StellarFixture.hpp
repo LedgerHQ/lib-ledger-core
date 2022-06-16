@@ -50,4 +50,4 @@ class StellarFixture : public CoinIntegrationFixture<StellarLikeWallet, StellarL
     api::Currency getCurrency() const;
 };
 
-#endif //LEDGER_CORE_STELLARFIXTURE_HPP
+#endif // LEDGER_CORE_STELLARFIXTURE_HPP

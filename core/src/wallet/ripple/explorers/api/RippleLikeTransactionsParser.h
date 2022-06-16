@@ -41,7 +41,7 @@ namespace ledger {
             : public AbstractTransactionsParser<RippleLikeBlockchainExplorerTransaction, RippleLikeTransactionParser> {
           public:
             RippleLikeTransactionsParser(std::string &lastKey) : _transactionParser(lastKey) {
-                _arrayDepth = 0;
+                _arrayDepth  = 0;
                 _objectDepth = 0;
             }
 
@@ -56,4 +56,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_RIPPLELIKETRANSACTIONSPARSER_H
+#endif // LEDGER_CORE_RIPPLELIKETRANSACTIONSPARSER_H

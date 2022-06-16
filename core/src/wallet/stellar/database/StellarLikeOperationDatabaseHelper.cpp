@@ -59,7 +59,7 @@ namespace {
 
         void update(const stellar::Transaction &tx, const std::string &txUid) {
             const auto feePaid = tx.feePaid.toString();
-            const auto seq = tx.sourceAccountSequence.toString();
+            const auto seq     = tx.sourceAccountSequence.toString();
             const auto success = tx.successful ? 1 : 0;
 
             uid.push_back(txUid);
@@ -146,17 +146,17 @@ namespace {
         std::vector<int> type;
 
         void update(const std::string &accountUid, const std::string &currencyName, const stellar::Operation &op) {
-            auto opUid = StellarLikeTransactionDatabaseHelper::createOperationUid(accountUid, op.id);
-            auto hash = StellarLikeTransactionDatabaseHelper::createTransactionUid(currencyName, op.transactionHash);
-            auto auid = StellarLikeAssetDatabaseHelper::createAssetUid(op.asset);
-            auto sourceAuid = op.sourceAsset.map<std::string>([](const stellar::Asset &asset) {
+            auto opUid          = StellarLikeTransactionDatabaseHelper::createOperationUid(accountUid, op.id);
+            auto hash           = StellarLikeTransactionDatabaseHelper::createTransactionUid(currencyName, op.transactionHash);
+            auto auid           = StellarLikeAssetDatabaseHelper::createAssetUid(op.asset);
+            auto sourceAuid     = op.sourceAsset.map<std::string>([](const stellar::Asset &asset) {
                 return StellarLikeAssetDatabaseHelper::createAssetUid(asset);
             });
-            auto opAmount = op.amount.toString();
+            auto opAmount       = op.amount.toString();
             auto opSourceAmount = op.sourceAmount.map<std::string>([](const BigInt &b) {
                 return b.toString();
             });
-            int opType = static_cast<int>(op.type);
+            int opType          = static_cast<int>(op.type);
 
             uid.push_back(opUid);
             txUid.push_back(hash);
@@ -212,7 +212,7 @@ namespace {
 
         void update(const Operation &operation) {
             auto &operationValue = operation.stellarOperation.getValue().operation;
-            auto stellarOpId = StellarLikeTransactionDatabaseHelper::createOperationUid(operation.accountUid, operationValue.id);
+            auto stellarOpId     = StellarLikeTransactionDatabaseHelper::createOperationUid(operation.accountUid, operationValue.id);
             uid.push_back(operation.uid);
             opUid.push_back(stellarOpId);
         }
@@ -262,7 +262,7 @@ namespace ledger {
                 // Upsert operation
                 operationStmt.bindings.update(op);
                 // Upsert transaction
-                auto &tx = op.stellarOperation.getValue().transaction;
+                auto &tx         = op.stellarOperation.getValue().transaction;
                 const auto txUid = StellarLikeTransactionDatabaseHelper::createTransactionUid(op.currencyName, tx.hash);
                 transactionStmt.bindings.update(tx, txUid);
                 // Upsert assets
@@ -287,7 +287,7 @@ namespace ledger {
             operationStmt.execute();
             // stellar operations
             stellarOperationStmt.execute();
-            //stellar accounts operations
+            // stellar accounts operations
             stellarAccountOperationStmt.execute();
 
             rawInsert.stop();

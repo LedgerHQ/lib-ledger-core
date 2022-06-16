@@ -87,9 +87,9 @@ namespace {
             if (tx.block.nonEmpty() && !tx.block.getValue().hash.empty()) {
                 txblockUid = BlockDatabaseHelper::createBlockUid(tx.block.getValue());
             }
-            auto txdate = DateUtils::toJSON(tx.timestamp);
-            auto txfee = soci::coinsToString(tx.fee.amount);
-            auto txgas = tx.fee.gas.toString();
+            auto txdate    = DateUtils::toJSON(tx.timestamp);
+            auto txfee     = soci::coinsToString(tx.fee.amount);
+            auto txgas     = tx.fee.gas.toString();
             auto txgasUsed = tx.gasUsed.flatMap<std::string>([](const BigInt &g) {
                 return g.toString();
             });
@@ -186,7 +186,7 @@ namespace {
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
 
-            const auto &m = boost::get<cosmos::MsgSend>(msg.content);
+            const auto &m          = boost::get<cosmos::MsgSend>(msg.content);
             const auto coinsAmount = soci::coinsToString(m.amount);
             fromAddress.push_back(m.fromAddress);
             toAddress.push_back(m.toAddress);
@@ -222,7 +222,7 @@ namespace {
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
 
-            const auto &m = boost::get<cosmos::MsgDelegate>(msg.content);
+            const auto &m         = boost::get<cosmos::MsgDelegate>(msg.content);
             const auto coinAmount = soci::coinToString(m.amount);
             delegatorAddress.push_back(m.delegatorAddress);
             validatorAddress.push_back(m.validatorAddress);
@@ -258,7 +258,7 @@ namespace {
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
 
-            const auto &m = boost::get<cosmos::MsgUndelegate>(msg.content);
+            const auto &m         = boost::get<cosmos::MsgUndelegate>(msg.content);
             const auto coinAmount = soci::coinToString(m.amount);
             delegatorAddress.push_back(m.delegatorAddress);
             validatorAddress.push_back(m.validatorAddress);
@@ -295,7 +295,7 @@ namespace {
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
 
-            const auto &m = boost::get<cosmos::MsgBeginRedelegate>(msg.content);
+            const auto &m         = boost::get<cosmos::MsgBeginRedelegate>(msg.content);
             const auto coinAmount = soci::coinToString(m.amount);
             delegatorAddress.push_back(m.delegatorAddress);
             validatorSourceAddress.push_back(m.validatorSourceAddress);
@@ -336,7 +336,7 @@ namespace {
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
 
-            const auto &m = boost::get<cosmos::MsgSubmitProposal>(msg.content);
+            const auto &m          = boost::get<cosmos::MsgSubmitProposal>(msg.content);
             const auto coinsAmount = soci::coinsToString(m.initialDeposit);
             proposer.push_back(m.proposer);
             contentType.push_back(m.content.type);
@@ -415,7 +415,7 @@ namespace {
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
 
-            const auto &m = boost::get<cosmos::MsgDeposit>(msg.content);
+            const auto &m          = boost::get<cosmos::MsgDeposit>(msg.content);
             const auto coinsAmount = soci::coinsToString(m.amount);
             depositor.push_back(m.depositor);
             proposalId.push_back(m.proposalId);

@@ -37,102 +37,102 @@ namespace ledger {
         namespace algorand {
             namespace constants {
 
-                static constexpr uint32_t EXPLORER_QUERY_LIMIT = 100; // Max nb of objects returned by queries - defined by Algorand
+                static constexpr uint32_t EXPLORER_QUERY_LIMIT        = 100; // Max nb of objects returned by queries - defined by Algorand
 
                 // Block
                 /// The block hash is not returned by algod v2 anymore
                 // static const std::string xHash = "hash";
-                static const std::string xBlock = "block";
-                static const std::string xRnd = "rnd";
-                static const std::string xTs = "ts";
+                static const std::string xBlock                       = "block";
+                static const std::string xRnd                         = "rnd";
+                static const std::string xTs                          = "ts";
 
                 // AssetParam
-                static const std::string xClawbackAddr = "clawback";
-                static const std::string xCreator = "creator";
-                static const std::string xDecimal = "decimals";
-                static const std::string xDefaultFrozen = "default-frozen";
-                static const std::string xFreezeAddr = "freeze";
-                static const std::string xManagerKey = "manager";
-                static const std::string xMetadataHash = "metadata-hash";
-                static const std::string xAssetName = "name";
-                static const std::string xReserveAddr = "reserve";
-                static const std::string xTotal = "total";
-                static const std::string xUnitName = "unit-name";
-                static const std::string xUrl = "url";
-                static const std::string xAsset = "asset";
+                static const std::string xClawbackAddr                = "clawback";
+                static const std::string xCreator                     = "creator";
+                static const std::string xDecimal                     = "decimals";
+                static const std::string xDefaultFrozen               = "default-frozen";
+                static const std::string xFreezeAddr                  = "freeze";
+                static const std::string xManagerKey                  = "manager";
+                static const std::string xMetadataHash                = "metadata-hash";
+                static const std::string xAssetName                   = "name";
+                static const std::string xReserveAddr                 = "reserve";
+                static const std::string xTotal                       = "total";
+                static const std::string xUnitName                    = "unit-name";
+                static const std::string xUrl                         = "url";
+                static const std::string xAsset                       = "asset";
 
                 // AssetAmount
-                static const std::string xAmount = "amount";
-                static const std::string xFrozen = "is-frozen";
+                static const std::string xAmount                      = "amount";
+                static const std::string xFrozen                      = "is-frozen";
 
                 // Account
-                static const std::string xAddress = "address";
-                static const std::string xPendingRewards = "pending-rewards";
+                static const std::string xAddress                     = "address";
+                static const std::string xPendingRewards              = "pending-rewards";
                 static const std::string xAmountWithoutPendingRewards = "amount-without-pending-rewards";
-                static const std::string xRewards = "rewards";
-                static const std::string xRound = "round";
-                static const std::string xStatus = "status";
-                static const std::string xAssets = "assets";
-                static const std::string xCreatedAssets = "created-assets";
-                static const std::string xParticipation = "participation";
+                static const std::string xRewards                     = "rewards";
+                static const std::string xRound                       = "round";
+                static const std::string xStatus                      = "status";
+                static const std::string xAssets                      = "assets";
+                static const std::string xCreatedAssets               = "created-assets";
+                static const std::string xParticipation               = "participation";
 
                 // Header txn
-                static const std::string xConfirmedRound = "confirmed-round";
-                static const std::string xRoundTime = "round-time";
-                static const std::string xTxType = "tx-type";
-                static const std::string xId = "id";
-                static const std::string xSender = "sender";
-                static const std::string xFee = "fee";
-                static const std::string xFirstValid = "first-valid";
-                static const std::string xLastValid = "last-valid";
-                static const std::string xNote = "note";
-                static const std::string xGenesisId = "genesis-id";
-                static const std::string xGenesisHash = "genesis-hash";
-                static const std::string xGroup = "group";
-                static const std::string xLease = "lease";
+                static const std::string xConfirmedRound              = "confirmed-round";
+                static const std::string xRoundTime                   = "round-time";
+                static const std::string xTxType                      = "tx-type";
+                static const std::string xId                          = "id";
+                static const std::string xSender                      = "sender";
+                static const std::string xFee                         = "fee";
+                static const std::string xFirstValid                  = "first-valid";
+                static const std::string xLastValid                   = "last-valid";
+                static const std::string xNote                        = "note";
+                static const std::string xGenesisId                   = "genesis-id";
+                static const std::string xGenesisHash                 = "genesis-hash";
+                static const std::string xGroup                       = "group";
+                static const std::string xLease                       = "lease";
 
                 // Payment txn
-                static const std::string xReceiver = "receiver";
-                static const std::string xReceiverRewards = "receiver-rewards";
-                static const std::string xCloseAmount = "close-amount";
-                static const std::string xCloseRewards = "close-rewards";
-                static const std::string xSenderRewards = "sender-rewards";
-                static const std::string xCloseTo = "close-to";
-                static const std::string xCloseRemainderTo = "close-remainder-to";
+                static const std::string xReceiver                    = "receiver";
+                static const std::string xReceiverRewards             = "receiver-rewards";
+                static const std::string xCloseAmount                 = "close-amount";
+                static const std::string xCloseRewards                = "close-rewards";
+                static const std::string xSenderRewards               = "sender-rewards";
+                static const std::string xCloseTo                     = "close-to";
+                static const std::string xCloseRemainderTo            = "close-remainder-to";
 
                 // Keyreg txn
-                static const std::string xNonParticipation = "non-participation";
-                static const std::string xSelkey = "selection-participation-key";
-                static const std::string xVotefst = "vote-first-valid";
-                static const std::string xVotekd = "vote-key-dilution";
-                static const std::string xVotekey = "vote-participation-key";
-                static const std::string xVotelst = "vote-last-valid";
+                static const std::string xNonParticipation            = "non-participation";
+                static const std::string xSelkey                      = "selection-participation-key";
+                static const std::string xVotefst                     = "vote-first-valid";
+                static const std::string xVotekd                      = "vote-key-dilution";
+                static const std::string xVotekey                     = "vote-participation-key";
+                static const std::string xVotelst                     = "vote-last-valid";
 
                 // AssetConfig txn
-                static const std::string xAssetId = "asset-id";
-                static const std::string xParams = "params";
-                static const std::string xIndex = "index";
+                static const std::string xAssetId                     = "asset-id";
+                static const std::string xParams                      = "params";
+                static const std::string xIndex                       = "index";
 
                 // AssetFreeze txn
-                static const std::string xNewFreezeStatus = "new-freeze-status";
+                static const std::string xNewFreezeStatus             = "new-freeze-status";
 
-                static const std::string xPay = "pay";
-                static const std::string xKeyregs = "keyreg";
-                static const std::string xAcfg = "acfg";
-                static const std::string xAxfer = "axfer";
-                static const std::string xAfreeze = "afrz";
+                static const std::string xPay                         = "pay";
+                static const std::string xKeyregs                     = "keyreg";
+                static const std::string xAcfg                        = "acfg";
+                static const std::string xAxfer                       = "axfer";
+                static const std::string xAfreeze                     = "afrz";
 
-                static const std::string xPayment = "payment-transaction";
-                static const std::string xKeyreg = "keyreg-transaction";
-                static const std::string xCurcfg = "asset-config-transaction";
-                static const std::string xCurxfer = "asset-transfer-transaction";
-                static const std::string xCurfrz = "asset-freeze-transaction";
+                static const std::string xPayment                     = "payment-transaction";
+                static const std::string xKeyreg                      = "keyreg-transaction";
+                static const std::string xCurcfg                      = "asset-config-transaction";
+                static const std::string xCurxfer                     = "asset-transfer-transaction";
+                static const std::string xCurfrz                      = "asset-freeze-transaction";
 
-                static const std::string xTransactions = "transactions";
-                static const std::string xTxId = "txId";
-                static const std::string xMinFee = "min-fee";
-                static const std::string xConsensusVersion = "consensus-version";
-                static const std::string xLastRoundParam = "last-round";
+                static const std::string xTransactions                = "transactions";
+                static const std::string xTxId                        = "txId";
+                static const std::string xMinFee                      = "min-fee";
+                static const std::string xConsensusVersion            = "consensus-version";
+                static const std::string xLastRoundParam              = "last-round";
 
             } // namespace constants
         }     // namespace algorand

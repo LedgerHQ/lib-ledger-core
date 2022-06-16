@@ -77,15 +77,15 @@ namespace ledger {
         };
 
         template <typename... Args>
-        Exception make_exception(api::ErrorCode code, const std::string &format, const Args &... args) {
+        Exception make_exception(api::ErrorCode code, const std::string &format, const Args &...args) {
             return Exception(code, fmt::format(format, args...));
         };
 
         template <typename... Args>
-        Exception make_exception(api::ErrorCode code, std::shared_ptr<void> userData, const std::string &format, const Args &... args) {
+        Exception make_exception(api::ErrorCode code, std::shared_ptr<void> userData, const std::string &format, const Args &...args) {
             return Exception(code, fmt::format(format, args...), userData);
         };
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_EXCEPTION_HPP
+#endif // LEDGER_CORE_EXCEPTION_HPP

@@ -44,7 +44,7 @@ namespace ledger {
             bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
                 if (getLastKey() == "level" || getLastKey() == "height") {
                     std::string number(str, length);
-                    BigInt value = BigInt::fromString(number);
+                    BigInt value   = BigInt::fromString(number);
                     _block->height = value.toUint64();
                 }
                 return true;
@@ -70,4 +70,4 @@ namespace ledger {
         };
     } // namespace core
 } // namespace ledger
-#endif //LEDGER_CORE_TEZOSLIKEBLOCKPARSER_H
+#endif // LEDGER_CORE_TEZOSLIKEBLOCKPARSER_H

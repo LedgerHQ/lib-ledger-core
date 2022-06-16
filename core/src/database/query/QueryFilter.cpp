@@ -55,7 +55,7 @@ namespace ledger {
 
         int32_t QueryFilter::getSiblingsCount() const {
             auto count = 0;
-            auto ptr = getHead();
+            auto ptr   = getHead();
             while (ptr != nullptr) {
                 ptr = ptr->_siblings.next;
                 count += 1;
@@ -77,8 +77,8 @@ namespace ledger {
             } else {
                 newTail = f;
             }
-            _siblings.next = newTail;
-            _siblings.op = op;
+            _siblings.next              = newTail;
+            _siblings.op                = op;
             newTail->_siblings.previous = shared_from_this();
             return newTail;
         }

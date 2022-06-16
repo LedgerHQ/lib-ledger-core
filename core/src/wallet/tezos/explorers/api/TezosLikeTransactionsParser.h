@@ -41,7 +41,7 @@ namespace ledger {
             : public AbstractTransactionsParser<TezosLikeBlockchainExplorerTransaction, TezosLikeTransactionParser> {
           public:
             TezosLikeTransactionsParser(std::string &lastKey) : _transactionParser(lastKey) {
-                _arrayDepth = 0;
+                _arrayDepth  = 0;
                 _objectDepth = 0;
             }
 
@@ -55,4 +55,4 @@ namespace ledger {
         };
     } // namespace core
 } // namespace ledger
-#endif //LEDGER_CORE_TEZOSLIKETRANSACTIONSPARSER_H
+#endif // LEDGER_CORE_TEZOSLIKETRANSACTIONSPARSER_H

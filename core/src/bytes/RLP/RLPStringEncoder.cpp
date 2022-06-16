@@ -39,7 +39,7 @@
 
 namespace ledger {
     namespace core {
-        //TODO : other constructors (operators)
+        // TODO : other constructors (operators)
         RLPStringEncoder::RLPStringEncoder(const std::string &data) : _data(data.begin(), data.end()) {
         }
 
@@ -75,7 +75,7 @@ namespace ledger {
         }
 
         std::string RLPStringEncoder::toString() {
-            //return std::string(_data.begin(), _data.end());
+            // return std::string(_data.begin(), _data.end());
             return hex::toString(_data);
         }
 

@@ -20,7 +20,6 @@ namespace ledger {
         namespace tezos {
 
             struct TezosMakeBaseTransaction : public BaseFixture {
-
                 void SetUp() override;
 
                 virtual void recreate();

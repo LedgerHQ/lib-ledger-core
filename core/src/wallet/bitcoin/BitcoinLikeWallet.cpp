@@ -55,10 +55,10 @@ namespace ledger {
                                              const std::shared_ptr<DynamicObject> &configuration,
                                              const DerivationScheme &scheme)
             : AbstractWallet(name, network, pool, configuration, scheme) {
-            _explorer = explorer;
-            _keychainFactory = keychainFactory;
+            _explorer            = explorer;
+            _keychainFactory     = keychainFactory;
             _synchronizerFactory = synchronizer;
-            _mempoolGracePeriod = std::chrono::seconds(configuration->getInt(api::Configuration::MEMPOOL_GRACE_PERIOD_SECS).value_or(api::ConfigurationDefaults::DEFAULT_BTC_LIKE_MEMPOOL_GRACE));
+            _mempoolGracePeriod  = std::chrono::seconds(configuration->getInt(api::Configuration::MEMPOOL_GRACE_PERIOD_SECS).value_or(api::ConfigurationDefaults::DEFAULT_BTC_LIKE_MEMPOOL_GRACE));
         }
 
         bool BitcoinLikeWallet::isSynchronizing() {
@@ -84,11 +84,11 @@ namespace ledger {
                            throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (size of arrays differs)");
                        api::ExtendedKeyAccountCreationInfo result;
                        std::set<std::string> ownersSet(info.owners.begin(), info.owners.end());
-                       auto ownersIterator = ownersSet.begin();
+                       auto ownersIterator    = ownersSet.begin();
                        auto ownersEndIterator = ownersSet.end();
-                       auto size = info.owners.size();
+                       auto size              = info.owners.size();
                        while (ownersIterator != ownersEndIterator) {
-                           int32_t firstOccurence = -1;
+                           int32_t firstOccurence  = -1;
                            int32_t secondOccurence = -1;
 
                            for (auto i = 0; i < size; i++) {
@@ -134,11 +134,11 @@ namespace ledger {
 
         FuturePtr<ledger::core::api::Account>
         BitcoinLikeWallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
-            auto self = getSelf();
+            auto self   = getSelf();
             auto scheme = getDerivationScheme();
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(info.index);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-            auto index = info.index;
+            auto index    = info.index;
             return async<std::shared_ptr<api::Account>>([=]() -> std::shared_ptr<api::Account> {
                 auto keychain = self->_keychainFactory->build(
                     index,
@@ -171,7 +171,7 @@ namespace ledger {
             auto self = std::dynamic_pointer_cast<BitcoinLikeWallet>(shared_from_this());
             return async<api::ExtendedKeyAccountCreationInfo>([self, accountIndex]() -> api::ExtendedKeyAccountCreationInfo {
                 api::ExtendedKeyAccountCreationInfo info;
-                info.index = accountIndex;
+                info.index  = accountIndex;
                 auto scheme = self->getDerivationScheme();
                 scheme.setCoinType(self->getCurrency().bip44CoinType).setAccountIndex(accountIndex);
                 ;
@@ -196,7 +196,7 @@ namespace ledger {
             return getExtendedKeyAccountCreationInfo(accountIndex).map<api::AccountCreationInfo>(getContext(), [self, accountIndex](const api::ExtendedKeyAccountCreationInfo info) -> api::AccountCreationInfo {
                 api::AccountCreationInfo result;
                 result.index = accountIndex;
-                auto length = info.derivations.size();
+                auto length  = info.derivations.size();
                 for (auto i = 0; i < length; i++) {
                     DerivationPath path(info.derivations[i]);
                     auto owner = info.owners[i];

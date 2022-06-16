@@ -49,4 +49,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_SHA512_H
+#endif // LEDGER_CORE_SHA512_H

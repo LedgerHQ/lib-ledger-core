@@ -249,8 +249,9 @@ namespace {
         std::vector<std::string> inputData;
 
         void update(int index, const std::string &oUid, const InternalTx &tx, const EthereumLikeBlockchainExplorerTransaction &transaction, const std::string &accountAddress) {
-            auto type = tx.from == accountAddress ? api::OperationType::SEND : tx.to == accountAddress ? api::OperationType::RECEIVE : api::OperationType::NONE;
-            auto uid = OperationDatabaseHelper::createUid(oUid, fmt::format("{}-{}-{}", tx.from, hex::toString(tx.inputData), index), type);
+            auto type = tx.from == accountAddress ? api::OperationType::SEND : tx.to == accountAddress ? api::OperationType::RECEIVE
+                                                                                                       : api::OperationType::NONE;
+            auto uid  = OperationDatabaseHelper::createUid(oUid, fmt::format("{}-{}-{}", tx.from, hex::toString(tx.inputData), index), type);
             if (tx.from != transaction.sender || tx.to != transaction.receiver ||
                 hex::toString(tx.inputData) != hex::toString(transaction.inputData)) {
                 internalTxUid.push_back(uid);
@@ -326,15 +327,15 @@ namespace ledger {
                 if (op.block.nonEmpty()) {
                     blockStmt.bindings.update(op.block.getValue());
                 }
-                const auto blockUid = op.block.map<std::string>([](const auto &b) {
+                const auto blockUid   = op.block.map<std::string>([](const auto &b) {
                     return b.getUid();
                 });
                 const auto accountUid = op.accountUid;
-                const auto &tx = op.ethereumTransaction.getValue();
-                const auto opUid = op.uid;
-                auto txUid = EthereumLikeTransactionDatabaseHelper::createEthereumTransactionUid(op.accountUid, tx.hash);
-                const auto &data = std::dynamic_pointer_cast<EthereumOperationAttachedData>(op.attachedData);
-                auto internalOpIndex = 0;
+                const auto &tx        = op.ethereumTransaction.getValue();
+                const auto opUid      = op.uid;
+                auto txUid            = EthereumLikeTransactionDatabaseHelper::createEthereumTransactionUid(op.accountUid, tx.hash);
+                const auto &data      = std::dynamic_pointer_cast<EthereumOperationAttachedData>(op.attachedData);
+                auto internalOpIndex  = 0;
                 for (const auto &internalTx : tx.internalTransactions) {
                     internalOpStmt.bindings.update(internalOpIndex, opUid, internalTx, tx, accountAddress);
                     internalOpIndex += 1;

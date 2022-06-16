@@ -88,4 +88,4 @@ namespace ledger {
         };
     } // namespace core
 } // namespace ledger
-#endif //LEDGER_CORE_TEZOSLIKEWALLET_H
+#endif // LEDGER_CORE_TEZOSLIKEWALLET_H

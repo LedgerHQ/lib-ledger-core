@@ -50,4 +50,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_CURRENCIESDATABASEHELPER_HPP
+#endif // LEDGER_CORE_CURRENCIESDATABASEHELPER_HPP

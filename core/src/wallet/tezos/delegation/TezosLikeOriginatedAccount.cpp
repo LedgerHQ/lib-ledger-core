@@ -62,9 +62,8 @@ namespace ledger {
             }
 
             static inline void update_balance(std::shared_ptr<api::Operation> const &op, BigInt &sum) {
-
-                auto tzOp = op->asTezosLikeOperation();
-                auto tzTx = tzOp->getTransaction();
+                auto tzOp  = op->asTezosLikeOperation();
+                auto tzTx  = tzOp->getTransaction();
                 auto value = (tzTx->getType() == api::TezosOperationTag::OPERATION_TAG_TRANSACTION)
                                  ? BigInt(op->getAmount()->toString())
                                  : BigInt::ZERO;
@@ -92,7 +91,7 @@ namespace ledger {
 
                     if (isPreBabylon) {
                         auto fees = BigInt(op->getFees()->toString());
-                        sum = sum - (value + fees);
+                        sum       = sum - (value + fees);
                     } else {
                         // we do not spend the fees, as they are spent by the parent
                         // account
@@ -197,7 +196,7 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
             }
             auto filter = std::make_shared<ConditionQueryFilter<std::string>>("originated_account_uid", "=", _accountUid, "orig_op");
-            auto query = std::make_shared<TezosOriginatedOperationQuery>(
+            auto query  = std::make_shared<TezosOriginatedOperationQuery>(
                 filter,
                 localAccount->getWallet()->getDatabase(),
                 localAccount->getWallet()->getPool()->getThreadPoolExecutionContext(),

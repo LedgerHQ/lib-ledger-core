@@ -214,10 +214,10 @@ namespace ledger {
             std::unordered_map<std::string, int64_t> _lastEmittedBlocks;
 
             std::shared_ptr<api::ExecutionContext> _threadPoolExecutionContext;
-            //Here the key is the currency name
+            // Here the key is the currency name
             TTLCache<std::string, api::Block> _blockCache;
         };
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_WALLETPOOL_HPP
+#endif // LEDGER_CORE_WALLETPOOL_HPP

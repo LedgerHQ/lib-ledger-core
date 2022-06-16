@@ -46,17 +46,17 @@ namespace ledger {
 
         AbstractAccount::AbstractAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index)
             : DedicatedContext(wallet->getPool()->getDispatcher()->getThreadPoolExecutionContext(fmt::format("account_{}_{}", wallet->getName(), index))) {
-            _uid = AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index);
-            _logger = wallet->logger();
-            _index = index;
-            _internalPreferences = wallet->getAccountInternalPreferences(index);
-            _externalPreferences = wallet->getAccountExternalPreferences(index);
-            _loggerApi = wallet->getLogger();
-            _wallet = wallet;
+            _uid                  = AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index);
+            _logger               = wallet->logger();
+            _index                = index;
+            _internalPreferences  = wallet->getAccountInternalPreferences(index);
+            _externalPreferences  = wallet->getAccountExternalPreferences(index);
+            _loggerApi            = wallet->getLogger();
+            _wallet               = wallet;
             _mainExecutionContext = wallet->getMainExecutionContext();
-            _logger = wallet->logger();
-            _type = wallet->getWalletType();
-            _publisher = std::make_shared<EventPublisher>(getContext());
+            _logger               = wallet->logger();
+            _type                 = wallet->getWalletType();
+            _publisher            = std::make_shared<EventPublisher>(getContext());
         }
 
         int32_t AbstractAccount::getIndex() {
@@ -240,7 +240,7 @@ namespace ledger {
                 {
                     std::lock_guard<std::mutex> lock(self->_eventsLock);
                     std::swap(events, self->_events);
-                    batchedOperationsEvent = self->_batchedOperationsEvent;
+                    batchedOperationsEvent        = self->_batchedOperationsEvent;
                     self->_batchedOperationsEvent = nullptr;
                 }
                 if (batchedOperationsEvent)
@@ -280,18 +280,18 @@ namespace ledger {
         }
 
         void AbstractAccount::eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date) {
-            //Update account's internal preferences (for synchronization)
+            // Update account's internal preferences (for synchronization)
             auto savedState = getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
             if (savedState.nonEmpty()) {
-                //Reset batches to blocks mined before given date
+                // Reset batches to blocks mined before given date
                 auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
                 for (auto &batch : savedState.getValue().batches) {
                     if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
                         batch.blockHeight = (uint32_t)previousBlock.getValue().height;
-                        batch.blockHash = previousBlock.getValue().blockHash;
-                    } else if (!previousBlock.nonEmpty()) { //if no previous block, sync should go back from genesis block
+                        batch.blockHash   = previousBlock.getValue().blockHash;
+                    } else if (!previousBlock.nonEmpty()) { // if no previous block, sync should go back from genesis block
                         batch.blockHeight = 0;
-                        batch.blockHash = "";
+                        batch.blockHash   = "";
                     }
                 }
                 getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();

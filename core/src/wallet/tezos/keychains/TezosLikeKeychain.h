@@ -48,7 +48,6 @@
 namespace ledger {
     namespace core {
         class TezosLikeKeychain : public api::Keychain {
-
           public:
             using Address = std::shared_ptr<TezosLikeAddress>;
 
@@ -87,4 +86,4 @@ namespace ledger {
         };
     } // namespace core
 } // namespace ledger
-#endif //LEDGER_CORE_TEZOSLIKEKEYCHAIN_H
+#endif // LEDGER_CORE_TEZOSLIKEKEYCHAIN_H

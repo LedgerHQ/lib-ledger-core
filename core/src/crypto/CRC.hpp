@@ -41,8 +41,8 @@ namespace ledger {
         class CRC {
           public:
             /**
-            * The CRC profile holds all constants and parameters used by the CRC calcultation algorithm for 16bits versions
-            */
+             * The CRC profile holds all constants and parameters used by the CRC calcultation algorithm for 16bits versions
+             */
             struct CRC16Profile;
 
             /**
@@ -61,4 +61,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_CRC_HPP
+#endif // LEDGER_CORE_CRC_HPP

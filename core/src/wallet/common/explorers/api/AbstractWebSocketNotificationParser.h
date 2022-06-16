@@ -174,9 +174,9 @@ bool EndArray(rapidjson::SizeType elementCount){
 
 protected:
 virtual TransactionParser &getTransactionParser() = 0;
-virtual BlockParser &getBlockParser() = 0;
-virtual std::string &getLastKey() = 0;
-std::string _currentObject = "";
+virtual BlockParser &getBlockParser()             = 0;
+virtual std::string &getLastKey()                 = 0;
+std::string _currentObject                        = "";
 Result *_result;
 int32_t _depth = 0;
 }
@@ -184,4 +184,4 @@ int32_t _depth = 0;
 }
 }
 
-#endif //LEDGER_CORE_ABSTRACTWEBSOCKETNOTIFICATIONPARSER_H
+#endif // LEDGER_CORE_ABSTRACTWEBSOCKETNOTIFICATIONPARSER_H

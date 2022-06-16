@@ -91,7 +91,7 @@ namespace ledger {
 
             struct AccountSynchronizationContext {
                 uint32_t lastBlockHeight = 0;
-                uint32_t newOperations = 0;
+                uint32_t newOperations   = 0;
             };
 
             struct SynchronizationBuddy {
@@ -123,7 +123,8 @@ namespace ledger {
             Future<cosmos::AccountSynchronizationContext> performSynchronization(const std::shared_ptr<CosmosLikeAccount> &account);
 
             Future<Unit> synchronizeBatches(
-                uint32_t currentBatchIndex, std::shared_ptr<cosmos::SynchronizationBuddy> buddy);
+                uint32_t currentBatchIndex,
+                std::shared_ptr<cosmos::SynchronizationBuddy> buddy);
 
             Future<bool> synchronizeBatch(
                 uint32_t currentBatchIndex,

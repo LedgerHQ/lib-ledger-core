@@ -46,20 +46,20 @@ namespace ledger {
         namespace algorand {
 
             static void putPaymentTransaction(soci::session &sql, const std::string &txUid, const model::Transaction &tx) {
-                auto &payment = boost::get<model::PaymentTxnFields>(tx.details);
+                auto &payment              = boost::get<model::PaymentTxnFields>(tx.details);
 
-                auto headerId = optionalValue<std::string>(tx.header.id);
-                auto headerGenesisId = optionalValue<std::string>(tx.header.genesisId);
-                auto headerRound = optionalValue<uint64_t>(tx.header.round);
-                auto headerTimestamp = optionalValue<uint64_t>(tx.header.timestamp);
-                auto headerNote = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
-                auto headerGroup = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
-                auto headerLease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
-                auto headerSenderRewards = optionalValue(tx.header.senderRewards);
+                auto headerId              = optionalValue<std::string>(tx.header.id);
+                auto headerGenesisId       = optionalValue<std::string>(tx.header.genesisId);
+                auto headerRound           = optionalValue<uint64_t>(tx.header.round);
+                auto headerTimestamp       = optionalValue<uint64_t>(tx.header.timestamp);
+                auto headerNote            = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
+                auto headerGroup           = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
+                auto headerLease           = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
+                auto headerSenderRewards   = optionalValue(tx.header.senderRewards);
                 auto headerReceiverRewards = optionalValue(tx.header.receiverRewards);
-                auto headerCloseRewards = optionalValue(tx.header.closeRewards);
-                auto paymentCloseAddr = optionalValueWithTransform<Address, std::string>(payment.closeAddr, addrToString);
-                auto paymentCloseAmount = optionalValue<uint64_t>(payment.closeAmount);
+                auto headerCloseRewards    = optionalValue(tx.header.closeRewards);
+                auto paymentCloseAddr      = optionalValueWithTransform<Address, std::string>(payment.closeAddr, addrToString);
+                auto paymentCloseAmount    = optionalValue<uint64_t>(payment.closeAmount);
 
                 sql << "INSERT INTO algorand_transactions ("
                        "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
@@ -93,17 +93,17 @@ namespace ledger {
 
             // NOTE This has not been tested
             static void putKeyRegTransaction(soci::session &sql, const std::string &txUid, const model::Transaction &tx) {
-                auto &keyreg = boost::get<model::KeyRegTxnFields>(tx.details);
-                auto headerId = optionalValue<std::string>(tx.header.id);
-                auto headerGenesisId = optionalValue<std::string>(tx.header.genesisId);
-                auto headerRound = optionalValue<uint64_t>(tx.header.round);
-                auto headerTimestamp = optionalValue<uint64_t>(tx.header.timestamp);
-                auto headerNote = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
-                auto headerGroup = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
-                auto headerLease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
-                auto headerSenderRewards = optionalValue(tx.header.senderRewards);
-                auto headerReceiverRewards = optionalValue(tx.header.receiverRewards);
-                auto headerCloseRewards = optionalValue(tx.header.closeRewards);
+                auto &keyreg                 = boost::get<model::KeyRegTxnFields>(tx.details);
+                auto headerId                = optionalValue<std::string>(tx.header.id);
+                auto headerGenesisId         = optionalValue<std::string>(tx.header.genesisId);
+                auto headerRound             = optionalValue<uint64_t>(tx.header.round);
+                auto headerTimestamp         = optionalValue<uint64_t>(tx.header.timestamp);
+                auto headerNote              = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
+                auto headerGroup             = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
+                auto headerLease             = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
+                auto headerSenderRewards     = optionalValue(tx.header.senderRewards);
+                auto headerReceiverRewards   = optionalValue(tx.header.receiverRewards);
+                auto headerCloseRewards      = optionalValue(tx.header.closeRewards);
                 auto keyreg_nonParticipation = optionalValueWithTransform<bool, int32_t>(keyreg.nonParticipation, boolToNum);
 
                 sql << "INSERT INTO algorand_transactions ("
@@ -139,31 +139,31 @@ namespace ledger {
             }
 
             static void putAssetConfigTransaction(soci::session &sql, const std::string &txUid, const model::Transaction &tx) {
-                auto &assetConfig = boost::get<model::AssetConfigTxnFields>(tx.details);
-                auto &assetParams = *assetConfig.assetParams;
-                auto headerId = optionalValue<std::string>(tx.header.id);
-                auto headerGenesisId = optionalValue<std::string>(tx.header.genesisId);
-                auto headerRound = optionalValue<uint64_t>(tx.header.round);
-                auto headerTimestamp = optionalValue<uint64_t>(tx.header.timestamp);
-                auto headerNote = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
-                auto headerGroup = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
-                auto headerLease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
-                auto headerSenderRewards = optionalValue(tx.header.senderRewards);
+                auto &assetConfig          = boost::get<model::AssetConfigTxnFields>(tx.details);
+                auto &assetParams          = *assetConfig.assetParams;
+                auto headerId              = optionalValue<std::string>(tx.header.id);
+                auto headerGenesisId       = optionalValue<std::string>(tx.header.genesisId);
+                auto headerRound           = optionalValue<uint64_t>(tx.header.round);
+                auto headerTimestamp       = optionalValue<uint64_t>(tx.header.timestamp);
+                auto headerNote            = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
+                auto headerGroup           = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
+                auto headerLease           = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
+                auto headerSenderRewards   = optionalValue(tx.header.senderRewards);
                 auto headerReceiverRewards = optionalValue(tx.header.receiverRewards);
-                auto headerCloseRewards = optionalValue(tx.header.closeRewards);
-                auto assetId = optionalValue<uint64_t>(assetConfig.assetId);
-                auto assetName = optionalValue<std::string>(assetParams.assetName);
-                auto assetUnitname = optionalValue<std::string>(assetParams.unitName);
-                auto assetTotal = optionalValue<uint64_t>(assetParams.total);
-                auto assetDecimals = optionalValue<uint32_t>(assetParams.decimals);
-                auto assetFrozen = optionalValueWithTransform<bool, int32_t>(assetParams.defaultFrozen, boolToNum);
-                auto assetCreator = optionalValueWithTransform<Address, std::string>(assetParams.creatorAddr, addrToString);
-                auto assetManager = optionalValueWithTransform<Address, std::string>(assetParams.managerAddr, addrToString);
-                auto assetReserve = optionalValueWithTransform<Address, std::string>(assetParams.reserveAddr, addrToString);
-                auto assetFreeze = optionalValueWithTransform<Address, std::string>(assetParams.freezeAddr, addrToString);
-                auto assetClawback = optionalValueWithTransform<Address, std::string>(assetParams.clawbackAddr, addrToString);
-                auto assetMetadata = optionalValueWithTransform<std::vector<uint8_t>, std::string>(assetParams.metaDataHash, bytesToB64);
-                auto assetUrl = optionalValue<std::string>(assetParams.url);
+                auto headerCloseRewards    = optionalValue(tx.header.closeRewards);
+                auto assetId               = optionalValue<uint64_t>(assetConfig.assetId);
+                auto assetName             = optionalValue<std::string>(assetParams.assetName);
+                auto assetUnitname         = optionalValue<std::string>(assetParams.unitName);
+                auto assetTotal            = optionalValue<uint64_t>(assetParams.total);
+                auto assetDecimals         = optionalValue<uint32_t>(assetParams.decimals);
+                auto assetFrozen           = optionalValueWithTransform<bool, int32_t>(assetParams.defaultFrozen, boolToNum);
+                auto assetCreator          = optionalValueWithTransform<Address, std::string>(assetParams.creatorAddr, addrToString);
+                auto assetManager          = optionalValueWithTransform<Address, std::string>(assetParams.managerAddr, addrToString);
+                auto assetReserve          = optionalValueWithTransform<Address, std::string>(assetParams.reserveAddr, addrToString);
+                auto assetFreeze           = optionalValueWithTransform<Address, std::string>(assetParams.freezeAddr, addrToString);
+                auto assetClawback         = optionalValueWithTransform<Address, std::string>(assetParams.clawbackAddr, addrToString);
+                auto assetMetadata         = optionalValueWithTransform<std::vector<uint8_t>, std::string>(assetParams.metaDataHash, bytesToB64);
+                auto assetUrl              = optionalValue<std::string>(assetParams.url);
 
                 sql << "INSERT INTO algorand_transactions ("
                        "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
@@ -208,21 +208,21 @@ namespace ledger {
             }
 
             static void putAssetTransferTransaction(soci::session &sql, const std::string &txUid, const model::Transaction &tx) {
-                auto &assetTransfer = boost::get<model::AssetTransferTxnFields>(tx.details);
-                auto headerId = optionalValue<std::string>(tx.header.id);
-                auto headerGenesisId = optionalValue<std::string>(tx.header.genesisId);
-                auto headerRound = optionalValue<uint64_t>(tx.header.round);
-                auto headerTimestamp = optionalValue<uint64_t>(tx.header.timestamp);
-                auto headerNote = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
-                auto headerGroup = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
-                auto headerLease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
-                auto headerSenderRewards = optionalValue(tx.header.senderRewards);
+                auto &assetTransfer        = boost::get<model::AssetTransferTxnFields>(tx.details);
+                auto headerId              = optionalValue<std::string>(tx.header.id);
+                auto headerGenesisId       = optionalValue<std::string>(tx.header.genesisId);
+                auto headerRound           = optionalValue<uint64_t>(tx.header.round);
+                auto headerTimestamp       = optionalValue<uint64_t>(tx.header.timestamp);
+                auto headerNote            = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
+                auto headerGroup           = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
+                auto headerLease           = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
+                auto headerSenderRewards   = optionalValue(tx.header.senderRewards);
                 auto headerReceiverRewards = optionalValue(tx.header.receiverRewards);
-                auto headerCloseRewards = optionalValue(tx.header.closeRewards);
-                auto assetAmount = optionalValue<uint64_t>(assetTransfer.assetAmount);
-                auto assetCloseTo = optionalValueWithTransform<Address, std::string>(assetTransfer.assetCloseTo, addrToString);
-                auto assetCloseAmount = optionalValue(assetTransfer.closeAmount);
-                auto assetSender = optionalValueWithTransform<Address, std::string>(assetTransfer.assetSender, addrToString);
+                auto headerCloseRewards    = optionalValue(tx.header.closeRewards);
+                auto assetAmount           = optionalValue<uint64_t>(assetTransfer.assetAmount);
+                auto assetCloseTo          = optionalValueWithTransform<Address, std::string>(assetTransfer.assetCloseTo, addrToString);
+                auto assetCloseAmount      = optionalValue(assetTransfer.closeAmount);
+                auto assetSender           = optionalValueWithTransform<Address, std::string>(assetTransfer.assetSender, addrToString);
 
                 sql << "INSERT INTO algorand_transactions ("
                        "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
@@ -258,17 +258,17 @@ namespace ledger {
 
             // NOTE This has not been tested
             static void putAssetFreezeTransaction(soci::session &sql, const std::string &txUid, const model::Transaction &tx) {
-                auto &assetFreeze = boost::get<model::AssetFreezeTxnFields>(tx.details);
-                auto headerId = optionalValue<std::string>(tx.header.id);
-                auto headerGenesisId = optionalValue<std::string>(tx.header.genesisId);
-                auto headerRound = optionalValue<uint64_t>(tx.header.round);
-                auto headerTimestamp = optionalValue<uint64_t>(tx.header.timestamp);
-                auto headerNote = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
-                auto headerGroup = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
-                auto headerLease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
-                auto headerSenderRewards = optionalValue(tx.header.senderRewards);
+                auto &assetFreeze          = boost::get<model::AssetFreezeTxnFields>(tx.details);
+                auto headerId              = optionalValue<std::string>(tx.header.id);
+                auto headerGenesisId       = optionalValue<std::string>(tx.header.genesisId);
+                auto headerRound           = optionalValue<uint64_t>(tx.header.round);
+                auto headerTimestamp       = optionalValue<uint64_t>(tx.header.timestamp);
+                auto headerNote            = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
+                auto headerGroup           = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
+                auto headerLease           = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
+                auto headerSenderRewards   = optionalValue(tx.header.senderRewards);
                 auto headerReceiverRewards = optionalValue(tx.header.receiverRewards);
-                auto headerCloseRewards = optionalValue(tx.header.closeRewards);
+                auto headerCloseRewards    = optionalValue(tx.header.closeRewards);
 
                 sql << "INSERT INTO algorand_transactions ("
                        "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
@@ -300,34 +300,32 @@ namespace ledger {
             }
 
             static void inflateTransaction(const soci::row &row, model::Transaction &tx) {
-
-                tx.header.id = getOptionalString(row, COL_TX_HASH);
-                tx.header.type = getString(row, COL_TX_TYPE);
-                tx.header.round = getOptionalNumber(row, COL_TX_ROUND);
-                tx.header.timestamp = getOptionalNumber(row, COL_TX_TIMESTAMP);
-                tx.header.firstValid = getNumber(row, COL_TX_FIRST_VALID);
-                tx.header.lastValid = getNumber(row, COL_TX_LAST_VALID);
-                tx.header.genesisId = getOptionalString(row, COL_TX_GENESIS_ID);
-                tx.header.genesisHash = B64String(getString(row, COL_TX_GENESIS_HASH));
-                tx.header.sender = Address(getString(row, COL_TX_SENDER));
-                tx.header.fee = getNumber(row, COL_TX_FEE);
-                tx.header.note = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_NOTE, b64toBytes);
-                tx.header.group = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_GROUP, b64toBytes);
-                tx.header.lease = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_LEASE, b64toBytes);
-                tx.header.senderRewards = getOptionalNumber(row, COL_TX_SENDER_REWARDS);
+                tx.header.id              = getOptionalString(row, COL_TX_HASH);
+                tx.header.type            = getString(row, COL_TX_TYPE);
+                tx.header.round           = getOptionalNumber(row, COL_TX_ROUND);
+                tx.header.timestamp       = getOptionalNumber(row, COL_TX_TIMESTAMP);
+                tx.header.firstValid      = getNumber(row, COL_TX_FIRST_VALID);
+                tx.header.lastValid       = getNumber(row, COL_TX_LAST_VALID);
+                tx.header.genesisId       = getOptionalString(row, COL_TX_GENESIS_ID);
+                tx.header.genesisHash     = B64String(getString(row, COL_TX_GENESIS_HASH));
+                tx.header.sender          = Address(getString(row, COL_TX_SENDER));
+                tx.header.fee             = getNumber(row, COL_TX_FEE);
+                tx.header.note            = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_NOTE, b64toBytes);
+                tx.header.group           = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_GROUP, b64toBytes);
+                tx.header.lease           = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_LEASE, b64toBytes);
+                tx.header.senderRewards   = getOptionalNumber(row, COL_TX_SENDER_REWARDS);
                 tx.header.receiverRewards = getOptionalNumber(row, COL_TX_RECEIVER_REWARDS);
-                tx.header.closeRewards = getOptionalNumber(row, COL_TX_CLOSE_REWARDS);
+                tx.header.closeRewards    = getOptionalNumber(row, COL_TX_CLOSE_REWARDS);
 
                 if (tx.header.type == constants::xPay) {
-
                     model::PaymentTxnFields paymentDetails;
 
-                    paymentDetails.amount = getNumber(row, COL_TX_PAY_AMOUNT);
+                    paymentDetails.amount       = getNumber(row, COL_TX_PAY_AMOUNT);
                     paymentDetails.receiverAddr = Address(getString(row, COL_TX_PAY_RECEIVER_ADDRESS));
-                    paymentDetails.closeAddr = getOptionalStringWithTransform<Address>(row, COL_TX_PAY_CLOSE_ADDRESS, stringToAddr);
-                    paymentDetails.closeAmount = getOptionalNumber(row, COL_TX_PAY_CLOSE_AMOUNT);
+                    paymentDetails.closeAddr    = getOptionalStringWithTransform<Address>(row, COL_TX_PAY_CLOSE_ADDRESS, stringToAddr);
+                    paymentDetails.closeAmount  = getOptionalNumber(row, COL_TX_PAY_CLOSE_AMOUNT);
 
-                    tx.details = paymentDetails;
+                    tx.details                  = paymentDetails;
 
                 } else if (tx.header.type == constants::xKeyregs) {
                     // NOTE This has not been tested
@@ -335,34 +333,33 @@ namespace ledger {
                     model::KeyRegTxnFields keyregDetails;
 
                     keyregDetails.nonParticipation = getOptionalNumberWithTransform<bool>(row, COL_TX_KEYREG_NONPART, numToBool);
-                    keyregDetails.selectionPk = getString(row, COL_TX_KEYREG_SELECTION_PK);
-                    keyregDetails.votePk = getString(row, COL_TX_KEYREG_VOTE_PK);
-                    keyregDetails.voteKeyDilution = getNumber(row, COL_TX_KEYREG_VOTE_KEY_DILUTION);
-                    keyregDetails.voteFirst = getNumber(row, COL_TX_KEYREG_VOTE_FIRST);
-                    keyregDetails.voteLast = getNumber(row, COL_TX_KEYREG_VOTE_LAST);
+                    keyregDetails.selectionPk      = getString(row, COL_TX_KEYREG_SELECTION_PK);
+                    keyregDetails.votePk           = getString(row, COL_TX_KEYREG_VOTE_PK);
+                    keyregDetails.voteKeyDilution  = getNumber(row, COL_TX_KEYREG_VOTE_KEY_DILUTION);
+                    keyregDetails.voteFirst        = getNumber(row, COL_TX_KEYREG_VOTE_FIRST);
+                    keyregDetails.voteLast         = getNumber(row, COL_TX_KEYREG_VOTE_LAST);
 
-                    tx.details = keyregDetails;
+                    tx.details                     = keyregDetails;
 
                 } else if (tx.header.type == constants::xAcfg) {
-
                     model::AssetConfigTxnFields assetConfigDetails;
 
                     assetConfigDetails.assetId = getOptionalNumber(row, COL_TX_ACFG_ASSET_ID);
                     if (row.get_indicator(COL_TX_ACFG_TOTAL) != soci::i_null) {
                         model::AssetParams assetParams;
 
-                        assetParams.assetName = getOptionalString(row, COL_TX_ACFG_ASSET_NAME);
-                        assetParams.unitName = getOptionalString(row, COL_TX_ACFG_UNIT_NAME);
-                        assetParams.total = getOptionalNumber(row, COL_TX_ACFG_TOTAL);
-                        assetParams.decimals = row.get_indicator(COL_TX_ACFG_DECIMALS) != soci::i_null ? Option<uint32_t>(soci::get_number<uint32_t>(row, COL_TX_ACFG_DECIMALS)) : Option<uint32_t>::NONE;
-                        assetParams.defaultFrozen = getOptionalNumberWithTransform<bool>(row, COL_TX_ACFG_DEFAULT_FROZEN, numToBool);
-                        assetParams.creatorAddr = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_CREATOR_ADDRESS, stringToAddr);
-                        assetParams.managerAddr = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_MANAGER_ADDRESS, stringToAddr);
-                        assetParams.reserveAddr = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_RESERVE_ADDRESS, stringToAddr);
-                        assetParams.freezeAddr = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_FREEZE_ADDRESS, stringToAddr);
-                        assetParams.clawbackAddr = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_CLAWBACK_ADDRESS, stringToAddr);
-                        assetParams.url = getOptionalString(row, COL_TX_ACFG_URL);
-                        assetParams.metaDataHash = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_ACFG_METADATA_HASH, b64toBytes);
+                        assetParams.assetName          = getOptionalString(row, COL_TX_ACFG_ASSET_NAME);
+                        assetParams.unitName           = getOptionalString(row, COL_TX_ACFG_UNIT_NAME);
+                        assetParams.total              = getOptionalNumber(row, COL_TX_ACFG_TOTAL);
+                        assetParams.decimals           = row.get_indicator(COL_TX_ACFG_DECIMALS) != soci::i_null ? Option<uint32_t>(soci::get_number<uint32_t>(row, COL_TX_ACFG_DECIMALS)) : Option<uint32_t>::NONE;
+                        assetParams.defaultFrozen      = getOptionalNumberWithTransform<bool>(row, COL_TX_ACFG_DEFAULT_FROZEN, numToBool);
+                        assetParams.creatorAddr        = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_CREATOR_ADDRESS, stringToAddr);
+                        assetParams.managerAddr        = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_MANAGER_ADDRESS, stringToAddr);
+                        assetParams.reserveAddr        = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_RESERVE_ADDRESS, stringToAddr);
+                        assetParams.freezeAddr         = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_FREEZE_ADDRESS, stringToAddr);
+                        assetParams.clawbackAddr       = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_CLAWBACK_ADDRESS, stringToAddr);
+                        assetParams.url                = getOptionalString(row, COL_TX_ACFG_URL);
+                        assetParams.metaDataHash       = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_ACFG_METADATA_HASH, b64toBytes);
 
                         assetConfigDetails.assetParams = assetParams;
                     }
@@ -370,28 +367,27 @@ namespace ledger {
                     tx.details = assetConfigDetails;
 
                 } else if (tx.header.type == constants::xAxfer) {
-
                     model::AssetTransferTxnFields assetTransferDetails;
 
-                    assetTransferDetails.assetId = getNumber(row, COL_TX_AXFER_ASSET_ID);
-                    assetTransferDetails.assetAmount = getOptionalNumber(row, COL_TX_AXFER_ASSET_AMOUNT);
+                    assetTransferDetails.assetId       = getNumber(row, COL_TX_AXFER_ASSET_ID);
+                    assetTransferDetails.assetAmount   = getOptionalNumber(row, COL_TX_AXFER_ASSET_AMOUNT);
                     assetTransferDetails.assetReceiver = Address(getString(row, COL_TX_AXFER_RECEIVER_ADDRESS));
-                    assetTransferDetails.assetCloseTo = getOptionalStringWithTransform<Address>(row, COL_TX_AXFER_CLOSE_ADDRESS, stringToAddr);
-                    assetTransferDetails.closeAmount = getOptionalNumber(row, COL_TX_AXFER_CLOSE_AMOUNT);
-                    assetTransferDetails.assetSender = getOptionalStringWithTransform<Address>(row, COL_TX_AXFER_SENDER_ADDRESS, stringToAddr);
+                    assetTransferDetails.assetCloseTo  = getOptionalStringWithTransform<Address>(row, COL_TX_AXFER_CLOSE_ADDRESS, stringToAddr);
+                    assetTransferDetails.closeAmount   = getOptionalNumber(row, COL_TX_AXFER_CLOSE_AMOUNT);
+                    assetTransferDetails.assetSender   = getOptionalStringWithTransform<Address>(row, COL_TX_AXFER_SENDER_ADDRESS, stringToAddr);
 
-                    tx.details = assetTransferDetails;
+                    tx.details                         = assetTransferDetails;
 
                 } else if (tx.header.type == constants::xAfreeze) {
                     // NOTE This has not been tested
 
                     model::AssetFreezeTxnFields assetFreezeDetails;
 
-                    assetFreezeDetails.assetId = getNumber(row, COL_TX_AFRZ_ASSET_ID);
-                    assetFreezeDetails.assetFrozen = !!getNumber(row, COL_TX_AFRZ_FROZEN);
+                    assetFreezeDetails.assetId       = getNumber(row, COL_TX_AFRZ_ASSET_ID);
+                    assetFreezeDetails.assetFrozen   = !!getNumber(row, COL_TX_AFRZ_FROZEN);
                     assetFreezeDetails.frozenAddress = Address(getString(row, COL_TX_AFRZ_FROZEN_ADDRESS));
 
-                    tx.details = assetFreezeDetails;
+                    tx.details                       = assetFreezeDetails;
                 }
             }
 
@@ -407,7 +403,6 @@ namespace ledger {
             bool TransactionDatabaseHelper::getTransactionByHash(soci::session &sql,
                                                                  const std::string &hash,
                                                                  model::Transaction &tx) {
-
                 int32_t count = 0;
                 sql << "SELECT COUNT(*) FROM algorand_transactions WHERE hash = :hash", soci::use(hash), soci::into(count);
                 if (count > 1) {
@@ -504,7 +499,6 @@ namespace ledger {
                 soci::session &sql,
                 const std::string &accountUid,
                 const std::chrono::system_clock::time_point &date) {
-
                 soci::rowset<std::string> rows = (sql.prepare << "SELECT transaction_uid FROM algorand_operations AS sop "
                                                                  "JOIN operations AS op ON sop.uid = op.uid "
                                                                  "WHERE op.account_uid = :uid AND op.date >= :date",

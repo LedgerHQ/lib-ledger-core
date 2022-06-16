@@ -36,7 +36,7 @@ namespace ledger {
         class WebSocketConnImpl : public api::WebSocketConnection {
           public:
             WebSocketConnImpl(const WebSocketEventHandler &handler, const std::shared_ptr<ledger::core::WebSocketConnection> &conn) : _id(-1) {
-                _conn = conn;
+                _conn    = conn;
                 _handler = handler;
             }
 
@@ -77,7 +77,7 @@ namespace ledger {
 
         WebSocketConnection::WebSocketConnection(const std::shared_ptr<api::WebSocketClient> &client,
                                                  const WebSocketEventHandler &handler) {
-            _client = client;
+            _client  = client;
             _handler = handler;
         }
 

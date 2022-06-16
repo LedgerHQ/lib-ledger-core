@@ -38,7 +38,7 @@ namespace ledger {
     namespace core {
         class HMAC {
           public:
-            HMAC() = delete;
+            HMAC()  = delete;
             ~HMAC() = delete;
             static std::vector<uint8_t> sha256(const std::vector<uint8_t> &key,
                                                const std::vector<uint8_t> &data);
@@ -48,4 +48,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_HMACSHA256_HPP
+#endif // LEDGER_CORE_HMACSHA256_HPP

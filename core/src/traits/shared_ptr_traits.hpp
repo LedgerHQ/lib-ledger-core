@@ -43,4 +43,4 @@ struct is_shared_ptr<std::shared_ptr<T>> {
     static constexpr bool value = true;
 };
 
-#endif //LEDGER_CORE_SHARED_PTR_TRAITS_HPP
+#endif // LEDGER_CORE_SHARED_PTR_TRAITS_HPP

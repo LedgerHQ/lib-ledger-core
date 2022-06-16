@@ -54,7 +54,7 @@ namespace ledger {
                 std::lock_guard<std::mutex> lock(_lock);
 
                 if (!_account) {
-                    _account = account;
+                    _account  = account;
                     _notifier = std::make_shared<ProgressNotifier<Unit>>();
 
                     performSynchronization(account)
@@ -66,7 +66,7 @@ namespace ledger {
                                 _notifier->success(unit);
                             }
                             _notifier = nullptr;
-                            _account = nullptr;
+                            _account  = nullptr;
                         });
 
                 } else if (account != _account) {
@@ -76,14 +76,13 @@ namespace ledger {
             };
 
             Future<Unit> AccountSynchronizer::performSynchronization(const std::shared_ptr<Account> &account) {
-
                 _internalPreferences = account->getInternalPreferences()->getSubPreferences("AlgorandAccountSynchronizer");
-                auto savedState = _internalPreferences->template getObject<SavedState>("state");
-                auto firstRound = Option<uint64_t>();
+                auto savedState      = _internalPreferences->template getObject<SavedState>("state");
+                auto firstRound      = Option<uint64_t>();
                 if (savedState.hasValue()) {
                     firstRound = savedState->round;
                 } else {
-                    savedState = Option<SavedState>(SavedState());
+                    savedState        = Option<SavedState>(SavedState());
                     savedState->round = 0;
                     _internalPreferences->editor()->template putObject<SavedState>("state", savedState.getValue())->commit();
                 }
@@ -118,7 +117,7 @@ namespace ledger {
                                                     account->interpretTransaction(tx, operations);
 
                                                     // Record the lowest round in this batch, to continue fetching txs below it if needed
-                                                    lowestBatchRound = std::min(lowestBatchRound, tx.header.round.getValueOr(lowestBatchRound));
+                                                    lowestBatchRound  = std::min(lowestBatchRound, tx.header.round.getValueOr(lowestBatchRound));
 
                                                     // Record the highest round ever seen, to update the cache for next incremental sychronization
                                                     savedState->round = std::max(savedState->round, tx.header.round.getValueOr(0));
@@ -149,7 +148,7 @@ namespace ledger {
                             soci::session sql(_account->getWallet()->getDatabase()->getPool());
                             soci::transaction tr(sql);
                             try {
-                                auto blockRef = const_cast<api::Block &>(block.getValue());
+                                auto blockRef         = const_cast<api::Block &>(block.getValue());
                                 blockRef.currencyName = _account->getWallet()->getCurrency().name;
                                 _account->putBlock(sql, blockRef);
                                 tr.commit();

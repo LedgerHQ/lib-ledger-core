@@ -44,4 +44,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_PBKDF2_HPP
+#endif // LEDGER_CORE_PBKDF2_HPP

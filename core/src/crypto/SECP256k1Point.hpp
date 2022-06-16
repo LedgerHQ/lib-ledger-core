@@ -72,4 +72,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_SECP256K1POINT_HPP
+#endif // LEDGER_CORE_SECP256K1POINT_HPP

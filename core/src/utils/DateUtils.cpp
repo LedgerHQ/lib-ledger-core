@@ -74,12 +74,12 @@ namespace ledger {
             std::cmatch what;
 
             if (regex_match(str.c_str(), what, parseJsonDateRegex)) {
-                auto year = boost::lexical_cast<unsigned int>(std::string(what[1].first, what[1].second));
-                auto month = boost::lexical_cast<unsigned int>(std::string(what[2].first, what[2].second));
-                auto day = boost::lexical_cast<unsigned int>(std::string(what[3].first, what[3].second));
-                auto hours = boost::lexical_cast<unsigned int>(std::string(what[4].first, what[4].second));
-                auto minutes = boost::lexical_cast<unsigned int>(std::string(what[5].first, what[5].second));
-                auto seconds = boost::lexical_cast<unsigned int>(std::string(what[6].first, what[6].second));
+                auto year      = boost::lexical_cast<unsigned int>(std::string(what[1].first, what[1].second));
+                auto month     = boost::lexical_cast<unsigned int>(std::string(what[2].first, what[2].second));
+                auto day       = boost::lexical_cast<unsigned int>(std::string(what[3].first, what[3].second));
+                auto hours     = boost::lexical_cast<unsigned int>(std::string(what[4].first, what[4].second));
+                auto minutes   = boost::lexical_cast<unsigned int>(std::string(what[5].first, what[5].second));
+                auto seconds   = boost::lexical_cast<unsigned int>(std::string(what[6].first, what[6].second));
                 auto localTime = std::string(what[7].first, what[7].second);
 
                 if (localTime != "Z") {
@@ -88,12 +88,12 @@ namespace ledger {
 
                 struct tm time;
                 time.tm_year = year - 1900;
-                time.tm_mon = month - 1;
+                time.tm_mon  = month - 1;
                 time.tm_hour = hours;
                 time.tm_mday = day;
                 time.tm_hour = hours;
-                time.tm_min = minutes;
-                time.tm_sec = seconds;
+                time.tm_min  = minutes;
+                time.tm_sec  = seconds;
 
                 return std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::from_time_t(timegm(&time)));
             } else {
@@ -113,12 +113,12 @@ namespace ledger {
         std::cmatch what;
 
         if (regex_match(str.c_str(), what, formatJsonDateRegex)) {
-            auto year = boost::lexical_cast<unsigned int>(std::string(what[1].first, what[1].second));
-            auto month = boost::lexical_cast<std::string>(std::string(what[2].first, what[2].second));
-            auto day = boost::lexical_cast<unsigned int>(std::string(what[3].first, what[3].second));
-            auto hours = boost::lexical_cast<unsigned int>(std::string(what[4].first, what[4].second));
-            auto minutes = boost::lexical_cast<unsigned int>(std::string(what[5].first, what[5].second));
-            auto seconds = boost::lexical_cast<unsigned int>(std::string(what[6].first, what[6].second));
+            auto year     = boost::lexical_cast<unsigned int>(std::string(what[1].first, what[1].second));
+            auto month    = boost::lexical_cast<std::string>(std::string(what[2].first, what[2].second));
+            auto day      = boost::lexical_cast<unsigned int>(std::string(what[3].first, what[3].second));
+            auto hours    = boost::lexical_cast<unsigned int>(std::string(what[4].first, what[4].second));
+            auto minutes  = boost::lexical_cast<unsigned int>(std::string(what[5].first, what[5].second));
+            auto seconds  = boost::lexical_cast<unsigned int>(std::string(what[6].first, what[6].second));
             auto numMonth = MONTHS.at(month);
 
             if (numMonth.empty()) {
@@ -132,7 +132,7 @@ namespace ledger {
     }
 
     std::string ledger::core::DateUtils::toJSON(const std::chrono::system_clock::time_point &date) {
-        std::tm tm = {0};
+        std::tm tm     = {0};
         std::time_t tt = std::chrono::system_clock::to_time_t(date);
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -150,7 +150,7 @@ namespace ledger {
 
     std::chrono::system_clock::time_point ledger::core::DateUtils::incrementDate(const std::chrono::system_clock::time_point &date,
                                                                                  api::TimePeriod precision) {
-        std::tm tm = {0};
+        std::tm tm     = {0};
         std::time_t tt = std::chrono::system_clock::to_time_t(date);
 #if defined(_WIN32) || defined(_WIN64)
         gmtime_s(&tm, &tt);

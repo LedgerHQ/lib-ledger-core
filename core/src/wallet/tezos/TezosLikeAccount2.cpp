@@ -72,7 +72,7 @@ namespace ledger {
         static const std::size_t signatureSize{TezosLikeTransactionApi::SIGNATURE_SIZE_BYTES};
 
         Future<api::ErrorCode> TezosLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point &date) {
-            auto log = logger();
+            auto log                  = logger();
 
             auto eraseDataBenchmarker = std::make_shared<Benchmarker>(
                 fmt::format("erase_data_since/{}", tracePrefix()), log);
@@ -84,8 +84,8 @@ namespace ledger {
 
             soci::session sql(getWallet()->getDatabase()->getPool());
 
-            //Update account's internal preferences (for synchronization)
-            // Clear synchronizer state
+            // Update account's internal preferences (for synchronization)
+            //  Clear synchronizer state
             eraseSynchronizerDataSince(sql, date);
 
             auto accountUid = getAccountUid();
@@ -105,13 +105,13 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
             if (_currentSyncEventBus)
                 return _currentSyncEventBus;
-            auto eventPublisher = std::make_shared<EventPublisher>(getContext());
+            auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
-            auto self = std::static_pointer_cast<TezosLikeAccount>(shared_from_this());
-            auto future = _synchronizer->synchronizeAccount(self)->getFuture();
+            auto self            = std::static_pointer_cast<TezosLikeAccount>(shared_from_this());
+            auto future          = _synchronizer->synchronizeAccount(self)->getFuture();
 
-            //Update current block height (needed to compute trust level)
+            // Update current block height (needed to compute trust level)
             _explorer->getCurrentBlock().onComplete(getContext(),
                                                     [self](const TryPtr<TezosLikeBlockchainExplorer::Block> &block) mutable {
                                                         if (block.isSuccess()) {
@@ -155,7 +155,7 @@ namespace ledger {
                                               {
                                                   std::vector<Operation> operations;
                                                   for (auto &tx : bulk->transactions) {
-                                                      tx.originatedAccountUid = uid;
+                                                      tx.originatedAccountUid     = uid;
                                                       tx.originatedAccountAddress = addresses[0];
                                                       account->interpretTransaction(tx, operations);
                                                   }
@@ -188,7 +188,7 @@ namespace ledger {
                   })
                 .onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
                     api::EventCode code;
-                    auto payload = std::make_shared<DynamicObject>();
+                    auto payload  = std::make_shared<DynamicObject>();
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                                         DateUtils::now() - startTime)
                                         .count();
@@ -228,9 +228,9 @@ namespace ledger {
             self->getInternalPreferences()->editor()->putString("waiting_counter", counter->toString())->commit();
             self->getInternalPreferences()->editor()->putString("waiting_counter_last_update", DateUtils::toJSON(DateUtils::now()))->commit();
             std::cout << "broadcastTransaction: " << counter->toString() << " / " << txHash << std::endl;
-            //auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
-            //waitingTxs.push_back(txHash);
-            //self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();
+            // auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
+            // waitingTxs.push_back(txHash);
+            // self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();
         }
 
         void TezosLikeAccount::_broadcastRawTransaction(const std::vector<uint8_t> &transaction,
@@ -268,7 +268,7 @@ namespace ledger {
         void TezosLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                        const std::shared_ptr<api::StringCallback> &callback,
                                                        const std::string &correlationId) {
-            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
+            auto self                            = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             const std::string optimisticStrategy = self->getWallet()->getConfiguration()->getString(
                                                                                             api::TezosConfiguration::TEZOS_COUNTER_STRATEGY)
                                                        .value_or("");
@@ -281,7 +281,7 @@ namespace ledger {
         void TezosLikeAccount::broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
                                                     const std::shared_ptr<api::StringCallback> &callback) {
             auto counter = std::make_shared<BigInt>(transaction->getCounter()->toString(10));
-            auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(transaction);
+            auto tx      = std::dynamic_pointer_cast<TezosLikeTransactionApi>(transaction);
             if (tx->toReveal()) {
                 ++(*counter);
             }
@@ -294,7 +294,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder> TezosLikeAccount::buildTransaction(const std::string &senderAddress) {
-            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
+            auto self          = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             auto buildFunction = [self, senderAddress](const TezosLikeTransactionBuildRequest &request,
                                                        const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer) {
                 // XTZ self-transactions seems to always fail and existing wallet forbid self-transactions
@@ -305,7 +305,7 @@ namespace ledger {
                 }
 
                 // Check if balance is sufficient
-                auto currency = self->getWallet()->getCurrency();
+                auto currency       = self->getWallet()->getCurrency();
                 auto accountAddress = TezosLikeAddress::fromBase58(senderAddress, currency);
                 return explorer->getBalance(std::vector<std::shared_ptr<TezosLikeAddress>>{accountAddress}).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, request, explorer, accountAddress, currency, senderAddress](const std::shared_ptr<BigInt> &balance) {
                     // Check if all needed values are set
@@ -518,13 +518,12 @@ namespace ledger {
         }
 
         std::string TezosLikeAccount::computeOperationUid(const std::shared_ptr<api::TezosLikeTransaction> &transaction) const {
-
             // The provided transaction has not necessarily been forged already, so we have to
             // compute the raw transaction first and parse it to make sure we can compute the
             // required operation values, including the operation index.
             std::shared_ptr<api::TezosLikeTransaction> parsedTx;
             {
-                auto currency = getWallet()->getCurrency();
+                auto currency       = getWallet()->getCurrency();
                 auto protocolUpdate = getWallet()
                                           ->getConfiguration()
                                           ->getString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE)
@@ -542,8 +541,8 @@ namespace ledger {
                 std::string originatedAccountId;
                 std::string originatedAccountAddress;
                 if (!_originatedAccounts.empty()) {
-                    auto originatedAccount = std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(_originatedAccounts[0]);
-                    originatedAccountId = originatedAccount->getAccountUid();
+                    auto originatedAccount   = std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(_originatedAccounts[0]);
+                    originatedAccountId      = originatedAccount->getAccountUid();
                     originatedAccountAddress = originatedAccount->getAddress();
                 }
 
@@ -551,15 +550,15 @@ namespace ledger {
                 if (!sender) {
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "computeOperationUid: Sender must be provided");
                 }
-                auto receiver = parsedTx->getReceiver();
+                auto receiver                      = parsedTx->getReceiver();
 
-                const std::string &senderAddress = sender->toBase58();
+                const std::string &senderAddress   = sender->toBase58();
                 const std::string &receiverAddress = receiver ? receiver->toBase58() : std::string();
-                std::tie(opType, additional) = getOperationTypeAndUidAdditional(
-                    senderAddress,
-                    receiverAddress,
-                    originatedAccountId,
-                    originatedAccountAddress);
+                std::tie(opType, additional)       = getOperationTypeAndUidAdditional(
+                          senderAddress,
+                          receiverAddress,
+                          originatedAccountId,
+                          originatedAccountAddress);
 
                 if (opType == api::OperationType::NONE) {
                     throw make_exception(
@@ -573,7 +572,7 @@ namespace ledger {
 
             std::string txIdBase = fmt::format("{}", parsedTx->getCounter()->intValue());
 
-            std::string &&txId = Operation::computeTransactionId(txIdBase, parsedTx->getOperationTypeInTransaction(), additional);
+            std::string &&txId   = Operation::computeTransactionId(txIdBase, parsedTx->getOperationTypeInTransaction(), additional);
 
             return OperationDatabaseHelper::createUid(getAccountUid(), txId, opType);
         }
@@ -581,42 +580,42 @@ namespace ledger {
         void TezosLikeAccount::incrementOptimisticCounter(std::shared_ptr<TezosLikeTransactionApi> tx, const std::shared_ptr<BigInt> &explorerCounter) {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             std::cout << "get explorer counter =" << explorerCounter->toInt64() << std::endl;
-            auto savedValue = self->getInternalPreferences()->getString("waiting_counter", "0");
+            auto savedValue        = self->getInternalPreferences()->getString("waiting_counter", "0");
             int64_t waitingCounter = BigInt::fromString(savedValue).toInt64();
             std::cout << "get waiting_counter =" << savedValue << std::endl;
             if (waitingCounter != 0) {
-                //check counter validity
+                // check counter validity
                 savedValue = self->getInternalPreferences()->getString("waiting_counter_last_update", "");
                 std::cout << "get waiting_counter_last_update =" << savedValue << std::endl;
                 if (!savedValue.empty()) {
                     auto lastUpdate = DateUtils::fromJSON(savedValue);
-                    auto timeout = BigInt::fromString(
-                        self->getWallet()->getConfiguration()->getString(api::TezosConfiguration::TEZOS_OPTIMISTIC_COUNTER_TIMEOUT).value_or("300000"));
+                    auto timeout    = BigInt::fromString(
+                           self->getWallet()->getConfiguration()->getString(api::TezosConfiguration::TEZOS_OPTIMISTIC_COUNTER_TIMEOUT).value_or("300000"));
 
                     int64_t duration = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now() - lastUpdate).count();
                     std::cout << "duration since last update =" << duration << std::endl;
                     if (duration > timeout.toInt64()) {
                         waitingCounter = 0;
-                        //self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", {})->commit();
-                        //std::cout << "reset waiting_counter_txs" << std::endl;
+                        // self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", {})->commit();
+                        // std::cout << "reset waiting_counter_txs" << std::endl;
                         self->getInternalPreferences()->editor()->putString("waiting_counter", "0")->commit();
                         std::cout << "reset waiting_counter" << std::endl;
                     }
-                    //else {
-                    //    //keep only not validated counters:
-                    //    auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
-                    //    std::cout << "get waiting_counter_txs =";
-                    //    for (auto& s: waitingTxs) std::cout << s << "-";
-                    //    std::cout << std::endl;
-                    //    auto waitingTxsSize = waitingCounter - explorerCounter->toInt64();
-                    //    if(waitingTxsSize < waitingTxs.size()) {
-                    //        waitingTxs = std::vector<std::string>(waitingTxs.end() - waitingTxsSize, waitingTxs.end());
-                    //        self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();
-                    //        std::cout << "set waiting_counter_txs =";
-                    //        for (auto& s: waitingTxs) std::cout << s << "-";
-                    //        std::cout << std::endl;
-                    //      }
-                    //}
+                    // else {
+                    //     //keep only not validated counters:
+                    //     auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
+                    //     std::cout << "get waiting_counter_txs =";
+                    //     for (auto& s: waitingTxs) std::cout << s << "-";
+                    //     std::cout << std::endl;
+                    //     auto waitingTxsSize = waitingCounter - explorerCounter->toInt64();
+                    //     if(waitingTxsSize < waitingTxs.size()) {
+                    //         waitingTxs = std::vector<std::string>(waitingTxs.end() - waitingTxsSize, waitingTxs.end());
+                    //         self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();
+                    //         std::cout << "set waiting_counter_txs =";
+                    //         for (auto& s: waitingTxs) std::cout << s << "-";
+                    //         std::cout << std::endl;
+                    //       }
+                    // }
                 }
             }
 

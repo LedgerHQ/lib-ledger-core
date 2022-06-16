@@ -43,7 +43,6 @@ namespace ledger {
          * Helper class to write byte array. Each write call returns a reference on "this" in order to chain writings.
          */
         class BytesWriter {
-
           public:
             BytesWriter(size_t size);
             BytesWriter(){};

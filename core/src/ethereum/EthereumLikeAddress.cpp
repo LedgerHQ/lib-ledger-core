@@ -85,14 +85,14 @@ namespace ledger {
                                                                             bool skipEIP55Check) {
             std::vector<uint8_t> keccack256;
             if (address.length() > 2) {
-                //Remove 0x
+                // Remove 0x
                 auto tmpAddress = address.substr(2, address.length() - 2);
-                keccack256 = hex::toByteArray(tmpAddress);
-                //Now we only accept addresses that are EIP55 compliant
-                //If client want to use all lower/upper cased address
-                //they should decide if those addresses are valid or not
-                //N.B.: Live and Vault will validate these addresses and
-                //warn that this address was not validated from our side
+                keccack256      = hex::toByteArray(tmpAddress);
+                // Now we only accept addresses that are EIP55 compliant
+                // If client want to use all lower/upper cased address
+                // they should decide if those addresses are valid or not
+                // N.B.: Live and Vault will validate these addresses and
+                // warn that this address was not validated from our side
                 if (tmpAddress.size() != 40 || (!skipEIP55Check && address != Base58::encodeWithEIP55(keccack256))) {
                     throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
                 }

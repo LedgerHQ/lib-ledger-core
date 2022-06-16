@@ -57,7 +57,6 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) {
-
             std::string addressesStr;
             auto size = addresses.size();
             for (auto i = 0; i < size; i++) {

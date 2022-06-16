@@ -56,7 +56,7 @@ namespace ledger {
                                                  _previousScript(previousOutput) {
             // TODO handle the case where explorer, context are missing properly
             if (!scriptSig.empty()) {
-                auto isSigned = true;
+                auto isSigned     = true;
                 auto strScriptSig = hex::toString(scriptSig);
                 auto parsedScript = BitcoinLikeScript::parse(scriptSig,
                                                              BitcoinLikeScriptConfiguration(isSigned, keychainEngine));

@@ -36,9 +36,9 @@ using namespace ledger::core;
 
 TEST(Endianness, RuntimeToBigEndian) {
     auto *value = new uint32_t[1];
-    *value = 12;
+    *value      = 12;
     ledger::core::endianness::swapToBigEndian(value, sizeof(uint32_t));
     uint8_t twelve = 12;
-    uint8_t last = reinterpret_cast<uint8_t *>(value)[sizeof(*value) - 1];
+    uint8_t last   = reinterpret_cast<uint8_t *>(value)[sizeof(*value) - 1];
     EXPECT_EQ(twelve, last);
 }

@@ -56,11 +56,11 @@ namespace ledger {
             stellar::xdr::Operation operation;
             stellar::xdr::PaymentOp op;
             StellarLikeAddress addr(address, _account->getWallet()->getCurrency(), Option<std::string>::NONE);
-            op.destination = addr.toXdrMuxedAccount();
-            op.asset.type = stellar::xdr::AssetType::ASSET_TYPE_NATIVE;
-            op.amount = std::static_pointer_cast<Amount>(amount)->value()->toInt64();
+            op.destination    = addr.toXdrMuxedAccount();
+            op.asset.type     = stellar::xdr::AssetType::ASSET_TYPE_NATIVE;
+            op.amount         = std::static_pointer_cast<Amount>(amount)->value()->toInt64();
 
-            operation.type = stellar::OperationType::PAYMENT;
+            operation.type    = stellar::OperationType::PAYMENT;
             operation.content = op;
             _envelope.tx.operations.emplace_back(operation);
 
@@ -86,8 +86,8 @@ namespace ledger {
             std::copy(pubKey.begin(), pubKey.end(), op.destination.content.begin());
             op.startingBalance = std::static_pointer_cast<Amount>(amount)->value()->toInt64();
 
-            operation.type = stellar::OperationType::CREATE_ACCOUNT;
-            operation.content = op;
+            operation.type     = stellar::OperationType::CREATE_ACCOUNT;
+            operation.content  = op;
             _envelope.tx.operations.emplace_back(operation);
 
             _balanceChange = _balanceChange + BigInt(op.startingBalance);
@@ -115,12 +115,12 @@ namespace ledger {
             // Check if balance is OK
             // Get account pub key
             // Sanitize signatures
-            auto account = _account;
-            auto envelope = _envelope;
-            auto muxedAccount = _account->params().keychain->getAddress()->toXdrMuxedAccount();
-            auto pubKey = _account->params().keychain->getAddress()->toPublicKey();
+            auto account       = _account;
+            auto envelope      = _envelope;
+            auto muxedAccount  = _account->params().keychain->getAddress()->toXdrMuxedAccount();
+            auto pubKey        = _account->params().keychain->getAddress()->toPublicKey();
             auto balanceChange = _balanceChange;
-            auto baseFee = _baseFee.getValueOr(100);
+            auto baseFee       = _baseFee.getValueOr(100);
             auto correlationId = _correlationId;
             return account->getBalance().flatMap<Unit>(account->getContext(), [=](const std::shared_ptr<Amount> &balance) {
                                             return account->getBaseReserve().map<Unit>(account->getContext(), [=](const std::shared_ptr<Amount> &reserve) -> Unit {
@@ -136,8 +136,8 @@ namespace ledger {
                         std::copy(pubKey.begin() + 28, pubKey.end(), signature.hint.begin());
                     }
                     envelope.tx.fee = envelope.tx.operations.size() * baseFee;
-                    auto wrapped = stellar::xdr::wrap(envelope);
-                    auto tx = std::make_shared<StellarLikeTransaction>(_account->getWallet()->getCurrency(), wrapped);
+                    auto wrapped    = stellar::xdr::wrap(envelope);
+                    auto tx         = std::make_shared<StellarLikeTransaction>(_account->getWallet()->getCurrency(), wrapped);
                     tx->setCorrelationId(correlationId);
                     return tx;
                 });
@@ -145,7 +145,7 @@ namespace ledger {
 
         std::shared_ptr<api::StellarLikeTransactionBuilder>
         StellarLikeTransactionBuilder::setTextMemo(const std::string &text) {
-            _envelope.tx.memo.type = stellar::xdr::MemoType::MEMO_TEXT;
+            _envelope.tx.memo.type    = stellar::xdr::MemoType::MEMO_TEXT;
             _envelope.tx.memo.content = text;
             return shared_from_this();
         }
@@ -176,7 +176,7 @@ namespace ledger {
 
         std::shared_ptr<api::StellarLikeTransactionBuilder>
         StellarLikeTransactionBuilder::setNumberMemo(const std::shared_ptr<api::BigInt> &number) {
-            _envelope.tx.memo.type = stellar::xdr::MemoType::MEMO_ID;
+            _envelope.tx.memo.type    = stellar::xdr::MemoType::MEMO_ID;
             _envelope.tx.memo.content = std::static_pointer_cast<api::BigIntImpl>(number)->backend().toUint64();
             return shared_from_this();
             ;

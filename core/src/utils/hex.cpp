@@ -38,7 +38,7 @@ namespace ledger {
 
             std::vector<uint8_t> toByteArray(const std::string &str) {
                 std::vector<uint8_t> bytes(str.length() / 2 + str.length() % 2);
-                auto offset = str.length() % 2 != 0 ? 1 : 0;
+                auto offset  = str.length() % 2 != 0 ? 1 : 0;
                 uint8_t byte = 0;
                 for (auto index = 0; index < bytes.size(); index++) {
                     if (index == 0 && str.length() % 2 != 0) {
@@ -70,7 +70,7 @@ namespace ledger {
             std::string toString(const std::vector<uint8_t> &data, bool uppercase) {
                 std::string str(data.size() * 2, '0');
                 for (auto index = 0; index < data.size(); index++) {
-                    str[index * 2] = byteToDigit(data[index] >> 4, uppercase);
+                    str[index * 2]     = byteToDigit(data[index] >> 4, uppercase);
                     str[index * 2 + 1] = byteToDigit((uint8_t)(data[index] & 0xF), uppercase);
                 }
                 return str;

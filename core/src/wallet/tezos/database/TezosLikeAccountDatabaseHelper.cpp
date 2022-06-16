@@ -58,15 +58,15 @@ namespace ledger {
                                 use(accountUid));
             for (auto &row : rows) {
                 if (entry.publicKey.empty()) {
-                    entry.index = row.get<int32_t>(0);
+                    entry.index     = row.get<int32_t>(0);
                     entry.publicKey = row.get<std::string>(1);
                 }
                 // Get related originated accounts
                 if (row.get_indicator(2) != i_null) {
                     TezosLikeOriginatedAccountDatabaseEntry originatedEntry;
-                    originatedEntry.uid = row.get<std::string>(2);
-                    originatedEntry.address = row.get<std::string>(3);
-                    originatedEntry.spendable = static_cast<bool>(row.get<int>(4));
+                    originatedEntry.uid         = row.get<std::string>(2);
+                    originatedEntry.address     = row.get<std::string>(3);
+                    originatedEntry.spendable   = static_cast<bool>(row.get<int>(4));
                     originatedEntry.delegatable = static_cast<bool>(row.get<int>(5));
                     if (row.get_indicator(6) != i_null) {
                         originatedEntry.publicKey = row.get<std::string>(6);
@@ -89,7 +89,6 @@ namespace ledger {
                                                                            const std::string &opUid,
                                                                            const std::string &tezosTxUid,
                                                                            const std::string &originatedAccountUid) {
-
             sql << "INSERT INTO tezos_originated_operations VALUES(:uid, :transaction_uid, :originated_account_uid)", use(opUid), use(tezosTxUid), use(originatedAccountUid);
         }
 
@@ -102,9 +101,9 @@ namespace ledger {
                                 "FROM operations AS op "
                                 "LEFT JOIN tezos_originated_operations AS orig_op ON op.uid = orig_op.uid "
                                 "WHERE op.account_uid = :uid AND orig_op.uid IS NULL ORDER BY op.date";
-            rowset<row> rows = (sql.prepare << query, use(accountUid));
+            rowset<row> rows  = (sql.prepare << query, use(accountUid));
 
-            auto filterList = [&](const std::vector<std::string> &list) -> bool {
+            auto filterList   = [&](const std::vector<std::string> &list) -> bool {
                 for (auto &elem : list) {
                     if (filter(elem)) {
                         return true;
@@ -115,18 +114,18 @@ namespace ledger {
 
             std::size_t c = 0;
             for (auto &row : rows) {
-                auto type = api::from_string<api::OperationType>(row.get<std::string>(2));
-                auto senders = strings::split(row.get<std::string>(4), ",");
+                auto type       = api::from_string<api::OperationType>(row.get<std::string>(2));
+                auto senders    = strings::split(row.get<std::string>(4), ",");
                 auto recipients = strings::split(row.get<std::string>(5), ",");
                 if ((type == api::OperationType::SEND && row.get_indicator(4) != i_null && filterList(senders)) ||
                     (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients))) {
                     operations.resize(operations.size() + 1);
-                    auto &operation = operations[operations.size() - 1];
+                    auto &operation  = operations[operations.size() - 1];
                     operation.amount = BigInt::fromHex(row.get<std::string>(0));
-                    operation.fees = BigInt::fromHex(row.get<std::string>(1));
-                    operation.type = type;
-                    operation.date = DateUtils::fromJSON(row.get<std::string>(3));
-                    operation.uid = row.get<std::string>(6);
+                    operation.fees   = BigInt::fromHex(row.get<std::string>(1));
+                    operation.type   = type;
+                    operation.date   = DateUtils::fromJSON(row.get<std::string>(3));
+                    operation.uid    = row.get<std::string>(6);
                     c += 1;
                 }
             }

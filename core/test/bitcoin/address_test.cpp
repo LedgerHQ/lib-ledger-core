@@ -57,7 +57,7 @@ using namespace ledger::core;
 
 TEST(Address, AddressFromBase58String) {
     const Currency currency = currencies::BITCOIN;
-    auto x = currency.bitcoinLikeNetworkParameters.value();
+    auto x                  = currency.bitcoinLikeNetworkParameters.value();
     for (auto &item : fixtures) {
         EXPECT_TRUE(Address::isValid(item[1], currency));
         auto address = Address::parse(item[1], currency)->asBitcoinLikeAddress();
@@ -74,8 +74,8 @@ TEST(Address, AddressFromBase58String) {
 
 TEST(Address, XpubFromBase58String) {
     const Currency currency = currencies::BITCOIN;
-    auto addr = "xpub6Cc939fyHvfB9pPLWd3bSyyQFvgKbwhidca49jGCM5Hz5ypEPGf9JVXB4NBuUfPgoHnMjN6oNgdC9KRqM11RZtL8QLW6rFKziNwHDYhZ6Kx";
-    auto config = std::make_shared<ledger::core::DynamicObject>();
+    auto addr               = "xpub6Cc939fyHvfB9pPLWd3bSyyQFvgKbwhidca49jGCM5Hz5ypEPGf9JVXB4NBuUfPgoHnMjN6oNgdC9KRqM11RZtL8QLW6rFKziNwHDYhZ6Kx";
+    auto config             = std::make_shared<ledger::core::DynamicObject>();
     config->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP32_P2PKH);
     auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, addr, optional<std::string>("44'/0'/0'"), config);
     EXPECT_EQ(xpub->toBase58(), addr);
@@ -87,10 +87,10 @@ TEST(Address, XpubFromBase58String) {
 
 TEST(Address, XpubFromBase58StringToBech32) {
     const Currency currency = currencies::BITCOIN_CASH;
-    auto xpubStr = "xpub6BvNdfGcyMB9Usq88ibXUt3KhbaEJVLFMbhTSNNfTm8Qf1sX9inTv3xL6pA6KofW4WF9GpdxwGDoYRwRDjHEir3Av23m2wHb7AqhxJ9ohE8";
-    auto base58Address = "16AMaKewP778obhBUAWWV5sVU6Qg6rvuBt";
-    auto bech32Address = "bitcoincash:qqufmrqunkr3avkswhn378fjhwl3ueawag9e3htc49";
-    auto config = std::make_shared<ledger::core::DynamicObject>();
+    auto xpubStr            = "xpub6BvNdfGcyMB9Usq88ibXUt3KhbaEJVLFMbhTSNNfTm8Qf1sX9inTv3xL6pA6KofW4WF9GpdxwGDoYRwRDjHEir3Av23m2wHb7AqhxJ9ohE8";
+    auto base58Address      = "16AMaKewP778obhBUAWWV5sVU6Qg6rvuBt";
+    auto bech32Address      = "bitcoincash:qqufmrqunkr3avkswhn378fjhwl3ueawag9e3htc49";
+    auto config             = std::make_shared<ledger::core::DynamicObject>();
     config->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
     auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, xpubStr, optional<std::string>("49'/145'/0'"), config);
     EXPECT_EQ(xpub->toBase58(), xpubStr);
@@ -104,9 +104,9 @@ TEST(Address, XpubFromBase58StringToBech32) {
 // Test writting based on NanoS of QA
 TEST(Address, XpubFromBase58StringToBech32DGB) {
     const Currency currency = currencies::DIGIBYTE;
-    //xpub6DFGdRPjroChgYV1heGwjnPBVi9ANtLGDp8oFSgZMezMimPBQweUmH4co6pkP1zUMSvK1NAmNJqFpewnqM1dc2UA62MhdjcZemCGtjWWK9s
-    auto bech32Address = "dgb1qgdg3hdysnpmaxpdpqqzhey2f5888av488hq0z6";
-    auto config = std::make_shared<ledger::core::DynamicObject>();
+    // xpub6DFGdRPjroChgYV1heGwjnPBVi9ANtLGDp8oFSgZMezMimPBQweUmH4co6pkP1zUMSvK1NAmNJqFpewnqM1dc2UA62MhdjcZemCGtjWWK9s
+    auto bech32Address      = "dgb1qgdg3hdysnpmaxpdpqqzhey2f5888av488hq0z6";
+    auto config             = std::make_shared<ledger::core::DynamicObject>();
     config->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
     auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromRaw(
         currency,
@@ -124,9 +124,9 @@ TEST(Address, XpubFromBase58StringToBech32DGB) {
 // Test writting based on NanoS of QA
 TEST(Address, XpubFromBase58StringToBech32LTC) {
     const Currency currency = currencies::LITECOIN;
-    //Ltub2YC8XgcRjMJqvX8LsuBxdM7PKE5uih6247CpgK2rfEdzEGt1YHVHW4L865ss5eEy2K1KixTMkrHJbzTtqxpiGpM4wyrxYRFJFxuACSJqkyo
-    auto bech32Address = "ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd";
-    auto config = std::make_shared<ledger::core::DynamicObject>();
+    // Ltub2YC8XgcRjMJqvX8LsuBxdM7PKE5uih6247CpgK2rfEdzEGt1YHVHW4L865ss5eEy2K1KixTMkrHJbzTtqxpiGpM4wyrxYRFJFxuACSJqkyo
+    auto bech32Address      = "ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd";
+    auto config             = std::make_shared<ledger::core::DynamicObject>();
     config->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
     auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromRaw(
         currency,
@@ -142,14 +142,14 @@ TEST(Address, XpubFromBase58StringToBech32LTC) {
 }
 
 TEST(Address, FromBech32Address) {
-    //https://github.com/bitcoincashjs/cashaddrjs/blob/master/test/cashaddr.js
+    // https://github.com/bitcoincashjs/cashaddrjs/blob/master/test/cashaddr.js
     std::vector<std::pair<std::string, ledger::core::api::Currency>> tests = {
-        {"tb1qunawpra24prfc46klknlhl0ydy32feajmwpg84", currencies::BITCOIN_TESTNET},             //BTC P2WPKH
-        {"bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3", currencies::BITCOIN}, //BTC P2WSH
-        {"bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a", currencies::BITCOIN_CASH},    //BCH P2WPKH
-        {"bitcoincash:ppm2qsznhks23z7629mms6s4cwef74vcwvn0h829pq", currencies::BITCOIN_CASH},    //BCH P2WSH
-        {"dgb1qgdg3hdysnpmaxpdpqqzhey2f5888av488hq0z6", currencies::DIGIBYTE},                   //DGB P2WPKH
-        {"ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd", currencies::LITECOIN}                    //LTC P2WPKH
+        {"tb1qunawpra24prfc46klknlhl0ydy32feajmwpg84", currencies::BITCOIN_TESTNET},             // BTC P2WPKH
+        {"bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3", currencies::BITCOIN}, // BTC P2WSH
+        {"bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a", currencies::BITCOIN_CASH},    // BCH P2WPKH
+        {"bitcoincash:ppm2qsznhks23z7629mms6s4cwef74vcwvn0h829pq", currencies::BITCOIN_CASH},    // BCH P2WSH
+        {"dgb1qgdg3hdysnpmaxpdpqqzhey2f5888av488hq0z6", currencies::DIGIBYTE},                   // DGB P2WPKH
+        {"ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd", currencies::LITECOIN}                    // LTC P2WPKH
     };
     for (auto &test : tests) {
         auto address = ledger::core::BitcoinLikeAddress::fromBech32(test.first, test.second);

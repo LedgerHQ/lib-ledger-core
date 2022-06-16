@@ -56,4 +56,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_URI_HPP
+#endif // LEDGER_CORE_URI_HPP

@@ -96,16 +96,16 @@ namespace {
         std::vector<boost::optional<uint64_t>> closeRewards;
 
         void update(const std::string &txUid, const model::Transaction &tx) {
-            auto headerId = optionalValue<std::string>(tx.header.id);
-            auto headerGenesisId = optionalValue<std::string>(tx.header.genesisId);
-            auto headerRound = optionalValue<uint64_t>(tx.header.round);
-            auto headerTimestamp = optionalValue<uint64_t>(tx.header.timestamp);
-            auto headerNote = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
-            auto headerGroup = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
-            auto headerLease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
-            auto headerSenderRewards = optionalValue(tx.header.senderRewards);
+            auto headerId              = optionalValue<std::string>(tx.header.id);
+            auto headerGenesisId       = optionalValue<std::string>(tx.header.genesisId);
+            auto headerRound           = optionalValue<uint64_t>(tx.header.round);
+            auto headerTimestamp       = optionalValue<uint64_t>(tx.header.timestamp);
+            auto headerNote            = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
+            auto headerGroup           = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
+            auto headerLease           = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
+            auto headerSenderRewards   = optionalValue(tx.header.senderRewards);
             auto headerReceiverRewards = optionalValue(tx.header.receiverRewards);
-            auto headerCloseRewards = optionalValue(tx.header.closeRewards);
+            auto headerCloseRewards    = optionalValue(tx.header.closeRewards);
 
             uid.push_back(txUid);
             txHash.push_back(headerId);
@@ -160,8 +160,8 @@ namespace {
 
         void update(const std::string &txUid, const model::Transaction &tx) {
             TransactionBinding::update(txUid, tx);
-            auto &payment = boost::get<model::PaymentTxnFields>(tx.details);
-            auto paymentCloseAddr = optionalValueWithTransform<Address, std::string>(payment.closeAddr, addrToString);
+            auto &payment           = boost::get<model::PaymentTxnFields>(tx.details);
+            auto paymentCloseAddr   = optionalValueWithTransform<Address, std::string>(payment.closeAddr, addrToString);
             auto paymentCloseAmount = optionalValue<uint64_t>(payment.closeAmount);
 
             amount.push_back(payment.amount);
@@ -215,7 +215,6 @@ namespace {
 
     // Algorand transactions: keyreg
     struct KeyregTransactionBinding : public TransactionBinding {
-
         std::vector<boost::optional<int32_t>> nonParticipation;
         std::vector<std::string> selectionPk;
         std::vector<std::string> votePk;
@@ -226,7 +225,7 @@ namespace {
         void update(const std::string &txUid, const model::Transaction &tx) {
             TransactionBinding::update(txUid, tx);
 
-            auto &keyreg = boost::get<model::KeyRegTxnFields>(tx.details);
+            auto &keyreg                 = boost::get<model::KeyRegTxnFields>(tx.details);
             auto keyreg_nonParticipation = optionalValueWithTransform<bool, int32_t>(keyreg.nonParticipation, boolToNum);
 
             nonParticipation.push_back(keyreg_nonParticipation);
@@ -286,7 +285,6 @@ namespace {
 
     // Algorand transactions: AssetConfig
     struct AssetConfigTransactionBinding : public TransactionBinding {
-
         std::vector<boost::optional<uint64_t>> assetConfigId;
         std::vector<boost::optional<std::string>> assetConfigName;
         std::vector<boost::optional<std::string>> assetConfigUnitname;
@@ -304,21 +302,21 @@ namespace {
         void update(const std::string &txUid, const model::Transaction &tx) {
             TransactionBinding::update(txUid, tx);
 
-            auto &assetConfig = boost::get<model::AssetConfigTxnFields>(tx.details);
-            auto &assetParams = *assetConfig.assetParams;
-            auto assetId = optionalValue<uint64_t>(assetConfig.assetId);
-            auto assetName = optionalValue<std::string>(assetParams.assetName);
+            auto &assetConfig  = boost::get<model::AssetConfigTxnFields>(tx.details);
+            auto &assetParams  = *assetConfig.assetParams;
+            auto assetId       = optionalValue<uint64_t>(assetConfig.assetId);
+            auto assetName     = optionalValue<std::string>(assetParams.assetName);
             auto assetUnitname = optionalValue<std::string>(assetParams.unitName);
-            auto assetTotal = optionalValue<uint64_t>(assetParams.total);
+            auto assetTotal    = optionalValue<uint64_t>(assetParams.total);
             auto assetDecimals = optionalValue<uint32_t>(assetParams.decimals);
-            auto assetFrozen = optionalValueWithTransform<bool, int32_t>(assetParams.defaultFrozen, boolToNum);
-            auto assetCreator = optionalValueWithTransform<Address, std::string>(assetParams.creatorAddr, addrToString);
-            auto assetManager = optionalValueWithTransform<Address, std::string>(assetParams.managerAddr, addrToString);
-            auto assetReserve = optionalValueWithTransform<Address, std::string>(assetParams.reserveAddr, addrToString);
-            auto assetFreeze = optionalValueWithTransform<Address, std::string>(assetParams.freezeAddr, addrToString);
+            auto assetFrozen   = optionalValueWithTransform<bool, int32_t>(assetParams.defaultFrozen, boolToNum);
+            auto assetCreator  = optionalValueWithTransform<Address, std::string>(assetParams.creatorAddr, addrToString);
+            auto assetManager  = optionalValueWithTransform<Address, std::string>(assetParams.managerAddr, addrToString);
+            auto assetReserve  = optionalValueWithTransform<Address, std::string>(assetParams.reserveAddr, addrToString);
+            auto assetFreeze   = optionalValueWithTransform<Address, std::string>(assetParams.freezeAddr, addrToString);
             auto assetClawback = optionalValueWithTransform<Address, std::string>(assetParams.clawbackAddr, addrToString);
             auto assetMetadata = optionalValueWithTransform<std::vector<uint8_t>, std::string>(assetParams.metaDataHash, bytesToB64);
-            auto assetUrl = optionalValue<std::string>(assetParams.url);
+            auto assetUrl      = optionalValue<std::string>(assetParams.url);
 
             assetConfigId.push_back(assetId);
             assetConfigName.push_back(assetName);
@@ -401,7 +399,6 @@ namespace {
 
     // Algorand transactions: AssetTransfer
     struct AssetTransferTransactionBinding : public TransactionBinding {
-
         std::vector<uint64_t> assetTransferId;
         std::vector<boost::optional<uint64_t>> assetTransferAmount;
         std::vector<std::string> assetTransferReceiver;
@@ -411,11 +408,11 @@ namespace {
 
         void update(const std::string &txUid, const model::Transaction &tx) {
             TransactionBinding::update(txUid, tx);
-            auto &assetTransfer = boost::get<model::AssetTransferTxnFields>(tx.details);
-            auto assetAmount = optionalValue<uint64_t>(assetTransfer.assetAmount);
-            auto assetCloseTo = optionalValueWithTransform<Address, std::string>(assetTransfer.assetCloseTo, addrToString);
+            auto &assetTransfer   = boost::get<model::AssetTransferTxnFields>(tx.details);
+            auto assetAmount      = optionalValue<uint64_t>(assetTransfer.assetAmount);
+            auto assetCloseTo     = optionalValueWithTransform<Address, std::string>(assetTransfer.assetCloseTo, addrToString);
             auto assetCloseAmount = optionalValue(assetTransfer.closeAmount);
-            auto assetSender = optionalValueWithTransform<Address, std::string>(assetTransfer.assetSender, addrToString);
+            auto assetSender      = optionalValueWithTransform<Address, std::string>(assetTransfer.assetSender, addrToString);
 
             assetTransferId.push_back(assetTransfer.assetId);
             assetTransferAmount.push_back(assetAmount);
@@ -474,7 +471,6 @@ namespace {
 
     // Algorand transactions: AssetFreeze
     struct AssetFreezeTransactionBinding : public TransactionBinding {
-
         std::vector<uint64_t> assetFreezeId;
         std::vector<int32_t> assetFreezeFrozen;
         std::vector<std::string> assetFreezeAddres;
@@ -556,7 +552,7 @@ namespace ledger {
 
                 for (const auto &op : operations) {
                     if (op.getBackend().block.hasValue()) {
-                        auto block = op.getBackend().block.getValue();
+                        auto block         = op.getBackend().block.getValue();
                         block.currencyName = op.getAccount()->getWallet()->getCurrency().name;
                         blockStmt.bindings.update(block);
                     }
@@ -564,7 +560,7 @@ namespace ledger {
                     operationStmt.bindings.update(op.getBackend());
 
                     // Upsert transaction
-                    auto &tx = op.getTransactionData();
+                    auto &tx         = op.getTransactionData();
                     const auto txUid = *tx.header.id;
                     if (tx.header.type == constants::xPay) {
                         if (paymentTransactionStmt.bindings.empty())
@@ -592,14 +588,14 @@ namespace ledger {
                     const auto txHash = op.getTransaction()->getId();
                     algorandOpStmt.bindings.update(op.getBackend().uid, txUid, txHash);
                 }
-                //1- block
+                // 1- block
                 if (!blockStmt.bindings.uid.empty())
                     blockStmt.execute();
 
-                //2- operations
+                // 2- operations
                 operationStmt.execute();
 
-                //3- algorand transactions
+                // 3- algorand transactions
                 if (!paymentTransactionStmt.bindings.empty())
                     paymentTransactionStmt.execute();
                 if (!keyregTransactionStmt.bindings.empty())
@@ -611,7 +607,7 @@ namespace ledger {
                 if (!assetFreezeTransactionStmt.bindings.empty())
                     assetFreezeTransactionStmt.execute();
 
-                //4- algorand operations
+                // 4- algorand operations
                 algorandOpStmt.execute();
 
                 rawInsert.stop();

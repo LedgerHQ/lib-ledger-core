@@ -4,7 +4,10 @@ namespace ledger {
     namespace testing {
         namespace txes_to_wpkh {
             core::api::ExtendedKeyAccountCreationInfo XPUB_INFO(
-                0, {"main"}, {"84'/0'/0'"}, {"xpub6C2qnauSiRRR8UG9PXraYrfBtXZHzFRNgwJgwG7ZDp7SbWAdMSiMFoYDukTw4ExE95H4VkgECnhDe2uyLawoqUkoSHEDnoDafC2R44dXs7p"});
+                0,
+                {"main"},
+                {"84'/0'/0'"},
+                {"xpub6C2qnauSiRRR8UG9PXraYrfBtXZHzFRNgwJgwG7ZDp7SbWAdMSiMFoYDukTw4ExE95H4VkgECnhDe2uyLawoqUkoSHEDnoDafC2R44dXs7p"});
             // xpub from https://github.com/LedgerHQ/xpub-scan/blob/master/.github/workflows/regression_tests/datasets.json
             const std::vector<std::string> TXes =
                 {

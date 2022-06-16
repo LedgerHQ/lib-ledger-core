@@ -56,7 +56,9 @@ namespace ledger {
 
         CosmosLikeBlockchainExplorer::TransactionFilter
         GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
-            const char eventType[], const char attributeKey[], const std::string &value) {
+            const char eventType[],
+            const char attributeKey[],
+            const std::string &value) {
             return fmt::format("{}={}", eventAttribute(eventType, attributeKey), value);
         }
 
@@ -100,7 +102,7 @@ namespace ledger {
                 .json(true)
                 .mapPtr<cosmos::Block>(
                     getContext(), [](const HttpRequest::JsonResult &response) {
-                        auto result = std::make_shared<cosmos::Block>();
+                        auto result          = std::make_shared<cosmos::Block>();
                         const auto &document = std::get<1>(response)->GetObject();
                         rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
                         return result;
@@ -119,7 +121,7 @@ namespace ledger {
                 .template flatMap<cosmos::Account>(
                     getContext(),
                     [](const HttpRequest::JsonResult &response) {
-                        auto result = cosmos::Account();
+                        auto result          = cosmos::Account();
                         const auto &document = std::get<1>(response)->GetObject();
                         if (!document.HasMember("result")) {
                             throw make_exception(api::ErrorCode::API_ERROR,
@@ -156,7 +158,7 @@ namespace ledger {
                 .json(true)
                 .map<std::shared_ptr<cosmos::Block>>(
                     getContext(), [](const HttpRequest::JsonResult &response) {
-                        auto result = std::make_shared<cosmos::Block>();
+                        auto result          = std::make_shared<cosmos::Block>();
                         const auto &document = std::get<1>(response)->GetObject();
                         rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
                         return result;
@@ -170,12 +172,12 @@ namespace ledger {
                 /// No need to check for this as this check is done in
                 /// rpcs_parsers::parseTransaction and this function is
                 /// only called once parseTransaction has finished.
-                const auto &vNode = node[kTx].GetObject()[kValue].GetObject();
+                const auto &vNode   = node[kTx].GetObject()[kValue].GetObject();
 
-                const auto index = transaction.messages.size();
+                const auto index    = transaction.messages.size();
                 auto msgFeesContent = cosmos::MsgFees();
 
-                auto pubKey = std::string();
+                auto pubKey         = std::string();
                 rpcs_parsers::parseSignerPubKey(vNode, pubKey);
                 const auto decoded = cereal::base64::decode(pubKey);
                 const auto vPubKey =
@@ -202,9 +204,9 @@ namespace ledger {
                         .toString();
 
                 msgFeesContent.fees = api::CosmosLikeAmount(fees, "uatom");
-                auto msgFees = cosmos::Message();
-                msgFees.type = kMsgFees;
-                msgFees.content = msgFeesContent;
+                auto msgFees        = cosmos::Message();
+                msgFees.type        = kMsgFees;
+                msgFees.content     = msgFeesContent;
                 const auto msgFeesLog =
                     cosmos::MessageLog{static_cast<int32_t>(index), true, ""};
                 transaction.logs.push_back(msgFeesLog);
@@ -215,14 +217,17 @@ namespace ledger {
 
         template <typename T>
         void GaiaCosmosLikeBlockchainExplorer::parseTransactionWithPosttreatment(
-            const T &node, cosmos::Transaction &transaction) const {
+            const T &node,
+            cosmos::Transaction &transaction) const {
             rpcs_parsers::parseTransaction(node, transaction);
             addMsgFeesTo(transaction, node);
         }
 
         FuturePtr<cosmos::TransactionsBulk>
         GaiaCosmosLikeBlockchainExplorer::getTransactions(
-            const CosmosLikeBlockchainExplorer::TransactionFilter &filter, int page, int limit) const {
+            const CosmosLikeBlockchainExplorer::TransactionFilter &filter,
+            int page,
+            int limit) const {
             // NOTE : the amount of memory involved here asks for a second pass to make
             // sure that the least amount of copies is done.
             return _http
@@ -313,7 +318,8 @@ namespace ledger {
         }
 
         Future<String> GaiaCosmosLikeBlockchainExplorer::pushTransaction(
-            const std::vector<uint8_t> &transaction, const std::string &correlationId) {
+            const std::vector<uint8_t> &transaction,
+            const std::string &correlationId) {
             std::unordered_map<std::string, std::string> headers{
                 {"Accept", "application/json"}};
             if (!correlationId.empty()) {
@@ -397,7 +403,8 @@ namespace ledger {
 
         FuturePtr<cosmos::TransactionsBulk>
         GaiaCosmosLikeBlockchainExplorer::getTransactionsForAddress(
-            const std::string &address, uint32_t fromBlockHeight) const {
+            const std::string &address,
+            uint32_t fromBlockHeight) const {
             // Gaia explorer currently caps at 100 on tx per page.
             const auto explorerTxBatchSize = 100;
             auto blockHeightFilter =
@@ -428,7 +435,8 @@ namespace ledger {
 
         FuturePtr<cosmos::TransactionsBulk>
         GaiaCosmosLikeBlockchainExplorer::getTransactionsForAddresses(
-            const std::vector<std::string> &addresses, uint32_t fromBlockHeight) const {
+            const std::vector<std::string> &addresses,
+            uint32_t fromBlockHeight) const {
             std::vector<FuturePtr<cosmos::TransactionsBulk>> address_transactions;
             std::transform(
                 addresses.begin(), addresses.end(),
@@ -445,7 +453,9 @@ namespace ledger {
 
         FuturePtr<cosmos::TransactionsBulk>
         GaiaCosmosLikeBlockchainExplorer::getTransactions(
-            const std::vector<std::string> &addresses, uint32_t fromBlockHeight, Option<void *> session) {
+            const std::vector<std::string> &addresses,
+            uint32_t fromBlockHeight,
+            Option<void *> session) {
             return getTransactionsForAddresses(addresses, fromBlockHeight);
         }
 
@@ -464,7 +474,7 @@ namespace ledger {
                 .mapPtr<ledger::core::Block>(
                     getContext(), [](const HttpRequest::JsonResult &response) {
                         const auto &document = std::get<1>(response)->GetObject();
-                        auto block = std::make_shared<cosmos::Block>();
+                        auto block           = std::make_shared<cosmos::Block>();
                         rpcs_parsers::parseBlock(document, currencies::ATOM.name, *block);
                         return std::make_shared<ledger::core::Block>(*block);
                     });
@@ -619,7 +629,7 @@ namespace ledger {
                             return std::make_shared<BigInt>(BigInt::ZERO);
                         }
                         const auto &del_val_entries = json.GetObject()[kResult].GetArray();
-                        BigInt total_amt = BigInt::ZERO;
+                        BigInt total_amt            = BigInt::ZERO;
                         for (const auto &delegation_entry : del_val_entries) {
                             total_amt =
                                 total_amt +
@@ -704,7 +714,7 @@ namespace ledger {
                             return std::make_shared<BigInt>(BigInt::ZERO);
                         }
                         const auto &del_entries = json.GetObject()[kResult].GetArray();
-                        BigInt total_amt = BigInt::ZERO;
+                        BigInt total_amt        = BigInt::ZERO;
                         for (const auto &del_val_entries : del_entries) {
                             const auto &entries =
                                 del_val_entries.GetObject()[kEntries].GetArray();
@@ -748,7 +758,7 @@ namespace ledger {
                             return std::make_shared<BigInt>(BigInt::ZERO);
                         }
                         const auto &balances = json.GetObject()[kResult].GetArray();
-                        BigInt total_amt = BigInt::ZERO;
+                        BigInt total_amt     = BigInt::ZERO;
                         // NOTE : Assuming only uatom is in the balances array
                         for (const auto &balance_entry : balances) {
                             total_amt = total_amt +
@@ -1024,13 +1034,13 @@ namespace ledger {
 
             template <typename... JsonObj>
             std::string makeJsonFrom(rapidjson::Document &document,
-                                     JsonObj &&... jsonObject) {
+                                     JsonObj &&...jsonObject) {
                 auto &allocator = document.GetAllocator();
 
                 // TODO: use fold expression when C++17
                 // (document.AddMember(std::forward<JsonObj>(jsonObject).name,
                 // std::forward<JsonObj>(jsonObject).value, allocator), ...);
-                using _t = int[];
+                using _t        = int[];
                 (void)_t{0, (document.AddMember(std::forward<JsonObj>(jsonObject).name,
                                                 std::forward<JsonObj>(jsonObject).value,
                                                 allocator),
@@ -1050,7 +1060,8 @@ namespace ledger {
 
         Future<BigInt>
         GaiaCosmosLikeBlockchainExplorer::genericPostRequestForSimulation(
-            const std::string &endpoint, const std::string &transaction) const {
+            const std::string &endpoint,
+            const std::string &transaction) const {
             const auto tx =
                 std::vector<uint8_t>(std::begin(transaction), std::end(transaction));
             const auto headers = std::unordered_map<std::string, std::string>{
@@ -1072,21 +1083,21 @@ namespace ledger {
             const std::string gasAdjustment) const {
             auto document = rapidjson::Document();
             document.SetObject();
-            auto &allocator = document.GetAllocator();
+            auto &allocator   = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
             makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
-            auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
+            auto baseReq                = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
 
             const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgSend(message);
 
-            auto amountValue = rapidjson::Value(rapidjson::kArrayType);
+            auto amountValue            = rapidjson::Value(rapidjson::kArrayType);
             makeAmountArray(unwrappedMessage.amount, amountValue, allocator);
-            auto amount = JsonObject(cosmos::constants::kAmount, amountValue);
+            auto amount               = JsonObject(cosmos::constants::kAmount, amountValue);
 
             const auto rawTransaction = makeJsonFrom(document, baseReq, amount);
-            const auto endpoint = fmt::format(cosmos::constants::kGaiaTransfersEndpoint,
-                                              unwrappedMessage.toAddress);
+            const auto endpoint       = fmt::format(cosmos::constants::kGaiaTransfersEndpoint,
+                                                    unwrappedMessage.toAddress);
 
             return genericPostRequestForSimulation(endpoint, rawTransaction);
         }
@@ -1097,7 +1108,7 @@ namespace ledger {
             const std::string gasAdjustment) const {
             auto document = rapidjson::Document();
             document.SetObject();
-            auto &allocator = document.GetAllocator();
+            auto &allocator   = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
             makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
@@ -1123,15 +1134,15 @@ namespace ledger {
             const std::string gasAdjustment) const {
             auto document = rapidjson::Document();
             document.SetObject();
-            auto &allocator = document.GetAllocator();
+            auto &allocator   = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
             makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
-            auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
+            auto baseReq                = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
 
             const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgDelegate(message);
 
-            auto delegatorAddressValue = rapidjson::Value(rapidjson::kStringType);
+            auto delegatorAddressValue  = rapidjson::Value(rapidjson::kStringType);
             makeStringValue(unwrappedMessage.delegatorAddress, delegatorAddressValue,
                             allocator);
             const auto delegatorAddress =
@@ -1145,12 +1156,12 @@ namespace ledger {
 
             auto amountValue = rapidjson::Value(rapidjson::kObjectType);
             makeAmount(unwrappedMessage.amount, amountValue, allocator);
-            const auto amount = JsonObject(cosmos::constants::kAmount, amountValue);
+            const auto amount         = JsonObject(cosmos::constants::kAmount, amountValue);
 
             const auto rawTransaction = makeJsonFrom(document, baseReq, delegatorAddress,
                                                      validatorAddress, amount);
-            const auto endpoint = fmt::format(cosmos::constants::kGaiaDelegationsEndpoint,
-                                              unwrappedMessage.delegatorAddress);
+            const auto endpoint       = fmt::format(cosmos::constants::kGaiaDelegationsEndpoint,
+                                                    unwrappedMessage.delegatorAddress);
 
             return genericPostRequestForSimulation(endpoint, rawTransaction);
         }
@@ -1162,15 +1173,15 @@ namespace ledger {
             const std::string gasAdjustment) const {
             auto document = rapidjson::Document();
             document.SetObject();
-            auto &allocator = document.GetAllocator();
+            auto &allocator   = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
             makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
-            auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
+            auto baseReq                = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
 
             const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgUndelegate(message);
 
-            auto delegatorAddressValue = rapidjson::Value(rapidjson::kStringType);
+            auto delegatorAddressValue  = rapidjson::Value(rapidjson::kStringType);
             makeStringValue(unwrappedMessage.delegatorAddress, delegatorAddressValue,
                             allocator);
             const auto delegatorAddress =
@@ -1184,12 +1195,12 @@ namespace ledger {
 
             auto amountValue = rapidjson::Value(rapidjson::kObjectType);
             makeAmount(unwrappedMessage.amount, amountValue, allocator);
-            const auto amount = JsonObject(cosmos::constants::kAmount, amountValue);
+            const auto amount         = JsonObject(cosmos::constants::kAmount, amountValue);
 
             const auto rawTransaction = makeJsonFrom(document, baseReq, delegatorAddress,
                                                      validatorAddress, amount);
-            const auto endpoint = fmt::format(cosmos::constants::kGaiaUnbondingsEndpoint,
-                                              unwrappedMessage.delegatorAddress);
+            const auto endpoint       = fmt::format(cosmos::constants::kGaiaUnbondingsEndpoint,
+                                                    unwrappedMessage.delegatorAddress);
 
             return genericPostRequestForSimulation(endpoint, rawTransaction);
         }
@@ -1201,7 +1212,7 @@ namespace ledger {
             const std::string gasAdjustment) const {
             auto document = rapidjson::Document();
             document.SetObject();
-            auto &allocator = document.GetAllocator();
+            auto &allocator   = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
             makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
@@ -1271,7 +1282,7 @@ namespace ledger {
             const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
             const std::string gasAdjustment) const {
             const auto &messages = transaction->getMessages();
-            auto estimations = std::vector<Future<BigInt>>();
+            auto estimations     = std::vector<Future<BigInt>>();
             std::transform(
                 std::begin(messages), std::end(messages), std::back_inserter(estimations),
                 [&](const std::shared_ptr<api::CosmosLikeMessage> &message) {

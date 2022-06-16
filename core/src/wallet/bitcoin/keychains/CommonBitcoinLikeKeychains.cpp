@@ -60,11 +60,11 @@ namespace ledger {
             _xpub = xpub;
 
             {
-                auto localPath = getDerivationScheme().getSchemeTo(DerivationSchemeLevel::NODE).setAccountIndex(getAccountIndex()).setCoinType(getCurrency().bip44CoinType).setNode(RECEIVE).getPath();
+                auto localPath  = getDerivationScheme().getSchemeTo(DerivationSchemeLevel::NODE).setAccountIndex(getAccountIndex()).setCoinType(getCurrency().bip44CoinType).setNode(RECEIVE).getPath();
                 _publicNodeXpub = std::static_pointer_cast<BitcoinLikeExtendedPublicKey>(_xpub)->derive(localPath);
             }
             {
-                auto localPath = getDerivationScheme().getSchemeTo(DerivationSchemeLevel::NODE).setAccountIndex(getAccountIndex()).setCoinType(getCurrency().bip44CoinType).setNode(CHANGE).getPath();
+                auto localPath    = getDerivationScheme().getSchemeTo(DerivationSchemeLevel::NODE).setAccountIndex(getAccountIndex()).setCoinType(getCurrency().bip44CoinType).setNode(CHANGE).getPath();
                 _internalNodeXpub = std::static_pointer_cast<BitcoinLikeExtendedPublicKey>(_xpub)->derive(localPath);
             }
             _observableRange = (uint32_t)configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE)
@@ -80,7 +80,6 @@ namespace ledger {
             KeychainPersistentState state;
             auto rawState = preferences->getData("state", {});
             if (!rawState.empty()) {
-
                 boost::iostreams::array_source my_vec_source(reinterpret_cast<char *>(&rawState[0]), rawState.size());
                 boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
                 ::cereal::BinaryInputArchive archive(is);
@@ -106,7 +105,6 @@ namespace ledger {
             };
 
             if (path.getParent().getLastChildNum() == 0) {
-
                 if (!isToUpdate(state.maxConsecutiveReceiveIndex, state.nonConsecutiveReceiveIndexes)) {
                     return false;
                 }
@@ -118,7 +116,6 @@ namespace ledger {
                 }
 
             } else {
-
                 if (!isToUpdate(state.maxConsecutiveChangeIndex, state.nonConsecutiveChangeIndexes)) {
                     return false;
                 }
@@ -133,13 +130,13 @@ namespace ledger {
             return true;
         }
 
-        //TODO the two following methods are similar. Merge them if possible
+        // TODO the two following methods are similar. Merge them if possible
         std::vector<BitcoinLikeKeychain::Address> CommonBitcoinLikeKeychains::getAllObservableAddresses(uint32_t from, uint32_t to) {
             auto currency = getCurrency();
             std::vector<BitcoinLikeKeychain::Address> res;
             res.reserve((to - from + 1) * 2);
             auto preferencesEdit = getPreferences()->edit();
-            bool hasDBChange = false;
+            bool hasDBChange     = false;
             for (int iPurpose : {KeyPurpose::RECEIVE, KeyPurpose::CHANGE}) {
                 for (int index = from; index <= to; index++) {
                     auto localPath = getDerivationScheme()
@@ -150,14 +147,14 @@ namespace ledger {
                                          .getPath()
                                          .toString();
                     auto cacheKey = fmt::format("path:{}", localPath);
-                    auto address = getPreferences()->getString(cacheKey, "");
+                    auto address  = getPreferences()->getString(cacheKey, "");
 
                     if (address.empty()) {
-                        auto xpub = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
-                        auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1).setAccountIndex(getAccountIndex()).setCoinType(currency.bip44CoinType).setNode(iPurpose).setAddressIndex(index).getPath().toString();
-                        address = BitcoinLikeAddress::fromPublicKey(xpub, currency, p, _keychainEngine);
+                        auto xpub       = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
+                        auto p          = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1).setAccountIndex(getAccountIndex()).setCoinType(currency.bip44CoinType).setNode(iPurpose).setAddressIndex(index).getPath().toString();
+                        address         = BitcoinLikeAddress::fromPublicKey(xpub, currency, p, _keychainEngine);
                         preferencesEdit = preferencesEdit->putString(cacheKey, address)->putString(fmt::format("address:{}", address), localPath);
-                        hasDBChange = true;
+                        hasDBChange     = true;
                     }
                     res.emplace_back(std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath))));
                 }
@@ -173,7 +170,7 @@ namespace ledger {
             std::vector<std::string> res;
             res.reserve((to - from + 1) * 2);
             auto preferencesEdit = getPreferences()->edit();
-            bool hasDBChange = false;
+            bool hasDBChange     = false;
             for (int index = from; index <= to; index++) {
                 for (int iPurpose : {KeyPurpose::RECEIVE, KeyPurpose::CHANGE}) {
                     auto localPath = getDerivationScheme()
@@ -183,15 +180,15 @@ namespace ledger {
                                          .setAddressIndex(index)
                                          .getPath()
                                          .toString();
-                    auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1).setAccountIndex(getAccountIndex()).setCoinType(currency.bip44CoinType).setNode(iPurpose).setAddressIndex(index).getPath().toString();
+                    auto p        = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1).setAccountIndex(getAccountIndex()).setCoinType(currency.bip44CoinType).setNode(iPurpose).setAddressIndex(index).getPath().toString();
                     auto cacheKey = fmt::format("path:{}", localPath);
-                    auto address = getPreferences()->getString(cacheKey, "");
+                    auto address  = getPreferences()->getString(cacheKey, "");
 
                     if (address.empty()) {
-                        auto xpub = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
-                        address = BitcoinLikeAddress::fromPublicKey(xpub, currency, p, _keychainEngine);
+                        auto xpub       = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
+                        address         = BitcoinLikeAddress::fromPublicKey(xpub, currency, p, _keychainEngine);
                         preferencesEdit = preferencesEdit->putString(cacheKey, address)->putString(fmt::format("address:{}", address), localPath);
-                        hasDBChange = true;
+                        hasDBChange     = true;
                     }
                     res.emplace_back(address);
                 }
@@ -214,7 +211,7 @@ namespace ledger {
         std::vector<BitcoinLikeKeychain::Address>
         CommonBitcoinLikeKeychains::getFreshAddresses(BitcoinLikeKeychain::KeyPurpose purpose, size_t n) {
             KeychainPersistentState state = getState();
-            auto startOffset = (purpose == KeyPurpose::RECEIVE) ? state.maxConsecutiveReceiveIndex : state.maxConsecutiveChangeIndex;
+            auto startOffset              = (purpose == KeyPurpose::RECEIVE) ? state.maxConsecutiveReceiveIndex : state.maxConsecutiveChangeIndex;
             std::vector<BitcoinLikeKeychain::Address> result(n);
             for (auto i = 0; i < n; i++) {
                 result[i] = derive(purpose, startOffset + i);
@@ -247,8 +244,8 @@ namespace ledger {
         std::vector<BitcoinLikeKeychain::Address>
         CommonBitcoinLikeKeychains::getAllObservableAddresses(BitcoinLikeKeychain::KeyPurpose purpose, uint32_t from, uint32_t to) {
             KeychainPersistentState state = getState();
-            auto maxObservableIndex = (purpose == KeyPurpose::CHANGE ? state.maxConsecutiveChangeIndex + state.nonConsecutiveChangeIndexes.size() : state.maxConsecutiveReceiveIndex + state.nonConsecutiveReceiveIndexes.size()) + _observableRange;
-            auto length = std::min<size_t>(to - from, maxObservableIndex - from);
+            auto maxObservableIndex       = (purpose == KeyPurpose::CHANGE ? state.maxConsecutiveChangeIndex + state.nonConsecutiveChangeIndexes.size() : state.maxConsecutiveReceiveIndex + state.nonConsecutiveReceiveIndexes.size()) + _observableRange;
+            auto length                   = std::min<size_t>(to - from, maxObservableIndex - from);
             std::vector<BitcoinLikeKeychain::Address> result;
             result.reserve(length + 1);
             for (auto i = 0; i <= length; i++) {
@@ -319,8 +316,8 @@ namespace ledger {
         }
 
         BitcoinLikeKeychain::Address CommonBitcoinLikeKeychains::derive(KeyPurpose purpose, off_t index) {
-            auto currency = getCurrency();
-            auto iPurpose = (purpose == KeyPurpose::RECEIVE) ? 0 : 1;
+            auto currency  = getCurrency();
+            auto iPurpose  = (purpose == KeyPurpose::RECEIVE) ? 0 : 1;
             auto localPath = getDerivationScheme()
                                  .setAccountIndex(getAccountIndex())
                                  .setCoinType(currency.bip44CoinType)
@@ -330,13 +327,12 @@ namespace ledger {
                                  .toString();
 
             auto cacheKey = fmt::format("path:{}", localPath);
-            auto address = getPreferences()->getString(cacheKey, "");
+            auto address  = getPreferences()->getString(cacheKey, "");
 
             if (address.empty()) {
-
-                auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1).setAccountIndex(getAccountIndex()).setCoinType(currency.bip44CoinType).setNode(iPurpose).setAddressIndex((int)index).getPath().toString();
+                auto p    = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1).setAccountIndex(getAccountIndex()).setCoinType(currency.bip44CoinType).setNode(iPurpose).setAddressIndex((int)index).getPath().toString();
                 auto xpub = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
-                address = BitcoinLikeAddress::fromPublicKey(xpub, currency, p, _keychainEngine);
+                address   = BitcoinLikeAddress::fromPublicKey(xpub, currency, p, _keychainEngine);
                 // Feed path -> address cache
                 // Feed address -> path cache
                 getPreferences()

@@ -44,15 +44,15 @@ namespace ledger {
         std::string
         StellarLikeAssetDatabaseHelper::createAssetUid(const std::string &type, const Option<std::string> &code, const Option<std::string> &issuer) {
             stellar::Asset asset;
-            asset.type = type;
+            asset.type   = type;
             asset.issuer = issuer.getValueOr("");
-            asset.code = code.getValueOr("");
+            asset.code   = code.getValueOr("");
             return createAssetUid(asset);
         }
 
         bool StellarLikeAssetDatabaseHelper::putAsset(soci::session &sql, const std::string &type, const Option<std::string> &code, const Option<std::string> &issuer) {
             int count = 0;
-            auto uid = createAssetUid(type, code, issuer);
+            auto uid  = createAssetUid(type, code, issuer);
             sql << "SELECT COUNT(*) FROM stellar_assets WHERE uid = :uid", use(uid), into(count);
 
             if (count == 0) {

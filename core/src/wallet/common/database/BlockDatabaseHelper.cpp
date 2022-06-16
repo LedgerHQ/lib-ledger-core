@@ -56,7 +56,7 @@ namespace ledger {
 
         bool BlockDatabaseHelper::blockExists(soci::session &sql, const std::string &blockHash, const std::string &currencyName) {
             auto count = 0;
-            auto uid = createBlockUid(blockHash, currencyName);
+            auto uid   = createBlockUid(blockHash, currencyName);
             sql << "SELECT COUNT(*) FROM blocks WHERE uid = :uid", use(uid), into(count);
             return count > 0;
         }
@@ -66,10 +66,10 @@ namespace ledger {
         }
 
         static Option<api::Block> getBlockFromRow(row &databaseRow, const std::string &currencyName) {
-            auto uid = databaseRow.get<std::string>(0);
-            auto hash = databaseRow.get<std::string>(1);
+            auto uid    = databaseRow.get<std::string>(0);
+            auto hash   = databaseRow.get<std::string>(1);
             auto height = get_number<int64_t>(databaseRow, 2);
-            auto time = databaseRow.get<std::chrono::system_clock::time_point>(3);
+            auto time   = databaseRow.get<std::chrono::system_clock::time_point>(3);
             return Option<api::Block>(
                 api::Block(hash, uid, time, currencyName, height));
         }

@@ -98,7 +98,7 @@ namespace ledger {
 
             void AlgorandTransactionImpl::setPaymentInfo(const api::AlgorandPaymentInfo &info) {
                 stxn.txn.header.type = model::constants::pay;
-                stxn.txn.details = model::fromAPI(info);
+                stxn.txn.details     = model::fromAPI(info);
             }
 
             api::AlgorandPaymentInfo AlgorandTransactionImpl::getPaymentInfo() const {
@@ -111,7 +111,7 @@ namespace ledger {
 
             void AlgorandTransactionImpl::setParticipationInfo(const api::AlgorandParticipationInfo &info) {
                 stxn.txn.header.type = model::constants::keyreg;
-                stxn.txn.details = model::fromAPI(info);
+                stxn.txn.details     = model::fromAPI(info);
             }
 
             api::AlgorandParticipationInfo AlgorandTransactionImpl::getParticipationInfo() const {
@@ -124,7 +124,7 @@ namespace ledger {
 
             void AlgorandTransactionImpl::setAssetConfigurationInfo(const api::AlgorandAssetConfigurationInfo &info) {
                 stxn.txn.header.type = model::constants::acfg;
-                stxn.txn.details = model::fromAPI(info);
+                stxn.txn.details     = model::fromAPI(info);
             }
 
             api::AlgorandAssetConfigurationInfo AlgorandTransactionImpl::getAssetConfigurationInfo() const {
@@ -137,7 +137,7 @@ namespace ledger {
 
             void AlgorandTransactionImpl::setAssetTransferInfo(const api::AlgorandAssetTransferInfo &info) {
                 stxn.txn.header.type = model::constants::axfer;
-                stxn.txn.details = model::fromAPI(info);
+                stxn.txn.details     = model::fromAPI(info);
             }
 
             api::AlgorandAssetTransferInfo AlgorandTransactionImpl::getAssetTransferInfo() const {
@@ -150,7 +150,7 @@ namespace ledger {
 
             void AlgorandTransactionImpl::setAssetFreezeInfo(const api::AlgorandAssetFreezeInfo &info) {
                 stxn.txn.header.type = model::constants::afreeze;
-                stxn.txn.details = model::fromAPI(info);
+                stxn.txn.details     = model::fromAPI(info);
             }
 
             api::AlgorandAssetFreezeInfo AlgorandTransactionImpl::getAssetFreezeInfo() const {
@@ -178,7 +178,7 @@ namespace ledger {
             }
 
             std::string AlgorandTransactionImpl::setCorrelationId(const std::string &newId) {
-                auto oldId = correlationId;
+                auto oldId    = correlationId;
                 correlationId = newId;
                 return oldId;
             }

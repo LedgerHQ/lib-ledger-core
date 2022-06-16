@@ -123,7 +123,7 @@ namespace msgpack {
             /// Returns the number of valid elements.
             /// All values are valid except empty Options.
             template <typename T, typename... Ts>
-            uint32_t countValidValues(T &&value, Ts &&... values) {
+            uint32_t countValidValues(T &&value, Ts &&...values) {
                 return isValueValid(std::forward<T>(value)) + countValidValues(std::forward<Ts>(values)...);
             }
 
@@ -138,7 +138,7 @@ namespace msgpack {
 
             /// Pack all the keyvalues filtering out the invalid ones
             template <typename Stream, typename... T>
-            packer<Stream> &packKeyValues(packer<Stream> &o, T &&... keyvalue) {
+            packer<Stream> &packKeyValues(packer<Stream> &o, T &&...keyvalue) {
                 using _t = std::array<int, sizeof...(T)>;
                 (void)_t{(packKeyValue(o, std::forward<T>(keyvalue)), 0)...};
 

@@ -77,4 +77,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BULKINSERTDATABASEHELPER_HPP
+#endif // LEDGER_CORE_BULKINSERTDATABASEHELPER_HPP

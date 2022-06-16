@@ -11,7 +11,7 @@ namespace ledger {
             createCosmosLikeAccount(const std::shared_ptr<core::AbstractWallet> &wallet,
                                     int32_t index,
                                     const api::AccountCreationInfo &info) {
-                auto i = info;
+                auto i  = info;
                 i.index = index;
                 return std::dynamic_pointer_cast<core::CosmosLikeAccount>(uv::wait(wallet->newAccountWithInfo(i)));
             }
@@ -20,7 +20,7 @@ namespace ledger {
             createCosmosLikeAccount(const std::shared_ptr<core::AbstractWallet> &wallet,
                                     int32_t index,
                                     const api::ExtendedKeyAccountCreationInfo &info) {
-                auto i = info;
+                auto i  = info;
                 i.index = index;
                 return std::dynamic_pointer_cast<CosmosLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(i)));
             }
@@ -47,9 +47,9 @@ namespace ledger {
                 Message msg;
                 msg.type = constants::kMsgSend;
                 MsgSend sendMsg;
-                //sendMsg.fromAddress = "cosmos155svs6sgxe55rnvs6ghprtqu0mh69kehrn0dqr";
+                // sendMsg.fromAddress = "cosmos155svs6sgxe55rnvs6ghprtqu0mh69kehrn0dqr";
                 sendMsg.fromAddress = "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl"; // Obelix
-                sendMsg.toAddress = "cosmos1sd4tl9aljmmezzudugs7zlaya7pg2895tyn79r";
+                sendMsg.toAddress   = "cosmos1sd4tl9aljmmezzudugs7zlaya7pg2895tyn79r";
                 sendMsg.amount.emplace_back("1000", "uatom");
                 msg.content = sendMsg;
                 return msg;
@@ -71,11 +71,11 @@ namespace ledger {
                 Message msg;
                 msg.type = constants::kMsgVote;
                 MsgVote voteMsg;
-                //voteMsg.voter = "cosmos155svs6sgxe55rnvs6ghprtqu0mh69kehrn0dqr";
-                voteMsg.voter = "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl"; // Obelix
+                // voteMsg.voter = "cosmos155svs6sgxe55rnvs6ghprtqu0mh69kehrn0dqr";
+                voteMsg.voter      = "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl"; // Obelix
                 voteMsg.proposalId = "42";
-                voteMsg.option = api::CosmosLikeVoteOption::COSMOSVOTENO;
-                msg.content = voteMsg;
+                voteMsg.option     = api::CosmosLikeVoteOption::COSMOSVOTENO;
+                msg.content        = voteMsg;
                 return msg;
             }
 
@@ -90,8 +90,8 @@ namespace ledger {
                 msg.type = constants::kMsgFees;
                 MsgFees feesMsg;
                 feesMsg.payerAddress = payerAddress;
-                feesMsg.fees = api::CosmosLikeAmount("30", "uatom");
-                msg.content = feesMsg;
+                feesMsg.fees         = api::CosmosLikeAmount("30", "uatom");
+                msg.content          = feesMsg;
                 return msg;
             }
 
@@ -112,22 +112,22 @@ namespace ledger {
                 Transaction tx;
                 tx.hash = "A1E44688B429AF17322EC33CE62876FA415EFC8D9244A2F51454BD025F416594";
                 ledger::core::Block block;
-                block.hash = "52B39D45B438C6995CD448B09963954883B0F7A57E9EFC7A95E0A6C5BAC09C00";
+                block.hash         = "52B39D45B438C6995CD448B09963954883B0F7A57E9EFC7A95E0A6C5BAC09C00";
                 block.currencyName = "cosmos";
-                block.height = 744795;
-                block.time = timeRef;
-                tx.block = block;
-                tx.fee.gas = BigInt(30000);
+                block.height       = 744795;
+                block.time         = timeRef;
+                tx.block           = block;
+                tx.fee.gas         = BigInt(30000);
                 tx.fee.amount.emplace_back("30", "uatom");
-                tx.gasUsed = BigInt(26826);
+                tx.gasUsed   = BigInt(26826);
                 tx.timestamp = timeRef;
-                tx.memo = "Sent by Ledger";
+                tx.memo      = "Sent by Ledger";
                 for (const auto &msg : msgs) {
                     tx.messages.push_back(msg);
                     MessageLog log;
                     log.messageIndex = 0;
-                    log.success = true;
-                    log.log = "Success";
+                    log.success      = true;
+                    log.log          = "Success";
                     tx.logs.push_back(log);
                 }
                 return tx;
@@ -146,7 +146,7 @@ namespace ledger {
             }
 
             void assertSameSendMessage(const Message &msgRef, const Message &msgResult) {
-                const auto &sendMsgRef = boost::get<MsgSend>(msgRef.content);
+                const auto &sendMsgRef    = boost::get<MsgSend>(msgRef.content);
                 const auto &sendMsgResult = boost::get<MsgSend>(msgResult.content);
                 EXPECT_EQ(sendMsgResult.fromAddress, sendMsgRef.fromAddress);
                 EXPECT_EQ(sendMsgResult.toAddress, sendMsgRef.toAddress);
@@ -164,7 +164,7 @@ namespace ledger {
             }
 
             void assertSameVoteMessage(const Message &msgRef, const Message &msgResult) {
-                const auto &voteMsgRef = boost::get<MsgVote>(msgRef.content);
+                const auto &voteMsgRef    = boost::get<MsgVote>(msgRef.content);
                 const auto &voteMsgResult = boost::get<MsgVote>(msgResult.content);
                 EXPECT_EQ(voteMsgResult.voter, voteMsgRef.voter);
                 EXPECT_EQ(voteMsgResult.proposalId, voteMsgRef.proposalId);
@@ -176,7 +176,7 @@ namespace ledger {
             }
 
             void assertSameFeesMessage(const Message &msgRef, const Message &msgResult) {
-                const auto &feesMsgRef = boost::get<MsgFees>(msgRef.content);
+                const auto &feesMsgRef    = boost::get<MsgFees>(msgRef.content);
                 const auto &feesMsgResult = boost::get<MsgFees>(msgResult.content);
                 EXPECT_EQ(feesMsgRef.payerAddress, feesMsgResult.payerAddress);
                 EXPECT_EQ(feesMsgRef.fees.amount, feesMsgResult.fees.amount);

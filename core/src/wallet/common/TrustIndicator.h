@@ -76,4 +76,4 @@ namespace ledger {
 
 CEREAL_CLASS_VERSION(ledger::core::TrustIndicator, 0);
 
-#endif //LEDGER_CORE_TRUSTINDICATOR_H
+#endif // LEDGER_CORE_TRUSTINDICATOR_H

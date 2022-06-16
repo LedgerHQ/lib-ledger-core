@@ -42,20 +42,19 @@ struct CoinSelectionP2PKH : public BitcoinMakeBaseTransaction {
         testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
         testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "49'/<coin_type>'/<account>'/<node>/<address>");
         testData.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
-        testData.walletName = randomWalletName();
+        testData.walletName   = randomWalletName();
         testData.currencyName = "bitcoin_testnet";
-        testData.inflate_btc = ledger::testing::coin_selection_xpub::inflate;
+        testData.inflate_btc  = ledger::testing::coin_selection_xpub::inflate;
     }
 };
 
 TEST_F(CoinSelectionP2PKH, PickOneUTXOWithoutChange) {
-
     auto builder = tx_builder();
-    //1997970
+    // 1997970
     builder->sendToAddress(api::Amount::fromLong(currency, 20000000), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
     builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 0));
-    auto f = builder->build();
+    auto f  = builder->build();
     auto tx = uv::wait(f);
 
     EXPECT_EQ(tx->getInputs().size(), 1);
@@ -66,14 +65,13 @@ TEST_F(CoinSelectionP2PKH, PickOneUTXOWithoutChange) {
 }
 
 TEST_F(CoinSelectionP2PKH, DISABLED_PickOneUTXOWithChange) {
-
     auto builder = tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 20000000), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
     builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF, optional<int32_t>());
     int64_t fees = 10;
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
-    auto f = builder->build();
-    auto tx = uv::wait(f);
+    auto f          = builder->build();
+    auto tx         = uv::wait(f);
 
     auto firstInput = tx->getInputs().at(0)->getValue()->toLong();
     EXPECT_EQ(tx->getInputs().size(), 1);
@@ -87,12 +85,11 @@ TEST_F(CoinSelectionP2PKH, DISABLED_PickOneUTXOWithChange) {
 }
 
 TEST_F(CoinSelectionP2PKH, PickMultipleUTXO) {
-
     auto builder = tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 70000000), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
     builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
-    auto f = builder->build();
+    auto f  = builder->build();
     auto tx = uv::wait(f);
 
     EXPECT_LE(tx->getInputs().size(), 3);
@@ -108,12 +105,11 @@ TEST_F(CoinSelectionP2PKH, PickMultipleUTXO) {
 }
 
 TEST_F(CoinSelectionP2PKH, HighestFirstEnough) {
-
     auto builder = tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 70000000), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
     builder->pickInputs(api::BitcoinLikePickingStrategy::HIGHEST_FIRST_LIMIT_UTXO, 0xFFFFFFFF, optional<int32_t>(2));
     builder->setFeesPerByte(api::Amount::fromLong(currency, 0));
-    auto f = builder->build();
+    auto f  = builder->build();
     auto tx = uv::wait(f);
 
     EXPECT_LE(tx->getInputs().size(), 2);
@@ -125,7 +121,6 @@ TEST_F(CoinSelectionP2PKH, HighestFirstEnough) {
 }
 
 TEST_F(CoinSelectionP2PKH, HighestFirstNotEnough) {
-
     auto builder = tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 100000000), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
     builder->pickInputs(api::BitcoinLikePickingStrategy::HIGHEST_FIRST_LIMIT_UTXO, 0xFFFFFFFF, optional<int32_t>(2));
@@ -135,7 +130,6 @@ TEST_F(CoinSelectionP2PKH, HighestFirstNotEnough) {
 }
 
 TEST_F(CoinSelectionP2PKH, LimitUtxoPickStrategy) {
-
     auto build = [=](int64_t amount) {
         auto builder = tx_builder();
         builder->sendToAddress(api::Amount::fromLong(currency, amount), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
@@ -145,7 +139,7 @@ TEST_F(CoinSelectionP2PKH, LimitUtxoPickStrategy) {
         return uv::wait(f);
     };
 
-    { //test 1
+    { // test 1
         auto tx = build(70000000);
         EXPECT_LE(tx->getInputs().size(), 2);
         EXPECT_EQ(tx->getInputs().at(0)->getValue()->toLong(), 50000000);
@@ -153,17 +147,17 @@ TEST_F(CoinSelectionP2PKH, LimitUtxoPickStrategy) {
         EXPECT_EQ(tx->getOutputs().size(), 2);
         EXPECT_EQ(tx->getOutputs().at(0)->getValue()->toLong(), 70000000);
     }
-    { //test 2
+    { // test 2
         auto tx = build(50000000);
         EXPECT_LE(tx->getInputs().size(), 1);
         EXPECT_EQ(tx->getInputs().at(0)->getValue()->toLong(), 50000000);
         EXPECT_EQ(tx->getOutputs().size(), 1);
         EXPECT_EQ(tx->getOutputs().at(0)->getValue()->toLong(), 50000000);
     }
-    { //test 3
+    { // test 3
         EXPECT_THROW(build(100000000), Exception);
     }
-    { //test 4
+    { // test 4
         auto tx = build(10000000);
         EXPECT_LE(tx->getInputs().size(), 1);
         EXPECT_EQ(tx->getInputs().at(0)->getValue()->toLong(), 10000000);
@@ -195,12 +189,11 @@ TEST_F(CoinSelectionP2PKH, maxSpendable) {
 }
 
 TEST_F(CoinSelectionP2PKH, PickAllUTXO) {
-
     auto builder = tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 145000000), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
     builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
-    auto f = builder->build();
+    auto f  = builder->build();
     auto tx = uv::wait(f);
 
     EXPECT_EQ(tx->getInputs().size(), 5);
@@ -215,12 +208,11 @@ TEST_F(CoinSelectionP2PKH, PickAllUTXO) {
 }
 
 TEST_F(CoinSelectionP2PKH, PickUTXOWithMergeOutputs) {
-
     auto builder = tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 80000000), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
     builder->pickInputs(api::BitcoinLikePickingStrategy::MERGE_OUTPUTS, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
-    auto f = builder->build();
+    auto f  = builder->build();
     auto tx = uv::wait(f);
 
     EXPECT_EQ(tx->getInputs().size(), 4);
@@ -235,24 +227,23 @@ TEST_F(CoinSelectionP2PKH, PickUTXOWithMergeOutputs) {
 }
 
 TEST_F(CoinSelectionP2PKH, DISABLED_CompareUTXOPickingStrategies) {
-
     auto buildTx = [=](const api::BitcoinLikePickingStrategy &strategy, int64_t amount) -> std::shared_ptr<api::BitcoinLikeTransaction> {
         auto builder = tx_builder();
         builder->sendToAddress(api::Amount::fromLong(wallet->getCurrency(), amount), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
         builder->pickInputs(strategy, 0xFFFFFFFF, optional<int32_t>());
         builder->setFeesPerByte(api::Amount::fromLong(wallet->getCurrency(), 41));
-        auto f = builder->build();
+        auto f  = builder->build();
         auto tx = uv::wait(f);
         return tx;
     };
 
-    auto balance = uv::wait(account->getBalance());
+    auto balance       = uv::wait(account->getBalance());
     auto currentAmount = balance->toLong();
-    auto iterations = 20;
+    auto iterations    = 20;
     for (auto index = 0; index < iterations; index++) {
         currentAmount -= balance->toLong() / iterations;
         auto merge = buildTx(api::BitcoinLikePickingStrategy::MERGE_OUTPUTS, currentAmount);
-        auto deep = buildTx(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, currentAmount);
+        auto deep  = buildTx(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, currentAmount);
         EXPECT_LE(deep->getFees()->toLong(), merge->getFees()->toLong());
         EXPECT_LE(deep->getOutputs().size(), merge->getOutputs().size());
         auto optimize = buildTx(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, currentAmount);

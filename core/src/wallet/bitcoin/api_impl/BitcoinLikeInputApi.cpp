@@ -37,7 +37,7 @@ namespace ledger {
     namespace core {
 
         BitcoinLikeInputApi::BitcoinLikeInputApi(const std::shared_ptr<OperationApi> &operation, int32_t inputIndex) {
-            _operation = operation;
+            _operation  = operation;
             _inputIndex = inputIndex;
         }
 

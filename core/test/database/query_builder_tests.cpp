@@ -58,10 +58,10 @@ TEST_F(QueryBuilderTest, SimpleOperationQuery) {
     auto pool = newDefaultPool();
     {
         const auto walletName = "my_wallet";
-        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", api::DynamicObject::newInstance()));
-        auto nextIndex = uv::wait(wallet->getNextAccountIndex());
+        auto wallet           = uv::wait(pool->createWallet(walletName, "bitcoin", api::DynamicObject::newInstance()));
+        auto nextIndex        = uv::wait(wallet->getNextAccountIndex());
         EXPECT_EQ(nextIndex, 0);
-        auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
+        auto account                                                       = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
         std::vector<BitcoinLikeBlockchainExplorerTransaction> transactions = {
             *JSONUtils::parse<TransactionParser>(TX_1),
             *JSONUtils::parse<TransactionParser>(TX_2),

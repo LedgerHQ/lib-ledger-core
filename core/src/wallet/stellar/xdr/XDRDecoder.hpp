@@ -55,17 +55,16 @@ namespace ledger {
                 using ObjectDecoder = std::function<void(Decoder &)>;
 
                 /**
-                * Create a decoder for the given object. This function must have a
-                * specialization for each types to decode.
-                * @tparam T The class of the object to decode
-                * @param object The object to decode
-                * @return A function able to decode the object
-                */
+                 * Create a decoder for the given object. This function must have a
+                 * specialization for each types to decode.
+                 * @tparam T The class of the object to decode
+                 * @param object The object to decode
+                 * @return A function able to decode the object
+                 */
                 template <class T>
                 ObjectDecoder make_decoder(T &object);
 
                 class Decoder {
-
                   public:
                     Decoder(const std::vector<uint8_t> &data);
 
@@ -147,4 +146,4 @@ namespace ledger {
     }         // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_XDRDECODER_HPP
+#endif // LEDGER_CORE_XDRDECODER_HPP

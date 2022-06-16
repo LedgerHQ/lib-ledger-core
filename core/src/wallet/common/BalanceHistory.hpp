@@ -75,7 +75,7 @@ namespace ledger {
                 Value sum = zero;
 
                 while (lowerDate <= endDate && operationIt != operationEnd) {
-                    auto operation = *operationIt;
+                    auto operation     = *operationIt;
                     auto operationDate = Op::date(operation);
 
                     while (operationDate > upperDate && lowerDate < endDate) {

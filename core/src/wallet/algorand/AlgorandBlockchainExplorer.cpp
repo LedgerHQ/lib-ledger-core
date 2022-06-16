@@ -41,22 +41,22 @@ namespace ledger {
 
             namespace constants {
 
-                const std::string purestakeTokenHeader = "x-api-key";
+                const std::string purestakeTokenHeader                 = "x-api-key";
 
                 // Explorer endpoints
-                const std::string purestakeStatusEndpoint = "/ps2/v2/status";
-                const std::string purestakeTransactionsEndpoint = "/ps2/v2/transactions";
-                const std::string purestakeTransactionsParamsEndpoint = "/ps2/v2/transactions/params";
-                const std::string purestakeAccountEndpoint = "/ps2/v2/accounts/{}";
-                const std::string purestakeBlockEndpoint = "/ps2/v2/blocks/{}?format=json";
+                const std::string purestakeStatusEndpoint              = "/ps2/v2/status";
+                const std::string purestakeTransactionsEndpoint        = "/ps2/v2/transactions";
+                const std::string purestakeTransactionsParamsEndpoint  = "/ps2/v2/transactions/params";
+                const std::string purestakeAccountEndpoint             = "/ps2/v2/accounts/{}";
+                const std::string purestakeBlockEndpoint               = "/ps2/v2/blocks/{}?format=json";
                 const std::string purestakeAccountTransactionsEndpoint = "/idx2/v2/accounts/{}/transactions";
-                const std::string purestakeTransactionEndpoint = "/idx2/v2/transactions?txid={}";
-                const std::string purestakeAssetEndpoint = "/idx2/v2/assets/{}";
+                const std::string purestakeTransactionEndpoint         = "/idx2/v2/transactions?txid={}";
+                const std::string purestakeAssetEndpoint               = "/idx2/v2/assets/{}";
 
                 // Query parameters
-                const std::string limitQueryParam = "{}?limit={}";
-                const std::string minRoundQueryParam = "{}&min-round={}";
-                const std::string maxRoundQueryParam = "{}&max-round={}";
+                const std::string limitQueryParam                      = "{}?limit={}";
+                const std::string minRoundQueryParam                   = "{}&min-round={}";
+                const std::string maxRoundQueryParam                   = "{}&max-round={}";
 
             } // namespace constants
 
@@ -80,7 +80,7 @@ namespace ledger {
                     .json(false)
                     .map<api::Block>(getContext(), [](const HttpRequest::JsonResult &response) {
                         const auto &json = std::get<1>(response)->GetObject();
-                        auto block = api::Block();
+                        auto block       = api::Block();
                         JsonParser::parseBlock(json, block);
                         return block;
                     });
@@ -109,7 +109,7 @@ namespace ledger {
                     .json(false)
                     .map<model::Account>(getContext(), [](const HttpRequest::JsonResult &response) {
                         const auto &json = std::get<1>(response)->GetObject();
-                        auto account = model::Account();
+                        auto account     = model::Account();
                         JsonParser::parseAccount(json, account);
                         return account;
                     });
@@ -149,7 +149,7 @@ namespace ledger {
                                                  fmt::format("Couldn't find transaction {}", txId));
                         }
                         const auto &jsonTx = *std::begin(jsonArray);
-                        auto tx = model::Transaction();
+                        auto tx            = model::Transaction();
                         JsonParser::parseTransaction(jsonTx, tx);
                         return tx;
                     });
@@ -160,7 +160,7 @@ namespace ledger {
                                                           const Option<uint64_t> &firstRound,
                                                           const Option<uint64_t> &lastRound) const {
                 auto url = fmt::format(constants::purestakeAccountTransactionsEndpoint, address);
-                url = fmt::format(constants::limitQueryParam, url, constants::EXPLORER_QUERY_LIMIT);
+                url      = fmt::format(constants::limitQueryParam, url, constants::EXPLORER_QUERY_LIMIT);
                 if (firstRound) {
                     url = fmt::format(constants::minRoundQueryParam, url, *firstRound);
                 }
@@ -176,7 +176,7 @@ namespace ledger {
                             throw make_exception(api::ErrorCode::NO_SUCH_ELEMENT, fmt::format("Missing '{}' field in JSON.", constants::xTransactions));
                         }
                         const auto &jsonArray = json[constants::xTransactions.c_str()].GetArray();
-                        auto txs = model::TransactionsBulk();
+                        auto txs              = model::TransactionsBulk();
                         JsonParser::parseTransactions(jsonArray, txs.transactions);
 
                         // Manage limit
@@ -190,7 +190,7 @@ namespace ledger {
                     .json(false)
                     .map<model::TransactionParams>(getContext(), [](const HttpRequest::JsonResult &response) {
                         const auto &json = std::get<1>(response)->GetObject();
-                        auto txParams = model::TransactionParams();
+                        auto txParams    = model::TransactionParams();
                         JsonParser::parseTransactionParams(json, txParams);
                         return txParams;
                     });

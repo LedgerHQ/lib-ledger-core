@@ -57,4 +57,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_RIPPLELIKEKEYCHAINFACTORY_H
+#endif // LEDGER_CORE_RIPPLELIKEKEYCHAINFACTORY_H

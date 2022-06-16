@@ -62,4 +62,4 @@ namespace ledger {
     }     // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_WAIT_H
+#endif // LEDGER_CORE_WAIT_H

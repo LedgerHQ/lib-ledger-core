@@ -37,7 +37,7 @@ using namespace ledger::core;
 
 TEST(Operation, TezosUidIsValid) {
     Operation op{};
-    op.tezosTransaction = TezosLikeBlockchainExplorerTransaction{};
+    op.tezosTransaction       = TezosLikeBlockchainExplorerTransaction{};
     op.tezosTransaction->hash = "123";
 
     // start as transaction type (no additional)
@@ -57,10 +57,9 @@ TEST(Operation, TezosUidIsValid) {
 }
 
 TEST(Operation, TransactionIdFormat) {
-
-    const std::string baseHash = {"test"};
+    const std::string baseHash   = {"test"};
     const std::string additional = {"add"};
-    const auto opType = ledger::core::api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
+    const auto opType            = ledger::core::api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
     ;
 
     // simple case

@@ -48,7 +48,7 @@ namespace ledger {
                 const std::shared_ptr<api::PathResolver> &resolver,
                 const std::string &dbName,
                 const std::string &password,
-                soci::session &session) = 0;
+                soci::session &session)                      = 0;
 
             virtual void setPassword(const std::string &password,
                                      soci::session &session) = 0;
@@ -68,4 +68,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_DATABASEBACKEND_HPP
+#endif // LEDGER_CORE_DATABASEBACKEND_HPP

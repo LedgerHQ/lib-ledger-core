@@ -99,11 +99,11 @@ class BaseFixture : public ::testing::Test {
   public:
     virtual void SetUp() override;
     virtual void TearDown() override;
-    std::shared_ptr<WalletPool> newDefaultPool(const std::string &poolName = "",
-                                               const std::string &password = "test",
+    std::shared_ptr<WalletPool> newDefaultPool(const std::string &poolName                              = "",
+                                               const std::string &password                              = "test",
                                                const std::shared_ptr<api::DynamicObject> &configuration = api::DynamicObject::newInstance(),
-                                               bool usePostgreSQL = false,
-                                               bool httpclientMultiThread = false);
+                                               bool usePostgreSQL                                       = false,
+                                               bool httpclientMultiThread                               = false);
     void createWallet(const std::shared_ptr<WalletPool> &pool,
                       const std::string &walletName,
                       const std::string &currencyName,
@@ -164,4 +164,4 @@ class BaseFixture : public ::testing::Test {
     std::string randomName(const std::string &prefix, unsigned int suffix_length = 10) const;
 };
 
-#endif //LEDGER_CORE_BASEFIXTURE_H
+#endif // LEDGER_CORE_BASEFIXTURE_H

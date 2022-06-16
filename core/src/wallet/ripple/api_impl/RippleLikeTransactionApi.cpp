@@ -82,7 +82,7 @@ namespace ledger {
 
         RippleLikeTransactionApi::RippleLikeTransactionApi(const std::shared_ptr<OperationApi> &operation) {
             auto &tx = operation->getBackend().rippleTransaction.getValue();
-            _time = tx.receivedAt;
+            _time    = tx.receivedAt;
 
             if (tx.block.nonEmpty()) {
                 _block = std::make_shared<RippleLikeBlockApi>(tx.block.getValue());
@@ -90,15 +90,15 @@ namespace ledger {
                 _block = nullptr;
             }
 
-            _hash = tx.hash;
+            _hash     = tx.hash;
 
             _currency = operation->getAccount()->getWallet()->getCurrency();
 
-            _fees = std::make_shared<Amount>(_currency, 0, tx.fees);
-            _value = std::make_shared<Amount>(_currency, 0, tx.value);
+            _fees     = std::make_shared<Amount>(_currency, 0, tx.fees);
+            _value    = std::make_shared<Amount>(_currency, 0, tx.value);
 
             _receiver = RippleLikeAddress::fromBase58(tx.receiver, _currency);
-            _sender = RippleLikeAddress::fromBase58(tx.sender, _currency);
+            _sender   = RippleLikeAddress::fromBase58(tx.sender, _currency);
 
             _sequence = std::make_shared<api::BigIntImpl>(tx.sequence);
 
@@ -159,48 +159,48 @@ namespace ledger {
 
         void RippleLikeTransactionApi::setDERSignature(const std::vector<uint8_t> &signature) {
             BytesReader reader(signature);
-            //DER prefix
+            // DER prefix
             reader.readNextByte();
-            //Total length
+            // Total length
             reader.readNextVarInt();
-            //Nb of elements for R
+            // Nb of elements for R
             reader.readNextByte();
-            //R length
-            auto rSize = reader.readNextVarInt();
+            // R length
+            auto rSize  = reader.readNextVarInt();
             _rSignature = reader.read(rSize);
-            //Nb of elements for S
+            // Nb of elements for S
             reader.readNextByte();
-            //S length
-            auto sSize = reader.readNextVarInt();
+            // S length
+            auto sSize  = reader.readNextVarInt();
             _sSignature = reader.read(sSize);
         }
 
-        //Field ID References:
-        // https://github.com/ripple/rippled/blob/master/src/ripple/protocol/SField.h#L57-L74
-        // and https://github.com/ripple/rippled/blob/72e6005f562a8f0818bc94803d222ac9345e1e40/src/ripple/protocol/impl/SField.cpp#L72-L266
+        // Field ID References:
+        //  https://github.com/ripple/rippled/blob/master/src/ripple/protocol/SField.h#L57-L74
+        //  and https://github.com/ripple/rippled/blob/72e6005f562a8f0818bc94803d222ac9345e1e40/src/ripple/protocol/impl/SField.cpp#L72-L266
         std::vector<uint8_t> RippleLikeTransactionApi::serialize() {
             BytesWriter writer;
 
-            //1 byte TransactionType Field ID:   Type Code = 1, Field Code = 2
+            // 1 byte TransactionType Field ID:   Type Code = 1, Field Code = 2
             writer.writeByte(0x12);
-            //2 bytes TransactionType ("Payment")
+            // 2 bytes TransactionType ("Payment")
             writer.writeByteArray({0x00, 0x00});
 
-            //1 byte Flags Field ID:   Type Code = 2, Field Code = 2
+            // 1 byte Flags Field ID:   Type Code = 2, Field Code = 2
             writer.writeByte(0x22);
-            //4 bytes Flags (tfFullyCanonicalSig ?)
+            // 4 bytes Flags (tfFullyCanonicalSig ?)
             writer.writeByteArray({0x80, 0x00, 0x00, 0x00});
 
-            //1 byte Sequence Field ID:   Type Code = 2, Field Code = 4
+            // 1 byte Sequence Field ID:   Type Code = 2, Field Code = 4
             writer.writeByte(0x24);
-            //4 bytes Sequence
+            // 4 bytes Sequence
             auto sequence = _sequence->toString(16);
             writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(_sequence->intValue()));
 
             if (_destinationTag.hasValue()) {
-                //1 byte Destination tag:   Type Code = 2, Field Code = 14
+                // 1 byte Destination tag:   Type Code = 2, Field Code = 14
                 writer.writeByte(0x2E);
-                //4 bytes Destination tag
+                // 4 bytes Destination tag
                 const int64_t &destinationTagValue = _destinationTag.getValue();
                 if (destinationTagValue > static_cast<int64_t>(std::numeric_limits<uint32_t>::max()) ||
                     destinationTagValue < static_cast<int64_t>(std::numeric_limits<uint32_t>::min())) {
@@ -210,74 +210,74 @@ namespace ledger {
                 writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(destinationTagValue));
             }
 
-            //2 bytes LastLedgerSequence Field ID:   Type Code = 2, Field Code = 27
+            // 2 bytes LastLedgerSequence Field ID:   Type Code = 2, Field Code = 27
             writer.writeByteArray({0x20, 0x1B});
-            //LastLedgerSequence
+            // LastLedgerSequence
             writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(_ledgerSequence->intValue()));
 
             auto maxAmountBound = std::vector<uint8_t>({0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
-            auto bigIntMax = BigInt::fromHex(hex::toString(maxAmountBound));
+            auto bigIntMax      = BigInt::fromHex(hex::toString(maxAmountBound));
 
-            //1 byte Amount Field ID:   Type Code = 6, Field Code = 1
+            // 1 byte Amount Field ID:   Type Code = 6, Field Code = 1
             writer.writeByte(0x61);
-            //8 bytes Amount (with bitwise OR with 0x4000000000000000)
+            // 8 bytes Amount (with bitwise OR with 0x4000000000000000)
             auto finalValue = BigInt::fromHex(_value->toBigInt()->toString(16)) + bigIntMax;
             writer.writeBeValue<uint64_t>(static_cast<const uint64_t>(finalValue.toUint64()));
 
-            //1 byte Fee Field ID:   Type Code = 6, Field Code = 8
+            // 1 byte Fee Field ID:   Type Code = 6, Field Code = 8
             writer.writeByte(0x68);
-            //8 bytes Fees (with bitwise OR with 0x4000000000000000)
+            // 8 bytes Fees (with bitwise OR with 0x4000000000000000)
             auto finalFees = BigInt::fromHex(_fees->toBigInt()->toString(16)) + bigIntMax;
             writer.writeBeValue<uint64_t>(static_cast<const uint64_t>(finalFees.toUint64()));
 
-            //TODO: !!!find out if this is included in raw unsigned tx or not
-            //1 byte Signing pubKey Field ID:   Type Code = 7, Field Code = 3 (STI_VL = 7 type)
+            // TODO: !!!find out if this is included in raw unsigned tx or not
+            // 1 byte Signing pubKey Field ID:   Type Code = 7, Field Code = 3 (STI_VL = 7 type)
             writer.writeByte(0x73);
-            //Var bytes Signing pubKey (prefix length)
+            // Var bytes Signing pubKey (prefix length)
             writer.writeVarInt(_signingPubKey.size());
             writer.writeByteArray(_signingPubKey);
 
             if (!_rSignature.empty() && !_sSignature.empty()) {
-                //1 byte Signature Field ID:   Type Code = 7, Field Code = 4 (STI_VL = 7 type, and TxnSignature = 4)
+                // 1 byte Signature Field ID:   Type Code = 7, Field Code = 4 (STI_VL = 7 type, and TxnSignature = 4)
                 writer.writeByte(0x74);
-                //Var bytes Signature (prefix length)
-                //Get length of VarInt representing length of R
+                // Var bytes Signature (prefix length)
+                // Get length of VarInt representing length of R
                 BytesWriter rLength;
                 rLength.writeVarInt(_rSignature.size());
-                //Get length of VarInt representing length of R
+                // Get length of VarInt representing length of R
                 BytesWriter sLength;
                 sLength.writeVarInt(_sSignature.size());
-                //Get length of VarInt representing length of R and S (plus their stack sizes)
+                // Get length of VarInt representing length of R and S (plus their stack sizes)
                 auto sAndRLengthInt = 1 + rLength.toByteArray().size() + _rSignature.size() + 1 + sLength.toByteArray().size() + _sSignature.size();
                 BytesWriter sAndRLength;
                 sAndRLength.writeVarInt(sAndRLengthInt);
-                //DER Signature = Total Size | DER prefix | Size(S+R) | R StackSize | R Length | R | S StackSize | S Length | S
+                // DER Signature = Total Size | DER prefix | Size(S+R) | R StackSize | R Length | R | S StackSize | S Length | S
                 auto totalSigLength = 1 + sAndRLength.toByteArray().size() + sAndRLengthInt;
                 writer.writeVarInt(totalSigLength);
-                //DER prefix
+                // DER prefix
                 BytesWriter sigWriter;
                 writer.writeByte(0x30);
-                //Size of DER signature minus DER prefix | Size(S+R)
+                // Size of DER signature minus DER prefix | Size(S+R)
                 writer.writeVarInt(sAndRLengthInt);
-                //R field
-                writer.writeByte(0x02); //Nb of stack elements
+                // R field
+                writer.writeByte(0x02); // Nb of stack elements
                 writer.writeVarInt(_rSignature.size());
                 writer.writeByteArray(_rSignature);
-                //S field
-                writer.writeByte(0x02); //Nb of stack elements
+                // S field
+                writer.writeByte(0x02); // Nb of stack elements
                 writer.writeVarInt(_sSignature.size());
                 writer.writeByteArray(_sSignature);
             }
 
-            //1 byte Account Field ID: Type Code = 8, Field Code = 1 (STI_ACCOUNT = 8 type, and Account = 1)
+            // 1 byte Account Field ID: Type Code = 8, Field Code = 1 (STI_ACCOUNT = 8 type, and Account = 1)
             writer.writeByte(0x81);
-            //20 bytes Acount (hash160 of pubKey without 0x00 prefix)
+            // 20 bytes Acount (hash160 of pubKey without 0x00 prefix)
             auto senderHash = _sender->getHash160();
             writer.writeVarInt(senderHash.size());
             writer.writeByteArray(senderHash);
-            //1 byte Destination Field ID: Type Code = 8, Field Code = 3 (STI_ACCOUNT = 8 type, and Destination = 3)
+            // 1 byte Destination Field ID: Type Code = 8, Field Code = 3 (STI_ACCOUNT = 8 type, and Destination = 3)
             writer.writeByte(0x83);
-            //20 bytes Destination (hash160 of pubKey without 0x00 prefix)
+            // 20 bytes Destination (hash160 of pubKey without 0x00 prefix)
             auto receiverHash = _receiver->getHash160();
             writer.writeVarInt(receiverHash.size());
             writer.writeByteArray(receiverHash);
@@ -392,7 +392,7 @@ namespace ledger {
         }
 
         std::string RippleLikeTransactionApi::setCorrelationId(const std::string &newId) {
-            auto oldId = _correlationId;
+            auto oldId     = _correlationId;
             _correlationId = newId;
             return oldId;
         }

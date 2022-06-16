@@ -44,15 +44,15 @@ using namespace soci;
 void proxy_standard_use_type_backend::bind_by_pos(int &position, void *data, details::exchange_type type, bool /*readOnly*/) {
     SP_PRINT("SUTB BIND BY POS " << position << " type " << type)
     _position = position++;
-    _data = data;
-    _type = type;
+    _data     = data;
+    _type     = type;
 }
 
 void proxy_standard_use_type_backend::bind_by_name(std::string const &name, void *data, details::exchange_type type, bool /*readOnly*/) {
     SP_PRINT("SUTB BIND BY NAME" << name)
     _position = name;
-    _data = data;
-    _type = type;
+    _data     = data;
+    _type     = type;
 }
 
 void proxy_standard_use_type_backend::pre_use(indicator const *ind) {
@@ -102,7 +102,7 @@ void proxy_standard_use_type_backend::pre_use(indicator const *ind) {
         case details::x_statement:
             throw soci_error("Unsupported type statement in SQL query.");
         case details::x_blob: {
-            auto blob = static_cast<soci::blob *>(_data);
+            auto blob    = static_cast<soci::blob *>(_data);
             auto backend = dynamic_cast<proxy_blob_backend *>(blob->get_backend())->getBlob();
             BIND(Blob, backend);
             break;

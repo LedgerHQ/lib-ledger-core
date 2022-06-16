@@ -38,7 +38,7 @@ namespace soci {
     std::string coinToString(const ledger::core::cosmos::Coin &coin) {
         Document d;
         auto &allocator = d.GetAllocator();
-        auto &object = d.SetObject();
+        auto &object    = d.SetObject();
 
         Value vStringAmount(rapidjson::kStringType);
         vStringAmount.SetString(
@@ -60,13 +60,13 @@ namespace soci {
         Document d;
         d.Parse(str.data());
         out.amount = d[ledger::core::cosmos::constants::kAmount].GetString();
-        out.denom = d[ledger::core::cosmos::constants::kDenom].GetString();
+        out.denom  = d[ledger::core::cosmos::constants::kDenom].GetString();
     }
 
     std::string coinsToString(const std::vector<ledger::core::cosmos::Coin> &coins) {
         Document d;
         auto &allocator = d.GetAllocator();
-        auto &array = d.SetArray();
+        auto &array     = d.SetArray();
         for (const auto &coin : coins) {
             Value tuple(kArrayType);
             cosmos_coin_to_json_tuple(coin, tuple, allocator);
@@ -83,7 +83,7 @@ namespace soci {
         Document d;
         d.Parse(str.data());
         const auto &list = d.GetArray();
-        auto index = 0;
+        auto index       = 0;
         out.assign(list.Size(), ledger::core::cosmos::Coin());
         for (const auto &n : list) {
             const auto &tuple = n.GetArray();

@@ -104,8 +104,8 @@ namespace ledger {
         }
 
         WalletPoolApi::WalletPoolApi(const std::shared_ptr<ledger::core::WalletPool> &pool) {
-            _pool = pool;
-            _logger = std::make_shared<LoggerApi>(pool->logger());
+            _pool        = pool;
+            _logger      = std::make_shared<LoggerApi>(pool->logger());
             _mainContext = _pool->getDispatcher()->getMainExecutionContext();
         }
 

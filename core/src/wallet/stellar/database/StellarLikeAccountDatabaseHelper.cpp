@@ -51,9 +51,9 @@ namespace ledger {
             rowset<row> rows = (sql.prepare << "SELECT address, idx, sequence, subentries_count FROM stellar_accounts WHERE uid = :uid", use(accountUid));
 
             for (const auto &row : rows) {
-                out.accountId = row.get<std::string>(0);
-                out.accountIndex = soci::get_number<uint32_t>(row, 1);
-                out.sequence = row.get<std::string>(2);
+                out.accountId     = row.get<std::string>(0);
+                out.accountIndex  = soci::get_number<uint32_t>(row, 1);
+                out.sequence      = row.get<std::string>(2);
                 out.subentryCount = static_cast<uint32_t>(row.get<int>(3));
                 getAccountSigners(sql, accountUid, out.signers);
                 return true;
@@ -83,17 +83,17 @@ namespace ledger {
         }
 
         bool StellarLikeAccountDatabaseHelper::putAccountBalance(soci::session &sql, const std::string &accountUid, const stellar::Balance &balance) {
-            auto assetUid = StellarLikeAssetDatabaseHelper::createAssetUid(balance.assetType, balance.assetCode, balance.assetIssuer);
+            auto assetUid   = StellarLikeAssetDatabaseHelper::createAssetUid(balance.assetType, balance.assetCode, balance.assetIssuer);
             auto balanceUid = StellarLikeAccountDatabaseHelper::createAccountBalanceUid(accountUid, assetUid);
-            int32_t count = -1;
+            int32_t count   = -1;
 
             StellarLikeAssetDatabaseHelper::putAsset(sql, balance.assetType, balance.assetCode, balance.assetIssuer);
 
             sql << "SELECT COUNT(*) FROM stellar_account_balances WHERE uid = :uid", use(balanceUid), into(count);
 
             auto sellingLiabilities = balance.sellingLiabilities.map<std::string>([](const BigInt &i) { return i.toString(); });
-            auto buyingLiabilities = balance.buyingLiabilities.map<std::string>([](const BigInt &i) { return i.toString(); });
-            auto amount = balance.value.toString();
+            auto buyingLiabilities  = balance.buyingLiabilities.map<std::string>([](const BigInt &i) { return i.toString(); });
+            auto amount             = balance.value.toString();
             if (count == 0) {
                 sql << "INSERT INTO stellar_account_balances VALUES (:uid, :account_uid, :asset_uid, :amount, :bl, :sl)",
                     use(balanceUid), use(accountUid), use(assetUid), use(amount), use(buyingLiabilities),
@@ -133,11 +133,11 @@ namespace ledger {
 
             for (const auto &row : rows) {
                 stellar::Balance balance;
-                balance.assetType = row.get<std::string>(0);
-                balance.assetCode = row.get<Option<std::string>>(1);
-                balance.assetIssuer = row.get<Option<std::string>>(2);
-                balance.value = BigInt::fromString(row.get<std::string>(3));
-                balance.buyingLiabilities = row.get<Option<std::string>>(4).map<BigInt>([](const std::string &s) {
+                balance.assetType          = row.get<std::string>(0);
+                balance.assetCode          = row.get<Option<std::string>>(1);
+                balance.assetIssuer        = row.get<Option<std::string>>(2);
+                balance.value              = BigInt::fromString(row.get<std::string>(3));
+                balance.buyingLiabilities  = row.get<Option<std::string>>(4).map<BigInt>([](const std::string &s) {
                     return BigInt::fromString(s);
                 });
                 balance.sellingLiabilities = row.get<Option<std::string>>(4).map<BigInt>([](const std::string &s) {
@@ -153,8 +153,8 @@ namespace ledger {
             for (const auto &row : rows) {
                 stellar::AccountSigner signer;
                 signer.weight = get_number<int32_t>(row, 0);
-                signer.key = row.get<std::string>(1);
-                signer.type = row.get<std::string>(2);
+                signer.key    = row.get<std::string>(1);
+                signer.type   = row.get<std::string>(2);
                 signers.emplace_back(std::move(signer));
             }
         }

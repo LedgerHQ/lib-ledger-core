@@ -52,7 +52,6 @@ namespace ledger {
         namespace algorand {
 
             class JsonParser {
-
               public:
                 template <class T>
                 static void parseBlock(const T &node, api::Block &block) {
@@ -67,7 +66,7 @@ namespace ledger {
                     if (blockHeight > static_cast<uint64_t>(std::numeric_limits<int64_t>::max())) {
                         throw make_exception(api::ErrorCode::OUT_OF_RANGE, "Block height exceeds maximum value");
                     }
-                    block.height = static_cast<int64_t>(blockHeight);
+                    block.height    = static_cast<int64_t>(blockHeight);
 
                     /// In Algorand implementation, we use the block height (aka round) as block hash
                     block.blockHash = std::to_string(block.height);
@@ -76,9 +75,9 @@ namespace ledger {
                 template <class T>
                 static void parseAssetAmount(const T &node, model::AssetAmount &assetAmount) {
                     assetAmount.creatorAddress = getMandatoryAddressField(node, constants::xCreator);
-                    assetAmount.amount = getMandatoryUint64Field(node, constants::xAmount);
-                    assetAmount.frozen = getMandatoryBoolField(node, constants::xFrozen);
-                    assetAmount.assetId = getMandatoryUint64Field(node, constants::xAssetId);
+                    assetAmount.amount         = getMandatoryUint64Field(node, constants::xAmount);
+                    assetAmount.frozen         = getMandatoryBoolField(node, constants::xFrozen);
+                    assetAmount.assetId        = getMandatoryUint64Field(node, constants::xAssetId);
                 }
 
                 template <class T>
@@ -93,19 +92,19 @@ namespace ledger {
                 template <typename T>
                 static void parseAssetParams(const T &node, model::AssetParams &assetParams) {
                     assetParams.creatorAddr = getMandatoryAddressField(node, constants::xCreator);
-                    assetParams.total = getMandatoryUint64Field(node, constants::xTotal);
+                    assetParams.total       = getMandatoryUint64Field(node, constants::xTotal);
                     assert(node.HasMember(constants::xDecimal.c_str()));
-                    assetParams.decimals = node[constants::xDecimal.c_str()].GetUint();
+                    assetParams.decimals      = node[constants::xDecimal.c_str()].GetUint();
 
                     assetParams.defaultFrozen = getOptionalBoolField(node, constants::xDefaultFrozen);
-                    assetParams.unitName = getOptionalStringField(node, constants::xUnitName);
-                    assetParams.assetName = getOptionalStringField(node, constants::xAssetName);
-                    assetParams.managerAddr = getOptionalAddressField(node, constants::xManagerKey);
-                    assetParams.freezeAddr = getOptionalAddressField(node, constants::xFreezeAddr);
-                    assetParams.clawbackAddr = getOptionalAddressField(node, constants::xClawbackAddr);
-                    assetParams.reserveAddr = getOptionalAddressField(node, constants::xReserveAddr);
-                    assetParams.metaDataHash = getOptionalBinaryField(node, constants::xMetadataHash);
-                    assetParams.url = getOptionalStringField(node, constants::xUrl);
+                    assetParams.unitName      = getOptionalStringField(node, constants::xUnitName);
+                    assetParams.assetName     = getOptionalStringField(node, constants::xAssetName);
+                    assetParams.managerAddr   = getOptionalAddressField(node, constants::xManagerKey);
+                    assetParams.freezeAddr    = getOptionalAddressField(node, constants::xFreezeAddr);
+                    assetParams.clawbackAddr  = getOptionalAddressField(node, constants::xClawbackAddr);
+                    assetParams.reserveAddr   = getOptionalAddressField(node, constants::xReserveAddr);
+                    assetParams.metaDataHash  = getOptionalBinaryField(node, constants::xMetadataHash);
+                    assetParams.url           = getOptionalStringField(node, constants::xUrl);
                 }
 
                 template <class T>
@@ -121,19 +120,19 @@ namespace ledger {
                 template <class T>
                 static void parsePaymentInfo(const T &node, model::PaymentTxnFields &details) {
                     details.receiverAddr = getMandatoryAddressField(node, constants::xReceiver);
-                    details.amount = getMandatoryUint64Field(node, constants::xAmount);
-                    details.closeAddr = getOptionalAddressField(node, constants::xCloseRemainderTo);
-                    details.closeAmount = getOptionalUint64Field(node, constants::xCloseAmount);
+                    details.amount       = getMandatoryUint64Field(node, constants::xAmount);
+                    details.closeAddr    = getOptionalAddressField(node, constants::xCloseRemainderTo);
+                    details.closeAmount  = getOptionalUint64Field(node, constants::xCloseAmount);
                 }
 
                 // WARNING This has not been tested
                 template <class T>
                 static void parseParticipationInfo(const T &node, model::KeyRegTxnFields &details) {
-                    details.selectionPk = getMandatoryStringField(node, constants::xVotekey);
-                    details.votePk = getMandatoryStringField(node, constants::xSelkey);
-                    details.voteKeyDilution = getMandatoryUint64Field(node, constants::xVotekd);
-                    details.voteFirst = getMandatoryUint64Field(node, constants::xVotefst);
-                    details.voteLast = getMandatoryUint64Field(node, constants::xVotelst);
+                    details.selectionPk      = getMandatoryStringField(node, constants::xVotekey);
+                    details.votePk           = getMandatoryStringField(node, constants::xSelkey);
+                    details.voteKeyDilution  = getMandatoryUint64Field(node, constants::xVotekd);
+                    details.voteFirst        = getMandatoryUint64Field(node, constants::xVotefst);
+                    details.voteLast         = getMandatoryUint64Field(node, constants::xVotelst);
 
                     details.nonParticipation = getOptionalBoolField(node, constants::xNonParticipation);
                 }
@@ -149,43 +148,42 @@ namespace ledger {
 
                 template <class T>
                 static void parseAssetTransferInfo(const T &node, model::AssetTransferTxnFields &details) {
-                    details.assetId = getMandatoryUint64Field(node, constants::xAssetId);
+                    details.assetId       = getMandatoryUint64Field(node, constants::xAssetId);
                     details.assetReceiver = getMandatoryAddressField(node, constants::xReceiver);
-                    details.assetAmount = getMandatoryUint64Field(node, constants::xAmount);
+                    details.assetAmount   = getMandatoryUint64Field(node, constants::xAmount);
 
-                    details.assetCloseTo = getOptionalAddressField(node, constants::xCloseTo);
-                    details.closeAmount = getOptionalUint64Field(node, constants::xCloseAmount);
-                    details.assetSender = getOptionalAddressField(node, constants::xSender);
+                    details.assetCloseTo  = getOptionalAddressField(node, constants::xCloseTo);
+                    details.closeAmount   = getOptionalUint64Field(node, constants::xCloseAmount);
+                    details.assetSender   = getOptionalAddressField(node, constants::xSender);
                 }
 
                 // WARNING This has not been tested
                 template <class T>
                 static void parseAssetFreezeInfo(const T &node, model::AssetFreezeTxnFields &details) {
-                    details.assetId = getMandatoryUint64Field(node, constants::xAssetId);
+                    details.assetId       = getMandatoryUint64Field(node, constants::xAssetId);
                     details.frozenAddress = getMandatoryAddressField(node, constants::xAddress);
-                    details.assetFrozen = getMandatoryBoolField(node, constants::xNewFreezeStatus);
+                    details.assetFrozen   = getMandatoryBoolField(node, constants::xNewFreezeStatus);
                 }
 
                 template <class T>
                 static void parseTransaction(const T &node, model::Transaction &tx) {
+                    tx.header.type            = getMandatoryStringField(node, constants::xTxType);
+                    tx.header.id              = getMandatoryStringField(node, constants::xId);
+                    tx.header.sender          = getMandatoryAddressField(node, constants::xSender);
+                    tx.header.firstValid      = getMandatoryUint64Field(node, constants::xFirstValid);
+                    tx.header.lastValid       = getMandatoryUint64Field(node, constants::xLastValid);
+                    tx.header.fee             = getMandatoryUint64Field(node, constants::xFee);
+                    tx.header.genesisHash     = getMandatoryB64StringField(node, constants::xGenesisHash);
 
-                    tx.header.type = getMandatoryStringField(node, constants::xTxType);
-                    tx.header.id = getMandatoryStringField(node, constants::xId);
-                    tx.header.sender = getMandatoryAddressField(node, constants::xSender);
-                    tx.header.firstValid = getMandatoryUint64Field(node, constants::xFirstValid);
-                    tx.header.lastValid = getMandatoryUint64Field(node, constants::xLastValid);
-                    tx.header.fee = getMandatoryUint64Field(node, constants::xFee);
-                    tx.header.genesisHash = getMandatoryB64StringField(node, constants::xGenesisHash);
-
-                    tx.header.round = getOptionalUint64Field(node, constants::xConfirmedRound);
-                    tx.header.timestamp = getOptionalUint64Field(node, constants::xRoundTime);
-                    tx.header.genesisId = getOptionalStringField(node, constants::xGenesisId);
-                    tx.header.note = getOptionalBinaryField(node, constants::xNote);
-                    tx.header.group = getOptionalBinaryField(node, constants::xGroup);
-                    tx.header.lease = getOptionalBinaryField(node, constants::xLease);
-                    tx.header.senderRewards = getOptionalUint64Field(node, constants::xSenderRewards);
+                    tx.header.round           = getOptionalUint64Field(node, constants::xConfirmedRound);
+                    tx.header.timestamp       = getOptionalUint64Field(node, constants::xRoundTime);
+                    tx.header.genesisId       = getOptionalStringField(node, constants::xGenesisId);
+                    tx.header.note            = getOptionalBinaryField(node, constants::xNote);
+                    tx.header.group           = getOptionalBinaryField(node, constants::xGroup);
+                    tx.header.lease           = getOptionalBinaryField(node, constants::xLease);
+                    tx.header.senderRewards   = getOptionalUint64Field(node, constants::xSenderRewards);
                     tx.header.receiverRewards = getOptionalUint64Field(node, constants::xReceiverRewards);
-                    tx.header.closeRewards = getOptionalUint64Field(node, constants::xCloseRewards);
+                    tx.header.closeRewards    = getOptionalUint64Field(node, constants::xCloseRewards);
 
                     if (tx.header.type == constants::xPay) {
                         assert((node.HasMember(constants::xPayment.c_str())));
@@ -226,18 +224,18 @@ namespace ledger {
 
                 template <class T>
                 static void parseTransactionParams(const T &node, model::TransactionParams &txParams) {
-                    txParams.genesisID = getMandatoryStringField(node, constants::xGenesisId);
-                    txParams.genesisHash = getMandatoryStringField(node, constants::xGenesisHash);
-                    txParams.lastRound = getMandatoryUint64Field(node, constants::xLastRoundParam);
+                    txParams.genesisID           = getMandatoryStringField(node, constants::xGenesisId);
+                    txParams.genesisHash         = getMandatoryStringField(node, constants::xGenesisHash);
+                    txParams.lastRound           = getMandatoryUint64Field(node, constants::xLastRoundParam);
                     txParams.suggestedFeePerByte = getMandatoryUint64Field(node, constants::xFee);
-                    txParams.minFee = getMandatoryUint64Field(node, constants::xMinFee);
-                    txParams.consensusVersion = getMandatoryStringField(node, constants::xConsensusVersion);
+                    txParams.minFee              = getMandatoryUint64Field(node, constants::xMinFee);
+                    txParams.consensusVersion    = getMandatoryStringField(node, constants::xConsensusVersion);
                 }
 
                 template <class T>
                 static void parseAccount(const T &node, model::Account &account) {
-                    account.address = getMandatoryStringField(node, constants::xAddress);
-                    account.amount = getMandatoryUint64Field(node, constants::xAmount);
+                    account.address                     = getMandatoryStringField(node, constants::xAddress);
+                    account.amount                      = getMandatoryUint64Field(node, constants::xAmount);
                     account.amountWithoutPendingRewards = getMandatoryUint64Field(node, constants::xAmountWithoutPendingRewards);
 
                     if (node.HasMember(constants::xAssets.c_str())) {
@@ -250,9 +248,9 @@ namespace ledger {
                     }
 
                     account.pendingRewards = getMandatoryUint64Field(node, constants::xPendingRewards);
-                    account.rewards = getMandatoryUint64Field(node, constants::xRewards);
-                    account.round = getMandatoryUint64Field(node, constants::xRound);
-                    account.status = getOptionalStringField(node, constants::xStatus);
+                    account.rewards        = getMandatoryUint64Field(node, constants::xRewards);
+                    account.round          = getMandatoryUint64Field(node, constants::xRound);
+                    account.status         = getOptionalStringField(node, constants::xStatus);
 
                     if (node.HasMember(constants::xCreatedAssets.c_str())) {
                         parseAssetsParams(node[constants::xCreatedAssets.c_str()].GetArray(), account.createdAssets);

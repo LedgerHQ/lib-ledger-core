@@ -41,4 +41,4 @@ namespace soci {
 
 } // namespace soci
 
-#endif //LEDGER_CORE_SOCI_BACKEND_UTILS_H
+#endif // LEDGER_CORE_SOCI_BACKEND_UTILS_H

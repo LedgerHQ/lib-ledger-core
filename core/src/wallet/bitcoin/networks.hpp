@@ -47,10 +47,10 @@ namespace ledger {
         namespace networks {
 
             enum sigHashType : uint8_t {
-                SIGHASH_ALL = 0x01,
-                SIGHASH_NONE = 0x02,
-                SIGHASH_SINGLE = 0x03,
-                SIGHASH_FORKID = 0x40,
+                SIGHASH_ALL          = 0x01,
+                SIGHASH_NONE         = 0x02,
+                SIGHASH_SINGLE       = 0x03,
+                SIGHASH_FORKID       = 0x40,
                 SIGHASH_ANYONECANPAY = 0x80
             };
 
@@ -85,19 +85,19 @@ namespace ledger {
 
             extern LIBCORE_EXPORT const std::vector<api::BitcoinLikeNetworkParameters> ALL;
 
-            //BIP115 (ex: Zencash)
+            // BIP115 (ex: Zencash)
             struct BIP115Parameters {
                 std::string blockHash;
                 std::vector<uint8_t> blockHeight;
             };
             extern LIBCORE_EXPORT const BIP115Parameters BIP115_PARAMETERS;
 
-            //ZIP: Zcash improvements/updates (ex: Zcash overwinter, Sapling ...)
+            // ZIP: Zcash improvements/updates (ex: Zcash overwinter, Sapling ...)
             struct ZIPParameters {
                 uint32_t version;
                 std::vector<uint8_t> overwinterFlag;
                 std::vector<uint8_t> versionGroupId;
-                uint64_t blockHeight; //block height at which ZIP will be effective
+                uint64_t blockHeight; // block height at which ZIP will be effective
             };
             extern LIBCORE_EXPORT const ZIPParameters ZIP143_PARAMETERS;
             extern LIBCORE_EXPORT const ZIPParameters ZIP_SAPLING_PARAMETERS;
@@ -123,4 +123,4 @@ namespace ledger {
     }     // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_NETWORKS_HPP
+#endif // LEDGER_CORE_NETWORKS_HPP

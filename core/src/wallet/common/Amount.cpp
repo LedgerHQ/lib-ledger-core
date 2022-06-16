@@ -36,15 +36,15 @@ namespace ledger {
     namespace core {
 
         Amount::Amount(const api::Currency &currency, int32_t unitIndex, BigInt &&value) : ManagedObject<Amount>() {
-            _currency = currency;
+            _currency  = currency;
             _unitIndex = unitIndex;
-            _value = value;
+            _value     = value;
         }
 
         Amount::Amount(const api::Currency &currency, int32_t unitIndex, const BigInt &value) : ManagedObject<Amount>() {
-            _currency = currency;
+            _currency  = currency;
             _unitIndex = unitIndex;
-            _value = value;
+            _value     = value;
         }
 
         std::shared_ptr<api::BigInt> Amount::toBigInt() {
@@ -76,7 +76,7 @@ namespace ledger {
 
         std::string Amount::toString() {
             auto magnitude = getMagnitude();
-            BigInt value = _value;
+            BigInt value   = _value;
             while (magnitude > 0) {
                 value = value / BigInt(10);
                 magnitude -= 1;
@@ -86,7 +86,7 @@ namespace ledger {
 
         int64_t Amount::toLong() {
             auto magnitude = getMagnitude();
-            BigInt value = _value;
+            BigInt value   = _value;
             while (magnitude > 0) {
                 value = value / BigInt(10);
                 magnitude -= 1;

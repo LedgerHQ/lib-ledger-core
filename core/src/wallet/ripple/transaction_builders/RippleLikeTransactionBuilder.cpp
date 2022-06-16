@@ -64,26 +64,26 @@ namespace ledger {
             const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
             const std::shared_ptr<spdlog::logger> &logger,
             const RippleLikeTransactionBuildFunction &buildFunction) {
-            _context = context;
-            _currency = currency;
-            _explorer = explorer;
-            _build = buildFunction;
-            _logger = logger;
+            _context      = context;
+            _currency     = currency;
+            _explorer     = explorer;
+            _build        = buildFunction;
+            _logger       = logger;
             _request.wipe = false;
         }
 
         RippleLikeTransactionBuilder::RippleLikeTransactionBuilder(const RippleLikeTransactionBuilder &cpy) {
             _currency = cpy._currency;
-            _build = cpy._build;
-            _request = cpy._request;
-            _context = cpy._context;
-            _logger = cpy._logger;
+            _build    = cpy._build;
+            _request  = cpy._request;
+            _context  = cpy._context;
+            _logger   = cpy._logger;
         }
 
         std::shared_ptr<api::RippleLikeTransactionBuilder>
         RippleLikeTransactionBuilder::sendToAddress(const std::shared_ptr<api::Amount> &amount,
                                                     const std::string &address) {
-            _request.value = std::make_shared<BigInt>(amount->toString());
+            _request.value     = std::make_shared<BigInt>(amount->toString());
             _request.toAddress = address;
             return shared_from_this();
         }
@@ -91,7 +91,7 @@ namespace ledger {
         std::shared_ptr<api::RippleLikeTransactionBuilder>
         RippleLikeTransactionBuilder::wipeToAddress(const std::string &address) {
             _request.toAddress = address;
-            _request.wipe = true;
+            _request.wipe      = true;
             return shared_from_this();
         }
 
@@ -152,61 +152,61 @@ namespace ledger {
             auto tx = std::make_shared<RippleLikeTransactionApi>(currencies::RIPPLE);
             BytesReader reader(rawTransaction);
 
-            //1 byte TransactionType Field ID:   Type Code = 1, Field Code = 2
+            // 1 byte TransactionType Field ID:   Type Code = 1, Field Code = 2
             reader.readNextByte();
-            //2 bytes TransactionType ("Payment")
+            // 2 bytes TransactionType ("Payment")
             reader.read(2);
 
-            //1 byte Flags Field ID:   Type Code = 2, Field Code = 2
+            // 1 byte Flags Field ID:   Type Code = 2, Field Code = 2
             reader.readNextByte();
-            //4 bytes Flags (tfFullyCanonicalSig ?)
+            // 4 bytes Flags (tfFullyCanonicalSig ?)
             reader.read(4);
 
-            //1 byte Sequence Field ID:   Type Code = 2, Field Code = 4
+            // 1 byte Sequence Field ID:   Type Code = 2, Field Code = 4
             reader.readNextByte();
-            //4 bytes Sequence
-            auto sequence = reader.read(4);
+            // 4 bytes Sequence
+            auto sequence       = reader.read(4);
             auto bigIntSequence = BigInt::fromHex(hex::toString(sequence));
             tx->setSequence(bigIntSequence);
 
             auto destinationTagCode = reader.peek();
             if (destinationTagCode == 0x2E) {
-                //1 byte Destination tag:   Type Code = 2, Field Code = 14
+                // 1 byte Destination tag:   Type Code = 2, Field Code = 14
                 reader.readNextByte();
                 auto bigIntTag = BigInt::fromHex(hex::toString(reader.read(4)));
                 tx->setDestinationTag(bigIntTag.toInt64());
             }
 
-            //2 bytes LastLedgerSequence Field ID:   Type Code = 2, Field Code = 27
+            // 2 bytes LastLedgerSequence Field ID:   Type Code = 2, Field Code = 27
             reader.read(2);
-            //LastLedgerSequence
-            auto ledgerSequence = reader.read(4);
+            // LastLedgerSequence
+            auto ledgerSequence       = reader.read(4);
             auto bigIntLedgerSequence = BigInt::fromHex(hex::toString(ledgerSequence));
             tx->setLedgerSequence(bigIntLedgerSequence);
 
-            //Useful to compute amounts
+            // Useful to compute amounts
             auto maxAmountBound = std::vector<uint8_t>({0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
-            auto bigIntMax = BigInt::fromHex(hex::toString(maxAmountBound));
+            auto bigIntMax      = BigInt::fromHex(hex::toString(maxAmountBound));
 
-            //1 byte Amount Field ID:   Type Code = 6, Field Code = 1
+            // 1 byte Amount Field ID:   Type Code = 6, Field Code = 1
             reader.readNextByte();
-            //8 bytes Amount (with bitwise OR with 0x4000000000000000)
-            auto amountOR = reader.read(8);
+            // 8 bytes Amount (with bitwise OR with 0x4000000000000000)
+            auto amountOR       = reader.read(8);
             auto bigIntAmountOR = BigInt::fromHex(hex::toString(amountOR));
             tx->setValue(std::make_shared<BigInt>(bigIntAmountOR - bigIntMax));
 
-            //1 byte Fee Field ID:   Type Code = 6, Field Code = 8
+            // 1 byte Fee Field ID:   Type Code = 6, Field Code = 8
             reader.readNextByte();
-            //8 bytes Fees (with bitwise OR with 0x4000000000000000)
-            auto feesOR = reader.read(8);
+            // 8 bytes Fees (with bitwise OR with 0x4000000000000000)
+            auto feesOR       = reader.read(8);
             auto bigIntFeesOR = BigInt::fromHex(hex::toString(feesOR));
             tx->setFees(std::make_shared<BigInt>(bigIntFeesOR - bigIntMax));
 
-            //TODO: !!!find out if this is included in raw unsigned tx or not
-            //1 byte Signing pubKey Field ID:   Type Code = 7, Field Code = 3 (STI_VL = 7 type)
+            // TODO: !!!find out if this is included in raw unsigned tx or not
+            // 1 byte Signing pubKey Field ID:   Type Code = 7, Field Code = 3 (STI_VL = 7 type)
             reader.readNextByte();
-            //Var bytes Signing pubKey (prefix length)
-            auto pubKeyLength = reader.readNextVarInt();
+            // Var bytes Signing pubKey (prefix length)
+            auto pubKeyLength  = reader.readNextVarInt();
             auto signingPubKey = reader.read(pubKeyLength);
             tx->setSigningPubKey(signingPubKey);
 
@@ -218,48 +218,48 @@ namespace ledger {
                 rawTxSHA512.resize(32);
                 tx->setHash(hex::toString(rawTxSHA512));
 
-                //1 byte Signature Field ID:   Type Code = 7, Field Code = 4 (STI_VL = 7 type, and TxnSignature = 4)
+                // 1 byte Signature Field ID:   Type Code = 7, Field Code = 4 (STI_VL = 7 type, and TxnSignature = 4)
                 reader.readNextByte();
                 auto sigLength = reader.readNextVarInt();
-                auto sig = reader.read(sigLength);
+                auto sig       = reader.read(sigLength);
 
-                //Set signature in Tx
+                // Set signature in Tx
                 BytesReader sigReader(sig);
-                //DER prefix
+                // DER prefix
                 sigReader.readNextByte();
-                //Total length
+                // Total length
                 sigReader.readNextVarInt();
 
-                //Nb of elements for R
+                // Nb of elements for R
                 sigReader.readNextByte();
-                //R length
-                auto rSize = sigReader.readNextVarInt();
-                //TODO: verify that we don't truncate leading null byte
+                // R length
+                auto rSize      = sigReader.readNextVarInt();
+                // TODO: verify that we don't truncate leading null byte
                 auto rSignature = sigReader.read(rSize);
 
-                //Nb of elements for S
+                // Nb of elements for S
                 sigReader.readNextByte();
-                //S length
-                auto sSize = sigReader.readNextVarInt();
-                //TODO: verify that we don't truncate leading null byte
+                // S length
+                auto sSize      = sigReader.readNextVarInt();
+                // TODO: verify that we don't truncate leading null byte
                 auto sSignature = sigReader.read(sSize);
                 tx->setSignature(rSignature, sSignature);
             }
 
-            //1 byte Account Field ID: Type Code = 8, Field Code = 1 (STI_ACCOUNT = 8 type, and Account = 1)
+            // 1 byte Account Field ID: Type Code = 8, Field Code = 1 (STI_ACCOUNT = 8 type, and Account = 1)
             reader.readNextByte();
-            //20 bytes Account (hash160 of pubKey without 0x00 prefix)
+            // 20 bytes Account (hash160 of pubKey without 0x00 prefix)
             auto accountAddressLength = reader.readNextVarInt();
-            auto accountAddressHash = reader.read(accountAddressLength);
-            auto accountAddress = std::make_shared<RippleLikeAddress>(currencies::RIPPLE, accountAddressHash, std::vector<uint8_t>({0x00}));
+            auto accountAddressHash   = reader.read(accountAddressLength);
+            auto accountAddress       = std::make_shared<RippleLikeAddress>(currencies::RIPPLE, accountAddressHash, std::vector<uint8_t>({0x00}));
             tx->setSender(accountAddress);
 
-            //1 byte Destination Field ID: Type Code = 8, Field Code = 3 (STI_ACCOUNT = 8 type, and Destination = 3)
+            // 1 byte Destination Field ID: Type Code = 8, Field Code = 3 (STI_ACCOUNT = 8 type, and Destination = 3)
             reader.readNextByte();
-            //20 bytes Destination (hash160 of pubKey without 0x00 prefix)
+            // 20 bytes Destination (hash160 of pubKey without 0x00 prefix)
             auto destAddressLength = reader.readNextVarInt();
-            auto destAddressHash = reader.read(destAddressLength);
-            auto destAddress = std::make_shared<RippleLikeAddress>(currencies::RIPPLE, destAddressHash, std::vector<uint8_t>({0x00}));
+            auto destAddressHash   = reader.read(destAddressLength);
+            auto destAddress       = std::make_shared<RippleLikeAddress>(currencies::RIPPLE, destAddressHash, std::vector<uint8_t>({0x00}));
             tx->setReceiver(destAddress);
 
             if (reader.hasNext() && reader.readNextByte() == 0xF9) { // STI_ARRAY (Memos); Type Code = 15, Memos; Field ID = 9
@@ -277,16 +277,16 @@ namespace ledger {
 
                             if (memoTypeFieldID == 0x7C) { // STI_VL (MemoType), 12
                                 auto typeLen = readLengthPrefix(reader);
-                                auto type = reader.read(typeLen);
-                                memo.ty = std::string(type.cbegin(), type.cend());
+                                auto type    = reader.read(typeLen);
+                                memo.ty      = std::string(type.cbegin(), type.cend());
                             } else if (memoTypeFieldID == 0x7D) { // STI_VL (MemoData), 13
                                 auto dataLen = readLengthPrefix(reader);
-                                auto data = reader.read(dataLen);
-                                memo.data = std::string(data.cbegin(), data.cend());
+                                auto data    = reader.read(dataLen);
+                                memo.data    = std::string(data.cbegin(), data.cend());
                             } else if (memoTypeFieldID == 0x7E) { // STI_VL (MemoFormat), 14
                                 auto fmtLen = readLengthPrefix(reader);
-                                auto fmt = reader.read(fmtLen);
-                                memo.fmt = std::string(fmt.cbegin(), fmt.cend());
+                                auto fmt    = reader.read(fmtLen);
+                                memo.fmt    = std::string(fmt.cbegin(), fmt.cend());
                             } else if (memoTypeFieldID == 0xE1) { // end of object
                                 break;
                             } else { // unknown situation

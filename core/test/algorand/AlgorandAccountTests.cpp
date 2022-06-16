@@ -45,9 +45,9 @@
 
 using namespace ledger::core;
 
-const auto OBELIX = std::string("RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM");
-const auto ADDR1 = std::string("6ENXFMQRRIF6KD7HXE47HUHCJXEUKGGRGR6LXSX7RRZBTMVI5NUDOQDTNE");
-const auto ADDR2 = std::string("6ENXFMQRRIF6KD7HXE47HUHCJXEUKGGRGR6LXSX7RRZBTMVI5NUDOQDTNF");
+const auto OBELIX     = std::string("RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM");
+const auto ADDR1      = std::string("6ENXFMQRRIF6KD7HXE47HUHCJXEUKGGRGR6LXSX7RRZBTMVI5NUDOQDTNE");
+const auto ADDR2      = std::string("6ENXFMQRRIF6KD7HXE47HUHCJXEUKGGRGR6LXSX7RRZBTMVI5NUDOQDTNF");
 const auto EMPTY_ADDR = std::string("RB7DUHGKVT3C3NEKP6255KPJDOKLMNXKADZA5UVWVS4YHDDVXYEDHGJKU4");
 
 std::vector<uint64_t> month2020{
@@ -83,11 +83,11 @@ namespace {
                 {},
                 algorand::Address(sender),
                 type);
-            header.timestamp = timestamp;
-            header.id = id;
-            header.senderRewards = senderRewards;
+            header.timestamp       = timestamp;
+            header.id              = id;
+            header.senderRewards   = senderRewards;
             header.receiverRewards = receiverRewards;
-            header.closeRewards = closeRewards;
+            header.closeRewards    = closeRewards;
             return header;
         }();
     }
@@ -206,14 +206,14 @@ class AlgorandAccountTest : public WalletFixture<WalletFactory> {
         const auto currency = currencies::ALGORAND;
         registerCurrency(currency);
 
-        accountInfo = api::AccountCreationInfo(1, {}, {}, {algorand::Address::toPublicKey(OBELIX)}, {});
+        accountInfo        = api::AccountCreationInfo(1, {}, {}, {algorand::Address::toPublicKey(OBELIX)}, {});
 
         // NOTE: we run the tests on the staging environment which is on the TestNet
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
 
-        wallet = std::dynamic_pointer_cast<algorand::Wallet>(uv::wait(pool->createWallet("algorand", currency.name, configuration)));
-        account = createAlgorandAccount(wallet, accountInfo.index, accountInfo);
+        wallet     = std::dynamic_pointer_cast<algorand::Wallet>(uv::wait(pool->createWallet("algorand", currency.name, configuration)));
+        account    = createAlgorandAccount(wallet, accountInfo.index, accountInfo);
 
         accountUid = algorand::AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), accountInfo.index);
 
@@ -238,9 +238,9 @@ class AlgorandAccountTest : public WalletFixture<WalletFactory> {
 };
 
 TEST_F(AlgorandAccountTest, algosBalanceHistory) {
-    const auto start = "2019-12-29T00:00:00Z";
-    const auto end = "2020-08-01T00:00:00Z";
-    const auto period = api::TimePeriod::MONTH;
+    const auto start    = "2019-12-29T00:00:00Z";
+    const auto end      = "2020-08-01T00:00:00Z";
+    const auto period   = api::TimePeriod::MONTH;
 
     const auto expected = std::vector<uint64_t>{
         10000,
@@ -259,10 +259,10 @@ TEST_F(AlgorandAccountTest, algosBalanceHistory) {
 }
 
 TEST_F(AlgorandAccountTest, assetBalanceHistory) {
-    const auto id = std::string("2");
-    const auto start = "2019-12-29T00:00:00Z";
-    const auto end = "2020-08-01T00:00:00Z";
-    const auto period = api::TimePeriod::MONTH;
+    const auto id       = std::string("2");
+    const auto start    = "2019-12-29T00:00:00Z";
+    const auto end      = "2020-08-01T00:00:00Z";
+    const auto period   = api::TimePeriod::MONTH;
 
     const auto expected = std::vector<uint64_t>{
         0,

@@ -51,42 +51,42 @@ namespace djinni {
     static inline bool is_expired(T *ptr) { return !ptr; }
 
     /*
- * Generic proxy cache.
- *
- * This provides a general-purpose mechanism for proxies to be re-used. When we pass an object
- * across the language boundary from A to B, we must create a proxy object within language B
- * that passes calls back to language A. For example, if have a C++ object that is passed into
- * Java, we would create a Java object that owns a `shared_ptr` and has a set of native methods
- * that call in to C++.
- *
- * When we create such an object, we also want to cache a weak reference to it, so that if we
- * later pass the *same* object across the boundary, the same proxy will be returned. This is
- * necessary for correctness in some situations: for example, in the case of an `add_listener`
- * and `remove_listener` pattern.
- *
- * To reduce code size, only one GenericProxyCache need be instantiated for each language
- * boundary direction. The pointer types passed to this function can be generic, e.g. `id`,
- * `shared_ptr<void>`, `jobject`, etc.
- *
- * In the types below, "Impl" refers to some interface that is being wrapped, and Proxy refers
- * to the generated other-language object that wraps it.
- */
+     * Generic proxy cache.
+     *
+     * This provides a general-purpose mechanism for proxies to be re-used. When we pass an object
+     * across the language boundary from A to B, we must create a proxy object within language B
+     * that passes calls back to language A. For example, if have a C++ object that is passed into
+     * Java, we would create a Java object that owns a `shared_ptr` and has a set of native methods
+     * that call in to C++.
+     *
+     * When we create such an object, we also want to cache a weak reference to it, so that if we
+     * later pass the *same* object across the boundary, the same proxy will be returned. This is
+     * necessary for correctness in some situations: for example, in the case of an `add_listener`
+     * and `remove_listener` pattern.
+     *
+     * To reduce code size, only one GenericProxyCache need be instantiated for each language
+     * boundary direction. The pointer types passed to this function can be generic, e.g. `id`,
+     * `shared_ptr<void>`, `jobject`, etc.
+     *
+     * In the types below, "Impl" refers to some interface that is being wrapped, and Proxy refers
+     * to the generated other-language object that wraps it.
+     */
     template <typename Traits>
     class ProxyCache<Traits>::Pimpl {
         using Key = std::pair<std::type_index, UnowningImplPointer>;
 
       public:
         /*
-     * Look up an object in the proxy cache, and create a new one if not found.
-     *
-     * This takes a function pointer, not an arbitrary functor, because we want to minimize
-     * code size: this function should only be instantiated *once* per langauge direction.
-     */
+         * Look up an object in the proxy cache, and create a new one if not found.
+         *
+         * This takes a function pointer, not an arbitrary functor, because we want to minimize
+         * code size: this function should only be instantiated *once* per langauge direction.
+         */
         OwningProxyPointer get(const std::type_index &tag,
                                const OwningImplPointer &impl,
                                AllocatorFunction *alloc) {
             std::unique_lock<std::mutex> lock(m_mutex);
-            UnowningImplPointer ptr = get_unowning(impl);
+            UnowningImplPointer ptr  = get_unowning(impl);
             auto existing_proxy_iter = m_mapping.find({tag, ptr});
             if (existing_proxy_iter != m_mapping.end()) {
                 OwningProxyPointer existing_proxy = upgrade_weak(existing_proxy_iter->second);
@@ -106,8 +106,8 @@ namespace djinni {
         }
 
         /*
-     * Erase an object from the proxy cache.
-     */
+         * Erase an object from the proxy cache.
+         */
         void remove(const std::type_index &tag, const UnowningImplPointer &impl_unowning, bool force_kill) {
             std::unique_lock<std::mutex> lock(m_mutex);
             auto it = m_mapping.find({tag, impl_unowning});
@@ -158,14 +158,14 @@ namespace djinni {
     }
 
     /*
- * Magic-static singleton.
- *
- * It's possible for someone to hold Djinni-static objects in a global (like a shared_ptr
- * at namespace scope), which can cause problems at static destruction time: if the proxy
- * cache itself is destroyed before the other global, use-of-destroyed-object will result.
- * To fix this, we make it possible to take a shared_ptr to the GenericProxyCache instance,
- * so it will only be destroyed once all references are gone.
- */
+     * Magic-static singleton.
+     *
+     * It's possible for someone to hold Djinni-static objects in a global (like a shared_ptr
+     * at namespace scope), which can cause problems at static destruction time: if the proxy
+     * cache itself is destroyed before the other global, use-of-destroyed-object will result.
+     * To fix this, we make it possible to take a shared_ptr to the GenericProxyCache instance,
+     * so it will only be destroyed once all references are gone.
+     */
     template <typename Traits>
     auto ProxyCache<Traits>::get_base() -> const std::shared_ptr<Pimpl> & {
         static const std::shared_ptr<Pimpl> instance(new Pimpl);

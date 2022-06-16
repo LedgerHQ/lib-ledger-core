@@ -73,7 +73,7 @@ namespace ledger {
                                   .value_or(api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION);
                 if (engine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
                     std::weak_ptr<WalletPool> p = pool;
-                    synchronizerFactory = Option<RippleLikeAccountSynchronizerFactory>([p, explorer]() {
+                    synchronizerFactory         = Option<RippleLikeAccountSynchronizerFactory>([p, explorer]() {
                         auto pool = p.lock();
                         return std::make_shared<RippleLikeAccountSynchronizer>(pool, explorer);
                     });
@@ -112,15 +112,15 @@ namespace ledger {
                 }
             }
 
-            auto pool = getPool();
+            auto pool   = getPool();
             auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
                               .value_or(api::BlockchainExplorerEngines::RIPPLE_NODE);
             std::shared_ptr<RippleLikeBlockchainExplorer> explorer = nullptr;
-            auto &networkParams = getCurrency().rippleLikeNetworkParameters.value();
-            auto context = pool->getDispatcher()->getSerialExecutionContext(
-                fmt::format("{}-{}-explorer",
-                            api::BlockchainExplorerEngines::RIPPLE_NODE,
-                            networkParams.Identifier));
+            auto &networkParams                                    = getCurrency().rippleLikeNetworkParameters.value();
+            auto context                                           = pool->getDispatcher()->getSerialExecutionContext(
+                                                          fmt::format("{}-{}-explorer",
+                                                                      api::BlockchainExplorerEngines::RIPPLE_NODE,
+                                                                      networkParams.Identifier));
             if (engine == api::BlockchainExplorerEngines::RIPPLE_NODE) {
                 auto http = pool->getHttpClient(
                     fmt::format("{}:{}",

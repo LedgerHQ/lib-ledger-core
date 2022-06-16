@@ -68,12 +68,12 @@ namespace ledger {
                                                                                     previousTxHash(previousTxHash_),
                                                                                     outputIndex(outputIndex_),
                                                                                     pubKeys(pubKeys_) {
-                output.value = output_.value;
-                output.index = output_.index;
-                output.address = output_.address;
-                output.script = output_.script;
+                output.value           = output_.value;
+                output.index           = output_.index;
+                output.address         = output_.address;
+                output.script          = output_.script;
                 output.transactionHash = output_.transactionHash;
-                output.time = output_.time;
+                output.time            = output_.time;
             }
         };
 
@@ -82,9 +82,9 @@ namespace ledger {
         class BitcoinLikeTransactionApi : public api::BitcoinLikeTransaction {
           public:
             explicit BitcoinLikeTransactionApi(const api::Currency &currency,
-                                               const std::string &correlationid = "",
+                                               const std::string &correlationid  = "",
                                                const std::string &keychainEngine = api::KeychainEngines::BIP32_P2PKH,
-                                               uint64_t currentBlockHeight = 0);
+                                               uint64_t currentBlockHeight       = 0);
 
             explicit BitcoinLikeTransactionApi(const std::shared_ptr<OperationApi> &operation);
 
@@ -185,4 +185,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H
+#endif // LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H

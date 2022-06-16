@@ -81,7 +81,7 @@ namespace ledger {
                                        throw exception;
                                    })
                     .template map<Either<Failure, std::shared_ptr<Success>>>(_context, [handler](const std::shared_ptr<api::HttpUrlConnection> &c) -> Either<Failure, std::shared_ptr<Success>> {
-                        Handler h = handler;
+                        Handler h                                          = handler;
                         std::shared_ptr<api::HttpUrlConnection> connection = c;
                         h.attach(connection);
                         HttpUrlConnectionInputStream is(connection);
@@ -106,7 +106,9 @@ namespace ledger {
             Option<std::shared_ptr<spdlog::logger>> _logger;
 
             static api::ErrorCode getErrorCode(int32_t statusCode) {
-                return statusCode >= 200 && statusCode < 300 ? api::ErrorCode::FUTURE_WAS_SUCCESSFULL : statusCode >= 500 ? api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST : statusCode >= 400 ? api::ErrorCode::HTTP_ERROR : api::ErrorCode::TOO_MANY_REDIRECT;
+                return statusCode >= 200 && statusCode < 300 ? api::ErrorCode::FUTURE_WAS_SUCCESSFULL : statusCode >= 500 ? api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST
+                                                                                                    : statusCode >= 400   ? api::ErrorCode::HTTP_ERROR
+                                                                                                                          : api::ErrorCode::TOO_MANY_REDIRECT;
             };
 
             static bool isHttpError(api::ErrorCode errorCode) {
@@ -148,13 +150,13 @@ namespace ledger {
                        const std::shared_ptr<api::ExecutionContext> &threadpoolContext);
             HttpRequest GET(const std::string &path,
                             const std::unordered_map<std::string, std::string> &headers = {},
-                            const std::string &baseUrl = "");
+                            const std::string &baseUrl                                  = "");
             HttpRequest PUT(const std::string &path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string> &headers = {});
             HttpRequest DEL(const std::string &path, const std::unordered_map<std::string, std::string> &headers = {});
             HttpRequest POST(const std::string &path,
                              const std::vector<uint8_t> &body,
                              const std::unordered_map<std::string, std::string> &headers = {},
-                             const std::string &baseUrl = "");
+                             const std::string &baseUrl                                  = "");
             HttpClient &addHeader(const std::string &key, const std::string &value);
             HttpClient &removeHeader(const std::string &key);
             void setLogger(const std::shared_ptr<spdlog::logger> &logger);
@@ -177,4 +179,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_HTTPCLIENT_HPP
+#endif // LEDGER_CORE_HTTPCLIENT_HPP

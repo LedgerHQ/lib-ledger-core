@@ -53,4 +53,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BTCBECH32_H
+#endif // LEDGER_CORE_BTCBECH32_H

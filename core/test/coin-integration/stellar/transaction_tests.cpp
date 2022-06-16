@@ -36,11 +36,11 @@
 #include <wallet/stellar/transaction_builders/StellarLikeTransactionBuilder.hpp>
 
 TEST_F(StellarFixture, DISABLED_PaymentTransaction) {
-    auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet_stellar_transaction", "stellar", api::DynamicObject::newInstance());
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto pool    = newPool();
+    auto wallet  = newWallet(pool, "my_wallet_stellar_transaction", "stellar", api::DynamicObject::newInstance());
+    auto info    = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, defaultAccount());
-    auto bus = account->synchronize();
+    auto bus     = account->synchronize();
     bus->subscribe(getTestExecutionContext(),
                    make_receiver([=](const std::shared_ptr<api::Event> &event) {
                        fmt::print("Received event {}\n", api::to_string(event->getCode()));
@@ -53,11 +53,11 @@ TEST_F(StellarFixture, DISABLED_PaymentTransaction) {
                    }));
     EXPECT_EQ(bus, account->synchronize());
     getTestExecutionContext()->waitUntilStopped();
-    auto address = *uv::wait(account->getFreshPublicAddresses()).begin();
+    auto address   = *uv::wait(account->getFreshPublicAddresses()).begin();
     auto signature = hex::toByteArray("3045022100B2B31575F8536B284410D01217F688BE3A9FAF4BA0BA3A9093F983E40D630EC7022022A7A25B01403CFF0D00B3B853D230F8E96FF832B15D4CCC75203CB65896A2D5");
-    auto builder = std::dynamic_pointer_cast<StellarLikeTransactionBuilder>(account->buildTransaction());
-    auto sequence = uv::wait(account->getSequence());
-    auto fees = 100; //Disabled until nodes can handle this request ==> uv::wait(account->getFeeStats()).modeAcceptedFee;
+    auto builder   = std::dynamic_pointer_cast<StellarLikeTransactionBuilder>(account->buildTransaction());
+    auto sequence  = uv::wait(account->getSequence());
+    auto fees      = 100; // Disabled until nodes can handle this request ==> uv::wait(account->getFeeStats()).modeAcceptedFee;
     builder->setSequence(api::BigInt::fromLong(sequence.toInt64()));
     builder->addNativePayment("GA5IHE27VP64IR2JVVGQILN4JX43LFCC6MS2E6LAKGP3UULK3OFFBJXR", api::Amount::fromLong(wallet->getCurrency(), 20000000));
     builder->setBaseFee(api::Amount::fromLong(wallet->getCurrency(), fees));
@@ -85,7 +85,7 @@ TEST_F(StellarFixture, DISABLED_ParseRawTransaction) {
                  "83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a5000000000000"
                  "00000000000000000000000000000";
 
-    auto tx = api::StellarLikeTransactionBuilder::parseRawTransaction(ledger::core::currencies::STELLAR, hex::toByteArray(strTx));
+    auto tx    = api::StellarLikeTransactionBuilder::parseRawTransaction(ledger::core::currencies::STELLAR, hex::toByteArray(strTx));
 
     EXPECT_EQ(tx->getSourceAccount()->toString(), "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
     EXPECT_EQ(tx->getSourceAccountSequence()->compare(api::BigInt::fromLong(98448948301135875L)), 0);
@@ -101,7 +101,7 @@ TEST_F(StellarFixture, DISABLED_ParseSignatureBase) {
                  "5fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a500000000000000000"
                  "0000000000000000";
 
-    auto tx = api::StellarLikeTransactionBuilder::parseSignatureBase(ledger::core::currencies::STELLAR, hex::toByteArray(strTx));
+    auto tx    = api::StellarLikeTransactionBuilder::parseSignatureBase(ledger::core::currencies::STELLAR, hex::toByteArray(strTx));
 
     EXPECT_EQ(tx->getSourceAccount()->toString(), "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
     EXPECT_EQ(tx->getSourceAccountSequence()->compare(api::BigInt::fromLong(98448948301135875L)), 0);

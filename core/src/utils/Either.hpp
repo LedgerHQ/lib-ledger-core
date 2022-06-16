@@ -55,39 +55,39 @@ namespace ledger {
             };
 
             Either(const Option<Left> &left, const Option<Right> &right) {
-                _left = left;
+                _left  = left;
                 _right = right;
             };
 
             Either(Either<Left, Right> &&either) {
-                _left = std::move(either._left);
+                _left  = std::move(either._left);
                 _right = std::move(either._right);
             }
 
             Either(const Either<Left, Right> &either) {
-                _left = either._left;
+                _left  = either._left;
                 _right = either._right;
             }
 
             Either(Either &either) {
-                _left = either._left;
+                _left  = either._left;
                 _right = either._right;
             }
 
             Either<Left, Right> &operator=(const Either<Left, Right> &either) {
-                _left = either._left;
+                _left  = either._left;
                 _right = either._right;
                 return *this;
             };
 
             Either<Left, Right> &operator=(const Left &left) {
-                _left = Option<Left>(left);
+                _left  = Option<Left>(left);
                 _right = Option<Right>();
                 return *this;
             };
 
             Either<Left, Right> &operator=(const Right &right) {
-                _left = Option<Left>();
+                _left  = Option<Left>();
                 _right = Option<Right>(right);
                 return *this;
             };
@@ -155,4 +155,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_EITHER_HPP
+#endif // LEDGER_CORE_EITHER_HPP

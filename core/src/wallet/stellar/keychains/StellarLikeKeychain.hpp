@@ -48,7 +48,7 @@ namespace ledger {
                                 const std::shared_ptr<Preferences> &preferences);
             const api::StellarLikeNetworkParameters &getNetworkParams() const;
             const api::Currency &getCurrency() const;
-            virtual Address getAddress() const = 0;
+            virtual Address getAddress() const        = 0;
             virtual std::string getRestoreKey() const = 0;
 
           protected:
@@ -63,4 +63,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_STELLARLIKEKEYCHAIN_HPP
+#endif // LEDGER_CORE_STELLARLIKEKEYCHAIN_HPP

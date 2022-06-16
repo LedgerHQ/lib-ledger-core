@@ -49,14 +49,14 @@ namespace ledger {
           public:
             StellarLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
                                           const std::shared_ptr<HttpClient> &httpClient) : DedicatedContext(context), http(httpClient){};
-            virtual Future<Option<std::shared_ptr<stellar::Asset>>> getAsset(const std::string &assetCode, const std::string &assetIssuer) = 0;
-            virtual Future<std::shared_ptr<stellar::Ledger>> getLastLedger() = 0;
-            virtual FuturePtr<stellar::FeeStats> getRecommendedFees() = 0;
+            virtual Future<Option<std::shared_ptr<stellar::Asset>>> getAsset(const std::string &assetCode, const std::string &assetIssuer)                = 0;
+            virtual Future<std::shared_ptr<stellar::Ledger>> getLastLedger()                                                                              = 0;
+            virtual FuturePtr<stellar::FeeStats> getRecommendedFees()                                                                                     = 0;
             virtual Future<std::vector<std::shared_ptr<stellar::Operation>>> getOperations(const std::string &address, const Option<std::string> &cursor) = 0;
             virtual Future<std::vector<std::shared_ptr<stellar::Transaction>>> getTransactions(
                 const std::string &address,
-                const std::string &cursor) = 0;
-            virtual Future<std::shared_ptr<stellar::Account>> getAccount(const std::string &accountId) const = 0;
+                const std::string &cursor)                                                                                = 0;
+            virtual Future<std::shared_ptr<stellar::Account>> getAccount(const std::string &accountId) const              = 0;
             virtual Future<std::string> postTransaction(const std::vector<uint8_t> &tx, const std::string &correlationId) = 0;
 
           protected:
@@ -65,4 +65,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_STELLARLIKEBLOCKCHAIN_EXPLORER_HPP
+#endif // LEDGER_CORE_STELLARLIKEBLOCKCHAIN_EXPLORER_HPP

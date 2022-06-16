@@ -44,26 +44,26 @@ namespace ledger {
                                                                        const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer,
                                                                        const std::shared_ptr<spdlog::logger> &logger,
                                                                        const EthereumLikeTransactionBuildFunction &buildFunction) {
-            _context = context;
-            _currency = currency;
-            _explorer = explorer;
-            _build = buildFunction;
-            _logger = logger;
+            _context      = context;
+            _currency     = currency;
+            _explorer     = explorer;
+            _build        = buildFunction;
+            _logger       = logger;
             _request.wipe = false;
         }
 
         EthereumLikeTransactionBuilder::EthereumLikeTransactionBuilder(const EthereumLikeTransactionBuilder &cpy) {
             _currency = cpy._currency;
-            _build = cpy._build;
-            _request = cpy._request;
-            _context = cpy._context;
-            _logger = cpy._logger;
+            _build    = cpy._build;
+            _request  = cpy._request;
+            _context  = cpy._context;
+            _logger   = cpy._logger;
         }
 
         std::shared_ptr<api::EthereumLikeTransactionBuilder>
         EthereumLikeTransactionBuilder::sendToAddress(const std::shared_ptr<api::Amount> &amount,
                                                       const std::string &address) {
-            _request.value = std::make_shared<BigInt>(amount->toString());
+            _request.value     = std::make_shared<BigInt>(amount->toString());
             _request.toAddress = Base58::encodeWithEIP55(address);
             return shared_from_this();
         }
@@ -71,7 +71,7 @@ namespace ledger {
         std::shared_ptr<api::EthereumLikeTransactionBuilder>
         EthereumLikeTransactionBuilder::wipeToAddress(const std::string &address) {
             _request.toAddress = Base58::encodeWithEIP55(address);
-            _request.wipe = true;
+            _request.wipe      = true;
             return shared_from_this();
         }
 
@@ -132,18 +132,18 @@ namespace ledger {
                                                             const std::vector<uint8_t> &rawTransaction,
                                                             bool isSigned) {
             auto decodedRawTx = RLPDecoder::decode(rawTransaction);
-            auto children = decodedRawTx->getChildren();
+            auto children     = decodedRawTx->getChildren();
 
-            //TODO: throw if size is KO
-            auto tx = std::make_shared<EthereumLikeTransactionApi>(currency);
-            int index = 0;
+            // TODO: throw if size is KO
+            auto tx           = std::make_shared<EthereumLikeTransactionApi>(currency);
+            int index         = 0;
             std::vector<uint8_t> vSignature, rSignature, sSignature;
             for (auto &child : children) {
                 if (child->isList()) {
                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No List in this TX");
                 }
                 auto childHexString = child->toString();
-                auto bigIntChild = std::shared_ptr<BigInt>(BigInt::from_hex(childHexString));
+                auto bigIntChild    = std::shared_ptr<BigInt>(BigInt::from_hex(childHexString));
                 switch (index) {
                 case 0:
                     tx->setNonce(bigIntChild);
@@ -168,12 +168,12 @@ namespace ledger {
                 case 6:
                     vSignature = hex::toByteArray(childHexString);
                     break;
-                case 7: //6 would be the 'V' field of V,R and S signature
-                    //R signature
+                case 7: // 6 would be the 'V' field of V,R and S signature
+                    // R signature
                     rSignature = hex::toByteArray(childHexString);
                     break;
                 case 8:
-                    //S signature
+                    // S signature
                     sSignature = hex::toByteArray(childHexString);
                     break;
                 default:

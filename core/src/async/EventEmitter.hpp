@@ -44,4 +44,4 @@ namespace ledger {
 
 } // namespace ledger
 
-#endif //LEDGER_CORE_EVENTEMITTER_H
+#endif // LEDGER_CORE_EVENTEMITTER_H

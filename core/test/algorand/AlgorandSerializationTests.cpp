@@ -16,13 +16,13 @@ namespace ledger {
 
                         constexpr auto SEND_ADDRESS = "F7ZFRLHWTOZJWHHBH2ROVW4DY6RXJJSPFJVFGE6DMM6JNKTLHFKKMKW4JU";
                         constexpr auto RECV_ADDRESS = "O2PCLDMZQVZYUOC265KYCGGLWORPN4OUC4SJV5JJF4SHVTUSVMXKW32JJU";
-                        constexpr auto ASSET_NAME = "YRQTRENFFRG";
-                        constexpr auto ALGO_AMOUNT = uint64_t{10000};
-                        constexpr auto ASSET_ID = uint64_t{9679401};
+                        constexpr auto ASSET_NAME   = "YRQTRENFFRG";
+                        constexpr auto ALGO_AMOUNT  = uint64_t{10000};
+                        constexpr auto ASSET_ID     = uint64_t{9679401};
                         constexpr auto ASSET_AMOUNT = uint64_t{20};
 
                         Transaction::Header makeHeader(const std::string &type) {
-                            const auto note = std::string("frag ivn yrqtre");
+                            const auto note   = std::string("frag ivn yrqtre");
                             const auto header = Transaction::Header(
                                 1000,
                                 7334600,
@@ -49,13 +49,13 @@ namespace ledger {
                             "7ace92ab2ea3736e64c4202ff258acf69bb29b1ce13ea2eadb83c7a3"
                             "74a64f2a6a5313c3633c96aa6b3954a474797065a3706179");
 
-                        const auto header = makeHeader(constants::pay);
+                        const auto header              = makeHeader(constants::pay);
                         const auto detailsAlgoTransfer = PaymentTxnFields(
                             ALGO_AMOUNT,
                             {},
                             Address(RECV_ADDRESS));
-                        const auto tx = Transaction(header, detailsAlgoTransfer);
-                        const auto stx = SignedTransaction(tx);
+                        const auto tx     = Transaction(header, detailsAlgoTransfer);
+                        const auto stx    = SignedTransaction(tx);
                         const auto binary = stx.serialize();
 
                         EXPECT_EQ(refBinary, hex::toString(binary));
@@ -92,8 +92,8 @@ namespace ledger {
                                     Address(SEND_ADDRESS),
                                     100000000,
                                     std::string("YQT")));
-                        const auto tx = Transaction(header, detailsAssetCreate);
-                        const auto stx = SignedTransaction(tx);
+                        const auto tx     = Transaction(header, detailsAssetCreate);
+                        const auto stx    = SignedTransaction(tx);
                         const auto binary = stx.serialize();
 
                         EXPECT_EQ(refBinary, hex::toString(binary));
@@ -129,8 +129,8 @@ namespace ledger {
                                     {},
                                     {}),
                                 ASSET_ID);
-                        const auto tx = Transaction(header, detailsAssetReconfigure);
-                        const auto stx = SignedTransaction(tx);
+                        const auto tx     = Transaction(header, detailsAssetReconfigure);
+                        const auto stx    = SignedTransaction(tx);
                         const auto binary = stx.serialize();
 
                         EXPECT_EQ(refBinary, hex::toString(binary));
@@ -149,8 +149,8 @@ namespace ledger {
                         const auto detailsAssetDestroy =
                             AssetConfigTxnFields::destroy(
                                 ASSET_ID);
-                        const auto tx = Transaction(header, detailsAssetDestroy);
-                        const auto stx = SignedTransaction(tx);
+                        const auto tx     = Transaction(header, detailsAssetDestroy);
+                        const auto stx    = SignedTransaction(tx);
                         const auto binary = stx.serialize();
 
                         EXPECT_EQ(refBinary, hex::toString(binary));
@@ -168,7 +168,7 @@ namespace ledger {
                             "b229");
 
                         const auto header = [&]() {
-                            auto header = makeHeader(constants::axfer);
+                            auto header   = makeHeader(constants::axfer);
                             header.sender = Address(RECV_ADDRESS);
                             return header;
                         }();
@@ -176,8 +176,8 @@ namespace ledger {
                             AssetTransferTxnFields::optIn(
                                 Address(RECV_ADDRESS),
                                 ASSET_ID);
-                        const auto tx = Transaction(header, detailsAssetOptIn);
-                        const auto stx = SignedTransaction(tx);
+                        const auto tx     = Transaction(header, detailsAssetOptIn);
+                        const auto stx    = SignedTransaction(tx);
                         const auto binary = stx.serialize();
 
                         EXPECT_EQ(refBinary, hex::toString(binary));
@@ -201,8 +201,8 @@ namespace ledger {
                                 {},
                                 Address(RECV_ADDRESS),
                                 ASSET_ID);
-                        const auto tx = Transaction(header, detailsAssetTransfer);
-                        const auto stx = SignedTransaction(tx);
+                        const auto tx     = Transaction(header, detailsAssetTransfer);
+                        const auto stx    = SignedTransaction(tx);
                         const auto binary = stx.serialize();
 
                         EXPECT_EQ(refBinary, hex::toString(binary));
@@ -228,8 +228,8 @@ namespace ledger {
                                 Address(SEND_ADDRESS),
                                 Address(RECV_ADDRESS),
                                 ASSET_ID);
-                        const auto tx = Transaction(header, detailsAssetClawback);
-                        const auto stx = SignedTransaction(tx);
+                        const auto tx     = Transaction(header, detailsAssetClawback);
+                        const auto stx    = SignedTransaction(tx);
                         const auto binary = stx.serialize();
 
                         EXPECT_EQ(refBinary, hex::toString(binary));
@@ -248,7 +248,7 @@ namespace ledger {
                             "a474797065a56178666572a478616964ce0093b229");
 
                         const auto header = [&]() {
-                            auto header = makeHeader(constants::axfer);
+                            auto header   = makeHeader(constants::axfer);
                             header.sender = Address(RECV_ADDRESS);
                             return header;
                         }();
@@ -258,8 +258,8 @@ namespace ledger {
                                 Address(SEND_ADDRESS),
                                 Address(SEND_ADDRESS),
                                 ASSET_ID);
-                        const auto tx = Transaction(header, detailsAssetTransferClose);
-                        const auto stx = SignedTransaction(tx);
+                        const auto tx     = Transaction(header, detailsAssetTransferClose);
+                        const auto stx    = SignedTransaction(tx);
                         const auto binary = stx.serialize();
 
                         EXPECT_EQ(refBinary, hex::toString(binary));
@@ -278,7 +278,7 @@ namespace ledger {
                             "74797065a3706179");
 
                         const auto header = [&]() {
-                            auto header = makeHeader(constants::pay);
+                            auto header   = makeHeader(constants::pay);
                             header.sender = Address(RECV_ADDRESS);
                             return header;
                         }();
@@ -286,8 +286,8 @@ namespace ledger {
                             ALGO_AMOUNT,
                             Address(SEND_ADDRESS),
                             Address(SEND_ADDRESS));
-                        const auto tx = Transaction(header, detailsCloseAccount);
-                        const auto stx = SignedTransaction(tx);
+                        const auto tx     = Transaction(header, detailsCloseAccount);
+                        const auto stx    = SignedTransaction(tx);
                         const auto binary = stx.serialize();
 
                         EXPECT_EQ(refBinary, hex::toString(binary));

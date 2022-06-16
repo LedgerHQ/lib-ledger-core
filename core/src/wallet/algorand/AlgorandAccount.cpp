@@ -123,7 +123,7 @@ namespace ledger {
                         getContext(),
                         [operationType](const model::Account &account) {
                             const auto minBalance = computeMinimumBalance(account, operationType);
-                            const auto balance = account.amount;
+                            const auto balance    = account.amount;
                             if (balance >= minBalance) {
                                 return balance - minBalance;
                             }
@@ -142,7 +142,7 @@ namespace ledger {
                     .map<api::AlgorandAssetParams>(
                         getContext(),
                         [assetId](const model::AssetParams &params) {
-                            auto apiParams = model::toAPI(params);
+                            auto apiParams    = model::toAPI(params);
                             apiParams.assetId = assetId;
                             return apiParams;
                         })
@@ -199,7 +199,7 @@ namespace ledger {
                 const std::string &end,
                 api::TimePeriod period) const {
                 const auto startDate = DateUtils::fromJSON(start);
-                const auto endDate = DateUtils::fromJSON(end);
+                const auto endDate   = DateUtils::fromJSON(end);
                 if (startDate >= endDate) {
                     throw make_exception(
                         api::ErrorCode::INVALID_DATE_FORMAT,
@@ -210,7 +210,7 @@ namespace ledger {
                 auto lowerDate = startDate;
                 auto upperDate = DateUtils::incrementDate(startDate, period);
 
-                const auto id = std::stoull(assetId);
+                const auto id  = std::stoull(assetId);
                 const auto transactions =
                     TransactionDatabaseHelper::queryAssetTransferTransactionsInvolving(
                         sql, id, _address.toString());
@@ -235,7 +235,7 @@ namespace ledger {
                         const auto &details =
                             boost::get<model::AssetTransferTxnFields>(transaction.details);
 
-                        const auto amount = details.assetAmount.getValueOr(0);
+                        const auto amount      = details.assetAmount.getValueOr(0);
                         const auto closeAmount = details.closeAmount.getValueOr(0);
 
                         if (details.assetSender == _address ||
@@ -398,12 +398,12 @@ namespace ledger {
                     .mapPtr<api::AlgorandTransaction>(
                         getMainExecutionContext(),
                         [this](const model::TransactionParams &params) {
-                            auto txn = model::Transaction();
-                            txn.header.firstValid = params.lastRound;
-                            txn.header.lastValid = params.lastRound + 1000;
+                            auto txn               = model::Transaction();
+                            txn.header.firstValid  = params.lastRound;
+                            txn.header.lastValid   = params.lastRound + 1000;
                             txn.header.genesisHash = B64String(params.genesisHash);
-                            txn.header.genesisId = params.genesisID;
-                            txn.header.sender = _address;
+                            txn.header.genesisId   = params.genesisID;
+                            txn.header.sender      = _address;
 
                             return std::make_shared<AlgorandTransactionImpl>(std::move(txn));
                         })
@@ -435,16 +435,16 @@ namespace ledger {
                     return _currentSyncEventBus;
                 }
 
-                auto eventPublisher = std::make_shared<EventPublisher>(getContext());
+                auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
                 _currentSyncEventBus = eventPublisher->getEventBus();
 
-                auto startTime = DateUtils::now();
+                auto startTime       = DateUtils::now();
                 eventPublisher->postSticky(
                     std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
 
                 _synchronizer->synchronizeAccount(getSelf())->getFuture().onComplete(getContext(), [this, eventPublisher, startTime](const Try<Unit> &result) {
                     api::EventCode code;
-                    auto payload = std::make_shared<DynamicObject>();
+                    auto payload  = std::make_shared<DynamicObject>();
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now() - startTime).count();
                     payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
                     if (result.isSuccess()) {
@@ -490,7 +490,7 @@ namespace ledger {
                                        const std::string &end,
                                        api::TimePeriod precision) {
                 const auto startDate = DateUtils::fromJSON(start);
-                const auto endDate = DateUtils::fromJSON(end);
+                const auto endDate   = DateUtils::fromJSON(end);
                 if (startDate >= endDate) {
                     throw make_exception(
                         api::ErrorCode::INVALID_DATE_FORMAT,
@@ -573,7 +573,7 @@ namespace ledger {
             Future<api::ErrorCode> Account::eraseDataSince(const std::chrono::system_clock::time_point &date) {
                 auto accountUid = getAccountUid();
 
-                auto log = logger();
+                auto log        = logger();
                 log->debug(" Start erasing data of account : {}", accountUid);
 
                 std::lock_guard<std::mutex> lock(_synchronizationLock);

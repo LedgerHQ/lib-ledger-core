@@ -72,7 +72,6 @@ struct TransactionTestData {
 };
 
 struct BitcoinMakeBaseTransaction : public BaseFixture {
-
     struct InputDescr {
         std::string _tx_hash;
         int32_t _out_idx;
@@ -92,16 +91,16 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
     };
 
     virtual void recreate() {
-        pool = newDefaultPool();
-        wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
-        account = testData.inflate_btc(pool, wallet);
+        pool     = newDefaultPool();
+        wallet   = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        account  = testData.inflate_btc(pool, wallet);
         currency = wallet->getCurrency();
     }
 
     void TearDown() override {
         BaseFixture::TearDown();
-        pool = nullptr;
-        wallet = nullptr;
+        pool    = nullptr;
+        wallet  = nullptr;
         account = nullptr;
     }
 
@@ -131,7 +130,6 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
 };
 
 struct EthereumMakeBaseTransaction : public BaseFixture {
-
     void SetUp() override {
         BaseFixture::SetUp();
         SetUpConfig();
@@ -139,16 +137,16 @@ struct EthereumMakeBaseTransaction : public BaseFixture {
     }
 
     void recreate() {
-        pool = newDefaultPool();
-        wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
-        account = testData.inflate_eth(pool, wallet);
+        pool     = newDefaultPool();
+        wallet   = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        account  = testData.inflate_eth(pool, wallet);
         currency = wallet->getCurrency();
     }
 
     void TearDown() override {
         BaseFixture::TearDown();
-        pool = nullptr;
-        wallet = nullptr;
+        pool    = nullptr;
+        wallet  = nullptr;
         account = nullptr;
     }
 
@@ -166,7 +164,6 @@ struct EthereumMakeBaseTransaction : public BaseFixture {
 };
 
 struct RippleMakeBaseTransaction : public BaseFixture {
-
     void SetUp() override {
         BaseFixture::SetUp();
         SetUpConfig();
@@ -174,16 +171,16 @@ struct RippleMakeBaseTransaction : public BaseFixture {
     }
 
     void recreate() {
-        pool = newDefaultPool();
-        wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
-        account = testData.inflate_xrp(pool, wallet);
+        pool     = newDefaultPool();
+        wallet   = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        account  = testData.inflate_xrp(pool, wallet);
         currency = wallet->getCurrency();
     }
 
     void TearDown() override {
         BaseFixture::TearDown();
-        pool = nullptr;
-        wallet = nullptr;
+        pool    = nullptr;
+        wallet  = nullptr;
         account = nullptr;
     }
 
@@ -201,7 +198,6 @@ struct RippleMakeBaseTransaction : public BaseFixture {
 };
 
 struct TezosMakeBaseTransaction : public BaseFixture {
-
     void SetUp() override {
         BaseFixture::SetUp();
         SetUpConfig();
@@ -209,16 +205,16 @@ struct TezosMakeBaseTransaction : public BaseFixture {
     }
 
     void recreate() {
-        pool = newDefaultPool();
-        wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
-        account = testData.inflate_xtz(pool, wallet);
+        pool     = newDefaultPool();
+        wallet   = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        account  = testData.inflate_xtz(pool, wallet);
         currency = wallet->getCurrency();
     }
 
     void TearDown() override {
         BaseFixture::TearDown();
-        pool = nullptr;
-        wallet = nullptr;
+        pool    = nullptr;
+        wallet  = nullptr;
         account = nullptr;
     }
 
@@ -235,4 +231,4 @@ struct TezosMakeBaseTransaction : public BaseFixture {
     virtual void SetUpConfig() = 0;
 };
 
-#endif //LEDGER_CORE_TRANSACTION_TEST_HELPER_H
+#endif // LEDGER_CORE_TRANSACTION_TEST_HELPER_H

@@ -93,4 +93,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H
+#endif // LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H

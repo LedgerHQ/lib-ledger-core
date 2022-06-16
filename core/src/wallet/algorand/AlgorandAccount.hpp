@@ -57,7 +57,6 @@ namespace ledger {
         namespace algorand {
 
             class Account : public api::AlgorandAccount, public AbstractAccount {
-
               public:
                 static constexpr int FLAG_TRANSACTION_IGNORED = 0x00;
 

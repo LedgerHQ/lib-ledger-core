@@ -51,4 +51,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BENCHMARKER_H
+#endif // LEDGER_CORE_BENCHMARKER_H

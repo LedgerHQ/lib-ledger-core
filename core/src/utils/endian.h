@@ -85,11 +85,11 @@ namespace ledger {
             void *swapToBigEndian(void *ptr, size_t size);
 
             /**
-            * Swaps ptr bytes to little endian bytes order if the current runtime uses big endia bytes order.
-            * @param ptr The buffer to force in little endian bytes order
-            * @param size The size of the buffer
-            * @return
-            */
+             * Swaps ptr bytes to little endian bytes order if the current runtime uses big endia bytes order.
+             * @param ptr The buffer to force in little endian bytes order
+             * @param size The size of the buffer
+             * @return
+             */
             void *swapToLittleEndian(void *ptr, size_t size);
 
             /**
@@ -108,7 +108,7 @@ namespace ledger {
             template <typename T>
             void *scalar_type_to_array(T i, Endianness endianness) {
                 uint8_t *data = (uint8_t *)std::malloc(sizeof(i));
-                auto ptr = (const uint8_t *)(&i);
+                auto ptr      = (const uint8_t *)(&i);
                 for (auto index = 0; index < sizeof(i); index++) {
                     data[index] = ptr[index];
                 }
@@ -119,4 +119,4 @@ namespace ledger {
     }     // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_ENDIAN_H
+#endif // LEDGER_CORE_ENDIAN_H

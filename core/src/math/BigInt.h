@@ -56,7 +56,6 @@ namespace ledger {
          * @headerfile BigInt.h <ledger/core/math/BigInt.h>
          */
         class BigInt {
-
           public:
             static LIBCORE_EXPORT const BigInt ZERO;
             static LIBCORE_EXPORT const BigInt ONE;
@@ -83,9 +82,9 @@ namespace ledger {
              */
             static LIBCORE_EXPORT BigInt *from_hex(const std::string &str);
             /**
-            * Creates a new BigInt from the given hexadecimal encoded string.
-            * @param str The number encoded in hexadecimal (e.g. "E0A1B3")
-            */
+             * Creates a new BigInt from the given hexadecimal encoded string.
+             * @param str The number encoded in hexadecimal (e.g. "E0A1B3")
+             */
             static LIBCORE_EXPORT BigInt fromHex(const std::string &str);
             /**
              * Creates a new BigInt from the given decimal encoded string.
@@ -94,10 +93,10 @@ namespace ledger {
              */
             static LIBCORE_EXPORT BigInt *from_dec(const std::string &str);
             /**
-            * Creates a new BigInt from the given decimal encoded string.
-            * @param str The number encoded in decimal (e.g. "125")
-            * @return
-            */
+             * Creates a new BigInt from the given decimal encoded string.
+             * @param str The number encoded in decimal (e.g. "125")
+             * @return
+             */
             static LIBCORE_EXPORT BigInt fromDecimal(const std::string &str);
 
             static LIBCORE_EXPORT BigInt fromString(const std::string &str);
@@ -250,4 +249,4 @@ namespace ledger {
     } // namespace core
 
 } // namespace ledger
-#endif //LEDGER_CORE_BIGINT_H
+#endif // LEDGER_CORE_BIGINT_H

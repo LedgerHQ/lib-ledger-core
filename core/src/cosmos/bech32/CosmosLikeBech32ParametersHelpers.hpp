@@ -110,8 +110,8 @@ namespace ledger {
                     }
                     strings::join(strGenerator, generator, separator);
                     auto P2WPKHVersion = hex::toString(params.P2WPKHVersion);
-                    auto P2WSHVersion = hex::toString(params.P2WSHVersion);
-                    auto generatorStr = generator.str();
+                    auto P2WSHVersion  = hex::toString(params.P2WSHVersion);
+                    auto generatorStr  = generator.str();
                     sql << "INSERT INTO bech32_parameters VALUES(:name, :hrp, :separator, :generator, "
                            ":p2wpkh_version, :p2wsh_version)",
                         soci::use(params.name), soci::use(params.hrp), soci::use(params.separator),

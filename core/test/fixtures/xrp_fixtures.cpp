@@ -7,7 +7,11 @@ namespace ledger {
     namespace testing {
         namespace xrp {
             core::api::AccountCreationInfo XPUB_INFO(
-                0, {"xrp"}, {"44'/144'/0'"}, {ledger::core::hex::toByteArray("024819f9d4bd29318226e3c807cdd2da84161abaf5619c5d2bbfe5be63c74cc9ed")}, {ledger::core::hex::toByteArray("b4f8427e7e19f284dfe7b99f107c55d00b3eae56df9569f0c4d56722742a5d71")});
+                0,
+                {"xrp"},
+                {"44'/144'/0'"},
+                {ledger::core::hex::toByteArray("024819f9d4bd29318226e3c807cdd2da84161abaf5619c5d2bbfe5be63c74cc9ed")},
+                {ledger::core::hex::toByteArray("b4f8427e7e19f284dfe7b99f107c55d00b3eae56df9569f0c4d56722742a5d71")});
             std::shared_ptr<core::RippleLikeAccount> inflate(const std::shared_ptr<core::WalletPool> &pool, const std::shared_ptr<core::AbstractWallet> &wallet) {
                 auto account = std::dynamic_pointer_cast<core::RippleLikeAccount>(uv::wait(wallet->newAccountWithInfo(XPUB_INFO)));
                 std::vector<core::Operation> operations;

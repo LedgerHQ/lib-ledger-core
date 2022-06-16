@@ -28,53 +28,53 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEORIGINATEDACCOUNT_H
 #define LEDGER_CORE_TEZOSLIKEORIGINATEDACCOUNT_H
 
-#include <string>
-#include <api/TezosLikeOriginatedAccount.hpp>
-#include <api/OperationQuery.hpp>
-#include <utils/Option.hpp>
-#include <wallet/tezos/TezosLikeAccount.h>
-#include <wallet/common/OperationQuery.h>
 #include <api/Amount.hpp>
 #include <api/AmountCallback.hpp>
 #include <api/AmountListCallback.hpp>
+#include <api/OperationQuery.hpp>
+#include <api/TezosLikeOriginatedAccount.hpp>
 #include <api/TimePeriod.hpp>
+#include <string>
+#include <utils/Option.hpp>
+#include <wallet/common/OperationQuery.h>
+#include <wallet/tezos/TezosLikeAccount.h>
 namespace ledger {
     namespace core {
         class TezosOriginatedOperationQuery : public OperationQuery {
-        public:
-            TezosOriginatedOperationQuery(const std::shared_ptr<api::QueryFilter>& headFilter,
-                                          const std::shared_ptr<DatabaseSessionPool>& pool,
-                                          const std::shared_ptr<api::ExecutionContext>& context,
-                                          const std::shared_ptr<api::ExecutionContext>& mainContext) : OperationQuery(headFilter, pool, context, mainContext) {
+          public:
+            TezosOriginatedOperationQuery(const std::shared_ptr<api::QueryFilter> &headFilter,
+                                          const std::shared_ptr<DatabaseSessionPool> &pool,
+                                          const std::shared_ptr<api::ExecutionContext> &context,
+                                          const std::shared_ptr<api::ExecutionContext> &mainContext) : OperationQuery(headFilter, pool, context, mainContext){
 
-            };
-        protected:
+                                                                                                       };
+
+          protected:
             soci::rowset<soci::row> performCount(soci::session &sql) override {
-              return _builder.select("o.type, count(*)")
-                  .from("operations").to("o")
-                  .outerJoin("blocks AS b", "o.block_uid = b.uid")
-                  .outerJoin("tezos_originated_operations AS orig_op", "o.uid = orig_op.uid")
-                  .groupBy("o.type")
-                  .execute(sql);
+                return _builder.select("o.type, count(*)")
+                    .from("operations")
+                    .to("o")
+                    .outerJoin("blocks AS b", "o.block_uid = b.uid")
+                    .outerJoin("tezos_originated_operations AS orig_op", "o.uid = orig_op.uid")
+                    .groupBy("o.type")
+                    .execute(sql);
             }
 
             soci::rowset<soci::row> performExecute(soci::session &sql) override {
                 return _builder.select("o.account_uid, o.uid, o.wallet_uid, o.type, o.date, o.senders, o.recipients,"
-                                               "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time, orig_op.uid"
-                        )
-                        .from("operations").to("o")
-                        .outerJoin("blocks AS b", "o.block_uid = b.uid")
-                        .outerJoin("tezos_originated_operations AS orig_op", "o.uid = orig_op.uid")
-                        .execute(sql);
-
+                                       "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time, orig_op.uid")
+                    .from("operations")
+                    .to("o")
+                    .outerJoin("blocks AS b", "o.block_uid = b.uid")
+                    .outerJoin("tezos_originated_operations AS orig_op", "o.uid = orig_op.uid")
+                    .execute(sql);
             };
         };
         class TezosLikeOriginatedAccount : public api::TezosLikeOriginatedAccount {
-        public:
+          public:
             TezosLikeOriginatedAccount(const std::string &uid,
                                        const std::string &address,
                                        const std::shared_ptr<TezosLikeAccount> &originatorAccount,
@@ -88,17 +88,17 @@ namespace ledger {
 
             std::experimental::optional<std::string> getPublicKey() override;
 
-            void getBalance(const std::shared_ptr<api::AmountCallback> & callback) override;
-            FuturePtr<api::Amount> getBalance(const std::shared_ptr<api::ExecutionContext>& context);
+            void getBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
+            FuturePtr<api::Amount> getBalance(const std::shared_ptr<api::ExecutionContext> &context);
 
-            void getBalanceHistory(const std::chrono::system_clock::time_point & start,
-                                   const std::chrono::system_clock::time_point & end,
+            void getBalanceHistory(const std::chrono::system_clock::time_point &start,
+                                   const std::chrono::system_clock::time_point &end,
                                    api::TimePeriod period,
-                                   const std::shared_ptr<api::AmountListCallback> & callback) override;
+                                   const std::shared_ptr<api::AmountListCallback> &callback) override;
 
-            Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::shared_ptr<api::ExecutionContext>& context,
-                                                                                const std::chrono::system_clock::time_point & start,
-                                                                                const std::chrono::system_clock::time_point & end,
+            Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::shared_ptr<api::ExecutionContext> &context,
+                                                                                const std::chrono::system_clock::time_point &start,
+                                                                                const std::chrono::system_clock::time_point &end,
                                                                                 api::TimePeriod period);
 
             bool isSpendable() override;
@@ -111,7 +111,7 @@ namespace ledger {
 
             std::shared_ptr<api::TezosLikeTransactionBuilder> buildTransaction() override;
 
-        private:
+          private:
             std::string _accountUid;
             std::string _address;
             Option<std::string> _publicKey;
@@ -119,6 +119,6 @@ namespace ledger {
             bool _isDelegatable;
             std::weak_ptr<TezosLikeAccount> _originatorAccount;
         };
-    }
-}
-#endif //LEDGER_CORE_TEZOSLIKEORIGINATEDACCOUNT_H
+    } // namespace core
+} // namespace ledger
+#endif // LEDGER_CORE_TEZOSLIKEORIGINATEDACCOUNT_H

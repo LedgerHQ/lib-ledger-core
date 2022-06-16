@@ -46,7 +46,6 @@ namespace ledger {
             namespace model {
 
                 class Transaction {
-
                   public:
                     class Header {
                       public:
@@ -99,10 +98,10 @@ namespace ledger {
 
                 namespace constants {
 
-                    static constexpr const char *pay = "pay";
-                    static constexpr const char *keyreg = "keyreg";
-                    static constexpr const char *acfg = "acfg";
-                    static constexpr const char *axfer = "axfer";
+                    static constexpr const char *pay     = "pay";
+                    static constexpr const char *keyreg  = "keyreg";
+                    static constexpr const char *acfg    = "acfg";
+                    static constexpr const char *axfer   = "axfer";
                     static constexpr const char *afreeze = "afrz";
 
                 } // namespace constants

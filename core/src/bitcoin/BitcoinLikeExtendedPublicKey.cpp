@@ -53,7 +53,7 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeAddress> BitcoinLikeExtendedPublicKey::derive(const std::string &path) {
             DerivationPath p(path);
-            auto key = _derive(0, p.toVector(), _key);
+            auto key            = _derive(0, p.toVector(), _key);
             auto keychainEngine = _configuration->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::KeychainEngines::BIP32_P2PKH);
             return std::make_shared<BitcoinLikeAddress>(_currency,
                                                         key.getPublicKeyHash160(),
@@ -77,7 +77,7 @@ namespace ledger {
                                               const std::vector<uint8_t> &chainCode,
                                               const std::string &path,
                                               const std::shared_ptr<DynamicObject> &configuration) {
-            auto &params = currency.bitcoinLikeNetworkParameters.value();
+            auto &params             = currency.bitcoinLikeNetworkParameters.value();
             DeterministicPublicKey k = BitcoinExtendedPublicKey::fromRaw(currency, params, parentPublicKey, publicKey, chainCode, path);
             DerivationPath p(path);
             return std::make_shared<BitcoinLikeExtendedPublicKey>(currency, k, configuration, p);
@@ -92,7 +92,7 @@ namespace ledger {
                                                  const std::string &xpubBase58,
                                                  const Option<std::string> &path,
                                                  const std::shared_ptr<DynamicObject> &configuration) {
-            auto &params = currency.bitcoinLikeNetworkParameters.value();
+            auto &params             = currency.bitcoinLikeNetworkParameters.value();
             DeterministicPublicKey k = BitcoinExtendedPublicKey::fromBase58(currency, params, xpubBase58, path);
             return std::make_shared<ledger::core::BitcoinLikeExtendedPublicKey>(currency, k, configuration, DerivationPath(path.getValueOr("m")));
         }

@@ -99,7 +99,7 @@ namespace {
             s, use(b.uid), use(b.txUid), use(b.originatedAccountUid);
         });
 
-    //tezos originated account
+    // tezos originated account
     struct TezosOriginatedAccountBinding {
         std::vector<std::string> uid;
         std::vector<std::string> accountUid;
@@ -111,13 +111,13 @@ namespace {
         void update(const Operation &operation) {
             auto transaction = operation.tezosTransaction.getValue();
 
-            if (transaction.originatedAccountUid.empty()) { //insertion
+            if (transaction.originatedAccountUid.empty()) { // insertion
                 auto origAccount = transaction.originatedAccount.getValue();
                 uid.push_back(TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(operation.accountUid, origAccount.address));
                 address.push_back(origAccount.address);
                 spendable.push_back(static_cast<int>(origAccount.spendable));
                 delegatable.push_back(static_cast<int>(origAccount.delegatable));
-            } else { //update: only pubkey will be updated
+            } else { // update: only pubkey will be updated
                 uid.push_back(transaction.originatedAccountUid);
                 address.push_back("");
                 spendable.push_back(false);
@@ -175,9 +175,9 @@ namespace {
             uid.push_back(txUid);
             hash.push_back(tx.hash);
             value.push_back(tx.value.toHexString());
-            //blockUid.push_back(tx.block.map<std::string>([] (const TezosLikeBlockchainExplorer::Block& block) {
-            //    return block.getUid();
-            //}));
+            // blockUid.push_back(tx.block.map<std::string>([] (const TezosLikeBlockchainExplorer::Block& block) {
+            //     return block.getUid();
+            // }));
             blockUid.push_back(tx.block.hasValue() ? tx.block->getUid() : "");
             time.push_back(tx.receivedAt);
             sender.push_back(tx.sender);
@@ -276,7 +276,7 @@ namespace ledger {
                 // Upsert operation
                 operationStmt.bindings.update(op);
                 // Upsert transaction
-                auto &tx = op.tezosTransaction.getValue();
+                auto &tx         = op.tezosTransaction.getValue();
                 const auto txUid = TezosLikeTransactionDatabaseHelper::createTezosTransactionUid(op.accountUid, tx.hash, tx.type);
                 transactionStmt.bindings.update(tx, txUid);
                 // tezos operation

@@ -60,7 +60,6 @@ namespace ledger {
 
             class AccountSynchronizer : public DedicatedContext,
                                         public std::enable_shared_from_this<AccountSynchronizer> {
-
               public:
                 AccountSynchronizer(const std::shared_ptr<WalletPool> &pool,
                                     const std::shared_ptr<BlockchainExplorer> &explorer);
@@ -72,7 +71,7 @@ namespace ledger {
 
                 Future<bool> synchronizeBatch(const std::shared_ptr<Account> &account,
                                               const bool hadTransactions,
-                                              const Option<uint64_t> &lowestRound = Option<uint64_t>(),
+                                              const Option<uint64_t> &lowestRound  = Option<uint64_t>(),
                                               const Option<uint64_t> &highestRound = Option<uint64_t>());
 
                 Future<Unit> updateLatestBlock(const std::shared_ptr<api::ExecutionContext> &context);

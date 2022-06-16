@@ -53,7 +53,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, MediumXpubSynchronization) {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
-            auto account = createBitcoinLikeAccount(wallet, nextIndex, P2SH_XPUB_INFO);
+            auto account  = createBitcoinLikeAccount(wallet, nextIndex, P2SH_XPUB_INFO);
 
             auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
@@ -65,12 +65,12 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, MediumXpubSynchronization) {
                 dispatcher->stop();
             });
 
-            auto bus = account->synchronize();
+            auto bus      = account->synchronize();
             bus->subscribe(getTestExecutionContext(), receiver);
 
             dispatcher->waitUntilStopped();
 
-            auto block = uv::wait(account->getLastBlock());
+            auto block     = uv::wait(account->getLastBlock());
             auto blockHash = block.blockHash;
         }
     }
@@ -87,7 +87,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, SynchronizeOnceAtATime) {
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
-            auto account = createBitcoinLikeAccount(wallet, nextIndex, P2SH_XPUB_INFO);
+            auto account  = createBitcoinLikeAccount(wallet, nextIndex, P2SH_XPUB_INFO);
             auto eventBus = pool->getEventBus();
             eventBus->subscribe(getTestExecutionContext(),
                                 make_receiver([](const std::shared_ptr<api::Event> &event) {
@@ -117,19 +117,19 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, DISABLED_SynchronizeFromLastBlock) 
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "49'/<coin_type>'/<account>'/<node>/<address>");
         const auto walletName = randomWalletName();
-        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin_testnet", configuration));
+        auto wallet           = uv::wait(pool->createWallet(walletName, "bitcoin_testnet", configuration));
         createBitcoinLikeAccount(wallet, 0, P2SH_XPUB_INFO);
         auto synchronize = [wallet, pool, this](std::shared_ptr<uv::SequentialExecutionContext> context, bool expectNewOp) {
-            auto account = uv::wait(wallet->getAccount(0));
-            auto numberOfOp = 0;
+            auto account          = uv::wait(wallet->getAccount(0));
+            auto numberOfOp       = 0;
 
             auto receiverNumberOp = make_receiver([&numberOfOp](const std::shared_ptr<api::Event> &event) {
                 numberOfOp += 1;
             });
 
-            auto eventBus = pool->getEventBus();
+            auto eventBus         = pool->getEventBus();
             eventBus->subscribe(context, receiverNumberOp);
-            auto bus = account->synchronize();
+            auto bus      = account->synchronize();
 
             auto receiver = make_receiver([=, &numberOfOp](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
@@ -159,20 +159,20 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, DISABLED_SynchronizeFromLastBlock) 
 }
 
 TEST_F(BitcoinLikeWalletP2SHSynchronization, EraseDataSinceAfterSynchronization) {
-    auto pool = newDefaultPool();
+    auto pool             = newDefaultPool();
     const auto walletName = randomWalletName();
     {
-        //Set configuration
+        // Set configuration
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
                                  "49'/<coin_type>'/<account>'/<node>/<address>");
-        //Create wallet
-        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin_testnet", configuration));
-        //Create account
-        auto account = createBitcoinLikeAccount(wallet, 0, P2SH_XPUB_INFO);
-        //Sync account
-        auto bus = account->synchronize();
+        // Create wallet
+        auto wallet   = uv::wait(pool->createWallet(walletName, "bitcoin_testnet", configuration));
+        // Create account
+        auto account  = createBitcoinLikeAccount(wallet, 0, P2SH_XPUB_INFO);
+        // Sync account
+        auto bus      = account->synchronize();
         auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
             fmt::print("Received event {}\n", api::to_string(event->getCode()));
             if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
@@ -189,14 +189,14 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, EraseDataSinceAfterSynchronization)
         auto accountFromWallet = uv::wait(wallet->getAccount(0));
         EXPECT_EQ(account, accountFromWallet);
 
-        auto date = "2000-03-27T09:10:22Z";
+        auto date         = "2000-03-27T09:10:22Z";
         auto formatedDate = DateUtils::fromJSON(date);
 
-        //Delete account
-        auto code = uv::wait(wallet->eraseDataSince(formatedDate));
+        // Delete account
+        auto code         = uv::wait(wallet->eraseDataSince(formatedDate));
         EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
-        //Check if account was successfully deleted
+        // Check if account was successfully deleted
         auto newAccountCount = uv::wait(wallet->getAccountCount());
         EXPECT_EQ(newAccountCount, 0);
         {
@@ -206,11 +206,11 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, EraseDataSinceAfterSynchronization)
             EXPECT_EQ(result, false);
         }
 
-        //Delete wallet
+        // Delete wallet
         auto walletCode = uv::wait(pool->eraseDataSince(formatedDate));
         EXPECT_EQ(walletCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
-        //Check if wallet was successfully deleted
+        // Check if wallet was successfully deleted
         auto walletCount = uv::wait(pool->getWalletCount());
         EXPECT_EQ(walletCount, 0);
     }
@@ -224,10 +224,10 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, TestNetSynchronization) {
         auto wallet = uv::wait(pool->createWallet("testnet_wallet", "bitcoin_testnet", configuration));
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
-            auto info = uv::wait(wallet->getNextExtendedKeyAccountCreationInfo());
+            auto info      = uv::wait(wallet->getNextExtendedKeyAccountCreationInfo());
             info.extendedKeys.push_back("tpubDCcvqEHx7prGddpWTfEviiew5YLMrrKy4oJbt14teJZenSi6AYMAs2SNXwYXFzkrNYwECSmobwxESxMCrpfqw4gsUt88bcr8iMrJmbb8P2q");
             EXPECT_EQ(nextIndex, 0);
-            auto account = createBitcoinLikeAccount(wallet, nextIndex, info);
+            auto account  = createBitcoinLikeAccount(wallet, nextIndex, info);
             auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
@@ -236,7 +236,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, TestNetSynchronization) {
                 dispatcher->stop();
             });
 
-            auto bus = account->synchronize();
+            auto bus      = account->synchronize();
             bus->subscribe(getTestExecutionContext(), receiver);
             dispatcher->waitUntilStopped();
         }
@@ -247,8 +247,8 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, DecredParsingAndSerialization) {
     auto pool = newDefaultPool();
     {
         auto wallet = uv::wait(pool->createWallet("testnet_wallet", "decred", DynamicObject::newInstance()));
-        auto strTx = "01000000016b9b4d4cdd2cf78907e62cddf31911ae4d4af1d89228ae4afc4459edee6a60c40100000000ffffff000240420f000000000000001976a9141d19445f397f6f0d3e2e6d741f61ba66b53886cf88acf0d31d000000000000001976a91415101bac61dca29add75996a0836a469dc8eee0788ac00000000ffffffff01000000000000000000000000ffffffff6a47304402200466bbc2aa8a742e85c3b68911502e73cdcb620ceaaa7a3cd199dbb4f8e9b969022063afeedd37d05e44b655a9de92eb36124acc045baf7b9e2941f81e41af91f1150121030ac79bab351084fdc82b4fa46eaa6a9cd2b5eb97ee93e367422bf47219b54a14";
-        auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(strTx), 0);
+        auto strTx  = "01000000016b9b4d4cdd2cf78907e62cddf31911ae4d4af1d89228ae4afc4459edee6a60c40100000000ffffff000240420f000000000000001976a9141d19445f397f6f0d3e2e6d741f61ba66b53886cf88acf0d31d000000000000001976a91415101bac61dca29add75996a0836a469dc8eee0788ac00000000ffffffff01000000000000000000000000ffffffff6a47304402200466bbc2aa8a742e85c3b68911502e73cdcb620ceaaa7a3cd199dbb4f8e9b969022063afeedd37d05e44b655a9de92eb36124acc045baf7b9e2941f81e41af91f1150121030ac79bab351084fdc82b4fa46eaa6a9cd2b5eb97ee93e367422bf47219b54a14";
+        auto tx     = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(strTx), 0);
         EXPECT_EQ(hex::toString(tx->serialize()), strTx);
     }
 }

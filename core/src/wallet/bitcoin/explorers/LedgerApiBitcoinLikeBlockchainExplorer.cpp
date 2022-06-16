@@ -41,8 +41,8 @@ namespace ledger {
                                                                                        const api::BitcoinLikeNetworkParameters &parameters,
                                                                                        const std::shared_ptr<api::DynamicObject> &configuration) : DedicatedContext(context),
                                                                                                                                                    BitcoinLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
-            _http = http;
-            _parameters = parameters;
+            _http            = http;
+            _parameters      = parameters;
             _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v2");
         }
 
@@ -116,7 +116,7 @@ namespace ledger {
 
         Future<std::vector<std::shared_ptr<api::BigInt>>> LedgerApiBitcoinLikeBlockchainExplorer::getFees() {
             bool parseNumbersAsString = true;
-            auto networkId = getNetworkParameters().Identifier;
+            auto networkId            = getNetworkParameters().Identifier;
             return _http->GET(fmt::format("/blockchain/{}/{}/fees", getExplorerVersion(), networkId))
                 .json(parseNumbersAsString)
                 .map<std::vector<std::shared_ptr<api::BigInt>>>(getExplorerContext(), [networkId](const HttpRequest::JsonResult &result) {

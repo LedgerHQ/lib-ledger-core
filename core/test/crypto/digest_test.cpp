@@ -85,7 +85,7 @@ TEST(Digest, HMACSHA256) {
         {"0102030405060708090a0b0c0d0e0f10111213141516171819", "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd", "82558a389a443c0ea4cc819899f2083a85f0faa3e578f8077a2e3ff46729665b"}};
 
     for (auto &i : fixtures) {
-        auto hash = hex::toString(HMAC::sha256(hex::toByteArray(i[0]), hex::toByteArray(i[1])));
+        auto hash     = hex::toString(HMAC::sha256(hex::toByteArray(i[0]), hex::toByteArray(i[1])));
         auto expected = i[2];
         EXPECT_EQ(hash, expected);
     }
@@ -99,8 +99,7 @@ TEST(Digest, HASH160) {
 }
 
 TEST(Digest, BLAKE256) {
-
-    auto input1 = hex::toByteArray("");
+    auto input1    = hex::toByteArray("");
     auto output256 = BLAKE::blake256(input1);
     EXPECT_EQ(hex::toString(output256), "716f6e863f744b9ac22c97ec7b76ea5f5908bc5b2f67c61510bfc4751384ea7a");
 
@@ -121,7 +120,7 @@ TEST(Digest, BLAKE256) {
 }
 
 TEST(Digest, BLAKE2B) {
-    auto input1 = hex::toByteArray("");
+    auto input1    = hex::toByteArray("");
     auto output512 = BLAKE::blake2b(input1);
     EXPECT_EQ(hex::toString(output512), "786a02f742015903c6c6fd852552d272912f4740e15847618a86e217f71f5419d25e1031afee585313896444934eb04b903a685b1448b755d56f701afe9be2ce");
 
@@ -131,12 +130,11 @@ TEST(Digest, BLAKE2B) {
     EXPECT_EQ(hex::toString(output5121), "a8add4bdddfd93e4877d2746e62817b116364a1fa7bc148d95090bc7333b3673f82401cf7aa2e4cb1ecd90296e3f14cb5413f8ed77be73045b13914cdcd6a918");
 }
 TEST(Digest, Keccak256) {
-
     auto empty = hex::toByteArray("");
     auto check = Keccak::keccak256(empty);
     EXPECT_EQ(hex::toString(check), "c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470");
 
-    auto pk = hex::toByteArray("6e145ccef1033dea239875dd00dfb4fee6e3348b84985c92f103444683bae07b83b5c38e5e2b0c8529d7fa3f64d46daa1ece2d9ac14cab9477d042c84c32ccd0");
+    auto pk     = hex::toByteArray("6e145ccef1033dea239875dd00dfb4fee6e3348b84985c92f103444683bae07b83b5c38e5e2b0c8529d7fa3f64d46daa1ece2d9ac14cab9477d042c84c32ccd0");
     auto keccak = Keccak::keccak256(pk);
     EXPECT_EQ(hex::toString(keccak), "2a5bc342ed616b5ba5732269001d3f1ef827552ae1114027bd3ecf1f086ba0f9");
 

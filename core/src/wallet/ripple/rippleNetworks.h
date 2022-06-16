@@ -61,4 +61,4 @@ namespace ledger {
         } // namespace networks
     }     // namespace core
 } // namespace ledger
-#endif //LEDGER_CORE_RIPPLENETWORKS_H
+#endif // LEDGER_CORE_RIPPLENETWORKS_H

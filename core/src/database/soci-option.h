@@ -58,4 +58,4 @@ namespace soci {
     };
 } // namespace soci
 
-#endif //LEDGER_CORE_SOCI_OPTION_H
+#endif // LEDGER_CORE_SOCI_OPTION_H

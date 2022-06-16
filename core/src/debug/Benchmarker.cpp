@@ -38,7 +38,7 @@ namespace ledger {
     namespace core {
 
         Benchmarker::Benchmarker(const std::string &name, const std::shared_ptr<spdlog::logger> &logger) {
-            _name = name;
+            _name   = name;
             _logger = logger;
         }
 

@@ -43,20 +43,20 @@ struct BitcoinMakeTransactionFromNativeSegwitToNativeSegwit : public BitcoinMake
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
         testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
-        //https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
+        // https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
         testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "84'/<coin_type>'/<account>'/<node>/<address>");
-        testData.walletName = randomWalletName();
+        testData.walletName   = randomWalletName();
         testData.currencyName = "bitcoin";
-        testData.inflate_btc = ledger::testing::txes_to_wpkh::inflate;
+        testData.inflate_btc  = ledger::testing::txes_to_wpkh::inflate;
     }
 };
 
 TEST_F(BitcoinMakeTransactionFromNativeSegwitToNativeSegwit, VerifyHrpAndDerivationPath) {
-    auto address = "bc1q6qs00n9x2mgyrgaspdx32f73vykmkkh5r2a9sm";
-    auto freshAddress = uv::wait(account->getFreshPublicAddresses())[0];
-    auto hrp = Bech32Factory::newBech32Instance("btc").getValue()->getBech32Params().hrp;
+    auto address         = "bc1q6qs00n9x2mgyrgaspdx32f73vykmkkh5r2a9sm";
+    auto freshAddress    = uv::wait(account->getFreshPublicAddresses())[0];
+    auto hrp             = Bech32Factory::newBech32Instance("btc").getValue()->getBech32Params().hrp;
     auto freshAddressStr = freshAddress->asBitcoinLikeAddress()->toBech32();
-    auto derivationPath = freshAddress->getDerivationPath().value_or("");
+    auto derivationPath  = freshAddress->getDerivationPath().value_or("");
     EXPECT_EQ(derivationPath, "0/1");
     auto bechAddress = freshAddress->toString();
     EXPECT_EQ(bechAddress, address);
@@ -104,9 +104,9 @@ TEST_F(BitcoinMakeTransactionFromNativeSegwitToNativeSegwit, CreateStandardP2WPK
 struct BitcoinMakeTransactionFromLegacyToNativeSegwit : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
-        testData.walletName = randomWalletName();
-        testData.currencyName = "bitcoin";
-        testData.inflate_btc = ledger::testing::medium_xpub::inflate;
+        testData.walletName    = randomWalletName();
+        testData.currencyName  = "bitcoin";
+        testData.inflate_btc   = ledger::testing::medium_xpub::inflate;
     }
 };
 
@@ -138,8 +138,8 @@ TEST_F(BitcoinMakeTransactionFromLegacyToNativeSegwit, CreateStandardP2WPKHWithO
 
     std::vector<uint8_t> tx_bin = generatedTx->serialize();
 
-    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(),
-                                                                               tx_bin, 0);
+    auto parsedTx               = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(),
+                                                                                             tx_bin, 0);
 
     EXPECT_TRUE(verifyTransactionOutputs(parsedTx, output_descrs));
     // Values in inputs are missing after parsing. Here we can test only outputs.
@@ -148,7 +148,7 @@ TEST_F(BitcoinMakeTransactionFromLegacyToNativeSegwit, CreateStandardP2WPKHWithO
 }
 
 TEST_F(BitcoinMakeTransactionFromLegacyToNativeSegwit, ParseSignedTx) {
-    auto hash = "c3dd55c86d02ad9d4b0e748c219fd15b79f21c6d5e38f5fe84a453a7f9e37494";
+    auto hash   = "c3dd55c86d02ad9d4b0e748c219fd15b79f21c6d5e38f5fe84a453a7f9e37494";
     auto sender = "bc1qh4kl0a0a3d7su8udc2rn62f8w939prqpl34z86";
     std::vector<std::string> receivers{"bc1qh4kl0a0a3d7su8udc2rn62f8w939prqpl34z86", "bc1qry3crfssh8w6guajms7upclgqsfac4fs4g7nwj"};
 

@@ -50,18 +50,21 @@ namespace ledger {
         BitcoinLikeTransactionBuilder::BitcoinLikeTransactionBuilder(const BitcoinLikeTransactionBuilder &cpy)
             : _request(std::make_shared<BigInt>(cpy._currency.bitcoinLikeNetworkParameters.value().Dust)) {
             _currency = cpy._currency;
-            _build = cpy._build;
-            _request = cpy._request;
-            _context = cpy._context;
-            _logger = cpy._logger;
+            _build    = cpy._build;
+            _request  = cpy._request;
+            _context  = cpy._context;
+            _logger   = cpy._logger;
         }
 
         BitcoinLikeTransactionBuilder::BitcoinLikeTransactionBuilder(
-            const std::shared_ptr<api::ExecutionContext> &context, const api::Currency &currency, const std::shared_ptr<spdlog::logger> &logger, const BitcoinLikeTransactionBuildFunction &buildFunction) : _request(std::make_shared<BigInt>(currency.bitcoinLikeNetworkParameters.value().Dust)) {
-            _currency = currency;
-            _build = buildFunction;
-            _context = context;
-            _logger = logger;
+            const std::shared_ptr<api::ExecutionContext> &context,
+            const api::Currency &currency,
+            const std::shared_ptr<spdlog::logger> &logger,
+            const BitcoinLikeTransactionBuildFunction &buildFunction) : _request(std::make_shared<BigInt>(currency.bitcoinLikeNetworkParameters.value().Dust)) {
+            _currency     = currency;
+            _build        = buildFunction;
+            _context      = context;
+            _logger       = logger;
             _request.wipe = false;
         }
 
@@ -94,7 +97,7 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::pickInputs(api::BitcoinLikePickingStrategy strategy, int32_t sequence, optional<int32_t> maxUtxo) {
-            //Fix: use uniform initialization
+            // Fix: use uniform initialization
 
             BitcoinUtxoPickerParams new_utxo_picker{strategy, sequence, maxUtxo};
             _request.utxoPicker = Option<BitcoinUtxoPickerParams>(std::move(new_utxo_picker));
@@ -110,13 +113,13 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::wipeToAddress(const std::string &address) {
-            //First reset request
+            // First reset request
             reset();
-            //Wipe mode
+            // Wipe mode
             _request.wipe = true;
-            //We don't have the amount yet, will be set when we fill outputs in BitcoinLikeUtxoPicker
-            auto a = std::shared_ptr<BigInt>();
-            auto script = createSendScript(address);
+            // We don't have the amount yet, will be set when we fill outputs in BitcoinLikeUtxoPicker
+            auto a        = std::shared_ptr<BigInt>();
+            auto script   = createSendScript(address);
             _request.outputs.push_back(std::tuple<std::shared_ptr<BigInt>, std::shared_ptr<api::BitcoinLikeScript>>(a, script));
             return shared_from_this();
         }
@@ -184,7 +187,7 @@ namespace ledger {
             }
 
             auto &additionalBIPS = _currency.bitcoinLikeNetworkParameters.value().AdditionalBIPs;
-            auto it = std::find(additionalBIPS.begin(), additionalBIPS.end(), "BIP115");
+            auto it              = std::find(additionalBIPS.begin(), additionalBIPS.end(), "BIP115");
             if (it != additionalBIPS.end()) {
                 script << hex::toByteArray(networks::BIP115_PARAMETERS.blockHash)
                        << networks::BIP115_PARAMETERS.blockHeight

@@ -46,7 +46,9 @@ namespace ledger {
                 int32_t index,
                 const std::string &address);
             static bool queryAccount(
-                soci::session &sql, const std::string &accountUid, CosmosLikeAccountDatabaseEntry &entry);
+                soci::session &sql,
+                const std::string &accountUid,
+                CosmosLikeAccountDatabaseEntry &entry);
             static void updateAccount(
                 soci::session &sql,
                 const std::string &accountUid,

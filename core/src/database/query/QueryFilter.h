@@ -63,7 +63,7 @@ namespace ledger {
                 toString(ss);
                 return ss.str();
             };
-            virtual void toString(std::stringstream &ss) const = 0;
+            virtual void toString(std::stringstream &ss) const                        = 0;
             virtual void bindValue(soci::details::prepare_temp_type &statement) const = 0;
             int32_t getSiblingsCount() const;
             std::shared_ptr<QueryFilter> getHead() const;
@@ -84,4 +84,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_QUERYFILTER_H
+#endif // LEDGER_CORE_QUERYFILTER_H

@@ -14,14 +14,14 @@ namespace ledger {
             static const TezosTestData ED25519Data{
                 TezosCurve::ED25519,
                 TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519,
-                //KEY_ED25519,
+                // KEY_ED25519,
                 KEY_ED25519_THIRD,
             };
 
             static const TezosTestData SECP256K1Data{
                 TezosCurve::SECP256K1,
                 TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1,
-                //KEY_SECP256K1,
+                // KEY_SECP256K1,
                 KEY_SECP256K1_SECOND,
             };
 
@@ -39,7 +39,7 @@ namespace ledger {
                 return api::to_string(info.param.curve);
             };
 
-            core::api::AccountCreationInfo XPUB_INFO( //tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE
+            core::api::AccountCreationInfo XPUB_INFO( // tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE
                 0,
                 {"xtz"},
                 {"44'/1729'/0'"},

@@ -86,7 +86,6 @@ std::vector<uint8_t> serializeStateToVector(const KeychainPersistentState &state
 }
 
 TEST_F(CommonBitcoinKeychains, DISABLED_CorrectStateAtInitialization) {
-
     KeychainPersistentState mockState;
     mockState.maxConsecutiveChangeIndex = 4;
     mockState.nonConsecutiveChangeIndexes.emplace(1);
@@ -112,7 +111,6 @@ TEST_F(CommonBitcoinKeychains, DISABLED_CorrectStateAtInitialization) {
 }
 
 TEST_F(CommonBitcoinKeychains, CorrectStateProducedByMarkPathAsUsed) {
-
     testKeychain(BTC_TESTNET_DATA, [](CommonBitcoinLikeKeychains &keychain) {
         auto addresses = keychain.getAllObservableAddresses(0, 10);
         EXPECT_TRUE(keychain.markAsUsed("2N3uTrmyNePhAbiUxi8uq7P2J7SxS2bCaji"));
@@ -126,12 +124,11 @@ TEST_F(CommonBitcoinKeychains, CorrectStateProducedByMarkPathAsUsed) {
 }
 
 TEST_F(CommonBitcoinKeychains, CorrectStateUsedAtMarkPathAsUsed) {
-
     testKeychain(BTC_TESTNET_DATA, [](ConcreteCommonBitcoinLikeKeychains &keychain) {
-        auto addresses = keychain.getAllObservableAddresses(0, 10);
+        auto addresses                       = keychain.getAllObservableAddresses(0, 10);
 
         // update state from outside
-        KeychainPersistentState stateInput = keychain.getState();
+        KeychainPersistentState stateInput   = keychain.getState();
         stateInput.maxConsecutiveChangeIndex = 0;
         stateInput.nonConsecutiveChangeIndexes.insert(0);
         keychain.getPreferences()->edit()->putData("state", serializeStateToVector(stateInput))->commit();

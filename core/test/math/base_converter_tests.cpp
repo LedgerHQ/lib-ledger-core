@@ -85,7 +85,7 @@ static std::vector<std::string> expected_base64_encoding = {
 TEST(BaseConverterTests, EncodeInBase32NoPadding) {
     auto index = 0;
     for (auto &d : data) {
-        auto bytes = hex::toByteArray(d);
+        auto bytes     = hex::toByteArray(d);
         auto base32Rfc = BaseConverter::encode(bytes, BaseConverter::BASE32_RFC4648_NO_PADDING);
         std::cout << "Base32: " << base32Rfc << std::endl;
         EXPECT_EQ(base32Rfc, expected_base32rfc_no_padding_encoding[index++]);
@@ -95,7 +95,7 @@ TEST(BaseConverterTests, EncodeInBase32NoPadding) {
 TEST(BaseConverterTests, EncodeInBase32) {
     auto index = 0;
     for (auto &d : data) {
-        auto bytes = hex::toByteArray(d);
+        auto bytes     = hex::toByteArray(d);
         auto base32Rfc = BaseConverter::encode(bytes, BaseConverter::BASE32_RFC4648);
         std::cout << "Base32: " << base32Rfc << std::endl;
         EXPECT_EQ(base32Rfc, expected_base32rfc_encoding[index++]);
@@ -127,7 +127,7 @@ TEST(BaseConverterTests, DecodeWithBase32) {
 TEST(BaseConverterTests, EncodeInBase64) {
     auto index = 0;
     for (auto &d : data) {
-        auto bytes = hex::toByteArray(d);
+        auto bytes     = hex::toByteArray(d);
         auto base64Rfc = BaseConverter::encode(bytes, BaseConverter::BASE64_RFC4648);
         std::cout << "Base64: " << base64Rfc << std::endl;
         EXPECT_EQ(base64Rfc, expected_base64_encoding[index++]);

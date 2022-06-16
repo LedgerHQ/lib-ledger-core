@@ -35,7 +35,7 @@ namespace ledger {
     namespace core {
 
         namespace networks {
-            //Reference for chainIDs: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
+            // Reference for chainIDs: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
 
             const api::EthereumLikeNetworkParameters getEthLikeNetworkParameters(const std::string &networkName) {
                 if (networkName == "ethereum") {

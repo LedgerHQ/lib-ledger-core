@@ -42,7 +42,7 @@ using namespace std;
 class RippleKeychains : public BaseFixture {
   public:
     void testXrpKeychain(const KeychainTestData &data, std::function<void(RippleLikeKeychain &)> f) {
-        auto backend = std::make_shared<ledger::core::test::MemPreferencesBackend>();
+        auto backend       = std::make_shared<ledger::core::test::MemPreferencesBackend>();
         auto configuration = std::make_shared<DynamicObject>();
         dispatcher->getMainExecutionContext()->execute(ledger::core::make_runnable([=]() {
             RippleLikeKeychain keychain(
@@ -86,20 +86,20 @@ const std::vector<DerivationSchemeData> derivationSchemeTestData = {
      "rLJEcapF3TyMgwE8wmBvj4gYiZrcTdf3it"}};
 
 TEST_F(RippleKeychains, RippleDerivationSchemes) {
-    auto pool = newDefaultPool();
+    auto pool          = newDefaultPool();
     auto configuration = DynamicObject::newInstance();
     {
         for (auto &elem : derivationSchemeTestData) {
             auto derivationSchemes = elem.equivalentDerivationSchemes;
             for (auto &scheme : derivationSchemes) {
                 configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, scheme);
-                auto wallet = uv::wait(pool->createWallet(scheme, "ripple", configuration));
-                //Create account as Live does
+                auto wallet                   = uv::wait(pool->createWallet(scheme, "ripple", configuration));
+                // Create account as Live does
                 api::AccountCreationInfo info = uv::wait(wallet->getNextAccountCreationInfo());
                 EXPECT_EQ(info.derivations[0], elem.expectedDerivationPath);
                 info.publicKeys.push_back(hex::toByteArray(elem.pubKey));
                 info.chainCodes.push_back(hex::toByteArray(elem.chainCode));
-                auto account = createRippleLikeAccount(wallet, info.index, info);
+                auto account   = createRippleLikeAccount(wallet, info.index, info);
                 auto addresses = uv::wait(account->getFreshPublicAddresses());
                 EXPECT_GT(addresses.size(), 0);
                 EXPECT_EQ(addresses[0]->toString(), elem.expectedAddress);

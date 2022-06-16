@@ -47,9 +47,9 @@ struct TezosAccount : public TezosMakeBaseTransaction {
         configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
         configuration->putString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
         testData.configuration = configuration;
-        testData.walletName = "TezosAccountTest-Wallet";
-        testData.currencyName = "tezos";
-        testData.inflate_xtz = inflate;
+        testData.walletName    = "TezosAccountTest-Wallet";
+        testData.currencyName  = "tezos";
+        testData.inflate_xtz   = inflate;
     }
 };
 
@@ -124,9 +124,9 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWhenOriginatedAccount) {
 
     // Test when sent from originated account
     {
-        auto parsedTx = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx1);
-        parsedTx->sender = accAddress;
-        parsedTx->originatedAccountUid = "someUid";
+        auto parsedTx                      = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx1);
+        parsedTx->sender                   = accAddress;
+        parsedTx->originatedAccountUid     = "someUid";
         parsedTx->originatedAccountAddress = accAddress;
         account->interpretTransaction(*parsedTx, operations);
         EXPECT_EQ(operations.size(), 1);
@@ -135,9 +135,9 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWhenOriginatedAccount) {
 
     // Test when received in originated account
     {
-        auto parsedTx = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx2);
-        parsedTx->receiver = accAddress;
-        parsedTx->originatedAccountUid = "someUid";
+        auto parsedTx                      = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx2);
+        parsedTx->receiver                 = accAddress;
+        parsedTx->originatedAccountUid     = "someUid";
         parsedTx->originatedAccountAddress = accAddress;
         account->interpretTransaction(*parsedTx, operations);
         EXPECT_EQ(operations.size(), 2);
@@ -152,7 +152,7 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWithoutOriginatedAccount) 
 
     // Test when sent from account
     {
-        auto parsedTx = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx1);
+        auto parsedTx    = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx1);
         parsedTx->sender = accAddress;
         account->interpretTransaction(*parsedTx, operations);
         EXPECT_EQ(operations.size(), 1);
@@ -161,7 +161,7 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWithoutOriginatedAccount) 
 
     // Test when received in account
     {
-        auto parsedTx = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx2);
+        auto parsedTx      = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx2);
         parsedTx->receiver = accAddress;
         account->interpretTransaction(*parsedTx, operations);
         EXPECT_EQ(operations.size(), 2);
@@ -172,18 +172,18 @@ TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWithoutOriginatedAccount) 
 struct TezosAccountWithFixedPoolName : public TezosAccount {
     virtual void recreate() {
         SetUpConfig();
-        pool = newDefaultPool("my_ppol");
-        wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
-        account = testData.inflate_xtz(pool, wallet);
+        pool     = newDefaultPool("my_ppol");
+        wallet   = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        account  = testData.inflate_xtz(pool, wallet);
         currency = wallet->getCurrency();
     }
 };
 
 TEST_F(TezosAccountWithFixedPoolName, ComputeOperationUidWithValidTransaction) {
-    auto strTx = "036e766ee0733ef0fb6385f2034cfbd437247afad4b301ebce1b929a67ce4a0b8d6c00902c5d86590a2452f0ccf9c1fa55ae679de27d398e0aee94cb03a75100882700011ebab3538f6ca4223ee98b565846e47d273d112900";
+    auto strTx   = "036e766ee0733ef0fb6385f2034cfbd437247afad4b301ebce1b929a67ce4a0b8d6c00902c5d86590a2452f0ccf9c1fa55ae679de27d398e0aee94cb03a75100882700011ebab3538f6ca4223ee98b565846e47d273d112900";
     auto txBytes = hex::toByteArray(strTx);
-    auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
-        ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON));
+    auto tx      = std::dynamic_pointer_cast<TezosLikeTransactionApi>(api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
+             ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON));
     tx->setRawTx(std::vector<unsigned char>{});
     auto accAddress = ledger::core::TezosLikeAddress::fromBase58(account->getAccountAddress(), currency);
 
@@ -203,10 +203,10 @@ TEST_F(TezosAccountWithFixedPoolName, ComputeOperationUidWithValidTransaction) {
 }
 
 TEST_F(TezosAccountWithFixedPoolName, ComputeOperationUidWithInvalidTransaction) {
-    auto strTx = "036e766ee0733ef0fb6385f2034cfbd437247afad4b301ebce1b929a67ce4a0b8d6c00902c5d86590a2452f0ccf9c1fa55ae679de27d398e0aee94cb03a75100882700011ebab3538f6ca4223ee98b565846e47d273d112900";
+    auto strTx   = "036e766ee0733ef0fb6385f2034cfbd437247afad4b301ebce1b929a67ce4a0b8d6c00902c5d86590a2452f0ccf9c1fa55ae679de27d398e0aee94cb03a75100882700011ebab3538f6ca4223ee98b565846e47d273d112900";
     auto txBytes = hex::toByteArray(strTx);
-    auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
-        ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON));
+    auto tx      = std::dynamic_pointer_cast<TezosLikeTransactionApi>(api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
+             ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON));
     tx->setRawTx(std::vector<unsigned char>{});
     EXPECT_ANY_THROW(account->computeOperationUid(tx));
 }

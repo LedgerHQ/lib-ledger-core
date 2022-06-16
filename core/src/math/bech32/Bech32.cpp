@@ -35,7 +35,7 @@ namespace ledger {
     namespace core {
 
         // The Bech32 character set for encoding.
-        const char *charset = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+        const char *charset          = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 
         // The Bech32 character set for decoding.
         const int8_t charsetRev[128] = {
@@ -73,7 +73,7 @@ namespace ledger {
             // Values here should be concatenation of version (base256) + hash (base32)
             std::vector<uint8_t> checksum = createChecksum(values);
             std::vector<uint8_t> combined = vector::concat(values, checksum);
-            std::string ret = _bech32Params.hrp + _bech32Params.separator;
+            std::string ret               = _bech32Params.hrp + _bech32Params.separator;
             ret.reserve(ret.size() + combined.size());
             for (size_t i = 0; i < combined.size(); ++i) {
                 // There is not check on size here because this method is called
@@ -133,13 +133,13 @@ namespace ledger {
                                  int toBits,
                                  bool pad,
                                  std::vector<uint8_t> &out) {
-            int acc = 0;
-            int bits = 0;
-            const int maxv = (1 << toBits) - 1;
+            int acc           = 0;
+            int bits          = 0;
+            const int maxv    = (1 << toBits) - 1;
             const int max_acc = (1 << (fromBits + toBits - 1)) - 1;
             for (size_t i = 0; i < in.size(); ++i) {
                 int value = in[i];
-                acc = ((acc << fromBits) | value) & max_acc;
+                acc       = ((acc << fromBits) | value) & max_acc;
                 bits += fromBits;
                 while (bits >= toBits) {
                     bits -= toBits;

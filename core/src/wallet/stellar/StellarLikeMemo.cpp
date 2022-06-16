@@ -110,14 +110,14 @@ namespace ledger {
             Try<StellarLikeMemo> result;
 
             if (type == "text") {
-                memo.type = stellar::xdr::MemoType::MEMO_TEXT;
+                memo.type    = stellar::xdr::MemoType::MEMO_TEXT;
                 memo.content = content;
                 result.success(memo);
             } else if (type == "none") {
                 memo.type = stellar::xdr::MemoType::MEMO_NONE;
                 result.success(memo);
             } else if (type == "id") {
-                memo.type = stellar::xdr::MemoType::MEMO_ID;
+                memo.type    = stellar::xdr::MemoType::MEMO_ID;
                 memo.content = BigInt::fromString(content).toUint64();
                 result.success(memo);
             } else if (type == "return" || type == "hash") {

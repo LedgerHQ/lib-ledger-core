@@ -63,7 +63,8 @@ namespace ledger {
             void setSigningPubKey(const std::vector<uint8_t> &pubKey);
 
             void setSignature(
-                const std::vector<uint8_t> &rSignature, const std::vector<uint8_t> &sSignature) override;
+                const std::vector<uint8_t> &rSignature,
+                const std::vector<uint8_t> &sSignature) override;
             void setDERSignature(const std::vector<uint8_t> &signature) override;
 
             std::chrono::system_clock::time_point getDate() const override;

@@ -64,7 +64,8 @@ namespace ledger {
 
         template <>
         std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::COSMOS>(
-            const api::Currency &currency, const std::shared_ptr<WalletPool> &pool) {
+            const api::Currency &currency,
+            const std::shared_ptr<WalletPool> &pool) {
             return std::make_shared<CosmosLikeWalletFactory>(currency, pool);
         }
 
@@ -95,7 +96,7 @@ namespace ledger {
         template <>
         std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::MONERO>(const api::Currency &currency,
                                                                                      const std::shared_ptr<WalletPool> &pool) {
-            //TODO IMPLEMENT MONERO FACTORY
+            // TODO IMPLEMENT MONERO FACTORY
             return nullptr;
         }
 

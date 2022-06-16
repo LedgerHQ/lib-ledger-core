@@ -45,7 +45,8 @@
 namespace ledger {
     namespace core {
         CosmosLikeWalletFactory::CosmosLikeWalletFactory(
-            const api::Currency &currency, const std::shared_ptr<WalletPool> &pool) : AbstractWalletFactory(currency, pool) {
+            const api::Currency &currency,
+            const std::shared_ptr<WalletPool> &pool) : AbstractWalletFactory(currency, pool) {
             _keychainFactories = {
                 {api::KeychainEngines::BIP49_P2SH, std::make_shared<CosmosLikeKeychainFactory>()}};
         }
@@ -94,7 +95,7 @@ namespace ledger {
                         .value_or(api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION);
                 if (engine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
                     std::weak_ptr<WalletPool> p = pool;
-                    synchronizerFactory = Option<CosmosLikeAccountSynchronizerFactory>([p, explorer]() {
+                    synchronizerFactory         = Option<CosmosLikeAccountSynchronizerFactory>([p, explorer]() {
                         auto pool = p.lock();
                         return std::make_shared<CosmosLikeAccountSynchronizer>(pool, explorer);
                     });
@@ -124,7 +125,8 @@ namespace ledger {
         }
 
         std::shared_ptr<CosmosLikeBlockchainExplorer> CosmosLikeWalletFactory::getExplorer(
-            const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration) {
+            const std::string &currencyName,
+            const std::shared_ptr<api::DynamicObject> &configuration) {
             auto it = _runningExplorers.begin();
             while (it != _runningExplorers.end()) {
                 auto explorer = it->lock();
@@ -137,20 +139,20 @@ namespace ledger {
                 }
             }
 
-            auto pool = getPool();
+            auto pool   = getPool();
             auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
                               .value_or(api::BlockchainExplorerEngines::COSMOS_NODE);
             std::shared_ptr<CosmosLikeBlockchainExplorer> explorer = nullptr;
             if (engine == api::BlockchainExplorerEngines::COSMOS_NODE) {
-                auto http = pool->getHttpClient(fmt::format(
-                    "{}",
-                    configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
-                        .value_or(api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT)));
+                auto http    = pool->getHttpClient(fmt::format(
+                       "{}",
+                       configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
+                           .value_or(api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT)));
                 auto context = pool->getDispatcher()->getSerialExecutionContext(
                     api::BlockchainExplorerEngines::COSMOS_NODE);
                 auto &networkParams = getCurrency().cosmosLikeNetworkParameters.value();
 
-                explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
+                explorer            = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
                     context, http, networkParams, std::dynamic_pointer_cast<DynamicObject>(configuration));
             } else {
                 throw Exception(

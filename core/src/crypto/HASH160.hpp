@@ -39,11 +39,11 @@ namespace ledger {
     namespace core {
         class HASH160 {
           public:
-            HASH160() = delete;
+            HASH160()  = delete;
             ~HASH160() = delete;
             static std::vector<uint8_t> hash(const std::vector<uint8_t> &data, const HashAlgorithm &hashAlgorithm);
         };
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_HASH160_HPP
+#endif // LEDGER_CORE_HASH160_HPP

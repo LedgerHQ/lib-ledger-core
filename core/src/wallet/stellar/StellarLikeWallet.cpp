@@ -84,8 +84,8 @@ namespace ledger {
                     soci::transaction tr(sql);
                     AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), info.index);
                     stellar::Account account;
-                    account.accountIndex = info.index;
-                    account.accountId = keychain->getAddress()->toString();
+                    account.accountIndex  = info.index;
+                    account.accountId     = keychain->getAddress()->toString();
                     account.subentryCount = 0;
                     StellarLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), info.index, account);
                     tr.commit();
@@ -107,7 +107,7 @@ namespace ledger {
 
         Future<api::AccountCreationInfo> StellarLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
             auto scheme = getDerivationScheme();
-            auto path = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
+            auto path   = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
             api::AccountCreationInfo info{accountIndex, {"main"}, {path.toString()}, {}, {}};
             return Future<api::AccountCreationInfo>::successful(info);
         }
@@ -119,15 +119,15 @@ namespace ledger {
 
             StellarLikeAccountParams params;
             params.index = account.accountIndex;
-            auto scheme = getDerivationScheme();
+            auto scheme  = getDerivationScheme();
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(account.accountIndex);
-            auto path = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
+            auto path       = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
             params.keychain = _params.keychainFactory->restore(
                 account.accountIndex, path, std::dynamic_pointer_cast<DynamicObject>(getConfiguration()),
                 account.accountId, getAccountInternalPreferences(account.accountIndex), getCurrency());
-            params.explorer = _params.blockchainExplorer;
+            params.explorer     = _params.blockchainExplorer;
             params.synchronizer = _params.accountSynchronizer;
-            params.database = getDatabase();
+            params.database     = getDatabase();
             return std::make_shared<StellarLikeAccount>(getSelf(), params);
         }
 

@@ -93,7 +93,7 @@ namespace ledger {
                                   .value_or(api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION);
                 if (engine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
                     std::weak_ptr<WalletPool> p = pool;
-                    synchronizerFactory = Option<BitcoinLikeAccountSynchronizerFactory>([p, explorer]() {
+                    synchronizerFactory         = Option<BitcoinLikeAccountSynchronizerFactory>([p, explorer]() {
                         auto pool = p.lock();
                         if (!pool) {
                             throw make_exception(api::ErrorCode::NULL_POINTER, "WalletPool was released.");
@@ -138,7 +138,7 @@ namespace ledger {
                 }
             }
 
-            auto pool = getPool();
+            auto pool   = getPool();
             auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
                               .value_or(api::BlockchainExplorerEngines::LEDGER_API);
             std::shared_ptr<BitcoinLikeBlockchainExplorer> explorer = nullptr;
@@ -149,10 +149,10 @@ namespace ledger {
                         .value_or(api::ConfigurationDefaults::BLOCKCHAIN_DEFAULT_API_ENDPOINT));
                 auto &networkParams = getCurrency().bitcoinLikeNetworkParameters.value();
 
-                auto context = pool->getDispatcher()->getThreadPoolExecutionContext(
-                    fmt::format("{}-{}-explorer",
-                                api::BlockchainExplorerEngines::LEDGER_API,
-                                networkParams.Identifier));
+                auto context        = pool->getDispatcher()->getThreadPoolExecutionContext(
+                           fmt::format("{}-{}-explorer",
+                                       api::BlockchainExplorerEngines::LEDGER_API,
+                                       networkParams.Identifier));
                 explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(context, http, networkParams, configuration);
             }
 

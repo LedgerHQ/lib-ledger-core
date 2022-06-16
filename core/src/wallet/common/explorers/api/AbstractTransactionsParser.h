@@ -46,7 +46,6 @@ namespace ledger {
     namespace core {
         template <typename BlockchainExplorerTransaction, typename TxParser>
         class AbstractTransactionsParser {
-
           public:
             bool Null(){
                 PROXY_PARSE_TX(Null)};
@@ -131,4 +130,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_ABSTRACTTRANSACTIONSPARSER_H
+#endif // LEDGER_CORE_ABSTRACTTRANSACTIONSPARSER_H

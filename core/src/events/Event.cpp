@@ -50,16 +50,16 @@ int32_t ledger::core::Event::getStickyTag() {
 
 ledger::core::Event::Event(ledger::core::api::EventCode code,
                            const std::shared_ptr<ledger::core::api::DynamicObject> &payload) {
-    _code = code;
+    _code    = code;
     _payload = payload;
-    _sticky = false;
+    _sticky  = false;
     if (payload) {
         std::static_pointer_cast<DynamicObject>(payload)->setReadOnly(true);
     }
 }
 
 void ledger::core::Event::setSticky(int32_t tag) {
-    _tag = tag;
+    _tag    = tag;
     _sticky = true;
 }
 

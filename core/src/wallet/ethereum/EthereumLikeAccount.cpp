@@ -66,9 +66,9 @@ namespace ledger {
                                                  const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer,
                                                  const std::shared_ptr<EthereumLikeAccountSynchronizer> &synchronizer,
                                                  const std::shared_ptr<EthereumLikeKeychain> &keychain) : AbstractAccount(wallet, index) {
-            _explorer = explorer;
-            _synchronizer = synchronizer;
-            _keychain = keychain;
+            _explorer       = explorer;
+            _synchronizer   = synchronizer;
+            _keychain       = keychain;
             _accountAddress = keychain->getAddress()->toString();
         }
 
@@ -87,13 +87,13 @@ namespace ledger {
         void EthereumLikeAccount::inflateOperation(Operation &out,
                                                    const std::shared_ptr<const AbstractWallet> &wallet,
                                                    const EthereumLikeBlockchainExplorerTransaction &tx) {
-            out.accountUid = getAccountUid();
-            out.block = tx.block;
+            out.accountUid          = getAccountUid();
+            out.block               = tx.block;
             out.ethereumTransaction = Option<EthereumLikeBlockchainExplorerTransaction>(tx);
-            out.currencyName = getWallet()->getCurrency().name;
-            out.walletType = getWalletType();
-            out.walletUid = wallet->getWalletUid();
-            out.date = tx.receivedAt;
+            out.currencyName        = getWallet()->getCurrency().name;
+            out.walletType          = getWalletType();
+            out.walletUid           = wallet->getWalletUid();
+            out.date                = tx.receivedAt;
             if (out.block.nonEmpty())
                 out.block.getValue().currencyName = wallet->getCurrency().name;
             out.ethereumTransaction.getValue().block = out.block;
@@ -115,9 +115,9 @@ namespace ledger {
             operation.senders = std::move(senders);
             std::vector<std::string> receivers{transaction.receiver};
             operation.recipients = std::move(receivers);
-            operation.fees = transaction.gasPrice * transaction.gasUsed.getValueOr(BigInt::ZERO);
-            operation.trust = std::make_shared<TrustIndicator>();
-            operation.date = transaction.receivedAt;
+            operation.fees       = transaction.gasPrice * transaction.gasUsed.getValueOr(BigInt::ZERO);
+            operation.trust      = std::make_shared<TrustIndicator>();
+            operation.date       = transaction.receivedAt;
 
             auto updateOperation = [&](Operation &operation, api::OperationType ty) mutable {
                 // if the status of the transaction is not correct, we set the operation’s amount to
@@ -182,7 +182,8 @@ namespace ledger {
             // are only the ones concerning current account
             if (!transaction.erc20Transactions.empty()) {
                 for (auto &erc20Tx : transaction.erc20Transactions) {
-                    erc20Tx.type = (erc20Tx.from == _accountAddress) ? api::OperationType::SEND : (erc20Tx.to == _accountAddress) ? api::OperationType::RECEIVE : api::OperationType::NONE;
+                    erc20Tx.type = (erc20Tx.from == _accountAddress) ? api::OperationType::SEND : (erc20Tx.to == _accountAddress) ? api::OperationType::RECEIVE
+                                                                                                                                  : api::OperationType::NONE;
 
                     updateERC20Operation(operation, erc20Tx);
                     // Handle ERC20 self-transactions
@@ -201,23 +202,23 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Trying to interpret ERC20 without an attached data in operation");
             }
             auto erc20ContractAddress = erc20Tx.contractAddress;
-            auto erc20OperationUid = OperationDatabaseHelper::createUid(operation.uid, erc20ContractAddress, erc20Tx.type);
-            auto erc20Operation = std::make_shared<ERC20LikeOperation>(_accountAddress, erc20OperationUid, operation, erc20Tx, getWallet()->getCurrency());
-            auto erc20AccountUid = AccountDatabaseHelper::createERC20AccountUid(getAccountUid(), erc20ContractAddress);
+            auto erc20OperationUid    = OperationDatabaseHelper::createUid(operation.uid, erc20ContractAddress, erc20Tx.type);
+            auto erc20Operation       = std::make_shared<ERC20LikeOperation>(_accountAddress, erc20OperationUid, operation, erc20Tx, getWallet()->getCurrency());
+            auto erc20AccountUid      = AccountDatabaseHelper::createERC20AccountUid(getAccountUid(), erc20ContractAddress);
 
-            //Check if account already exists
-            auto needNewAccount = true;
+            // Check if account already exists
+            auto needNewAccount       = true;
             for (auto &account : _erc20LikeAccounts) {
                 auto erc20Account = std::static_pointer_cast<ERC20LikeAccount>(account);
                 if (erc20Account->getToken().contractAddress == erc20ContractAddress &&
                     erc20Account->getAddress() == _accountAddress) {
-                    //Update account
+                    // Update account
                     erc20Account->putOperation(operation, erc20Operation);
                     needNewAccount = false;
                 }
             }
 
-            //Create a new account
+            // Create a new account
             if (needNewAccount) {
                 // TODO replace this
                 auto erc20Token = api::ERC20Token("UNKNOWN_TOKEN", "UNKNOWN", erc20ContractAddress, 0);
@@ -229,14 +230,14 @@ namespace ledger {
                                                                      std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this()));
                 data->accounts.push_back(newAccount);
                 _erc20LikeAccounts.push_back(newAccount);
-                //Persist erc20 account
+                // Persist erc20 account
                 int erc20AccountCount = 0;
                 newAccount->putOperation(operation, erc20Operation);
             }
         }
 
         std::vector<Operation> EthereumLikeAccount::getInternalOperations(soci::session &sql) {
-            auto addr = _keychain->getAddress()->toString();
+            auto addr                    = _keychain->getAddress()->toString();
 
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT io.type, io.value, io.sender, io.receiver, io.gas_limit, io.gas_used, et.gas_price, op.date, et.status "
                                                            "FROM internal_operations as io "
@@ -258,11 +259,11 @@ namespace ledger {
                     continue;
                 }
 
-                //auto from = row.get<std::string>(2);
-                //auto to = row.get<std::string>(3);
-                auto gasLimit = BigInt::fromHex(row.get<std::string>(4));
-                auto gasUsed = BigInt::fromHex(row.get<std::string>(5));
-                auto gasPrice = BigInt::fromHex(row.get<std::string>(6));
+                // auto from = row.get<std::string>(2);
+                // auto to = row.get<std::string>(3);
+                auto gasLimit  = BigInt::fromHex(row.get<std::string>(4));
+                auto gasUsed   = BigInt::fromHex(row.get<std::string>(5));
+                auto gasPrice  = BigInt::fromHex(row.get<std::string>(6));
 
                 operation.date = DateUtils::fromJSON(row.get<std::string>(7));
 
@@ -271,7 +272,7 @@ namespace ledger {
 
                 // if the status is not okay, we have to change the amount of the operation because
                 // it wasn’t really broadcasted, but the fees were still paid
-                auto status = soci::get_number<uint64_t>(row, 8);
+                auto status    = soci::get_number<uint64_t>(row, 8);
                 if (status == 0) {
                     operation.amount = BigInt::ZERO;
                 } else {
@@ -280,7 +281,7 @@ namespace ledger {
 
                 // required when computing balances
                 EthereumLikeBlockchainExplorerTransaction etx;
-                etx.status = status;
+                etx.status                    = status;
 
                 operation.ethereumTransaction = Option<EthereumLikeBlockchainExplorerTransaction>(etx);
 
@@ -293,10 +294,10 @@ namespace ledger {
         bool EthereumLikeAccount::putBlock(soci::session &sql,
                                            const EthereumLikeBlockchainExplorer::Block &block) {
             Block abstractBlock;
-            abstractBlock.hash = block.hash;
+            abstractBlock.hash         = block.hash;
             abstractBlock.currencyName = getWallet()->getCurrency().name;
-            abstractBlock.height = block.height;
-            abstractBlock.time = block.time;
+            abstractBlock.height       = block.height;
+            abstractBlock.time         = block.time;
             if (BlockDatabaseHelper::putBlock(sql, abstractBlock)) {
                 emitNewBlockEvent(abstractBlock);
                 return true;
@@ -315,7 +316,7 @@ namespace ledger {
             }
             std::vector<EthereumLikeKeychain::Address> listAddresses{_keychain->getAddress()};
             auto currency = getWallet()->getCurrency();
-            auto self = getSelf();
+            auto self     = getSelf();
             return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [self, currency](const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
                 Amount b(currency, 0, BigInt(balance->toString()));
                 self->getWallet()->updateBalanceCache(self->getIndex(), b);
@@ -348,7 +349,7 @@ namespace ledger {
             auto self = getSelf();
             return Future<std::vector<std::shared_ptr<api::Amount>>>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=]() -> std::vector<std::shared_ptr<api::Amount>> {
                 auto startDate = DateUtils::fromJSON(start);
-                auto endDate = DateUtils::fromJSON(end);
+                auto endDate   = DateUtils::fromJSON(end);
                 if (startDate >= endDate) {
                     throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
                                          "Start date should be strictly lower than end date");
@@ -358,7 +359,7 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain = self->getKeychain();
+                auto keychain                                   = self->getKeychain();
                 std::function<bool(const std::string &)> filter = [&keychain](const std::string &addr) -> bool {
                     auto keychainAddr = keychain->getAddress()->toString();
                     return addr == keychainAddr;
@@ -438,8 +439,8 @@ namespace ledger {
 
             soci::session sql(getWallet()->getDatabase()->getPool());
 
-            //Update account's internal preferences (for synchronization)
-            // Clear synchronizer state
+            // Update account's internal preferences (for synchronization)
+            //  Clear synchronizer state
             eraseSynchronizerDataSince(sql, date);
 
             auto accountUid = getAccountUid();
@@ -456,13 +457,13 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
             if (_currentSyncEventBus)
                 return _currentSyncEventBus;
-            auto eventPublisher = std::make_shared<EventPublisher>(getContext());
+            auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
-            auto future = _synchronizer->synchronize(std::static_pointer_cast<EthereumLikeAccount>(shared_from_this()))->getFuture();
-            auto self = std::static_pointer_cast<EthereumLikeAccount>(shared_from_this());
+            auto future          = _synchronizer->synchronize(std::static_pointer_cast<EthereumLikeAccount>(shared_from_this()))->getFuture();
+            auto self            = std::static_pointer_cast<EthereumLikeAccount>(shared_from_this());
 
-            //Update current block height (needed to compute trust level)
+            // Update current block height (needed to compute trust level)
             _explorer->getCurrentBlock().onComplete(getContext(), [self](const TryPtr<EthereumLikeBlockchainExplorer::Block> &block) mutable {
                 if (block.isSuccess()) {
                     self->_currentBlockHeight = block.getValue()->height;
@@ -475,11 +476,11 @@ namespace ledger {
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
             future.onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
                 api::EventCode code;
-                auto payload = std::make_shared<DynamicObject>();
+                auto payload  = std::make_shared<DynamicObject>();
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now() - startTime).count();
                 payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
                 if (result.isSuccess()) {
-                    code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+                    code               = api::EventCode::SYNCHRONIZATION_SUCCEED;
 
                     auto const context = result.getValue();
                     self->getWallet()->invalidateBalanceCache(self->getIndex());
@@ -516,19 +517,19 @@ namespace ledger {
             auto tx = EthereumLikeTransactionBuilder::parseRawSignedTransaction(account->getWallet()->getCurrency(), rawTx);
             EthereumLikeBlockchainExplorerTransaction txExplorer;
             // It is an optimistic so it should be successful (but tx could fail e.g. out of gas error but it will be updated when sync again )
-            auto sender = account->getKeychain()->getAddress()->toString();
-            txExplorer.status = 1;
-            txExplorer.hash = txHash;
-            txExplorer.gasLimit = BigInt(tx->getGasLimit()->toString());
-            txExplorer.gasPrice = BigInt(tx->getGasPrice()->toString());
-            txExplorer.gasUsed = BigInt::ZERO; // Tx is not mined yet so ...(This will updated at next synchro)
-            txExplorer.value = BigInt(tx->getValue()->toString());
-            txExplorer.sender = sender;
-            txExplorer.receiver = tx->getReceiver()->toEIP55();
+            auto sender           = account->getKeychain()->getAddress()->toString();
+            txExplorer.status     = 1;
+            txExplorer.hash       = txHash;
+            txExplorer.gasLimit   = BigInt(tx->getGasLimit()->toString());
+            txExplorer.gasPrice   = BigInt(tx->getGasPrice()->toString());
+            txExplorer.gasUsed    = BigInt::ZERO; // Tx is not mined yet so ...(This will updated at next synchro)
+            txExplorer.value      = BigInt(tx->getValue()->toString());
+            txExplorer.sender     = sender;
+            txExplorer.receiver   = tx->getReceiver()->toEIP55();
             txExplorer.receivedAt = std::chrono::system_clock::now();
-            txExplorer.inputData = tx->getData().value_or(std::vector<uint8_t>());
+            txExplorer.inputData  = tx->getData().value_or(std::vector<uint8_t>());
             // Create ERC20 Ops
-            auto strInputData = hex::toString(txExplorer.inputData);
+            auto strInputData     = hex::toString(txExplorer.inputData);
             // 136 / 2 => 68 bytes = 4 bytes for transfer method ID (0xa9059cbb) + 32 bytes for receiver address + 32 bytes for amount
             if (strInputData.size() == 136 && strInputData.find(erc20Tokens::ERC20MethodsID.at("transfer")) != std::string::npos) {
                 ERC20Transaction erc20Tx;
@@ -540,13 +541,13 @@ namespace ledger {
 
                 // Get rid of leading zeros
                 auto skipEIP55Check = true;
-                //auto toAddress = BigInt::fromHex(hex::toString(reader.read(32))).toHexString();
-                erc20Tx.to = EthereumLikeAddress::fromEIP55(
-                                 "0x" + BigInt::fromHex(hex::toString(reader.read(32))).toHexString(),
-                                 account->getWallet()->getCurrency(), Option<std::string>(""), skipEIP55Check)
+                // auto toAddress = BigInt::fromHex(hex::toString(reader.read(32))).toHexString();
+                erc20Tx.to          = EthereumLikeAddress::fromEIP55(
+                                          "0x" + BigInt::fromHex(hex::toString(reader.read(32))).toHexString(),
+                                          account->getWallet()->getCurrency(), Option<std::string>(""), skipEIP55Check)
                                  ->toEIP55();
-                erc20Tx.value = BigInt::fromHex(hex::toString(reader.read(32)));
-                erc20Tx.type = api::OperationType::SEND;
+                erc20Tx.value           = BigInt::fromHex(hex::toString(reader.read(32)));
+                erc20Tx.type            = api::OperationType::SEND;
                 erc20Tx.contractAddress = tx->getReceiver()->toEIP55();
                 txExplorer.erc20Transactions.push_back(erc20Tx);
             }
@@ -563,10 +564,10 @@ namespace ledger {
                                                           const std::string &correlationId) {
             auto self = getSelf();
             _explorer->pushTransaction(transaction, correlationId).map<std::string>(getContext(), [self, transaction](const String &seq) -> std::string {
-                                                                      auto txHash = seq.str();
+                                                                      auto txHash           = seq.str();
                                                                       auto optimisticUpdate = Try<int>::from([&]() -> int {
                                                                           auto txExplorer = getETHLikeBlockchainExplorerTxFromRawTx(self, txHash, transaction);
-                                                                          //Store in DB
+                                                                          // Store in DB
                                                                           std::vector<Operation> operations;
                                                                           self->interpretTransaction(txExplorer, operations);
                                                                           self->bulkInsert(operations);
@@ -581,7 +582,6 @@ namespace ledger {
 
         void EthereumLikeAccount::broadcastTransaction(const std::shared_ptr<api::EthereumLikeTransaction> &transaction,
                                                        const std::shared_ptr<api::StringCallback> &callback) {
-
             logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
             broadcastRawTransaction(transaction->serialize(), callback, transaction->getCorrelationId());
         }
@@ -645,7 +645,7 @@ namespace ledger {
                                                    const std::vector<ERC20LikeAccountDatabaseEntry> &erc20Entries) {
             auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
             for (auto &erc20Entry : erc20Entries) {
-                auto erc20Token = EthereumLikeAccountDatabaseHelper::getOrCreateERC20Token(sql, erc20Entry.contractAddress);
+                auto erc20Token      = EthereumLikeAccountDatabaseHelper::getOrCreateERC20Token(sql, erc20Entry.contractAddress);
                 auto newERC20Account = std::make_shared<ERC20LikeAccount>(erc20Entry.uid,
                                                                           erc20Token,
                                                                           self->getKeychain()->getAddress()->toEIP55(),
@@ -656,7 +656,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::EthereumLikeTransactionBuilder> EthereumLikeAccount::buildTransaction() {
-            auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
+            auto self          = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
             auto buildFunction = [self](const EthereumLikeTransactionBuildRequest &request, const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer) -> Future<std::shared_ptr<api::EthereumLikeTransaction>> {
                 // Check if balance is sufficient
                 return self->getBalance().flatMapPtr<api::EthereumLikeTransaction>(self->getMainExecutionContext(), [self, request, explorer](const std::shared_ptr<Amount> &balance) {
@@ -666,7 +666,7 @@ namespace ledger {
                     }
                     // Check for balance
                     auto maxPossibleAmountToSend = BigInt(balance->toString()) - *(request.gasLimit) * *(request.gasPrice);
-                    auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
+                    auto amountToSend            = request.wipe ? BigInt::ZERO : *request.value;
                     if (maxPossibleAmountToSend < amountToSend) {
                         throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
                     }

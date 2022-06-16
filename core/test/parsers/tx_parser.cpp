@@ -30,7 +30,7 @@ struct TestParser : AbstractBlockParser<TestBlock> {
 };
 
 TEST(TXParser, NumbersAsStrings) {
-    auto json = "{\"height\": 12}";
+    auto json   = "{\"height\": 12}";
     auto parsed = JSONUtils::parse<TestParser>(json);
     EXPECT_EQ(parsed->height, 12);
 }

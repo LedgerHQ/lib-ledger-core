@@ -50,11 +50,11 @@ namespace ledger {
              * Output:          d9 db 02      11011001 11011011 00000010
              * LE:              02 db d9      00000010 11011011 11011001
              * Drop 1st bit:            (0)0000010 (1)1011011 (1)1011001  == (I)
-            */
+             */
             static std::vector<uint8_t> zSerializeNumber(const std::vector<uint8_t> &inputData) {
                 std::vector<uint8_t> result;
-                size_t id = inputData.size() - 1;
-                uint32_t offset = 0;
+                size_t id               = inputData.size() - 1;
+                uint32_t offset         = 0;
                 bool needAdditionalByte = false;
                 while (id >= 0 && id < inputData.size()) {
                     auto byte = inputData[id];
@@ -67,7 +67,7 @@ namespace ledger {
 
                     // This boolean will let us know if shifting last byte of inputData
                     // will generate a new byte (with remaining shifted bytes)
-                    bool isFirst = id == 0;
+                    bool isFirst       = id == 0;
                     needAdditionalByte = isFirst && inputData[id] >> (7 - offset);
 
                     // We set first bit to 1 to know that there is a coming byte
@@ -118,8 +118,8 @@ namespace ledger {
                 size_t id = 0, delay = 0;
                 uint8_t offset = 0;
                 while (id + delay < data.size()) {
-                    auto byte = data[id + delay];
-                    auto isLast = id + delay == data.size() - 1;
+                    auto byte       = data[id + delay];
+                    auto isLast     = id + delay == data.size() - 1;
 
                     // We should stop reading if most significant bit is null
                     auto shouldStop = !(byte & 0x80);
@@ -161,4 +161,4 @@ namespace ledger {
         };
     } // namespace core
 } // namespace ledger
-#endif //LEDGER_CORE_ZARITH_H
+#endif // LEDGER_CORE_ZARITH_H

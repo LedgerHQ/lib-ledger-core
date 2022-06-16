@@ -87,7 +87,7 @@ namespace ledger {
 
         std::string TezosLikeExtendedPublicKey::toBase58() {
             auto encoding = TezosKeyType::fromCurve(_curve, TezosKeyType::PUBKEYS).value();
-            auto config = std::make_shared<DynamicObject>();
+            auto config   = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params().Identifier);
             return Base58::encodeWithChecksum(vector::concat(
                                                   encoding.version,
@@ -112,7 +112,7 @@ namespace ledger {
                                             const std::vector<uint8_t> &chainCode,
                                             const std::string &path,
                                             api::TezosCurve curve) {
-            auto &params = currency.tezosLikeNetworkParameters.value();
+            auto &params             = currency.tezosLikeNetworkParameters.value();
             DeterministicPublicKey k = DeterministicPublicKey(publicKey, chainCode, 0, 0, 0, params.Identifier);
             return std::make_shared<TezosLikeExtendedPublicKey>(currency, k, curve, DerivationPath(path));
         }
@@ -124,11 +124,11 @@ namespace ledger {
             auto &params = currency.tezosLikeNetworkParameters.value();
             auto keyType = TezosKeyType::fromBase58(xpubBase58);
             if (keyType) {
-                auto config = api::DynamicObject::newInstance();
+                auto config       = api::DynamicObject::newInstance();
                 auto decodeResult = Base58::checkAndDecode(xpubBase58, config);
                 BytesReader reader(decodeResult.getValue());
-                auto version = reader.read((*keyType).version.size());
-                auto curve = (*keyType).curve;
+                auto version   = reader.read((*keyType).version.size());
+                auto curve     = (*keyType).curve;
                 auto publicKey = reader.readUntilEnd();
 
                 DeterministicPublicKey k(publicKey, {}, 0, 0, 0, params.Identifier);

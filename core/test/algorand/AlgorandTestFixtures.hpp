@@ -47,32 +47,32 @@ namespace ledger {
             using ledger::core::BaseConverter;
             using ledger::core::Option;
 
-            static const std::string EMPTY_ADDRESS = "RB7DUHGKVT3C3NEKP6255KPJDOKLMNXKADZA5UVWVS4YHDDVXYEDHGJKU4"; // This address should be unused and have 0 tx
-            static const std::string OBELIX_ADDRESS = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM";
+            static const std::string EMPTY_ADDRESS        = "RB7DUHGKVT3C3NEKP6255KPJDOKLMNXKADZA5UVWVS4YHDDVXYEDHGJKU4"; // This address should be unused and have 0 tx
+            static const std::string OBELIX_ADDRESS       = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM";
             static const std::string TEST_ACCOUNT_ADDRESS = "6ENXFMQRRIF6KD7HXE47HUHCJXEUKGGRGR6LXSX7RRZBTMVI5NUDOQDTNE";
 
-            static const std::string PAYMENT_TX_ID = "BGGXSAI5IOZXOVXCVR3ASC2RMYBLSR33XTOYL3M2FCLAS6QYBHRA";
-            static const std::string ASSET_CONFIG_TX_ID = "GYF4N5DXRANS6AEJL4HZD53FHYSGL6AVYKLR4PG5DBSJJASWXD7Q";
+            static const std::string PAYMENT_TX_ID        = "BGGXSAI5IOZXOVXCVR3ASC2RMYBLSR33XTOYL3M2FCLAS6QYBHRA";
+            static const std::string ASSET_CONFIG_TX_ID   = "GYF4N5DXRANS6AEJL4HZD53FHYSGL6AVYKLR4PG5DBSJJASWXD7Q";
             static const std::string ASSET_TRANSFER_TX_ID = "P3TBX7WYKO5SIZIHV2Z3GUCOD7B556RF6PSOPINFB6QN7EMTF6JQ";
 
-            static const std::string TESTNET_GENESIS_ID = ledger::core::networks::getAlgorandNetworkParameters("algorand-testnet").genesisID;
+            static const std::string TESTNET_GENESIS_ID   = ledger::core::networks::getAlgorandNetworkParameters("algorand-testnet").genesisID;
             static const B64String TESTNET_GENESIS_HASH(ledger::core::networks::getAlgorandNetworkParameters("algorand-testnet").genesisHash);
 
             static const model::AssetParams testAsset() {
                 static model::AssetParams asset;
 
                 if (asset.assetName.isEmpty()) {
-                    asset.assetName = "Obelix Coin";
-                    asset.unitName = "OBC";
-                    asset.total = 1000000;
-                    asset.decimals = 3;
+                    asset.assetName     = "Obelix Coin";
+                    asset.unitName      = "OBC";
+                    asset.total         = 1000000;
+                    asset.decimals      = 3;
                     asset.defaultFrozen = false;
-                    auto obelixAddress = Address(OBELIX_ADDRESS);
-                    asset.creatorAddr = obelixAddress;
-                    asset.managerAddr = obelixAddress;
-                    asset.reserveAddr = obelixAddress;
-                    asset.freezeAddr = obelixAddress;
-                    asset.clawbackAddr = obelixAddress;
+                    auto obelixAddress  = Address(OBELIX_ADDRESS);
+                    asset.creatorAddr   = obelixAddress;
+                    asset.managerAddr   = obelixAddress;
+                    asset.reserveAddr   = obelixAddress;
+                    asset.freezeAddr    = obelixAddress;
+                    asset.clawbackAddr  = obelixAddress;
                 }
 
                 return asset;
@@ -82,26 +82,26 @@ namespace ledger {
                 static model::Transaction tx;
 
                 if (tx.header.id.isEmpty()) {
-                    tx.header.id = PAYMENT_TX_ID;
-                    tx.header.fee = 1000;
+                    tx.header.id     = PAYMENT_TX_ID;
+                    tx.header.fee    = 1000;
                     tx.header.sender = Address(OBELIX_ADDRESS);
-                    tx.header.type = constants::xPay;
-                    tx.header.round = 6529864;
-                    tx.header.note = std::vector<uint8_t>();
+                    tx.header.type   = constants::xPay;
+                    tx.header.round  = 6529864;
+                    tx.header.note   = std::vector<uint8_t>();
                     BaseConverter::decode("nI32ynz7r34=", BaseConverter::BASE64_RFC4648, *tx.header.note);
-                    tx.header.genesisId = TESTNET_GENESIS_ID;
-                    tx.header.genesisHash = TESTNET_GENESIS_HASH;
-                    tx.header.firstValid = 6529846;
-                    tx.header.lastValid = 6530846;
-                    tx.header.timestamp = 1588586190;
-                    tx.header.senderRewards = Option<uint64_t>(0);
+                    tx.header.genesisId       = TESTNET_GENESIS_ID;
+                    tx.header.genesisHash     = TESTNET_GENESIS_HASH;
+                    tx.header.firstValid      = 6529846;
+                    tx.header.lastValid       = 6530846;
+                    tx.header.timestamp       = 1588586190;
+                    tx.header.senderRewards   = Option<uint64_t>(0);
                     tx.header.receiverRewards = Option<uint64_t>(0);
-                    tx.header.closeRewards = Option<uint64_t>(0);
+                    tx.header.closeRewards    = Option<uint64_t>(0);
 
-                    tx.details = model::PaymentTxnFields();
-                    auto &details = boost::get<model::PaymentTxnFields>(tx.details);
-                    details.receiverAddr = Address(TEST_ACCOUNT_ADDRESS);
-                    details.amount = 1000;
+                    tx.details                = model::PaymentTxnFields();
+                    auto &details             = boost::get<model::PaymentTxnFields>(tx.details);
+                    details.receiverAddr      = Address(TEST_ACCOUNT_ADDRESS);
+                    details.amount            = 1000;
                 }
 
                 return tx;
@@ -111,35 +111,35 @@ namespace ledger {
                 static model::Transaction tx;
 
                 if (tx.header.id.isEmpty()) {
-                    tx.header.id = ASSET_CONFIG_TX_ID;
-                    tx.header.fee = 1000;
+                    tx.header.id     = ASSET_CONFIG_TX_ID;
+                    tx.header.fee    = 1000;
                     tx.header.sender = Address(OBELIX_ADDRESS);
-                    tx.header.type = constants::xAcfg;
-                    tx.header.round = 6305889;
-                    tx.header.note = std::vector<uint8_t>();
+                    tx.header.type   = constants::xAcfg;
+                    tx.header.round  = 6305889;
+                    tx.header.note   = std::vector<uint8_t>();
                     BaseConverter::decode("+72/UGvMiaA=", BaseConverter::BASE64_RFC4648, *tx.header.note);
-                    //tx.header.genesisId = TESTNET_GENESIS_ID; // genesis ID is left empty by the explorer for some reason
-                    tx.header.genesisHash = TESTNET_GENESIS_HASH;
-                    tx.header.firstValid = 6305874;
-                    tx.header.lastValid = 6306874;
-                    tx.header.timestamp = 1587641643;
-                    tx.header.senderRewards = Option<uint64_t>(0);
+                    // tx.header.genesisId = TESTNET_GENESIS_ID; // genesis ID is left empty by the explorer for some reason
+                    tx.header.genesisHash     = TESTNET_GENESIS_HASH;
+                    tx.header.firstValid      = 6305874;
+                    tx.header.lastValid       = 6306874;
+                    tx.header.timestamp       = 1587641643;
+                    tx.header.senderRewards   = Option<uint64_t>(0);
                     tx.header.receiverRewards = Option<uint64_t>(0);
-                    tx.header.closeRewards = Option<uint64_t>(0);
+                    tx.header.closeRewards    = Option<uint64_t>(0);
 
-                    tx.details = model::AssetConfigTxnFields();
-                    auto &details = boost::get<model::AssetConfigTxnFields>(tx.details);
-                    details.assetId = Option<uint64_t>(0);
-                    details.assetParams = model::AssetParams();
-                    auto &assetParams = *details.assetParams;
-                    assetParams.total = 1000000;
-                    assetParams.decimals = 3;
-                    assetParams.unitName = "DUM";
-                    assetParams.assetName = "Dummy Asset";
-                    assetParams.freezeAddr = Address(OBELIX_ADDRESS);
-                    assetParams.managerAddr = Address(OBELIX_ADDRESS);
-                    assetParams.reserveAddr = Address(OBELIX_ADDRESS);
-                    assetParams.clawbackAddr = Address(OBELIX_ADDRESS);
+                    tx.details                = model::AssetConfigTxnFields();
+                    auto &details             = boost::get<model::AssetConfigTxnFields>(tx.details);
+                    details.assetId           = Option<uint64_t>(0);
+                    details.assetParams       = model::AssetParams();
+                    auto &assetParams         = *details.assetParams;
+                    assetParams.total         = 1000000;
+                    assetParams.decimals      = 3;
+                    assetParams.unitName      = "DUM";
+                    assetParams.assetName     = "Dummy Asset";
+                    assetParams.freezeAddr    = Address(OBELIX_ADDRESS);
+                    assetParams.managerAddr   = Address(OBELIX_ADDRESS);
+                    assetParams.reserveAddr   = Address(OBELIX_ADDRESS);
+                    assetParams.clawbackAddr  = Address(OBELIX_ADDRESS);
                     assetParams.defaultFrozen = false;
                 }
 
@@ -150,27 +150,27 @@ namespace ledger {
                 static model::Transaction tx;
 
                 if (tx.header.id.isEmpty()) {
-                    tx.header.id = ASSET_TRANSFER_TX_ID;
-                    tx.header.fee = 2000;
+                    tx.header.id     = ASSET_TRANSFER_TX_ID;
+                    tx.header.fee    = 2000;
                     tx.header.sender = Address(OBELIX_ADDRESS);
-                    tx.header.type = constants::xAxfer;
-                    tx.header.round = 6734108;
-                    tx.header.note = std::vector<uint8_t>();
+                    tx.header.type   = constants::xAxfer;
+                    tx.header.round  = 6734108;
+                    tx.header.note   = std::vector<uint8_t>();
                     BaseConverter::decode("T2JlbGl4IGNvaW4gdGVzdCB0cmFuc2Zlcg==", BaseConverter::BASE64_RFC4648, *tx.header.note);
-                    tx.header.genesisId = TESTNET_GENESIS_ID;
-                    tx.header.genesisHash = TESTNET_GENESIS_HASH;
-                    tx.header.firstValid = 6734094;
-                    tx.header.lastValid = 6734193;
-                    tx.header.timestamp = 1589448692;
-                    tx.header.senderRewards = Option<uint64_t>(0);
+                    tx.header.genesisId       = TESTNET_GENESIS_ID;
+                    tx.header.genesisHash     = TESTNET_GENESIS_HASH;
+                    tx.header.firstValid      = 6734094;
+                    tx.header.lastValid       = 6734193;
+                    tx.header.timestamp       = 1589448692;
+                    tx.header.senderRewards   = Option<uint64_t>(0);
                     tx.header.receiverRewards = Option<uint64_t>(0);
-                    tx.header.closeRewards = Option<uint64_t>(0);
+                    tx.header.closeRewards    = Option<uint64_t>(0);
 
-                    tx.details = model::AssetTransferTxnFields();
-                    auto &details = boost::get<model::AssetTransferTxnFields>(tx.details);
-                    details.assetId = 342836;
-                    details.assetReceiver = Address(TEST_ACCOUNT_ADDRESS);
-                    details.assetAmount = 1000;
+                    tx.details                = model::AssetTransferTxnFields();
+                    auto &details             = boost::get<model::AssetTransferTxnFields>(tx.details);
+                    details.assetId           = 342836;
+                    details.assetReceiver     = Address(TEST_ACCOUNT_ADDRESS);
+                    details.assetAmount       = 1000;
                 }
 
                 return tx;
@@ -206,7 +206,7 @@ namespace ledger {
 
             static void assertSamePaymentDetails(const model::Transaction::Details &txRefDetails,
                                                  const model::Transaction::Details &txResultDetails) {
-                auto &txRefPaymentDetails = boost::get<model::PaymentTxnFields>(txRefDetails);
+                auto &txRefPaymentDetails    = boost::get<model::PaymentTxnFields>(txRefDetails);
                 auto &txResultPaymentDetails = boost::get<model::PaymentTxnFields>(txResultDetails);
 
                 EXPECT_EQ(txRefPaymentDetails.amount, txResultPaymentDetails.amount);
@@ -219,7 +219,7 @@ namespace ledger {
 
             static void assertSameAssetConfigDetails(const model::Transaction::Details &txRefDetails,
                                                      const model::Transaction::Details &txResultDetails) {
-                auto &txRefAssetConfigDetails = boost::get<model::AssetConfigTxnFields>(txRefDetails);
+                auto &txRefAssetConfigDetails    = boost::get<model::AssetConfigTxnFields>(txRefDetails);
                 auto &txResultAssetConfigDetails = boost::get<model::AssetConfigTxnFields>(txResultDetails);
 
                 if (txRefAssetConfigDetails.assetId.hasValue())
@@ -230,7 +230,7 @@ namespace ledger {
 
             static void assertSameAssetTransferDetails(const model::Transaction::Details &txRefDetails,
                                                        const model::Transaction::Details &txResultDetails) {
-                auto &txRefAssetTransferDetails = boost::get<model::AssetTransferTxnFields>(txRefDetails);
+                auto &txRefAssetTransferDetails    = boost::get<model::AssetTransferTxnFields>(txRefDetails);
                 auto &txResultAssetTransferDetails = boost::get<model::AssetTransferTxnFields>(txResultDetails);
 
                 EXPECT_EQ(txRefAssetTransferDetails.assetId, txResultAssetTransferDetails.assetId);

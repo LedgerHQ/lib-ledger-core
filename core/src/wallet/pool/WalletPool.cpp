@@ -60,18 +60,18 @@ namespace ledger {
                                                                                                                                .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE))),
                                                                                           _externalPreferencesBackend(externalPreferencesBackend), _internalPreferencesBackend(internalPreferencesBackend) {
             // General
-            _poolName = name;
+            _poolName      = name;
 
             _configuration = std::static_pointer_cast<DynamicObject>(configuration);
 
             // File system management
-            _pathResolver = pathResolver;
+            _pathResolver  = pathResolver;
 
             // HTTP management
-            _httpEngine = httpClient;
+            _httpEngine    = httpClient;
 
             // WS management
-            _wsClient = std::make_shared<WebSocketClient>(webSocketClient);
+            _wsClient      = std::make_shared<WebSocketClient>(webSocketClient);
 
             // Preferences management
             if (!_externalPreferencesBackend) {
@@ -82,7 +82,7 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "No internal preferences backend provided.");
             }
 
-            _rng = rng;
+            _rng      = rng;
             // Encrypt the preferences, if needed
             _password = password;
             if (!_password.empty()) {
@@ -91,15 +91,15 @@ namespace ledger {
             }
 
             // Logger management
-            _logPrinter = logPrinter;
+            _logPrinter       = logPrinter;
             auto enableLogger = _configuration->getBoolean(api::PoolConfiguration::ENABLE_INTERNAL_LOGGING).value_or(true);
-            _logger = logger::create(
-                name + "-l",
-                dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", name)),
-                pathResolver,
-                logPrinter,
-                logger::DEFAULT_MAX_SIZE,
-                enableLogger);
+            _logger           = logger::create(
+                          name + "-l",
+                          dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", name)),
+                          pathResolver,
+                          logPrinter,
+                          logger::DEFAULT_MAX_SIZE,
+                          enableLogger);
 
             // Database management
             _database = std::make_shared<DatabaseSessionPool>(
@@ -110,9 +110,9 @@ namespace ledger {
                 password);
 
             // Threading management
-            _threadDispatcher = dispatcher;
+            _threadDispatcher           = dispatcher;
 
-            _publisher = std::make_shared<EventPublisher>(getContext());
+            _publisher                  = std::make_shared<EventPublisher>(getContext());
 
             _threadPoolExecutionContext = _threadDispatcher->getThreadPoolExecutionContext(fmt::format("pool_{}_thread_pool", name));
         }
@@ -154,11 +154,11 @@ namespace ledger {
             for (auto &currency : currencies::ALL) {
                 CurrenciesDatabaseHelper::insertCurrency(sql, currency);
             }
-            //Init erc20 tokens
+            // Init erc20 tokens
             for (auto &erc20Token : erc20Tokens::ALL_ERC20) {
                 CurrenciesDatabaseHelper::insertERC20Token(sql, erc20Token.second);
             }
-            //Init bech32 params
+            // Init bech32 params
             for (auto &bech32Params : Bech32Parameters::ALL) {
                 Bech32Parameters::insertParameters(sql, bech32Params);
             }
@@ -359,14 +359,14 @@ namespace ledger {
                 }
                 auto wallet = factory->build(entry);
                 _publisher->relay(wallet->getEventBus());
-                _wallets[entry.uid] = wallet;
+                _wallets[entry.uid]                = wallet;
                 std::weak_ptr<WalletPool> weakSelf = shared_from_this();
                 _publisher->setFilter([weakSelf](const std::shared_ptr<api::Event> &event) -> bool {
                     auto self = weakSelf.lock();
                     if (self && event->getCode() == api::EventCode::NEW_BLOCK) {
                         std::lock_guard<std::mutex> lock(self->_eventFilterMutex);
-                        auto height = event->getPayload()->getLong(api::Account::EV_NEW_BLOCK_HEIGHT);
-                        auto currency = event->getPayload()->getString(api::Account::EV_NEW_BLOCK_CURRENCY_NAME);
+                        auto height           = event->getPayload()->getLong(api::Account::EV_NEW_BLOCK_HEIGHT);
+                        auto currency         = event->getPayload()->getString(api::Account::EV_NEW_BLOCK_CURRENCY_NAME);
                         auto lastBlockEmitted = self->_lastEmittedBlocks.find(currency.value());
                         if (lastBlockEmitted != self->_lastEmittedBlocks.end() && height > lastBlockEmitted->second) {
                             self->_lastEmittedBlocks[currency.value()] = height.value();
@@ -445,11 +445,11 @@ namespace ledger {
                 soci::transaction tr(sql);
 
                 WalletDatabaseEntry entry;
-                entry.name = name;
+                entry.name          = name;
                 entry.configuration = std::static_pointer_cast<ledger::core::DynamicObject>(configuration);
-                entry.currencyName = currencyName;
-                entry.poolName = self->getName();
-                entry.uid = WalletDatabaseEntry::createWalletUid(self->getName(), name);
+                entry.currencyName  = currencyName;
+                entry.poolName      = self->getName();
+                entry.uid           = WalletDatabaseEntry::createWalletUid(self->getName(), name);
                 if (PoolDatabaseHelper::walletExists(sql, entry))
                     throw make_exception(api::ErrorCode::WALLET_ALREADY_EXISTS, "Wallet '{}' for currency '{}' already exists", name, currencyName);
                 PoolDatabaseHelper::putWallet(sql, entry);
@@ -533,7 +533,7 @@ namespace ledger {
                         return Future<api::ErrorCode>::failure(make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to erase wallets of WalletPool !"));
                     }
 
-                    //Erase wallets created after date
+                    // Erase wallets created after date
                     soci::session sql(self->getDatabaseSessionPool()->getPool());
                     soci::rowset<soci::row> wallets = (sql.prepare << "SELECT uid FROM wallets "
                                                                       "WHERE pool_name = :pool_name AND created_at >= :date ",

@@ -43,11 +43,11 @@ namespace ledger {
         template <typename Account>
         class AbstractAccountSynchronizer {
           public:
-            virtual void reset(const std::shared_ptr<Account> &account, const std::chrono::system_clock::time_point &toDate) = 0;
+            virtual void reset(const std::shared_ptr<Account> &account, const std::chrono::system_clock::time_point &toDate)                               = 0;
             virtual std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>> synchronize(const std::shared_ptr<Account> &account) = 0;
-            virtual bool isSynchronizing() const = 0;
+            virtual bool isSynchronizing() const                                                                                                           = 0;
         };
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_ABSTRACTACCOUNTSYNCHRONIZER_H
+#endif // LEDGER_CORE_ABSTRACTACCOUNTSYNCHRONIZER_H

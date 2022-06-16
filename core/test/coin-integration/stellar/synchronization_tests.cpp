@@ -37,11 +37,11 @@
 #include <wallet/common/OperationQuery.h>
 
 TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccount) {
-    auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet_stellar", "stellar", api::DynamicObject::newInstance());
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto pool    = newPool();
+    auto wallet  = newWallet(pool, "my_wallet_stellar", "stellar", api::DynamicObject::newInstance());
+    auto info    = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, defaultAccount());
-    auto exists = uv::wait(account->exists());
+    auto exists  = uv::wait(account->exists());
     EXPECT_TRUE(exists);
     auto bus = account->synchronize();
     bus->subscribe(getTestExecutionContext(),
@@ -56,7 +56,7 @@ TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccount) {
                    }));
     EXPECT_EQ(bus, account->synchronize());
     getTestExecutionContext()->waitUntilStopped();
-    auto balance = uv::wait(account->getBalance());
+    auto balance    = uv::wait(account->getBalance());
     auto operations = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->addOrder(api::OperationOrderKey::DATE, false)->complete())->execute());
     EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) > 0);
     EXPECT_TRUE(operations.size() >= 5);
@@ -105,12 +105,12 @@ TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccount) {
 }
 
 TEST_F(StellarFixture, DISABLED_SynchronizeEmptyStellarAccount) {
-    auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet_stellar_empty", "stellar", api::DynamicObject::newInstance());
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto pool    = newPool();
+    auto wallet  = newWallet(pool, "my_wallet_stellar_empty", "stellar", api::DynamicObject::newInstance());
+    auto info    = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, emptyAccount());
 
-    auto exists = uv::wait(account->exists());
+    auto exists  = uv::wait(account->exists());
     EXPECT_FALSE(exists);
     auto bus = account->synchronize();
     bus->subscribe(getTestExecutionContext(),
@@ -124,8 +124,8 @@ TEST_F(StellarFixture, DISABLED_SynchronizeEmptyStellarAccount) {
                        getTestExecutionContext()->stop();
                    }));
     getTestExecutionContext()->waitUntilStopped();
-    auto address = uv::wait(account->getFreshPublicAddresses())[0];
-    auto balance = uv::wait(account->getBalance());
+    auto address    = uv::wait(account->getFreshPublicAddresses())[0];
+    auto balance    = uv::wait(account->getBalance());
     auto operations = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
     EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) == 0);
     EXPECT_TRUE(operations.size() == 0);
@@ -143,12 +143,12 @@ TEST_F(StellarFixture, DISABLED_SynchronizeEmptyStellarAccount) {
 }
 
 TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithSubEntry) {
-    auto pool = newPool();
+    auto pool   = newPool();
     auto wallet = newWallet(pool, "my_wallet_stellar_subentry", "stellar", api::DynamicObject::newInstance());
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto info   = uv::wait(wallet->getNextAccountCreationInfo());
     StellarLikeAddress addr("GAT4LBXYJGJJJRSNK74NPFLO55CDDXSYVMQODSEAAH3M6EY4S7LPH5GV", getCurrency(), Option<std::string>::NONE);
     auto account = newAccount(wallet, 0, accountInfo(hex::toString(addr.toPublicKey())));
-    auto exists = uv::wait(account->exists());
+    auto exists  = uv::wait(account->exists());
     EXPECT_TRUE(exists);
     auto bus = account->synchronize();
     bus->subscribe(getTestExecutionContext(),
@@ -168,11 +168,11 @@ TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithSubEntry) {
 }
 
 TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithManageBuyOffer) {
-    auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet_1", "stellar", api::DynamicObject::newInstance());
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto pool    = newPool();
+    auto wallet  = newWallet(pool, "my_wallet_1", "stellar", api::DynamicObject::newInstance());
+    auto info    = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, accountInfoFromAddress("GDDU4HHNCSZ2BI6ELSSFKPSOBL2TEB4A3ZJWOCT2DILQKVJTZBNSOZA2"));
-    auto exists = uv::wait(account->exists());
+    auto exists  = uv::wait(account->exists());
     EXPECT_TRUE(exists);
     auto bus = account->synchronize();
     bus->subscribe(getTestExecutionContext(),
@@ -187,18 +187,18 @@ TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithManageBuyOffer) {
                    }));
     EXPECT_EQ(bus, account->synchronize());
     getTestExecutionContext()->waitUntilStopped();
-    auto balance = uv::wait(account->getBalance());
+    auto balance    = uv::wait(account->getBalance());
     auto operations = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->addOrder(api::OperationOrderKey::DATE, false)->complete())->execute());
     EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) > 0);
     EXPECT_TRUE(operations.size() >= 5);
 }
 
 TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithMultisig) {
-    auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet_2", "stellar", api::DynamicObject::newInstance());
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto pool    = newPool();
+    auto wallet  = newWallet(pool, "my_wallet_2", "stellar", api::DynamicObject::newInstance());
+    auto info    = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, accountInfoFromAddress("GAJTWW4OGH5BWFTH24C7SGIDALKI2HUVC2LXHFD533A5FIMSXE5AB3TJ"));
-    auto exists = uv::wait(account->exists());
+    auto exists  = uv::wait(account->exists());
     EXPECT_TRUE(exists);
     auto bus = account->synchronize();
     bus->subscribe(getTestExecutionContext(),
@@ -234,11 +234,11 @@ TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithMultisig) {
 // Synchronize an account with protocol 13 upgrade object
 TEST_F(StellarFixture, DISABLED_SynchronizeProtocol13) {
     // GBV4NH4G5SWYM6OQJKZKG2PA2O2VQ2W6K5S43WLMLJRWU4XTG5EST5QP
-    auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet_proto_13", "stellar", api::DynamicObject::newInstance());
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto pool    = newPool();
+    auto wallet  = newWallet(pool, "my_wallet_proto_13", "stellar", api::DynamicObject::newInstance());
+    auto info    = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, accountInfoFromAddress("GBSEXVEU2WBBLIUCWIWFDPV5I4HLBSOWRNJVKLNXZFVNITFPKQIVO3YI"));
-    auto exists = uv::wait(account->exists());
+    auto exists  = uv::wait(account->exists());
     EXPECT_TRUE(exists);
     auto bus = account->synchronize();
     bus->subscribe(getTestExecutionContext(),
@@ -256,8 +256,8 @@ TEST_F(StellarFixture, DISABLED_SynchronizeProtocol13) {
                    }));
     EXPECT_EQ(bus, account->synchronize());
     getTestExecutionContext()->waitUntilStopped();
-    auto balance = uv::wait(account->getBalance());
-    auto address = uv::wait(account->getFreshPublicAddresses()).front();
+    auto balance    = uv::wait(account->getBalance());
+    auto address    = uv::wait(account->getFreshPublicAddresses()).front();
     auto operations = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
     EXPECT_GT(balance->toLong(), 0);
     EXPECT_TRUE(operations.size() >= 11);

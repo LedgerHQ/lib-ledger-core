@@ -45,7 +45,7 @@
 namespace ledger {
     namespace core {
 
-        //TODO: remove TransactionsParser and TransactionsBulkParser from template when refactoring them (common interface)
+        // TODO: remove TransactionsParser and TransactionsBulkParser from template when refactoring them (common interface)
         template <typename BlockchainExplorerTransaction, typename TransactionsBulk, typename TransactionsParser, typename TransactionsBulkParser, typename BlockParser, typename NetworkParameters>
         class AbstractLedgerApiBlockchainExplorer {
           public:
@@ -70,7 +70,7 @@ namespace ledger {
                         params = params + "?";
                     }
                     auto blockHash = isSnakeCase ? "block_hash=" : "blockHash=";
-                    params = params + blockHash + fromBlockHash.getValue();
+                    params         = params + blockHash + fromBlockHash.getValue();
                 }
                 return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/transactions{}", getExplorerVersion(), getNetworkParameters().Identifier, joinedAddresses, params), headers)
                     .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TransactionsBulkParser>(), true)
@@ -111,7 +111,7 @@ namespace ledger {
                         } else if (result.getRight()->size() == 0) {
                             throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction '{}' not found", transactionHash.str());
                         } else {
-                            auto tx = (*result.getRight())[0];
+                            auto tx          = (*result.getRight())[0];
                             auto transaction = std::make_shared<BlockchainExplorerTransaction>(tx);
                             return transaction;
                         }
@@ -165,11 +165,11 @@ namespace ledger {
 
           protected:
             virtual std::shared_ptr<api::ExecutionContext> getExplorerContext() const = 0;
-            virtual NetworkParameters getNetworkParameters() const = 0;
-            virtual std::string getExplorerVersion() const = 0;
+            virtual NetworkParameters getNetworkParameters() const                    = 0;
+            virtual std::string getExplorerVersion() const                            = 0;
             std::shared_ptr<HttpClient> _http;
         };
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_ABSTRACTLEDGERAPIBLOCKCHAINEXPLORER_H
+#endif // LEDGER_CORE_ABSTRACTLEDGERAPIBLOCKCHAINEXPLORER_H

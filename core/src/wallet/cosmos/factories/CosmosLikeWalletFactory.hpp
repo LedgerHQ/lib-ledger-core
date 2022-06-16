@@ -52,7 +52,8 @@ namespace ledger {
 
           private:
             std::shared_ptr<CosmosLikeBlockchainExplorer> getExplorer(
-                const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
+                const std::string &currencyName,
+                const std::shared_ptr<api::DynamicObject> &configuration);
 
           private:
             // Explorers

@@ -44,7 +44,7 @@ namespace ledger {
     namespace core {
 
         BytesReader::BytesReader(const std::vector<uint8_t> &data, unsigned long offset, unsigned long length) {
-            _bytes = data;
+            _bytes  = data;
             _offset = offset;
             _length = length;
             _cursor = offset;

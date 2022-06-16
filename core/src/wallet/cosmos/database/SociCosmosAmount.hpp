@@ -42,7 +42,9 @@ namespace soci {
 
     template <typename Node, typename Allocator>
     inline void cosmos_coin_to_json_tuple(
-        const ledger::core::cosmos::Coin &coin, Node &node, Allocator &allocator) {
+        const ledger::core::cosmos::Coin &coin,
+        Node &node,
+        Allocator &allocator) {
         using namespace rapidjson;
         node.PushBack(Value().SetString(coin.amount.data(), allocator).Move(), allocator);
         node.PushBack(Value().SetString(coin.denom.data(), allocator).Move(), allocator);
@@ -51,7 +53,7 @@ namespace soci {
     template <typename Node>
     void cosmos_coin_from_json_tuple(const Node &node, ledger::core::cosmos::Coin &out) {
         out.amount = node[0].GetString();
-        out.denom = node[1].GetString();
+        out.denom  = node[1].GetString();
     }
 
     template <>
@@ -71,7 +73,7 @@ namespace soci {
             Document d;
             auto &allocator = d.GetAllocator();
 
-            auto &tuple = d.SetArray();
+            auto &tuple     = d.SetArray();
             cosmos_coin_to_json_tuple(in, tuple, allocator);
 
             StringBuffer buffer;
@@ -90,8 +92,8 @@ namespace soci {
 
             Document d;
             d.Parse(in.data());
-            const auto &obj = d.GetDocumentObject();
-            out.gas = BigInt::fromString(obj["gas"].GetString());
+            const auto &obj   = d.GetDocumentObject();
+            out.gas           = BigInt::fromString(obj["gas"].GetString());
             const auto &array = obj["amount"].GetArray();
             out.amount.resize(array.Size());
             auto index = 0;
@@ -107,8 +109,8 @@ namespace soci {
             Document d;
             auto &allocator = d.GetAllocator();
 
-            auto &obj = d.SetObject();
-            auto gas = in.gas.toString();
+            auto &obj       = d.SetObject();
+            auto gas        = in.gas.toString();
             obj["gas"].SetString(gas.data(), gas.size());
             auto &array = obj["amount"].SetObject();
             for (const auto &item : in.amount) {

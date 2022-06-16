@@ -47,12 +47,12 @@ TEST(DateParser, ParseJSONDate2) {
 
 TEST(DateParser, ToJSONDate) {
     auto date = "2017-03-27T09:10:22Z";
-    auto tp = DateUtils::fromJSON(date);
+    auto tp   = DateUtils::fromJSON(date);
     EXPECT_EQ(DateUtils::toJSON(tp), date);
 }
 
 TEST(DateParser, FormatDate) {
     auto date = "2019-Jan-07 22:41:40";
-    auto tp = DateUtils::formatDateFromJSON(date);
+    auto tp   = DateUtils::formatDateFromJSON(date);
     EXPECT_EQ(tp, "2019-01-7T22:41:40Z");
 }

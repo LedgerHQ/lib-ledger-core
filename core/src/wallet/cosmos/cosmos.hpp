@@ -57,38 +57,38 @@ namespace ledger {
     namespace core {
         namespace cosmos {
 
-            using Block = ledger::core::Block;
+            using Block                            = ledger::core::Block;
 
-            using ProposalContent = api::CosmosLikeContent;
-            using VoteOption = api::CosmosLikeVoteOption;
+            using ProposalContent                  = api::CosmosLikeContent;
+            using VoteOption                       = api::CosmosLikeVoteOption;
 
-            using ValidatorDescription = api::CosmosLikeValidatorDescription;
-            using ValidatorCommission = api::CosmosLikeValidatorCommission;
-            using ValidatorSigningInformation = api::CosmosLikeValidatorSigningInformation;
+            using ValidatorDescription             = api::CosmosLikeValidatorDescription;
+            using ValidatorCommission              = api::CosmosLikeValidatorCommission;
+            using ValidatorSigningInformation      = api::CosmosLikeValidatorSigningInformation;
             using ValidatorDistributionInformation = api::CosmosLikeValidatorDistributionInformation;
 
-            using Validator = api::CosmosLikeValidator;
-            using CommissionRates = api::CosmosLikeCommissionRates;
+            using Validator                        = api::CosmosLikeValidator;
+            using CommissionRates                  = api::CosmosLikeCommissionRates;
 
-            using MultiSendInput = api::CosmosLikeMultiSendInput;
-            using MultiSendOutput = api::CosmosLikeMultiSendOutput;
+            using MultiSendInput                   = api::CosmosLikeMultiSendInput;
+            using MultiSendOutput                  = api::CosmosLikeMultiSendOutput;
 
-            using Coin = api::CosmosLikeAmount;
-            using MsgSend = api::CosmosLikeMsgSend;
-            using MsgDelegate = api::CosmosLikeMsgDelegate;
-            using MsgUndelegate = api::CosmosLikeMsgUndelegate;
-            using MsgBeginRedelegate = api::CosmosLikeMsgBeginRedelegate;
-            using MsgSubmitProposal = api::CosmosLikeMsgSubmitProposal;
-            using MsgVote = api::CosmosLikeMsgVote;
-            using MsgDeposit = api::CosmosLikeMsgDeposit;
-            using MsgWithdrawDelegationReward = api::CosmosLikeMsgWithdrawDelegationReward;
-            using MsgMultiSend = api::CosmosLikeMsgMultiSend;
-            using MsgCreateValidator = api::CosmosLikeMsgCreateValidator;
-            using MsgEditValidator = api::CosmosLikeMsgEditValidator;
-            using MsgSetWithdrawAddress = api::CosmosLikeMsgSetWithdrawAddress;
-            using MsgWithdrawDelegatorReward = api::CosmosLikeMsgWithdrawDelegatorReward;
-            using MsgWithdrawValidatorCommission = api::CosmosLikeMsgWithdrawValidatorCommission;
-            using MsgUnjail = api::CosmosLikeMsgUnjail;
+            using Coin                             = api::CosmosLikeAmount;
+            using MsgSend                          = api::CosmosLikeMsgSend;
+            using MsgDelegate                      = api::CosmosLikeMsgDelegate;
+            using MsgUndelegate                    = api::CosmosLikeMsgUndelegate;
+            using MsgBeginRedelegate               = api::CosmosLikeMsgBeginRedelegate;
+            using MsgSubmitProposal                = api::CosmosLikeMsgSubmitProposal;
+            using MsgVote                          = api::CosmosLikeMsgVote;
+            using MsgDeposit                       = api::CosmosLikeMsgDeposit;
+            using MsgWithdrawDelegationReward      = api::CosmosLikeMsgWithdrawDelegationReward;
+            using MsgMultiSend                     = api::CosmosLikeMsgMultiSend;
+            using MsgCreateValidator               = api::CosmosLikeMsgCreateValidator;
+            using MsgEditValidator                 = api::CosmosLikeMsgEditValidator;
+            using MsgSetWithdrawAddress            = api::CosmosLikeMsgSetWithdrawAddress;
+            using MsgWithdrawDelegatorReward       = api::CosmosLikeMsgWithdrawDelegatorReward;
+            using MsgWithdrawValidatorCommission   = api::CosmosLikeMsgWithdrawValidatorCommission;
+            using MsgUnjail                        = api::CosmosLikeMsgUnjail;
 
             struct MsgFees final {
                 std::string payerAddress;
@@ -135,10 +135,10 @@ namespace ledger {
             };
 
             /**
- * Structure containing message related information.
- * The message also contains a copy of the MessageLog structure
- * for easier bundling.
- */
+             * Structure containing message related information.
+             * The message also contains a copy of the MessageLog structure
+             * for easier bundling.
+             */
             struct Message {
                 std::string uid;
                 std::string type;
@@ -217,11 +217,11 @@ namespace ledger {
             };
 
             // Small helpers to avoid very long types
-            using UnbondingList = std::vector<std::shared_ptr<Unbonding>>;
+            using UnbondingList    = std::vector<std::shared_ptr<Unbonding>>;
             using RedelegationList = std::vector<std::shared_ptr<Redelegation>>;
-            using TransactionList = std::list<std::shared_ptr<Transaction>>;
-            using ValidatorList = std::vector<Validator>;
-            using MsgType = ::ledger::core::api::CosmosLikeMsgType;
+            using TransactionList  = std::list<std::shared_ptr<Transaction>>;
+            using ValidatorList    = std::vector<Validator>;
+            using MsgType          = ::ledger::core::api::CosmosLikeMsgType;
 
             struct TransactionsBulk {
                 std::vector<cosmos::Transaction> transactions;

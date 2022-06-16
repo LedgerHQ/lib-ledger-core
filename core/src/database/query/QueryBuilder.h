@@ -32,33 +32,34 @@
 #define LEDGER_CORE_QUERYBUILDER_H
 
 #include "QueryFilter.h"
-#include <soci.h>
+
 #include <list>
+#include <soci.h>
 #include <tuple>
 #include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {
         class QueryBuilder {
-        public:
-            QueryBuilder() : _keys("*") {
+          public:
+            QueryBuilder() : _keys("*"){
 
-            };
-            QueryBuilder& select(const std::string& keys);
-            QueryBuilder& select(std::string&& keys);
-            QueryBuilder& from(const std::string& table);
-            QueryBuilder& from(std::string&& table);
-            QueryBuilder& to(const std::string& output);
-            QueryBuilder& to(std::string&& output);
-            QueryBuilder& where(const std::shared_ptr<api::QueryFilter>& filter);
-            QueryBuilder& outerJoin(const std::string& table, const std::string& condition);
-            QueryBuilder& order(std::string&& keys, bool&& descending, std::string&& table);
-            QueryBuilder& limit(int32_t limit);
-            QueryBuilder& offset(int32_t offset);
-            QueryBuilder& groupBy(std::string group);
-            soci::details::prepare_temp_type execute(soci::session& sql);
+                             };
+            QueryBuilder &select(const std::string &keys);
+            QueryBuilder &select(std::string &&keys);
+            QueryBuilder &from(const std::string &table);
+            QueryBuilder &from(std::string &&table);
+            QueryBuilder &to(const std::string &output);
+            QueryBuilder &to(std::string &&output);
+            QueryBuilder &where(const std::shared_ptr<api::QueryFilter> &filter);
+            QueryBuilder &outerJoin(const std::string &table, const std::string &condition);
+            QueryBuilder &order(std::string &&keys, bool &&descending, std::string &&table);
+            QueryBuilder &limit(int32_t limit);
+            QueryBuilder &offset(int32_t offset);
+            QueryBuilder &groupBy(std::string group);
+            soci::details::prepare_temp_type execute(soci::session &sql);
 
-        private:
+          private:
             using LeftOuterJoin = std::tuple<std::string, std::string>;
 
             std::string _keys;
@@ -71,8 +72,7 @@ namespace ledger {
             Option<int32_t> _limit;
             Option<int32_t> _offset;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_QUERYBUILDER_H
+#endif // LEDGER_CORE_QUERYBUILDER_H

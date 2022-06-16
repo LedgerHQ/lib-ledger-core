@@ -56,8 +56,8 @@ namespace ledger {
                                            const std::shared_ptr<DynamicObject> &configuration,
                                            const DerivationScheme &scheme)
             : AbstractWallet(name, network, pool, configuration, scheme) {
-            _explorer = explorer;
-            _keychainFactory = keychainFactory;
+            _explorer            = explorer;
+            _keychainFactory     = keychainFactory;
             _synchronizerFactory = synchronizer;
         }
 
@@ -121,8 +121,8 @@ namespace ledger {
                                      "Empty extended keys passed to newAccountWithExtendedKeyInfo");
             }
 
-            auto self = getSelf();
-            auto scheme = getDerivationScheme();
+            auto self         = getSelf();
+            auto scheme       = getDerivationScheme();
             auto accountIndex = info.index;
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
@@ -159,7 +159,7 @@ namespace ledger {
             auto accountScheme = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX);
             // To handle all exotic paths we should avoid private derivations
             // So if node or/and address level are hardened, then they are included in account's derivation path
-            auto path = scheme.getPath();
+            auto path          = scheme.getPath();
             auto hardenedDepth = path.getDepth();
             while (hardenedDepth) {
                 if (path.isHardened(hardenedDepth - 1)) {
@@ -178,7 +178,7 @@ namespace ledger {
                 [self, accountIndex]() -> api::ExtendedKeyAccountCreationInfo {
                     api::ExtendedKeyAccountCreationInfo info;
                     auto scheme = self->getDerivationScheme();
-                    info.index = getAccountIndex(scheme, accountIndex);
+                    info.index  = getAccountIndex(scheme, accountIndex);
                     scheme.setCoinType(self->getCurrency().bip44CoinType).setAccountIndex(info.index);
                     auto keychainEngine = self->getConfiguration()->getString(
                                                                       api::Configuration::KEYCHAIN_ENGINE)
@@ -202,7 +202,7 @@ namespace ledger {
             return getExtendedKeyAccountCreationInfo(accountIndex).map<api::AccountCreationInfo>(getContext(), [self, accountIndex](const api::ExtendedKeyAccountCreationInfo info) {
                 api::AccountCreationInfo result;
                 result.index = getAccountIndex(self->getDerivationScheme(), accountIndex);
-                auto length = info.derivations.size();
+                auto length  = info.derivations.size();
                 for (auto i = 0; i < length; i++) {
                     DerivationPath path(info.derivations[i]);
                     auto owner = info.owners[i];

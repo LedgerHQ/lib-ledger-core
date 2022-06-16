@@ -44,11 +44,15 @@ namespace ledger {
 
             /// \brief DB --> Tx.
             static bool getTransactionByHash(
-                soci::session &sql, const std::string &hash, cosmos::Transaction &tx);
+                soci::session &sql,
+                const std::string &hash,
+                cosmos::Transaction &tx);
 
             /// \brief DB --> Msg.
             static bool getMessageByUid(
-                soci::session &sql, const std::string &msgUid, cosmos::Message &msg);
+                soci::session &sql,
+                const std::string &msgUid,
+                cosmos::Message &msg);
 
             /// \brief Fill a cosmos::Message from a database entry in cosmos_messages table.
             /// This function fills the common data, and then dispatch the message type specifics to
@@ -105,17 +109,20 @@ namespace ledger {
             /// MsgWithdrawDelegationReward specific data. \param [in] row The row from cosmos_messages
             /// table to use \param [out] msg The cosmos::Message to fill
             static void inflateMsgWithdrawDelegationRewardSpecifics(
-                const soci::row &row, cosmos::Message &msg);
+                const soci::row &row,
+                cosmos::Message &msg);
             /// \brief Fill a cosmos::Message from a database entry in cosmos_messages table with
             /// MsgWithdrawDelegatorReward specific data. \param [in] row The row from cosmos_messages table
             /// to use \param [out] msg The cosmos::Message to fill
             static void inflateMsgWithdrawDelegatorRewardSpecifics(
-                const soci::row &row, cosmos::Message &msg);
+                const soci::row &row,
+                cosmos::Message &msg);
             /// \brief Fill a cosmos::Message from a database entry in cosmos_messages table with
             /// MsgWithdrawValidatorCommission specific data. \param [in] row The row from cosmos_messages
             /// table to use \param [out] msg The cosmos::Message to fill
             static void inflateMsgWithdrawValidatorCommissionSpecifics(
-                const soci::row &row, cosmos::Message &msg);
+                const soci::row &row,
+                cosmos::Message &msg);
             /// \brief Fill a cosmos::Message from a database entry in cosmos_messages table with
             /// MsgSetWithdrawAddress specific data. \param [in] row The row from cosmos_messages table to
             /// use \param [out] msg The cosmos::Message to fill
@@ -129,7 +136,9 @@ namespace ledger {
             /// to join cosmos_multisend_io table) \param [in] row The row from cosmos_messages table to use
             /// \param [out] msg The cosmos::Message to fill
             static void inflateMsgMultiSendSpecifics(
-                soci::session &sql, const soci::row &row, cosmos::Message &msg);
+                soci::session &sql,
+                const soci::row &row,
+                cosmos::Message &msg);
             /// \brief Fill a cosmos::Message from a database entry in cosmos_messages table with MsgFees
             /// specific data. \param [in] row The row from cosmos_messages table to use \param [out] msg
             /// The cosmos::Message to fill

@@ -58,7 +58,7 @@ namespace ledger {
         bool BitcoinLikeWalletDatabase::accountExists(int32_t index) const {
             session sql(_database->getPool());
             int64_t count = 0L;
-            auto uid = AccountDatabaseHelper::createAccountUid(_walletUid, index);
+            auto uid      = AccountDatabaseHelper::createAccountUid(_walletUid, index);
             sql << "SELECT COUNT(*) FROM bitcoin_accounts WHERE uid = :uid", use(uid), into(count);
             return count == 1;
         }

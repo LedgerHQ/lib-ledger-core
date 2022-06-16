@@ -72,12 +72,12 @@ TEST(CosmosLikeBlockchainExplorer, FilterBuilder) {
 TEST(CosmosAddress, AddressFromPubKey) {
     {
         // Results returned by device
-        std::string prefixedPubKey = "cosmospub1addwnpepqdtwj8njf68zedmfhzru54tg2475nnfjrrgtfd533prvs7sljk7nzxvtkpd";
+        std::string prefixedPubKey     = "cosmospub1addwnpepqdtwj8njf68zedmfhzru54tg2475nnfjrrgtfd533prvs7sljk7nzxvtkpd";
         std::string expectedBech32Addr = "cosmos16xkkyj97z7r83sx45xwk9uwq0mj0zszlf6c6mq";
 
         // From bech32 pubKey to pubKeyHash160
-        auto pkBech32 = std::make_shared<CosmosBech32>(api::CosmosBech32Type::PUBLIC_KEY);
-        auto pkDecodedHash160 = pkBech32->decode(prefixedPubKey);
+        auto pkBech32                  = std::make_shared<CosmosBech32>(api::CosmosBech32Type::PUBLIC_KEY);
+        auto pkDecodedHash160          = pkBech32->decode(prefixedPubKey);
 
         // Byte array to encode : <PrefixBytes> <Size> <ByteArray> hence the + 5
         std::vector<uint8_t> secp256k1PubKey(pkDecodedHash160.second.begin() + 5, pkDecodedHash160.second.end());
@@ -91,7 +91,7 @@ TEST(CosmosAddress, AddressFromPubKey) {
         auto publicKeyHash160 = HASH160::hash(secp256k1PubKey, hashAlgorithm);
 
         // Encode to bech32 address and check
-        auto bech32 = std::make_shared<CosmosBech32>(api::CosmosBech32Type::ADDRESS);
+        auto bech32           = std::make_shared<CosmosBech32>(api::CosmosBech32Type::ADDRESS);
         auto bech32AddrResult = bech32->encode(publicKeyHash160, std::vector<uint8_t>());
         EXPECT_EQ(bech32AddrResult, expectedBech32Addr);
     }
@@ -100,14 +100,14 @@ TEST(CosmosAddress, AddressFromPubKey) {
         // From Secp256k1 33 bytes pubkey to address
         // https://github.com/tendermint/tendermint/blob/master/docs/spec/blockchain/encoding.md#public-key-cryptography
         std::string secpPubKey = "020BD40F225A57ED383B440CF073BC5539D0341F5767D2BF2D78406D00475A2EE9";
-        auto pubKey = hex::toByteArray(secpPubKey);
+        auto pubKey            = hex::toByteArray(secpPubKey);
         HashAlgorithm hashAlgorithm("cosmos");
         auto publicKeyHash160 = HASH160::hash(pubKey, hashAlgorithm);
 
         // To Bech32
-        auto bech32 = std::make_shared<CosmosBech32>(api::CosmosBech32Type::ADDRESS);
-        auto bech32Addr = bech32->encode(publicKeyHash160, std::vector<uint8_t>());
-        auto decodedHash160 = bech32->decode(bech32Addr);
+        auto bech32           = std::make_shared<CosmosBech32>(api::CosmosBech32Type::ADDRESS);
+        auto bech32Addr       = bech32->encode(publicKeyHash160, std::vector<uint8_t>());
+        auto decodedHash160   = bech32->decode(bech32Addr);
         EXPECT_EQ(hex::toString(decodedHash160.second), hex::toString(publicKeyHash160));
     }
 }
@@ -141,7 +141,7 @@ TEST(CosmosAddress, AddressFromPubKeys) {
     int index = 0;
     for (auto &prefixedPubKey : prefixedPubKeys) {
         // From bech32 pubKey to pubKeyHash160
-        auto pkBech32 = std::make_shared<CosmosBech32>(api::CosmosBech32Type::PUBLIC_KEY);
+        auto pkBech32         = std::make_shared<CosmosBech32>(api::CosmosBech32Type::PUBLIC_KEY);
         auto pkDecodedHash160 = pkBech32->decode(prefixedPubKey);
 
         // Byte array to encode : <PrefixBytes> <Length> <ByteArray> hence the + 5
@@ -155,7 +155,7 @@ TEST(CosmosAddress, AddressFromPubKeys) {
         auto publicKeyHash160 = HASH160::hash(secp256k1PubKey, hashAlgorithm);
 
         // Encode to bech32
-        auto bech32 = std::make_shared<CosmosBech32>(api::CosmosBech32Type::ADDRESS);
+        auto bech32           = std::make_shared<CosmosBech32>(api::CosmosBech32Type::ADDRESS);
         auto bech32AddrResult = bech32->encode(publicKeyHash160, std::vector<uint8_t>());
         EXPECT_EQ(bech32AddrResult, bech32Addresses[index]);
         index++;
@@ -164,31 +164,31 @@ TEST(CosmosAddress, AddressFromPubKeys) {
 
 TEST(CosmosAddress, CosmosAddressFromBech32PubKey) {
     auto expectedResult = "cosmos16xkkyj97z7r83sx45xwk9uwq0mj0zszlf6c6mq";
-    auto pubKey = "cosmospub1addwnpepqdtwj8njf68zedmfhzru54tg2475nnfjrrgtfd533prvs7sljk7nzxvtkpd";
-    auto pubKeyExt = ledger::core::CosmosLikeExtendedPublicKey::fromBech32(currencies::ATOM, pubKey, Option<std::string>("44'/118'/0'"));
+    auto pubKey         = "cosmospub1addwnpepqdtwj8njf68zedmfhzru54tg2475nnfjrrgtfd533prvs7sljk7nzxvtkpd";
+    auto pubKeyExt      = ledger::core::CosmosLikeExtendedPublicKey::fromBech32(currencies::ATOM, pubKey, Option<std::string>("44'/118'/0'"));
     EXPECT_EQ(pubKeyExt->derive("")->toBech32(), expectedResult);
 }
 
 TEST(CosmosAddress, CosmosAddressFromBech32) {
     auto expectedResult = "cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl";
-    auto address = ledger::core::CosmosLikeAddress::fromBech32(expectedResult, currencies::ATOM, Option<std::string>("44'/118'/0'"));
+    auto address        = ledger::core::CosmosLikeAddress::fromBech32(expectedResult, currencies::ATOM, Option<std::string>("44'/118'/0'"));
     EXPECT_EQ(address->toBech32(), expectedResult);
 }
 
 TEST(CosmosAddress, CosmosValAddressFromBech32) {
     auto expectedResult = "cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7";
-    auto address = ledger::core::CosmosLikeAddress::fromBech32(expectedResult, currencies::ATOM, Option<std::string>("44'/118'/0'"));
+    auto address        = ledger::core::CosmosLikeAddress::fromBech32(expectedResult, currencies::ATOM, Option<std::string>("44'/118'/0'"));
     EXPECT_EQ(address->toBech32(), expectedResult);
 }
 
 TEST(CosmosAddress, SecpPubbKey) {
-    std::vector<uint8_t> pubKey = hex::toByteArray("02c4becf6843868d9556ea43d46518b51a13cb1a48cd6c05a21c029ea4231fcde4");
+    std::vector<uint8_t> pubKey    = hex::toByteArray("02c4becf6843868d9556ea43d46518b51a13cb1a48cd6c05a21c029ea4231fcde4");
     std::vector<uint8_t> chainCode = hex::toByteArray("");
-    auto zPub = ledger::core::CosmosLikeExtendedPublicKey::fromRaw(currencies::ATOM,
-                                                                   optional<std::vector<uint8_t>>(),
-                                                                   pubKey,
-                                                                   chainCode,
-                                                                   "44'/118'/0'/0'",
-                                                                   api::CosmosCurve::SECP256K1);
+    auto zPub                      = ledger::core::CosmosLikeExtendedPublicKey::fromRaw(currencies::ATOM,
+                                                                                        optional<std::vector<uint8_t>>(),
+                                                                                        pubKey,
+                                                                                        chainCode,
+                                                                                        "44'/118'/0'/0'",
+                                                                                        api::CosmosCurve::SECP256K1);
     EXPECT_EQ(zPub->derive("")->toBech32(), "cosmos1x9fzdaykfcc3k4hvflzu4rc6683a7cgkqfhe0s");
 }

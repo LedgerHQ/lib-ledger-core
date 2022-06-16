@@ -43,7 +43,6 @@ namespace ledger {
                                          const std::shared_ptr<Preferences> &accountPreferences,
                                          const api::Currency &currency) {
             if (!info.extendedKeys.empty()) {
-
                 auto xpub = make_try<std::shared_ptr<RippleLikeExtendedPublicKey>>([&]() -> std::shared_ptr<RippleLikeExtendedPublicKey> {
                     return RippleLikeExtendedPublicKey::fromBase58(
                         currency,
@@ -71,7 +70,6 @@ namespace ledger {
                                            const std::string &databaseXpubEntry,
                                            const std::shared_ptr<Preferences> &accountPreferences,
                                            const api::Currency &currency) {
-
             return std::make_shared<RippleLikeKeychain>(configuration,
                                                         currency, index,
                                                         RippleLikeExtendedPublicKey::fromBase58(

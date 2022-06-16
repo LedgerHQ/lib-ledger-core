@@ -46,13 +46,13 @@ class BitcoinP2WSHKeychains : public KeychainFixture<P2WSHBitcoinLikeKeychain> {
 };
 
 TEST_F(BitcoinP2WSHKeychains, UnitTest) {
-    auto currency = currencies::BITCOIN;
-    //Script
+    auto currency      = currencies::BITCOIN;
+    // Script
     const auto &params = currency.bitcoinLikeNetworkParameters.value();
     HashAlgorithm hashAlgorithm(params.Identifier);
     auto pubKey = hex::toByteArray("210279BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798");
     std::vector<uint8_t> witnessScript;
-    //Hash160 of public key
+    // Hash160 of public key
     witnessScript.insert(witnessScript.end(), pubKey.begin(), pubKey.end());
     witnessScript.push_back(btccore::OP_CHECKSIG);
     auto scriptHash = SHA256::bytesToBytesHash(witnessScript);

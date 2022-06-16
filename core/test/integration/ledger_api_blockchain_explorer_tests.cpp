@@ -42,17 +42,17 @@ class LedgerApiBlockchainExplorerTests : public BaseFixture {
   public:
     void SetUp() override {
         BaseFixture::SetUp();
-        auto worker = dispatcher->getSerialExecutionContext("worker");
+        auto worker           = dispatcher->getSerialExecutionContext("worker");
         auto threadpoolWorker = dispatcher->getThreadPoolExecutionContext("threadpoolWorker");
-        auto client = std::make_shared<HttpClient>(explorerEndpoint, http, worker, threadpoolWorker);
-        auto configuration = DynamicObject::newInstance();
+        auto client           = std::make_shared<HttpClient>(explorerEndpoint, http, worker, threadpoolWorker);
+        auto configuration    = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
         explorer = std::make_shared<CurrencyExplorer>(worker, client, params, configuration);
-        logger = ledger::core::logger::create("test_logs",
-                                              dispatcher->getSerialExecutionContext("logger"),
-                                              resolver,
-                                              printer,
-                                              2000000000);
+        logger   = ledger::core::logger::create("test_logs",
+                                                dispatcher->getSerialExecutionContext("logger"),
+                                                resolver,
+                                                printer,
+                                                2000000000);
         client->setLogger(logger);
     }
     NetworkParameters params;
@@ -64,20 +64,20 @@ class LedgerApiBlockchainExplorerTests : public BaseFixture {
 class LedgerApiBitcoinLikeBlockchainExplorerTests : public LedgerApiBlockchainExplorerTests<LedgerApiBitcoinLikeBlockchainExplorer, api::BitcoinLikeNetworkParameters> {
   public:
     LedgerApiBitcoinLikeBlockchainExplorerTests() {
-        params = networks::getNetworkParameters("bitcoin");
+        params           = networks::getNetworkParameters("bitcoin");
         explorerEndpoint = "https://explorers.api.live.ledger.com";
     }
 };
 
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetRawTransaction) {
     auto transaction = uv::wait(explorer->getRawTransaction("9d7945129b78e2f63a72fed93e8ebe38567bdc9318591cfe8c8a7de76c5cb1a3"));
-    auto hex = transaction.toHex();
+    auto hex         = transaction.toHex();
     EXPECT_EQ(hex.str(), "0100000001d62dad27a2bdd0c5e72a6288acb4e0acac088b4bc5588e60ff5c3861c4584d71010000006b483045022100d72a8e43c74764a18c5dfec225f1e60dceb12a9bf4931afa1093f14c471f55d202202cf4ed0956fd68dc9ba9d026a4ae04758092487cebff1618e320dcc12d736577012102b62b6c66c0d69ca3272ed3d0884a40bd4fb50ab08bec6de6d899b7389f40e9b5ffffffff026fa40200000000001976a91459fa62dab1f04b4528e5c5446f4c897b53fc983c88ace58f8b00000000001976a914b026e605bb239cf7eafb6437667f0f7f80e827f488ac00000000");
 }
 
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash) {
     auto transaction = uv::wait(explorer->getTransactionByHash("9fdbe15a16fe282291426df15894ab1473e252bc31f244e4d923a17e11743eda"));
-    auto &tx = *transaction.get();
+    auto &tx         = *transaction.get();
     EXPECT_EQ(tx.inputs.size(), 1);
     EXPECT_EQ(tx.hash, "9fdbe15a16fe282291426df15894ab1473e252bc31f244e4d923a17e11743eda");
     EXPECT_EQ(tx.inputs[0].value.getValue().toString(), "1634001");
@@ -104,7 +104,7 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash) {
 
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash_2) {
     auto transaction = uv::wait(explorer->getTransactionByHash("16da85a108a63ff318458be597f34f0a7f6b9f703528249056ba2f48722ae44e"));
-    auto &tx = *transaction;
+    auto &tx         = *transaction;
     EXPECT_EQ(tx.inputs.size(), 1);
     EXPECT_EQ(tx.hash, "16da85a108a63ff318458be597f34f0a7f6b9f703528249056ba2f48722ae44e");
     EXPECT_EQ(tx.inputs.size(), 1);
@@ -116,7 +116,7 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash_2) {
 
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash_3) {
     auto transaction = uv::wait(explorer->getTransactionByHash("8d2a0ccbe3a71f3e505be1557995c57f2a26f1951a72931f23a61f18fa4b3d2d"));
-    auto &tx = *transaction;
+    auto &tx         = *transaction;
     EXPECT_EQ(tx.hash, "8d2a0ccbe3a71f3e505be1557995c57f2a26f1951a72931f23a61f18fa4b3d2d");
     EXPECT_EQ(tx.inputs.size(), 8);
     EXPECT_EQ(tx.outputs.size(), 2);
@@ -161,7 +161,7 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetFees) {
 class LedgerApiEthereumLikeBlockchainExplorerTests : public LedgerApiBlockchainExplorerTests<LedgerApiEthereumLikeBlockchainExplorer, api::EthereumLikeNetworkParameters> {
   public:
     LedgerApiEthereumLikeBlockchainExplorerTests() {
-        params = networks::getEthLikeNetworkParameters("ethereum_ropsten");
+        params           = networks::getEthLikeNetworkParameters("ethereum_ropsten");
         explorerEndpoint = "https://explorers.api.live.ledger.com";
     }
 };

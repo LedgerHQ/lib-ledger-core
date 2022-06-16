@@ -82,13 +82,13 @@ namespace ledger {
 
             void refreshUid(const std::string &additional = "");
 
-            Operation() = default;
-            Operation(Operation const &) = default;
+            Operation()                             = default;
+            Operation(Operation const &)            = default;
 
-            Operation(Operation &&) = default;
+            Operation(Operation &&)                 = default;
 
             Operation &operator=(Operation const &) = default;
-            Operation &operator=(Operation &&) = default;
+            Operation &operator=(Operation &&)      = default;
 
             template <typename CoinOperationType>
             static std::string computeTransactionId(const std::string &txHash, const CoinOperationType &coinOperationType, const std::string &additional = "");
@@ -103,4 +103,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_OPERATION_H
+#endif // LEDGER_CORE_OPERATION_H

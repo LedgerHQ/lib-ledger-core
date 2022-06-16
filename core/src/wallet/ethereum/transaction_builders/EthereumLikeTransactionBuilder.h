@@ -46,7 +46,7 @@ namespace ledger {
 
         struct EthereumLikeTransactionBuildRequest {
             EthereumLikeTransactionBuildRequest() {
-                wipe = false;
+                wipe  = false;
                 nonce = std::make_shared<BigInt>(0);
             };
             std::string toAddress;
@@ -103,4 +103,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_ETHEREUMLIKETRANSACTIONBUILDER_H
+#endif // LEDGER_CORE_ETHEREUMLIKETRANSACTIONBUILDER_H

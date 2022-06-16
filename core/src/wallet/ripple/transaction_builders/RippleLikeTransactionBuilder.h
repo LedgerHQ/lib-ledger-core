@@ -59,7 +59,8 @@ namespace ledger {
         };
 
         using RippleLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::RippleLikeTransaction>>(
-            const RippleLikeTransactionBuildRequest &, const std::shared_ptr<RippleLikeBlockchainExplorer> &)>;
+            const RippleLikeTransactionBuildRequest &,
+            const std::shared_ptr<RippleLikeBlockchainExplorer> &)>;
 
         class RippleLikeTransactionBuilder
             : public api::RippleLikeTransactionBuilder,
@@ -109,4 +110,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_RIPPLELIKETRANSACTIONBUILDER_H
+#endif // LEDGER_CORE_RIPPLELIKETRANSACTIONBUILDER_H

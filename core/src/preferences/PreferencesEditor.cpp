@@ -40,7 +40,7 @@ namespace ledger {
         PreferencesEditor::putString(const std::string &key, const std::string &value) {
             api::PreferencesChange change;
             change.type = api::PreferencesChangeType::PUT_TYPE;
-            change.key = _preferences.wrapKey(key);
+            change.key  = _preferences.wrapKey(key);
             BytesWriter writer;
             writer.writeString(value);
             change.value = writer.toByteArray();
@@ -51,7 +51,7 @@ namespace ledger {
         std::shared_ptr<api::PreferencesEditor> PreferencesEditor::putInt(const std::string &key, int32_t value) {
             api::PreferencesChange change;
             change.type = api::PreferencesChangeType::PUT_TYPE;
-            change.key = _preferences.wrapKey(key);
+            change.key  = _preferences.wrapKey(key);
             BytesWriter writer;
             writer.writeLeValue<uint32_t>((uint32_t)value);
             change.value = writer.toByteArray();
@@ -62,7 +62,7 @@ namespace ledger {
         std::shared_ptr<api::PreferencesEditor> PreferencesEditor::putLong(const std::string &key, int64_t value) {
             api::PreferencesChange change;
             change.type = api::PreferencesChangeType::PUT_TYPE;
-            change.key = _preferences.wrapKey(key);
+            change.key  = _preferences.wrapKey(key);
             BytesWriter writer;
             writer.writeLeValue<uint64_t>((uint64_t)value);
             change.value = writer.toByteArray();
@@ -73,7 +73,7 @@ namespace ledger {
         std::shared_ptr<api::PreferencesEditor> PreferencesEditor::putBoolean(const std::string &key, bool value) {
             api::PreferencesChange change;
             change.type = api::PreferencesChangeType::PUT_TYPE;
-            change.key = _preferences.wrapKey(key);
+            change.key  = _preferences.wrapKey(key);
             BytesWriter writer;
             writer.writeByte(value ? (uint8_t)0x01 : (uint8_t)0x00);
             change.value = writer.toByteArray();
@@ -85,7 +85,7 @@ namespace ledger {
         PreferencesEditor::putStringArray(const std::string &key, const std::vector<std::string> &value) {
             api::PreferencesChange change;
             change.type = api::PreferencesChangeType::PUT_TYPE;
-            change.key = _preferences.wrapKey(key);
+            change.key  = _preferences.wrapKey(key);
             BytesWriter writer;
             for (auto &item : value) {
                 writer.writeVarString(item);
@@ -98,7 +98,7 @@ namespace ledger {
         std::shared_ptr<api::PreferencesEditor> PreferencesEditor::remove(const std::string &key) {
             api::PreferencesChange change;
             change.type = api::PreferencesChangeType::DELETE_TYPE;
-            change.key = _preferences.wrapKey(key);
+            change.key  = _preferences.wrapKey(key);
             _changes.push_back(change);
             return shared_from_this();
         }
@@ -120,7 +120,7 @@ namespace ledger {
         PreferencesEditor::putData(const std::string &key, const std::vector<uint8_t> &value) {
             api::PreferencesChange change;
             change.type = api::PreferencesChangeType::PUT_TYPE;
-            change.key = _preferences.wrapKey(key);
+            change.key  = _preferences.wrapKey(key);
             BytesWriter writer;
             writer.writeByteArray(value);
             change.value = writer.toByteArray();

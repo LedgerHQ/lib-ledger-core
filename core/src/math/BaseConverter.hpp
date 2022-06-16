@@ -53,7 +53,7 @@ namespace ledger {
             /**
              * A function taking the number of missing bytes in a block and returning the padding to append to the encoding result.
              */
-            using PaddingPolicy = std::function<void(int, std::stringstream &)>;
+            using PaddingPolicy  = std::function<void(int, std::stringstream &)>;
 
             /**
              * Parameters used by the algorithm to encode or decode a byte array
@@ -98,7 +98,7 @@ namespace ledger {
             static void decode(const std::string &string, const Params<Base, BlockBitSize, ValueBitSize> &params, std::vector<uint8_t> &out) {
                 static_assert(BlockBitSize >= 8, "Block bit size must be at least 8");
                 const auto blockCharSize = BlockBitSize / ValueBitSize;
-                const auto stringSize = string.size();
+                const auto stringSize    = string.size();
 
                 for (auto index = 0; index < stringSize; index += blockCharSize) {
                     decodeBlock(string.c_str() + index, std::min<int>(blockCharSize, static_cast<int>(stringSize - index)), params, out);
@@ -135,19 +135,19 @@ namespace ledger {
             template <int Base, int BlockBitSize, int ValueBitSize, int BlockByteSize = BlockBitSize / 8, int BitMask = (1u << ValueBitSize) - 1>
             static void encodeBlock(const uint8_t *block, int size, const Params<Base, BlockBitSize, ValueBitSize> &params, std::stringstream &ss) {
                 static_assert(BlockBitSize >= 8, "Block bit size must be at least 8");
-                int index = 0;
+                int index       = 0;
                 auto bufferSize = 8; // Size of remaining untouched bit on the current offset
-                auto offset = 0;     // Index in the block
+                auto offset     = 0; // Index in the block
 
                 // Split the block into values of ValueBitSize bits. We'll use this value as an index into our dictionary.
                 for (auto remaining = size * 8; remaining > 0; remaining -= ValueBitSize) {
                     auto remainingBits = bufferSize - ValueBitSize;
                     if (remainingBits < 0) {
                         // For the sake of understanding what we are doing, we set remainingBits to a positive value
-                        remainingBits = -remainingBits;
+                        remainingBits   = -remainingBits;
                         // Move the bits from the buffer to the index
                         auto bufferMask = (1 << bufferSize) - 1;
-                        index = (block[offset] & bufferMask) << remainingBits;
+                        index           = (block[offset] & bufferMask) << remainingBits;
 
                         // Now we advance the cursor
                         offset += 1;
@@ -156,12 +156,12 @@ namespace ledger {
                         // If we don't overflow complete the index with missing bits
                         if (offset < size) {
                             auto missingBitsMask = (1 << remainingBits) - 1;
-                            index = index | ((block[offset] >> bufferSize) & missingBitsMask);
+                            index                = index | ((block[offset] >> bufferSize) & missingBitsMask);
                         }
                     } else {
                         // We have enough data for one block, extract BlockBitSize bit from block at the current offset
                         bufferSize = remainingBits;
-                        index = (block[offset] >> bufferSize) & BitMask;
+                        index      = (block[offset] >> bufferSize) & BitMask;
                     }
                     ss << params.dictionary[index];
                 }
@@ -174,12 +174,12 @@ namespace ledger {
 
             template <int Base, int BlockBitSize, int ValueBitSize>
             static void decodeBlock(const char *str, int size, const Params<Base, BlockBitSize, ValueBitSize> &params, std::vector<uint8_t> &out) {
-                int buffer = 0;
-                int bufferSize = 0;
+                int buffer          = 0;
+                int bufferSize      = 0;
                 // Compute extraction mask for a ValueBitSize of 5:
                 // (1 << 5) = 00100000
                 // (1 <<  5) -1 = 00011111 (i.e if we mask a byte with it, it will only give the 5 last bit values)
-                int mask = (1 << ValueBitSize) - 1;
+                int mask            = (1 << ValueBitSize) - 1;
                 auto pullFromBuffer = [&]() {
                     if (bufferSize >= 8) {
                         bufferSize = bufferSize - 8;
@@ -188,7 +188,7 @@ namespace ledger {
                         out.push_back(value);
                         // Clean buffer
                         auto bufferMask = (1 << bufferSize) - 1;
-                        buffer = buffer & bufferMask;
+                        buffer          = buffer & bufferMask;
                     }
                 };
 
@@ -219,4 +219,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BASECONVERTER_HPP
+#endif // LEDGER_CORE_BASECONVERTER_HPP

@@ -61,7 +61,6 @@ namespace ledger {
                                                    const std::shared_ptr<api::EthereumLikeExtendedPublicKey> &xpub,
                                                    const std::shared_ptr<Preferences> &preferences)
             : EthereumLikeKeychain(configuration, params, account, preferences) {
-
             _xpub = xpub;
             getAllObservableAddresses(0, 0);
         }
@@ -152,36 +151,34 @@ namespace ledger {
         }
 
         EthereumLikeKeychain::Address EthereumLikeKeychain::derive() {
-
             if (_address.empty()) {
-
                 auto coinType = _fullScheme.getCoinType() ? _fullScheme.getCoinType() : getCurrency().bip44CoinType;
-                _localPath = getDerivationScheme()
+                _localPath    = getDerivationScheme()
                                  .setCoinType(coinType)
                                  .getPath()
                                  .toString();
 
                 auto cacheKey = fmt::format("path:{}", _localPath);
-                _address = getPreferences()->getString(cacheKey, "");
+                _address      = getPreferences()->getString(cacheKey, "");
                 if (_address.empty()) {
                     auto nodeScheme = getDerivationScheme()
                                           .getSchemeFrom(DerivationSchemeLevel::NODE);
-                    auto p = nodeScheme.getPath().getDepth() > 0 ? nodeScheme
+                    auto p               = nodeScheme.getPath().getDepth() > 0 ? nodeScheme
                                                                        .shift(1)
                                                                        .setCoinType(coinType)
                                                                        .getPath()
                                                                        .toString()
-                                                                 : "";
+                                                                               : "";
 
                     auto localNodeScheme = getDerivationScheme()
                                                .getSchemeTo(DerivationSchemeLevel::NODE)
                                                .setCoinType(coinType);
                     // If node level is hardened we don't derive according to it since private
                     // derivation are not supported
-                    auto xpub = localNodeScheme.getPath().getDepth() > 0 && localNodeScheme.getPath().isHardened(0) ? std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(DerivationPath("")) : std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(localNodeScheme.getPath());
+                    auto xpub      = localNodeScheme.getPath().getDepth() > 0 && localNodeScheme.getPath().isHardened(0) ? std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(DerivationPath("")) : std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(localNodeScheme.getPath());
                     auto strScheme = localNodeScheme.getPath().toString();
 
-                    _address = xpub->derive(p)->toEIP55();
+                    _address       = xpub->derive(p)->toEIP55();
                     // Feed path -> address cache
                     // Feed address -> path cache
                     getPreferences()

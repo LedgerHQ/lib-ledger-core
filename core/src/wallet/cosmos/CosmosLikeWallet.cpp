@@ -140,12 +140,13 @@ namespace ledger {
         }
 
         std::shared_ptr<AbstractAccount> CosmosLikeWallet::createAccountInstance(
-            soci::session &sql, const std::string &accountUid) {
+            soci::session &sql,
+            const std::string &accountUid) {
             CosmosLikeAccountDatabaseEntry entry;
             CosmosLikeAccountDatabaseHelper::queryAccount(sql, accountUid, entry);
             auto scheme = getDerivationScheme();
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(entry.index);
-            auto path = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
+            auto path     = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
             auto keychain = _keychainFactory->restore(
                 path, getConfig(), entry.pubkey, getAccountInternalPreferences(entry.index), getCurrency());
             auto account = std::make_shared<CosmosLikeAccount>(

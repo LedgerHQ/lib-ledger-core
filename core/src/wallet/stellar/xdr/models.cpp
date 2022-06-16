@@ -45,7 +45,6 @@ namespace ledger {
     template <>                                      \
     ObjectEncoder make_encoder(const type &object) { \
         return [=](Encoder &encoder) {
-
 #define END_ENCODER \
     }               \
     ;               \
@@ -337,7 +336,6 @@ namespace ledger {
     template <>                             \
     ObjectDecoder make_decoder(T &object) { \
         return [&](Decoder &decoder) mutable {
-
 #define END_DECODER \
     }               \
     ;               \

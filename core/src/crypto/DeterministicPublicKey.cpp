@@ -77,10 +77,10 @@ namespace ledger {
 
         std::vector<uint8_t> DeterministicPublicKey::getPublicKeyKeccak256() const {
             auto uncompressedPk = getUncompressedPublicKey();
-            //Remove 0x04
+            // Remove 0x04
             uncompressedPk.erase(uncompressedPk.begin());
             auto keccak = Keccak::keccak256(uncompressedPk);
-            //Check decoded address size
+            // Check decoded address size
             if (keccak.size() <= 20) {
                 throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid public key :  Keccak hash of uncompressed public key with wrong size");
             }
@@ -133,7 +133,12 @@ namespace ledger {
         }
 
         DeterministicPublicKey::DeterministicPublicKey(const DeterministicPublicKey &key) : DeterministicPublicKey(
-                                                                                                key._key, key._chainCode, key._childNum, key._depth, key._parentFingerprint, key._networkIdentifier) {
+                                                                                                key._key,
+                                                                                                key._chainCode,
+                                                                                                key._childNum,
+                                                                                                key._depth,
+                                                                                                key._parentFingerprint,
+                                                                                                key._networkIdentifier) {
         }
 
     } // namespace core

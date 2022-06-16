@@ -44,7 +44,6 @@ namespace ledger {
             std::string AccountDatabaseHelper::createAccount(soci::session &sql,
                                                              const std::string &walletUid,
                                                              const AccountDatabaseEntry &account) {
-
                 ledger::core::AccountDatabaseHelper::createAccount(sql, walletUid, account.index);
 
                 auto uid = createAccountUid(walletUid, account.index);
@@ -61,22 +60,21 @@ namespace ledger {
             bool AccountDatabaseHelper::queryAccount(soci::session &sql,
                                                      const std::string &accountUid,
                                                      AccountDatabaseEntry &account) {
-
                 soci::rowset<soci::row> rows = (sql.prepare << "SELECT idx, address "
                                                                "FROM algorand_accounts "
                                                                "WHERE uid = :uid",
                                                 soci::use(accountUid));
-                auto results = vector::fromRowset<AccountDatabaseEntry>(rows,
+                auto results                 = vector::fromRowset<AccountDatabaseEntry>(rows,
                                                                         [](soci::row &row) -> AccountDatabaseEntry {
                                                                             AccountDatabaseEntry accountRow;
-                                                                            accountRow.index = soci::get_number<int32_t>(row, 0);
+                                                                            accountRow.index   = soci::get_number<int32_t>(row, 0);
                                                                             accountRow.address = row.get<std::string>(1);
                                                                             return accountRow;
                                                                         });
 
                 // Assert we retreived only one account, and retrieve info from that single account
                 assertSingleRow<AccountDatabaseEntry>(results, fmt::format("More than one account found with uid '{}'.", accountUid));
-                account.index = results.begin()->index;
+                account.index   = results.begin()->index;
                 account.address = results.begin()->address;
 
                 if (results.empty()) {

@@ -7,7 +7,10 @@ namespace ledger {
     namespace testing {
         namespace bch_xpub {
             core::api::ExtendedKeyAccountCreationInfo XPUB_INFO(
-                0, {"abc"}, {"44'/145'/0'"}, {"xpub6BvNdfGcyMB9Usq88ibXUt3KhbaEJVLFMbhTSNNfTm8Qf1sX9inTv3xL6pA6KofW4WF9GpdxwGDoYRwRDjHEir3Av23m2wHb7AqhxJ9ohE8"});
+                0,
+                {"abc"},
+                {"44'/145'/0'"},
+                {"xpub6BvNdfGcyMB9Usq88ibXUt3KhbaEJVLFMbhTSNNfTm8Qf1sX9inTv3xL6pA6KofW4WF9GpdxwGDoYRwRDjHEir3Av23m2wHb7AqhxJ9ohE8"});
             std::shared_ptr<core::BitcoinLikeAccount> inflate(const std::shared_ptr<core::WalletPool> &pool, const std::shared_ptr<core::AbstractWallet> &wallet) {
                 auto account = std::dynamic_pointer_cast<core::BitcoinLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(XPUB_INFO)));
                 std::vector<core::Operation> operations;

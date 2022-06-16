@@ -129,4 +129,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_ERC20LIKEACCOUNT_H
+#endif // LEDGER_CORE_ERC20LIKEACCOUNT_H

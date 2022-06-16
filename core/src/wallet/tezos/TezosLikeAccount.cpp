@@ -68,30 +68,31 @@ namespace ledger {
                                            const std::shared_ptr<TezosLikeAccountSynchronizer> &synchronizer,
                                            const std::shared_ptr<TezosLikeKeychain> &keychain) : AbstractAccount(wallet, index),
                                                                                                  _currentBlockHeight(0) {
-            _explorer = explorer;
-            _synchronizer = synchronizer;
-            _keychain = keychain;
+            _explorer       = explorer;
+            _synchronizer   = synchronizer;
+            _keychain       = keychain;
             _accountAddress = keychain->getAddress()->toString();
         }
 
         void TezosLikeAccount::inflateOperation(Operation &out,
                                                 const std::shared_ptr<const AbstractWallet> &wallet,
                                                 const TezosLikeBlockchainExplorerTransaction &tx) {
-            out.accountUid = getAccountUid();
-            out.block = tx.block;
+            out.accountUid       = getAccountUid();
+            out.block            = tx.block;
             out.tezosTransaction = Option<TezosLikeBlockchainExplorerTransaction>(tx);
-            out.currencyName = getWallet()->getCurrency().name;
-            out.walletType = getWalletType();
-            out.walletUid = wallet->getWalletUid();
-            out.date = tx.receivedAt;
+            out.currencyName     = getWallet()->getCurrency().name;
+            out.walletType       = getWalletType();
+            out.walletUid        = wallet->getWalletUid();
+            out.date             = tx.receivedAt;
             if (out.block.nonEmpty())
                 out.block.getValue().currencyName = wallet->getCurrency().name;
             out.tezosTransaction.getValue().block = out.block;
         }
 
         bool TezosLikeAccount::interpretTransaction(
-            const ledger::core::TezosLikeBlockchainExplorerTransaction &transaction, std::vector<Operation> &out) {
-            auto wallet = getWallet();
+            const ledger::core::TezosLikeBlockchainExplorerTransaction &transaction,
+            std::vector<Operation> &out) {
+            auto wallet                 = getWallet();
             bool addedAddressToKeychain = false;
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
@@ -105,9 +106,9 @@ namespace ledger {
             operation.senders = std::move(senders);
             std::vector<std::string> receivers{transaction.receiver};
             operation.recipients = std::move(receivers);
-            operation.fees = transaction.fees;
-            operation.trust = std::make_shared<TrustIndicator>();
-            operation.date = transaction.receivedAt;
+            operation.fees       = transaction.fees;
+            operation.trust      = std::make_shared<TrustIndicator>();
+            operation.date       = transaction.receivedAt;
 
             // Check if it's an operation related to an originated account
             // It can be the case if we are putting transaction operations
@@ -115,12 +116,12 @@ namespace ledger {
             std::string originatedAccountUid;
             std::string originatedAccountAddress;
             if (!transaction.originatedAccountUid.empty() && !transaction.originatedAccountAddress.empty()) {
-                originatedAccountUid = transaction.originatedAccountUid;
+                originatedAccountUid     = transaction.originatedAccountUid;
                 originatedAccountAddress = transaction.originatedAccountAddress;
             }
 
             std::string additional;
-            api::OperationType opType = api::OperationType::NONE;
+            api::OperationType opType    = api::OperationType::NONE;
             std::tie(opType, additional) = getOperationTypeAndUidAdditional(
                 transaction.sender,
                 transaction.receiver,
@@ -129,7 +130,7 @@ namespace ledger {
 
             if (opType != api::OperationType::NONE) {
                 operation.amount = transaction.value;
-                operation.type = opType;
+                operation.type   = opType;
                 operation.refreshUid(additional);
 
                 if (additional.empty() && _accountAddress == transaction.sender &&
@@ -159,16 +160,16 @@ namespace ledger {
         }
 
         bool TezosLikeAccount::updateOriginatedAccounts(const Operation &operation) {
-            auto transaction = operation.tezosTransaction.getValue();
-            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
-            auto origAccount = transaction.originatedAccount.getValue();
+            auto transaction          = operation.tezosTransaction.getValue();
+            auto self                 = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
+            auto origAccount          = transaction.originatedAccount.getValue();
 
             auto originatedAccountUid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(getAccountUid(), origAccount.address);
 
-            const auto found = std::find_if(
-                _originatedAccounts.begin(),
-                _originatedAccounts.end(),
-                [&originatedAccountUid](const std::shared_ptr<api::TezosLikeOriginatedAccount> &element) {
+            const auto found          = std::find_if(
+                         _originatedAccounts.begin(),
+                         _originatedAccounts.end(),
+                         [&originatedAccountUid](const std::shared_ptr<api::TezosLikeOriginatedAccount> &element) {
                     return std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(element)->getAccountUid() == originatedAccountUid;
                 });
 
@@ -190,10 +191,10 @@ namespace ledger {
 
         bool TezosLikeAccount::putBlock(soci::session &sql, const TezosLikeBlockchainExplorer::Block &block) {
             Block abstractBlock;
-            abstractBlock.hash = block.hash;
+            abstractBlock.hash         = block.hash;
             abstractBlock.currencyName = getWallet()->getCurrency().name;
-            abstractBlock.height = block.height;
-            abstractBlock.time = block.time;
+            abstractBlock.height       = block.height;
+            abstractBlock.time         = block.time;
             if (BlockDatabaseHelper::putBlock(sql, abstractBlock)) {
                 emitNewBlockEvent(abstractBlock);
                 return true;
@@ -212,7 +213,7 @@ namespace ledger {
             }
             std::vector<TezosLikeKeychain::Address> listAddresses{_keychain->getAddress()};
             auto currency = getWallet()->getCurrency();
-            auto self = getSelf();
+            auto self     = getSelf();
             return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [self, currency](const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
                 Amount b(currency, 0, BigInt(balance->toString()));
                 self->getWallet()->updateBalanceCache(self->getIndex(), b);
@@ -222,8 +223,8 @@ namespace ledger {
 
         std::shared_ptr<api::OperationQuery> TezosLikeAccount::queryOperations() {
             auto originatedFilter = std::make_shared<ConditionQueryFilter<std::string>>("uid", "IS NULL", "", "orig_op");
-            auto headFilter = api::QueryFilter::accountEq(getAccountUid())->op_and(originatedFilter);
-            auto query = std::make_shared<TezosOperationQuery>(
+            auto headFilter       = api::QueryFilter::accountEq(getAccountUid())->op_and(originatedFilter);
+            auto query            = std::make_shared<TezosOperationQuery>(
                 headFilter,
                 getWallet()->getDatabase(),
                 getWallet()->getPool()->getThreadPoolExecutionContext(),
@@ -274,7 +275,7 @@ namespace ledger {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             return Future<std::vector<std::shared_ptr<api::Amount>>>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=]() -> std::vector<std::shared_ptr<api::Amount>> {
                 auto startDate = DateUtils::fromJSON(start);
-                auto endDate = DateUtils::fromJSON(end);
+                auto endDate   = DateUtils::fromJSON(end);
                 if (startDate >= endDate) {
                     throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
                                          "Start date should be strictly lower than end date");
@@ -284,12 +285,12 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain = self->getKeychain();
+                auto keychain                                   = self->getKeychain();
                 std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
                     return keychain->contains(addr);
                 };
 
-                //Get operations related to an account
+                // Get operations related to an account
                 TezosLikeAccountDatabaseHelper::queryOperations(sql, uid, operations, filter);
 
                 auto lowerDate = startDate;
@@ -299,7 +300,6 @@ namespace ledger {
                 std::size_t operationsCount = 0;
                 BigInt sum;
                 while (lowerDate <= endDate && operationsCount < operations.size()) {
-
                     auto operation = operations[operationsCount];
                     while (operation.date > upperDate && lowerDate < endDate) {
                         lowerDate = DateUtils::incrementDate(lowerDate, precision);

@@ -39,7 +39,6 @@ namespace ledger {
         namespace api {
 
             class BigIntImpl : public ledger::core::api::BigInt {
-
               public:
                 BigIntImpl(const ledger::core::BigInt &v) : _bigi(v) {}
 
@@ -77,4 +76,4 @@ namespace ledger {
     }     // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BIGINTIMPL_HPP
+#endif // LEDGER_CORE_BIGINTIMPL_HPP

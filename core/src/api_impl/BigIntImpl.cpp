@@ -92,7 +92,7 @@ namespace ledger {
                 std::string writer;
                 std::string decimaleWriter;
                 auto hasReachedDecimalPart = false;
-                auto d = 0;
+                auto d                     = 0;
                 for (auto i = 0; i < s.length(); i++) {
                     auto c = s[i];
                     if (c >= '0' && c <= '9' && !hasReachedDecimalPart) {

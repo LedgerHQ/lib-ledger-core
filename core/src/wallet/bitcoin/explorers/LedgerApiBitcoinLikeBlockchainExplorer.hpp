@@ -67,7 +67,7 @@ namespace ledger {
             FuturePtr<TransactionsBulk>
             getTransactions(const std::vector<std::string> &addresses,
                             Option<std::string> fromBlockHash = Option<std::string>(),
-                            Option<void *> session = Option<void *>()) override;
+                            Option<void *> session            = Option<void *>()) override;
 
             FuturePtr<Block> getCurrentBlock() const override;
 
@@ -87,4 +87,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_LEDGERAPIBITCOINLIKEBLOCKCHAINEXPLORER_HPP
+#endif // LEDGER_CORE_LEDGERAPIBITCOINLIKEBLOCKCHAINEXPLORER_HPP

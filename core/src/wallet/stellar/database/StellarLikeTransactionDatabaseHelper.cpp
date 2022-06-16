@@ -47,9 +47,9 @@ namespace ledger {
         bool StellarLikeTransactionDatabaseHelper::putTransaction(soci::session &sql, const api::Currency &currency, const stellar::Transaction &tx) {
             auto uid = createTransactionUid(currency.name, tx.hash);
             if (!transactionExists(sql, uid)) {
-                const auto ledger = fmt::format("{}", tx.ledger);
-                const auto fee = tx.feePaid.toString();
-                const auto sequence = tx.sourceAccountSequence.toString();
+                const auto ledger     = fmt::format("{}", tx.ledger);
+                const auto fee        = tx.feePaid.toString();
+                const auto sequence   = tx.sourceAccountSequence.toString();
                 const auto successful = tx.successful ? 1 : 0;
                 sql << "INSERT INTO stellar_transactions VALUES(:uid, :hash, :account, :sequence, :fee, :success, :ledger,"
                        ":memo_type, :memo)",
@@ -73,14 +73,14 @@ namespace ledger {
 
         std::string
         StellarLikeTransactionDatabaseHelper::putOperation(soci::session &sql, const std::string &accountUid, const std::string &currencyName, const stellar::Operation &op) {
-            auto uid = createOperationUid(accountUid, op.id);
-            auto txUid = createTransactionUid(currencyName, op.transactionHash);
-            auto assetUid = StellarLikeAssetDatabaseHelper::createAssetUid(op.asset);
+            auto uid            = createOperationUid(accountUid, op.id);
+            auto txUid          = createTransactionUid(currencyName, op.transactionHash);
+            auto assetUid       = StellarLikeAssetDatabaseHelper::createAssetUid(op.asset);
             auto sourceAssetUid = op.sourceAsset.map<std::string>([](const stellar::Asset &asset) {
                 return StellarLikeAssetDatabaseHelper::createAssetUid(asset);
             });
-            auto amount = op.amount.toString();
-            auto srcAmount = op.sourceAmount.map<std::string>([](const BigInt &b) {
+            auto amount         = op.amount.toString();
+            auto srcAmount      = op.sourceAmount.map<std::string>([](const BigInt &b) {
                 return b.toString();
             });
             StellarLikeAssetDatabaseHelper::putAsset(sql, op.asset);
@@ -113,12 +113,12 @@ namespace ledger {
                    "WHERE ao.uid = :uid",
                 use(accountOperationUid), into(out.id), into(successful), into(type), into(amount), into(out.from), into(out.to), into(out.createdAt), into(sourceAmount), into(out.asset.type), into(assetCode), into(assetIssuer), into(sourceAssetUid), into(out.transactionHash), into(transactionSequence), into(fee);
 
-            out.amount = BigInt::fromString(amount);
-            out.type = (stellar::OperationType)type;
+            out.amount                = BigInt::fromString(amount);
+            out.type                  = (stellar::OperationType)type;
             out.transactionSuccessful = successful == 1;
-            out.asset.issuer = assetIssuer.getValueOr("");
-            out.asset.code = assetCode.getValueOr("");
-            out.sourceAmount = sourceAmount.map<BigInt>([](const std::string &s) {
+            out.asset.issuer          = assetIssuer.getValueOr("");
+            out.asset.code            = assetCode.getValueOr("");
+            out.sourceAmount          = sourceAmount.map<BigInt>([](const std::string &s) {
                 return BigInt::fromString(s);
             });
             if (sourceAssetUid.nonEmpty()) {
@@ -126,12 +126,12 @@ namespace ledger {
                 sql << "SELECT asset_type, asset_code, asset_issuer "
                        "FROM stellar_assets WHERE uid = :uid",
                     use(sourceAssetUid.getValue()), into(asset.type), into(sourceAssetCode), into(sourceAssetCode);
-                asset.code = sourceAssetCode.getValueOr("");
-                asset.issuer = sourceAssetIssuer.getValueOr("");
+                asset.code      = sourceAssetCode.getValueOr("");
+                asset.issuer    = sourceAssetIssuer.getValueOr("");
                 out.sourceAsset = asset;
             }
             out.transactionSequence = BigInt::fromString(transactionSequence);
-            out.transactionFee = BigInt::fromString(fee);
+            out.transactionFee      = BigInt::fromString(fee);
             return !out.transactionHash.empty();
         }
 
@@ -144,8 +144,8 @@ namespace ledger {
                    "WHERE hash = :hash LIMIT 1",
                 use(hash), into(out.hash), into(out.sourceAccount), into(sequence), into(fee),
                 into(successful), into(out.ledger), into(out.memoType), into(out.memo);
-            out.successful = successful == 1;
-            out.feePaid = BigInt::fromString(fee);
+            out.successful            = successful == 1;
+            out.feePaid               = BigInt::fromString(fee);
             out.sourceAccountSequence = BigInt::fromString(sequence);
             return out.hash == hash;
         }
@@ -175,7 +175,6 @@ namespace ledger {
             soci::session &sql,
             const std::string &accountUid,
             const std::chrono::system_clock::time_point &date) {
-
             rowset<std::string> rows = (sql.prepare << "SELECT transaction_uid FROM stellar_operations AS sop "
                                                        "JOIN stellar_account_operations AS aop ON aop.operation_uid = sop.uid "
                                                        "JOIN operations AS op ON aop.uid = op.uid "

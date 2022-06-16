@@ -34,7 +34,8 @@
 namespace ledger {
     namespace core {
         BitcoinLikeUtxo makeUtxo(
-            BitcoinLikeBlockchainExplorerOutput const &output, api::Currency const &currency) {
+            BitcoinLikeBlockchainExplorerOutput const &output,
+            api::Currency const &currency) {
             return {
                 output.index,
                 output.transactionHash,

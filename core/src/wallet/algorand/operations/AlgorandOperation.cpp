@@ -98,11 +98,11 @@ namespace ledger {
             }
 
             void Operation::inflateFromAccount() {
-                const auto &account = getAlgorandAccount();
-                getBackend().accountUid = account.getAccountUid();
-                getBackend().walletUid = account.getWallet()->getWalletUid();
+                const auto &account       = getAlgorandAccount();
+                getBackend().accountUid   = account.getAccountUid();
+                getBackend().walletUid    = account.getWallet()->getWalletUid();
                 getBackend().currencyName = account.getWallet()->getCurrency().name;
-                getBackend().trust = std::make_shared<TrustIndicator>();
+                getBackend().trust        = std::make_shared<TrustIndicator>();
             }
 
             void Operation::inflateFromTransaction() {
@@ -117,13 +117,13 @@ namespace ledger {
             }
 
             void Operation::inflateDate() {
-                const auto &txn = getTransactionData();
+                const auto &txn   = getTransactionData();
                 getBackend().date = std::chrono::system_clock::time_point(
                     std::chrono::seconds(txn.header.timestamp.getValueOr(0)));
             }
 
             void Operation::inflateBlock() {
-                const auto &txn = getTransactionData();
+                const auto &txn    = getTransactionData();
                 getBackend().block = [this, txn]() {
                     api::Block block;
                     block.currencyName = getBackend().currencyName;
@@ -131,7 +131,7 @@ namespace ledger {
                         if (*txn.header.round > std::numeric_limits<int64_t>::max()) {
                             throw make_exception(api::ErrorCode::OUT_OF_RANGE, "Block height exceeds maximum value");
                         }
-                        block.height = static_cast<int64_t>(*txn.header.round);
+                        block.height    = static_cast<int64_t>(*txn.header.round);
                         block.blockHash = std::to_string(*txn.header.round);
                     }
                     if (txn.header.timestamp) {
@@ -144,15 +144,15 @@ namespace ledger {
 
             void Operation::inflateAmountAndFees() {
                 const auto &account = Address(getAlgorandAccount().getAddress());
-                const auto &txn = getTransactionData();
-                auto amount = BigInt::ZERO;
-                auto u64ToBigInt = [](uint64_t n) {
+                const auto &txn     = getTransactionData();
+                auto amount         = BigInt::ZERO;
+                auto u64ToBigInt    = [](uint64_t n) {
                     return BigInt(static_cast<unsigned long long>(n));
                 };
                 if (txn.header.sender == account) {
                     const auto senderRewards = txn.header.senderRewards.getValueOr(0);
-                    amount = amount - u64ToBigInt(senderRewards);
-                    getBackend().fees = u64ToBigInt(txn.header.fee);
+                    amount                   = amount - u64ToBigInt(senderRewards);
+                    getBackend().fees        = u64ToBigInt(txn.header.fee);
                     rewards += senderRewards;
                 }
                 if (txn.header.type == model::constants::pay) {
@@ -166,18 +166,18 @@ namespace ledger {
                     }
                     if (details.receiverAddr == account) {
                         const auto receiverRewards = txn.header.receiverRewards.getValueOr(0);
-                        amount = amount + u64ToBigInt(details.amount);
-                        amount = amount + u64ToBigInt(receiverRewards);
+                        amount                     = amount + u64ToBigInt(details.amount);
+                        amount                     = amount + u64ToBigInt(receiverRewards);
                         rewards += receiverRewards;
                     }
                     if (details.closeAddr && account == *details.closeAddr) {
                         const auto closeRewards = txn.header.closeRewards.getValueOr(0);
-                        amount = amount + u64ToBigInt(details.closeAmount.getValueOr(0));
-                        amount = amount + u64ToBigInt(closeRewards);
+                        amount                  = amount + u64ToBigInt(details.closeAmount.getValueOr(0));
+                        amount                  = amount + u64ToBigInt(closeRewards);
                         rewards += closeRewards;
                     }
                 } else if (txn.header.type == model::constants::axfer) {
-                    const auto &details = boost::get<model::AssetTransferTxnFields>(txn.details);
+                    const auto &details    = boost::get<model::AssetTransferTxnFields>(txn.details);
                     const auto assetSender = details.assetSender ? *details.assetSender : txn.header.sender;
 
                     // account is either sender or receiver, (if both the balance is unchanged)
@@ -193,12 +193,12 @@ namespace ledger {
             }
 
             void Operation::inflateSenders() {
-                const auto &txn = getTransactionData();
+                const auto &txn      = getTransactionData();
                 getBackend().senders = {txn.header.sender.toString()};
             }
 
             void Operation::inflateRecipients() {
-                const auto &txn = getTransactionData();
+                const auto &txn         = getTransactionData();
                 getBackend().recipients = {};
                 if (txn.header.type == model::constants::pay) {
                     const auto &details = boost::get<model::PaymentTxnFields>(txn.details);
@@ -217,8 +217,8 @@ namespace ledger {
 
             void Operation::inflateType() {
                 const auto &account = getAlgorandAccount().getAddress();
-                const auto &txn = getTransactionData();
-                getBackend().type = api::OperationType::NONE;
+                const auto &txn     = getTransactionData();
+                getBackend().type   = api::OperationType::NONE;
 
                 if (txn.header.sender == account) {
                     getBackend().type = api::OperationType::SEND;
@@ -241,7 +241,7 @@ namespace ledger {
 
             void Operation::inflateAlgorandOperationType() {
                 const auto &account = getAlgorandAccount().getAddress();
-                const auto &txn = transaction->getTransactionData();
+                const auto &txn     = transaction->getTransactionData();
                 if (txn.header.type == model::constants::pay) {
                     const auto &details = boost::get<model::PaymentTxnFields>(txn.details);
                     if (details.closeAddr && txn.header.sender == account) {

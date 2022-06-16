@@ -74,7 +74,8 @@ namespace ledger {
 
           protected:
             std::shared_ptr<AbstractAccount> createAccountInstance(
-                soci::session &sql, const std::string &accountUid) override;
+                soci::session &sql,
+                const std::string &accountUid) override;
 
           private:
             std::shared_ptr<CosmosLikeWallet> getSelf();

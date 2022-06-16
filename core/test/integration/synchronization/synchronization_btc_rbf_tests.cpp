@@ -45,11 +45,10 @@
 #include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>
 
 struct BitcoinLikeWalletBtcRbfSynchronization : public BaseFixture {
-
     void SetUp() override {
         BaseFixture::SetUp();
         explorer = std::make_shared<test::ExplorerStorage>();
-        backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+        backend  = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     }
 
     void TearDown() override {
@@ -59,7 +58,7 @@ struct BitcoinLikeWalletBtcRbfSynchronization : public BaseFixture {
 
     std::shared_ptr<WalletPool> newPool() {
         auto dispatcher = uv::createDispatcher();
-        printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+        printer         = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
         return WalletPool::newInstance(
             "rbf_pool",
             "test",
@@ -179,9 +178,9 @@ static std::string mockTransaction(const std::string &hash, const std::vector<In
 }
 
 TEST_F(BitcoinLikeWalletBtcRbfSynchronization, DISABLED_SimpleRbfScenario) {
-    auto pool = newPool();
-    auto wallet = uv::wait(pool->createWallet("e857815f-488a-4301-b67c-378a5e9c8a63", "bitcoin",
-                                              api::DynamicObject::newInstance()));
+    auto pool    = newPool();
+    auto wallet  = uv::wait(pool->createWallet("e857815f-488a-4301-b67c-378a5e9c8a63", "bitcoin",
+                                               api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
 
     ::Block block1{"0000", 1};
@@ -196,15 +195,15 @@ TEST_F(BitcoinLikeWalletBtcRbfSynchronization, DISABLED_SimpleRbfScenario) {
     Output receive3{3000000, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7"};
     Output foreign{3000000, "1Bmpme646SNGa1jjjYAfuijdyBNJXLGEh"};
 
-    auto tx1 = mockTransaction("0001", {Input("0000", 0, genesis)}, {receive1}, block1);
-    auto rbfTx1 = mockTransaction("0002", {Input("1000", 0, send1, 0xFFFFFFFB)}, {receive2});
-    auto rbfTx2 = mockTransaction("0003", {Input("1001", 1, send2, 0xFFFFFFFA)}, {receive3});
+    auto tx1        = mockTransaction("0001", {Input("0000", 0, genesis)}, {receive1}, block1);
+    auto rbfTx1     = mockTransaction("0002", {Input("1000", 0, send1, 0xFFFFFFFB)}, {receive2});
+    auto rbfTx2     = mockTransaction("0003", {Input("1001", 1, send2, 0xFFFFFFFA)}, {receive3});
 
     auto replaceTx1 = mockTransaction("0004", {Input("1000", 0, send1, 0xFFFFFFFC)}, {receive1});
     auto replaceTx2 = mockTransaction("0005", {Input("1001", 1, send2, 0xFFFFFFFB)}, {foreign});
 
-    auto finalTx1 = mockTransaction("0004", {Input("1000", 0, send1, 0xFFFFFFFC)}, {receive1}, block2);
-    auto finalTx2 = mockTransaction("0003", {Input("1001", 1, send2, 0xFFFFFFFA)}, {receive3}, block2);
+    auto finalTx1   = mockTransaction("0004", {Input("1000", 0, send1, 0xFFFFFFFC)}, {receive1}, block2);
+    auto finalTx2   = mockTransaction("0003", {Input("1001", 1, send2, 0xFFFFFFFA)}, {receive3}, block2);
     ;
 
     // Receive a single transaction

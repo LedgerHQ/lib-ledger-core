@@ -71,7 +71,7 @@ static inline std::string strigify(const std::vector<uint8_t> &vector) {
 
 TEST(Encryption, EncryptDecryptWithAES256CBC) {
     auto blocksize = AES256::BLOCK_SIZE;
-    auto IV = std::vector<uint8_t>();
+    auto IV        = std::vector<uint8_t>();
     for (auto i = 0; i < blocksize; i++) {
         IV.push_back((uint8_t)i);
     }
@@ -89,39 +89,38 @@ TEST(Encryption, EncryptDecryptWithAES256CBC) {
 
 TEST(Encryption, EncryptDecryptWithAES256CBCAndPBKDF2) {
     auto blocksize = AES256::BLOCK_SIZE;
-    auto IV = std::vector<uint8_t>();
+    auto IV        = std::vector<uint8_t>();
     for (auto i = 0; i < blocksize; i++) {
         IV.push_back((uint8_t)i);
     }
-    std::string data = "Hello world!";
-    std::string password = "My supa strong password!";
-    std::string salt = "Random salt";
+    std::string data                = "Hello world!";
+    std::string password            = "My supa strong password!";
+    std::string salt                = "Random salt";
     std::vector<uint8_t> encryptKey = PBKDF2::derive(vectorize(password), vectorize(salt), 10000, 32);
 
-    auto encrypted = AES256::encrypt(IV, encryptKey, vectorize(data));
+    auto encrypted                  = AES256::encrypt(IV, encryptKey, vectorize(data));
     EXPECT_NE(encrypted, vectorize(data));
     auto decrypted = strigify(AES256::decrypt(IV, encryptKey, encrypted));
     EXPECT_EQ(data, decrypted);
 }
 
 TEST(Encryption, EncryptDecryptWithCipher) {
-
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
 
-    //Init reader
+    // Init reader
     std::vector<uint8_t> vec(BIG_TEXT.begin(), BIG_TEXT.end());
     BytesReader input(vec);
 
-    //Encrypt data
+    // Encrypt data
     BytesWriter encrypted;
     AESCipher cipher(rng, "A very strong password", "Awesome salt", 10000);
     cipher.encrypt(input, encrypted);
     EXPECT_NE(input.readUntilEnd(), encrypted.toByteArray());
 
-    //Reset cursor to read during final comparaison
+    // Reset cursor to read during final comparaison
     input.reset();
 
-    //Decrypt data
+    // Decrypt data
     BytesWriter destination;
     BytesReader encryptedReader(encrypted.toByteArray());
     cipher.decrypt(encryptedReader, destination);
@@ -130,7 +129,7 @@ TEST(Encryption, EncryptDecryptWithCipher) {
 
 TEST(Encryption, EncryptDecryptWithCipherHugeText) {
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
-    //Init reader
+    // Init reader
     std::vector<uint8_t> Bigvec;
     for (auto i = 0; i < 10; i++) {
         std::vector<uint8_t> vec(BIG_TEXT.begin(), BIG_TEXT.end());
@@ -139,16 +138,16 @@ TEST(Encryption, EncryptDecryptWithCipherHugeText) {
 
     BytesReader input(Bigvec);
 
-    //Encrypt data
+    // Encrypt data
     BytesWriter encrypted;
     AESCipher cipher(rng, "A very strong password", "Awesome salt", 10000);
     cipher.encrypt(input, encrypted);
     EXPECT_NE(input.readUntilEnd(), encrypted.toByteArray());
 
-    //Reset cursor to read during final comparaison
+    // Reset cursor to read during final comparaison
     input.reset();
 
-    //Decrypt data
+    // Decrypt data
     BytesWriter destination;
     BytesReader encryptedReader(encrypted.toByteArray());
     cipher.decrypt(encryptedReader, destination);

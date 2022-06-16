@@ -46,4 +46,4 @@ namespace ledger {
 
     }
 } // namespace ledger
-#endif //LEDGER_CORE_COLLECTIONS_HPP
+#endif // LEDGER_CORE_COLLECTIONS_HPP

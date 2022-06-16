@@ -85,7 +85,7 @@ namespace msgpack {
                 }
 
                 template <typename... T>
-                void testCountValidValues(int res, T &&... value) {
+                void testCountValidValues(int res, T &&...value) {
                     const auto count = countValidValues(std::forward<T>(value)...);
                     EXPECT_EQ(res, count);
                 }
@@ -94,8 +94,8 @@ namespace msgpack {
                 void testPackKeyValues(FooTest f1, T f2) {
                     std::stringstream ss;
                     msgpack::pack(ss, f1);
-                    const auto str = ss.str();
-                    const auto oh = msgpack::unpack(str.data(), str.size());
+                    const auto str          = ss.str();
+                    const auto oh           = msgpack::unpack(str.data(), str.size());
                     const auto deserialized = oh.get();
                     deserialized.convert(f2);
                     EXPECT_EQ(f1, f2);

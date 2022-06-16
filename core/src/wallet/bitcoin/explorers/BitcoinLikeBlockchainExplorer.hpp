@@ -71,7 +71,7 @@ namespace ledger {
             Option<uint64_t> blockHeight;
             bool replaceable;
 
-            BitcoinLikeBlockchainExplorerOutput() = default;
+            BitcoinLikeBlockchainExplorerOutput()                                            = default;
             BitcoinLikeBlockchainExplorerOutput(BitcoinLikeBlockchainExplorerOutput const &) = default;
             BitcoinLikeBlockchainExplorerOutput &operator+=(const BitcoinLikeBlockchainExplorerOutput &rhs) {
                 if (rhs.index > index) {
@@ -94,7 +94,7 @@ namespace ledger {
             uint64_t confirmations;
 
             BitcoinLikeBlockchainExplorerTransaction() {
-                version = 1;
+                version       = 1;
                 confirmations = -1;
             }
 
@@ -115,4 +115,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKEBLOCKCHAINEXPLORER_HPP
+#endif // LEDGER_CORE_BITCOINLIKEBLOCKCHAINEXPLORER_HPP

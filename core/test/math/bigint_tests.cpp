@@ -57,14 +57,14 @@ TEST(BigInt, InitializeWithLowValueString) {
 }
 
 TEST(BigInt, ConvertToHexString) {
-    auto hex = "0102030405060708090a0b0c0d0f11223344556677889900aabbccddeeff";
+    auto hex   = "0102030405060708090a0b0c0d0f11223344556677889900aabbccddeeff";
     auto value = BigInt::from_hex(hex);
     EXPECT_EQ(value->toHexString(), hex);
     delete value;
 }
 
 TEST(BigInt, ConvertToDecString) {
-    auto dec = "-1234567890123456789012345678901234567890123467890123457890";
+    auto dec   = "-1234567890123456789012345678901234567890123467890123457890";
     auto value = BigInt::from_dec(dec);
     EXPECT_EQ(value->toString(), dec);
     delete value;
@@ -176,7 +176,7 @@ TEST(BigInt, FromFloatString) {
               << witness.toString() << std::endl;
     std::cout << subject.toString() << std::endl;
 
-    auto t = witness.toByteArray();
+    auto t  = witness.toByteArray();
     auto tt = subject.toByteArray();
     EXPECT_TRUE(witness.compare(subject) == 0);
 }

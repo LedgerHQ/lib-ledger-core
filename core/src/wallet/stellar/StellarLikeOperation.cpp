@@ -46,8 +46,8 @@ namespace ledger {
         StellarLikeOperation::StellarLikeOperation(const std::shared_ptr<OperationApi> &api) : _currency(api->getCurrency()) {
             // Create record from API backend
             const auto &operationWithTransaction = api->getBackend().stellarOperation.getValueOr(stellar::OperationWithParentTransaction());
-            const auto &op = operationWithTransaction.operation;
-            const auto &tx = operationWithTransaction.transaction;
+            const auto &op                       = operationWithTransaction.operation;
+            const auto &tx                       = operationWithTransaction.transaction;
             api::StellarLikeAsset asset(
                 op.asset.type,
                 op.asset.code.empty() ? Option<std::string>() : Option<std::string>(op.asset.code),
@@ -68,13 +68,13 @@ namespace ledger {
                 op.transactionHash, asset, sourceAsset, sourceAmount);
 
             // Create the envelope object
-            const auto &backend = api->getBackend().stellarOperation.getValue();
+            const auto &backend        = api->getBackend().stellarOperation.getValue();
             _envelope.tx.sourceAccount = StellarLikeAddress(op.from, api->getCurrency(), Option<std::string>::NONE).toXdrMuxedAccount();
-            _envelope.tx.seqNum = op.transactionSequence.toUint64();
-            _envelope.tx.fee = op.transactionFee.toUnsignedInt();
-            _envelope.tx.memo.type = stellar::xdr::MemoType::MEMO_NONE;
+            _envelope.tx.seqNum        = op.transactionSequence.toUint64();
+            _envelope.tx.fee           = op.transactionFee.toUnsignedInt();
+            _envelope.tx.memo.type     = stellar::xdr::MemoType::MEMO_NONE;
             // Rebuild MEMO
-            auto memo = StellarLikeMemo::fromDatabase(tx.memoType, tx.memo);
+            auto memo                  = StellarLikeMemo::fromDatabase(tx.memoType, tx.memo);
             if (memo.isSuccess()) {
                 _envelope.tx.memo = memo.getValue().getBackend();
             }

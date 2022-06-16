@@ -230,7 +230,7 @@ class Results : public api::DatabaseResultSet, public std::enable_shared_from_th
 
     void close() override {
         _rows = std::list<std::shared_ptr<ResultRow>>();
-        _it = _rows.end();
+        _it   = _rows.end();
     }
 
     std::shared_ptr<api::DatabaseError> getError() override {
@@ -430,7 +430,7 @@ class ConnectionPool : public api::DatabaseConnectionPool {
   public:
     ConnectionPool(const std::string &connectUrl) {
         sqlite3 *db;
-        auto params = parseParameters(connectUrl);
+        auto params          = parseParameters(connectUrl);
         int connection_flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
         if (sqlite3_open_v2(std::get<0>(params).c_str(), &db, connection_flags, NULL) != SQLITE_OK) {
             throw std::runtime_error("Unable to open database");

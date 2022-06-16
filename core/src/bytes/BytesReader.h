@@ -47,7 +47,6 @@ namespace ledger {
          * a std::out_of_range exception.
          */
         class BytesReader {
-
           public:
             enum Seek {
                 SET,
@@ -169,8 +168,8 @@ namespace ledger {
             std::vector<uint8_t> readUntilEnd();
 
             /**
-            * Reset cursor position and offset to 0
-            */
+             * Reset cursor position and offset to 0
+             */
             void reset();
 
             /**
@@ -215,4 +214,4 @@ namespace ledger {
 
     } // namespace core
 } // namespace ledger
-#endif //LEDGER_CORE_BYTESREADER_H
+#endif // LEDGER_CORE_BYTESREADER_H

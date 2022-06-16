@@ -56,7 +56,6 @@ namespace ledger {
             _children.push_back(child);
         }
         std::vector<uint8_t> RLPListEncoder::encode() {
-
             BytesWriter result, childWriter;
             for (auto &child : _children) {
                 auto encodedChild = child->encode();

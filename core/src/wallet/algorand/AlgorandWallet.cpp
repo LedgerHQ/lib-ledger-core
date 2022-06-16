@@ -62,7 +62,6 @@ namespace ledger {
 
             FuturePtr<ledger::core::api::Account>
             Wallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
-
                 return async<std::shared_ptr<api::Account>>([=]() -> std::shared_ptr<api::Account> {
                     if (info.publicKeys.size() < 1) {
                         throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Missing pubkey in account creation info.");
@@ -103,7 +102,7 @@ namespace ledger {
 
             Future<api::AccountCreationInfo> Wallet::getAccountCreationInfo(int32_t accountIndex) {
                 auto scheme = getDerivationScheme();
-                auto path = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
+                auto path   = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
                 return Future<api::AccountCreationInfo>::successful(api::AccountCreationInfo{accountIndex, {"main"}, {path.toString()}, {}, {}});
             }
 

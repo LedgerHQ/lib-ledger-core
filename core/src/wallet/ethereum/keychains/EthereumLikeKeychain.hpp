@@ -49,7 +49,6 @@ namespace ledger {
     namespace core {
 
         class EthereumLikeKeychain : public api::Keychain {
-
           public:
             using Address = std::shared_ptr<EthereumLikeAddress>;
 
@@ -107,4 +106,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_ETHEREUMLIKEKEYCHAIN_HPP
+#endif // LEDGER_CORE_ETHEREUMLIKEKEYCHAIN_HPP

@@ -41,4 +41,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP
+#endif // LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP

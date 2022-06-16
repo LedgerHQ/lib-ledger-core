@@ -32,12 +32,12 @@
 #include "StellarFixture.hpp"
 
 TEST_F(StellarFixture, CreateAccountWithPubKey) {
-    auto pool = newPool();
-    auto wallet = newWallet(pool, "stellar_wallet", "stellar", api::DynamicObject::newInstance());
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
-    auto a = newAccount(wallet, 0, defaultAccount());
-    auto account = std::static_pointer_cast<AbstractAccount>(uv::wait(wallet->getAccount(0)));
-    auto address = uv::wait(account->getFreshPublicAddresses()).front()->toString();
+    auto pool       = newPool();
+    auto wallet     = newWallet(pool, "stellar_wallet", "stellar", api::DynamicObject::newInstance());
+    auto info       = uv::wait(wallet->getNextAccountCreationInfo());
+    auto a          = newAccount(wallet, 0, defaultAccount());
+    auto account    = std::static_pointer_cast<AbstractAccount>(uv::wait(wallet->getAccount(0)));
+    auto address    = uv::wait(account->getFreshPublicAddresses()).front()->toString();
     auto derivation = uv::wait(account->getFreshPublicAddresses()).front()->getDerivationPath().value();
     EXPECT_EQ(address, "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
     EXPECT_EQ(info.derivations.size(), 1);

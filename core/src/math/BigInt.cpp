@@ -44,20 +44,20 @@
 namespace ledger {
     namespace core {
 
-        const BigInt BigInt::ZERO = BigInt(0);
-        const BigInt BigInt::ONE = BigInt(1);
-        const BigInt BigInt::TEN = BigInt(10);
+        const BigInt BigInt::ZERO        = BigInt(0);
+        const BigInt BigInt::ONE         = BigInt(1);
+        const BigInt BigInt::TEN         = BigInt(10);
         const std::string BigInt::DIGITS = std::string("0123456789abcdefghijklmnopqrstuvwxyz");
-        const int BigInt::MIN_RADIX = 2;
-        const int BigInt::MAX_RADIX = 36;
+        const int BigInt::MIN_RADIX      = 2;
+        const int BigInt::MAX_RADIX      = 36;
 
         BigInt::BigInt() {
-            _bigd = bdNew();
+            _bigd     = bdNew();
             _negative = false;
         }
 
         BigInt::BigInt(const BigInt &cpy) {
-            _bigd = bdNew();
+            _bigd     = bdNew();
             _negative = cpy._negative;
             bdSetEqual(_bigd, cpy._bigd);
         }
@@ -268,9 +268,9 @@ namespace ledger {
                 bdFree(&_bigd);
             }
 
-            _bigd = a._bigd;
+            _bigd     = a._bigd;
             _negative = a._negative;
-            a._bigd = nullptr;
+            a._bigd   = nullptr;
 
             return *this;
         }
@@ -288,13 +288,13 @@ namespace ledger {
         }
 
         BigInt BigInt::negative() const {
-            BigInt result = *this;
+            BigInt result    = *this;
             result._negative = true;
             return result;
         }
 
         BigInt BigInt::positive() const {
-            BigInt result = *this;
+            BigInt result    = *this;
             result._negative = false;
             return result;
         }
@@ -345,7 +345,7 @@ namespace ledger {
         }
 
         std::vector<uint8_t> BigInt::toByteArray() const {
-            size_t nchars = bdConvToOctets(_bigd, NULL, 0);
+            size_t nchars            = bdConvToOctets(_bigd, NULL, 0);
             std::vector<uint8_t> out = std::vector<uint8_t>(nchars);
             bdConvToOctets(_bigd, reinterpret_cast<unsigned char *>(out.data()), nchars);
             return out;
@@ -397,13 +397,13 @@ namespace ledger {
         }
 
         BigInt::BigInt(BigInt &&mov) {
-            _bigd = mov._bigd;
+            _bigd     = mov._bigd;
             _negative = mov._negative;
             mov._bigd = nullptr;
         }
 
         bool BigInt::all_digits(std::string const &s) {
-            auto it = s.cbegin();
+            auto it  = s.cbegin();
             auto end = s.cend();
 
             if (it != end && (*it == '-' || *it == '+')) {
@@ -418,9 +418,9 @@ namespace ledger {
 
             mp::cpp_dec_float_50 f(str);
             mp::cpp_dec_float_50 scale = mp::pow(mp::cpp_dec_float_50(10), (float)scaleFactor);
-            f = f * scale;
+            f                          = f * scale;
 
-            bool isNegative = f < 0;
+            bool isNegative            = f < 0;
 
             if (isNegative)
                 f = f * -1;
@@ -428,7 +428,7 @@ namespace ledger {
             mp::uint256_t i;
             i.assign(f);
 
-            auto size = i.backend().size();
+            auto size   = i.backend().size();
             auto *limbs = i.backend().limbs();
 
             // Here is the weird part. Boost is dividing the number into "limbs", the limbs size may differ depending on the

@@ -109,9 +109,9 @@ TEST_F(PreferencesTest, StoreAndGetWithPreferencesAPI) {
 }
 
 TEST_F(PreferencesTest, DISABLED_EncryptDecrypt) {
-    auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "encrypt_decrypt");
-    auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
-    auto password = std::string("v3ry_secr3t_p4sSw0rD");
+    auto preferences  = std::make_shared<ledger::core::Preferences>(*backend, "encrypt_decrypt");
+    auto rng          = std::make_shared<OpenSSLRandomNumberGenerator>();
+    auto password     = std::string("v3ry_secr3t_p4sSw0rD");
     auto string_array = std::vector<std::string>{"foo", "bar", "zoo"};
 
     backend->setEncryption(rng, password);
@@ -180,8 +180,8 @@ TEST_F(PreferencesTest, DISABLED_EncryptDecrypt) {
 // This test checks that we can completely unset encryption to go back to a plaintext mode.
 TEST_F(PreferencesTest, ResetEncryption) {
     auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "reset_encryption");
-    auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
-    auto password = std::string("v3ry_secr3t_p4sSw0rD");
+    auto rng         = std::make_shared<OpenSSLRandomNumberGenerator>();
+    auto password    = std::string("v3ry_secr3t_p4sSw0rD");
 
     backend->setEncryption(rng, password);
 
@@ -201,8 +201,8 @@ TEST_F(PreferencesTest, ResetEncryption) {
 
 TEST_F(PreferencesTest, UnsetEncryption) {
     auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "my_test_preferences_reencrypted2");
-    auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
-    auto password = std::string("v3ry_secr3t_p4sSw0rD");
+    auto rng         = std::make_shared<OpenSSLRandomNumberGenerator>();
+    auto password    = std::string("v3ry_secr3t_p4sSw0rD");
 
     backend->setEncryption(rng, password);
 
@@ -239,8 +239,8 @@ TEST_F(PreferencesTest, Clear) {
 // so that we can correctly retrieve them after encryption is set.
 TEST_F(PreferencesTest, RecryptClearValues) {
     auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "recrypt_clear_values");
-    auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
-    auto password = std::string("v3ry_secr3t_p4sSw0rD");
+    auto rng         = std::make_shared<OpenSSLRandomNumberGenerator>();
+    auto password    = std::string("v3ry_secr3t_p4sSw0rD");
 
     // add a clear record and then turn encryption on
     preferences->editor()->putString("string", "dawg")->commit();

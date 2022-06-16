@@ -170,7 +170,7 @@ TEST(Dynamics, ObjectSerialization) {
 TEST(Dynamics, ArrayWithObjects) {
     std::vector<uint8_t> serialized;
     {
-        auto array = DynamicArray::newInstance();
+        auto array  = DynamicArray::newInstance();
         auto object = DynamicObject::newInstance();
         object
             ->putBoolean("boolean", true)
@@ -184,7 +184,7 @@ TEST(Dynamics, ArrayWithObjects) {
         serialized = array->serialize();
     }
     {
-        auto array = DynamicArray::load(serialized);
+        auto array  = DynamicArray::load(serialized);
         auto object = array->getObject(1);
         EXPECT_EQ(object->size(), 6);
         EXPECT_EQ(object->getBoolean("boolean").value(), true);
@@ -201,7 +201,7 @@ TEST(Dynamics, ObjectWithArray) {
     std::vector<uint8_t> serialized;
     {
         auto object = DynamicObject::newInstance();
-        auto array = DynamicArray::newInstance();
+        auto array  = DynamicArray::newInstance();
         array
             ->pushBoolean(true)
             ->pushDouble(12.6)
@@ -214,7 +214,7 @@ TEST(Dynamics, ObjectWithArray) {
     }
     {
         auto object = DynamicObject::load(serialized);
-        auto array = object->getArray("array");
+        auto array  = object->getArray("array");
         EXPECT_EQ(array->size(), 6);
         EXPECT_EQ(array->getBoolean(0).value(), true);
         EXPECT_EQ(array->getDouble(1).value(), 12.6);

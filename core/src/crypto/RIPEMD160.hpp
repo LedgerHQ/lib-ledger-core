@@ -38,11 +38,11 @@ namespace ledger {
     namespace core {
         class RIPEMD160 {
           public:
-            RIPEMD160() = delete;
+            RIPEMD160()  = delete;
             ~RIPEMD160() = delete;
             static std::vector<uint8_t> hash(const std::vector<uint8_t> &data);
         };
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_RIPEMD160_HPP
+#endif // LEDGER_CORE_RIPEMD160_HPP

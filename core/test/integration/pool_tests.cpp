@@ -75,8 +75,8 @@ TEST_F(WalletPoolTest, AddCurrency) {
         api::BitcoinLikeDustPolicy::FIXED, "Wonder Coin Signed Message:\n", false, 0, {0x01}, {});
     api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin", 12, "WC");
     {
-        auto firstPool = newDefaultPool();
-        bool found = false;
+        auto firstPool     = newDefaultPool();
+        bool found         = false;
         bool foundInSecond = false;
         firstPool->addCurrency(wonderCoin).onComplete(dispatcher->getMainExecutionContext(), [&](const Try<Unit> &unit) {
             for (const auto &currency : firstPool->getCurrencies()) {
@@ -94,7 +94,7 @@ TEST_F(WalletPoolTest, AddCurrency) {
     }
     {
         auto secondPool = newDefaultPool();
-        bool found = false;
+        bool found      = false;
         for (const auto &currency : secondPool->getCurrencies()) {
             if (currency.name == "wonder_coin") {
                 found = true;
@@ -114,8 +114,8 @@ TEST_F(WalletPoolTest, RemoveCurrency) {
         api::BitcoinLikeDustPolicy::FIXED, "Wonder Coin Signed Message:\n", false, 0, {0x01}, {});
     api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin", 12, "WC");
     {
-        auto firstPool = newDefaultPool();
-        bool found = false;
+        auto firstPool     = newDefaultPool();
+        bool found         = false;
         bool foundInSecond = false;
         firstPool
             ->addCurrency(wonderCoin)
@@ -138,7 +138,7 @@ TEST_F(WalletPoolTest, RemoveCurrency) {
     }
     {
         auto secondPool = newDefaultPool();
-        bool found = false;
+        bool found      = false;
         for (const auto &currency : secondPool->getCurrencies()) {
             if (currency.name == "wonder_coin") {
                 found = true;
@@ -150,10 +150,10 @@ TEST_F(WalletPoolTest, RemoveCurrency) {
 }
 
 TEST_F(WalletPoolTest, CreateAndGetWallet) {
-    auto pool = newDefaultPool();
+    auto pool             = newDefaultPool();
     const auto walletName = randomWalletName();
     {
-        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
+        auto wallet    = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
         auto getWallet = uv::wait(pool->getWallet(walletName));
         EXPECT_TRUE(wallet.get() == getWallet.get());
     }

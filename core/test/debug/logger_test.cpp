@@ -44,10 +44,10 @@
 #include <string>
 
 TEST(LoggerTest, LogAndOverflow) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto logLineExample = std::string("2017-03-02T10:07:06Z+01:00 D: This is a log XXX") + spdlog::details::os::default_eol;
+    auto dispatcher                        = std::make_shared<NativeThreadDispatcher>();
+    auto logPrinter                        = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    auto resolver                          = std::make_shared<NativePathResolver>();
+    auto logLineExample                    = std::string("2017-03-02T10:07:06Z+01:00 D: This is a log XXX") + spdlog::details::os::default_eol;
     std::shared_ptr<spdlog::logger> logger = ledger::core::logger::create("test_logs",
                                                                           dispatcher->getSerialExecutionContext("logger"),
                                                                           resolver,
@@ -75,10 +75,10 @@ TEST(LoggerTest, LogAndOverflow) {
 }
 
 TEST(LoggerTest, LogNoOverflow) {
-    auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto logPrinter = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto logLineExample = std::string("2017-03-02T10:07:06Z+01:00 D: This is a log XXX") + spdlog::details::os::default_eol;
+    auto dispatcher                        = std::make_shared<NativeThreadDispatcher>();
+    auto logPrinter                        = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    auto resolver                          = std::make_shared<NativePathResolver>();
+    auto logLineExample                    = std::string("2017-03-02T10:07:06Z+01:00 D: This is a log XXX") + spdlog::details::os::default_eol;
     std::shared_ptr<spdlog::logger> logger = ledger::core::logger::create("test_logs_1",
                                                                           dispatcher->getSerialExecutionContext("logger"),
                                                                           resolver,

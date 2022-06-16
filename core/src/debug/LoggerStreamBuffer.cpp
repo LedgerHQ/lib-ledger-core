@@ -42,6 +42,6 @@ int ledger::core::LoggerStreamBuffer::overflow(int c) {
 
 ledger::core::LoggerStreamBuffer::LoggerStreamBuffer(const std::string &tag,
                                                      const std::shared_ptr<spdlog::logger> &logger) {
-    _tag = tag;
+    _tag    = tag;
     _logger = logger;
 }

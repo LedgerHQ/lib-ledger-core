@@ -54,7 +54,6 @@ namespace ledger {
 
         template <typename T>
         class Deffered {
-
           public:
             using Callback = std::function<void(const Try<T> &)>;
 
@@ -64,7 +63,7 @@ namespace ledger {
 
             };
             Deffered(const Deffered &) = delete;
-            Deffered(Deffered &&) = delete;
+            Deffered(Deffered &&)      = delete;
 
             void setResult(const Try<T> &result) {
                 {
@@ -125,8 +124,8 @@ namespace ledger {
                 }
                 while (!_callbacks.empty()) {
                     std::tuple<Callback, std::shared_ptr<api::ExecutionContext>> callback = _callbacks.front();
-                    Callback cb = std::get<0>(callback);
-                    auto value = _value.getValue();
+                    Callback cb                                                           = std::get<0>(callback);
+                    auto value                                                            = _value.getValue();
                     std::get<1>(callback)->execute(make_runnable([cb, value]() {
                         cb(value);
                     }));
@@ -143,4 +142,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_DEFFERED_HPP
+#endif // LEDGER_CORE_DEFFERED_HPP

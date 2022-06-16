@@ -146,4 +146,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_ETHEREUMLIKEACCOUNT_H
+#endif // LEDGER_CORE_ETHEREUMLIKEACCOUNT_H

@@ -79,7 +79,7 @@ namespace ledger {
             FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>
             getTransactions(const std::vector<std::string> &addresses,
                             Option<std::string> offset = Option<std::string>(),
-                            Option<void *> session = Option<void *>()) override;
+                            Option<void *> session     = Option<void *>()) override;
 
             FuturePtr<Block> getCurrentBlock() const override;
 
@@ -133,9 +133,9 @@ namespace ledger {
             getHelper(const std::string &url,
                       const std::string &field,
                       const std::unordered_map<std::string, std::string> &params = std::unordered_map<std::string, std::string>(),
-                      const std::string &fallbackValue = "",
-                      const std::string &forceUrl = "",
-                      bool isDecimal = false);
+                      const std::string &fallbackValue                           = "",
+                      const std::string &forceUrl                                = "",
+                      bool isDecimal                                             = false);
 
             api::TezosLikeNetworkParameters _parameters;
             std::unordered_map<std::string, uint64_t> _sessions;

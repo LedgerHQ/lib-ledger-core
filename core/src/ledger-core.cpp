@@ -35,7 +35,7 @@
 
 namespace ledger {
     namespace core {
-        const int LIB_VERSION = LIB_VERSION_MAJOR << 16 | LIB_VERSION_MINOR << 8 | LIB_VERSION_PATCH;
+        const int LIB_VERSION   = LIB_VERSION_MAJOR << 16 | LIB_VERSION_MINOR << 8 | LIB_VERSION_PATCH;
         const int VERSION_MAJOR = LIB_VERSION_MAJOR;
         const int VERSION_MINOR = LIB_VERSION_MINOR;
         const int VERSION_PATCH = LIB_VERSION_PATCH;

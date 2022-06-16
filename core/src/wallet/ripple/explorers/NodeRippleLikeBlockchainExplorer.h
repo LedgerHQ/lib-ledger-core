@@ -49,18 +49,17 @@ namespace ledger {
         };
 
         class NodeRippleLikeBodyRequest {
-
           public:
             NodeRippleLikeBodyRequest() {
-                //Document should be defined as object
+                // Document should be defined as object
                 _document.SetObject();
                 _params = rapidjson::Value(rapidjson::kObjectType);
             };
 
             NodeRippleLikeBodyRequest &setMethod(const std::string &method) {
-                //In case need to allocate more memory
+                // In case need to allocate more memory
                 rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
-                //Field with method
+                // Field with method
                 rapidjson::Value vMethod(rapidjson::kStringType);
                 vMethod.SetString(method.c_str(), static_cast<rapidjson::SizeType>(method.length()), allocator);
                 _document.AddMember("method", vMethod, allocator);
@@ -90,9 +89,9 @@ namespace ledger {
             NodeRippleLikeBodyRequest &pushPagination(
                 const std::string &ledger,
                 const std::string &seq) {
-                std::string key = "marker";
-                std::string ledgerKeyStr = "ledger";
-                std::string seqKeyStr = "seq";
+                std::string key                               = "marker";
+                std::string ledgerKeyStr                      = "ledger";
+                std::string seqKeyStr                         = "seq";
 
                 rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
 
@@ -124,7 +123,7 @@ namespace ledger {
                 rapidjson::Value container(rapidjson::kArrayType);
                 container.PushBack(_params, allocator);
                 _document.AddMember("params", container, allocator);
-                //Stream to string buffer
+                // Stream to string buffer
                 rapidjson::StringBuffer buffer;
                 rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
                 _document.Accept(writer);
@@ -177,7 +176,7 @@ namespace ledger {
             FuturePtr<RippleLikeBlockchainExplorer::TransactionsBulk>
             getTransactions(const std::vector<std::string> &addresses,
                             Option<std::string> fromBlockHash = Option<std::string>(),
-                            Option<void *> session = Option<void *>()) override;
+                            Option<void *> session            = Option<void *>()) override;
 
             FuturePtr<Block> getCurrentBlock() const override;
 
@@ -204,4 +203,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_NODERIPPLELIKEBLOCKCHAINEXPLORER_H
+#endif // LEDGER_CORE_NODERIPPLELIKEBLOCKCHAINEXPLORER_H

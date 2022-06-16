@@ -60,7 +60,7 @@ namespace ledger {
         };
 
         EventPublisher::EventPublisher(std::shared_ptr<api::ExecutionContext> context) : DedicatedContext(context) {
-            _bus = std::make_shared<EventBus>(context);
+            _bus    = std::make_shared<EventBus>(context);
             _filter = [](const std::shared_ptr<api::Event> &event) { return true; };
         }
 

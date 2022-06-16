@@ -138,7 +138,7 @@ namespace ledger {
                 Transaction transaction;
             };
 
-            using OperationVector = std::vector<std::shared_ptr<Operation>>;
+            using OperationVector   = std::vector<std::shared_ptr<Operation>>;
             using TransactionVector = std::vector<std::shared_ptr<Transaction>>;
 
             void xdrAssetToAsset(const xdr::Asset &asset, const api::StellarLikeNetworkParameters &params, stellar::Asset &out);
@@ -146,4 +146,4 @@ namespace ledger {
     }     // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_STELLARLIKE_STELLAR_HPP
+#endif // LEDGER_CORE_STELLARLIKE_STELLAR_HPP

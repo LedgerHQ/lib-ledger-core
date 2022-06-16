@@ -40,13 +40,13 @@ namespace ledger {
                 "9ec9845acb02fab24e1c0368b3b517c1a4488fba97f0e3459ac053ea01000000",
                 {0xC0, 0x1F, 0x02}};
 
-            //Zcash overwinter
+            // Zcash overwinter
             const ZIPParameters ZIP143_PARAMETERS = {
                 3,
                 {0x80},
                 {0x03, 0xC4, 0x82, 0x70},
                 347500};
-            //Zcash Sapling (starting from block 419200)
+            // Zcash Sapling (starting from block 419200)
             const ZIPParameters ZIP_SAPLING_PARAMETERS = {
                 4,
                 {0x80},
@@ -386,7 +386,7 @@ namespace ledger {
                         {});
                     return CLUBCOIN;
                 } else if (networkName == "decred") {
-                    //02fda926
+                    // 02fda926
                     static const api::BitcoinLikeNetworkParameters DECRED(
                         "dcr",
                         {0x07, 0x3F},

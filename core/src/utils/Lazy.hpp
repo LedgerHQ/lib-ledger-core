@@ -42,7 +42,7 @@ namespace ledger {
         class Lazy {
           public:
             Lazy() {
-                _value = nullptr;
+                _value   = nullptr;
                 _creator = []() -> std::shared_ptr<T> {
                     throw Exception(api::ErrorCode::RUNTIME_ERROR, "Empty lazy");
                 };
@@ -50,17 +50,17 @@ namespace ledger {
 
             Lazy(std::function<std::shared_ptr<T>()> creator) {
                 _creator = creator;
-                _value = nullptr;
+                _value   = nullptr;
             };
 
             Lazy(const Lazy<T> &value) {
                 _creator = value._creator;
-                _value = value._value;
+                _value   = value._value;
             };
 
             Lazy &operator=(const Lazy<T> &value) {
                 _creator = value._creator;
-                _value = value._value;
+                _value   = value._value;
             };
 
             operator T() {
@@ -97,4 +97,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_LAZY_HPP
+#endif // LEDGER_CORE_LAZY_HPP

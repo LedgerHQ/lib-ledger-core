@@ -152,13 +152,13 @@ namespace ledger {
 
         void CosmosLikeTransactionApi::setDERSignature(const std::vector<uint8_t> &signature) {
             BytesReader reader(signature);
-            //DER prefix
+            // DER prefix
             reader.readNextByte();
-            //Total length
+            // Total length
             reader.readNextVarInt();
-            //Nb of elements for R
+            // Nb of elements for R
             reader.readNextByte();
-            //R length
+            // R length
             auto rSize = reader.readNextVarInt();
             if (rSize > 0 && reader.peek() == 0x00) {
                 reader.readNextByte();
@@ -166,9 +166,9 @@ namespace ledger {
             } else {
                 _rSignature = reader.read(rSize);
             }
-            //Nb of elements for S
+            // Nb of elements for S
             reader.readNextByte();
-            //S length
+            // S length
             auto sSize = reader.readNextVarInt();
             if (sSize > 0 && reader.peek() == 0x00) {
                 reader.readNextByte();
@@ -189,7 +189,6 @@ namespace ledger {
         // Build the payload to send to the device to be signed
         // (cf. https://github.com/cosmos/ledger-cosmos-app/blob/master/docs/TXSPEC.md#format)
         std::string CosmosLikeTransactionApi::serializeForSignature() {
-
             using namespace cosmos::constants;
             Value vString(kStringType);
 
@@ -259,7 +258,6 @@ namespace ledger {
         // NOTE The produced payload is not a 1:1 mapping of this CosmosLikeTransactionApi because a "mode" is added to the json.
         // (cf.https://github.com/cosmos/cosmos-sdk/blob/2e42f9cb745aaa4c1a52ee730a969a5eaa938360/x/auth/client/rest/broadcast.go#L13-L16))
         std::string CosmosLikeTransactionApi::serializeForBroadcast(const std::string &mode) {
-
             using namespace cosmos::constants;
             Value vString(kStringType);
 
@@ -388,7 +386,7 @@ namespace ledger {
             // Assumes uatom
             if (_txData.fee.amount.size() > 0) {
                 _txData.fee.amount[0].amount = rhs_fee->toString();
-                _txData.fee.amount[0].denom = _currency.units.front().name;
+                _txData.fee.amount[0].denom  = _currency.units.front().name;
             } else {
                 _txData.fee.amount.emplace_back(rhs_fee->toString(), _currency.units.front().name);
             }
@@ -423,7 +421,7 @@ namespace ledger {
         }
 
         std::string CosmosLikeTransactionApi::setCorrelationId(const std::string &newId) {
-            auto oldId = _correlationId;
+            auto oldId     = _correlationId;
             _correlationId = newId;
             return oldId;
         }

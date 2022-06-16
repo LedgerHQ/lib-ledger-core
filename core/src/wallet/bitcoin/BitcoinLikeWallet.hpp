@@ -92,4 +92,4 @@ namespace ledger {
     } // namespace core
 } // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKEWALLET_HPP
+#endif // LEDGER_CORE_BITCOINLIKEWALLET_HPP

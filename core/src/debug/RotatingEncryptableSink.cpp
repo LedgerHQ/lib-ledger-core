@@ -42,25 +42,25 @@ namespace ledger {
                                                          const std::string &name,
                                                          std::size_t maxSize,
                                                          std::size_t maxFiles) {
-            _context = context;
+            _context  = context;
             _resolver = resolver;
-            _name = name;
+            _name     = name;
 #if defined(_WIN32) || defined(_WIN64)
             ToWide(name, _base_filename);
             ToWide("log", _extension);
 #else
             _base_filename = name;
-            _extension = "log";
+            _extension     = "log";
 #endif
-            _max_size = maxSize;
+            _max_size  = maxSize;
             _max_files = maxFiles;
             _file_helper.open(calc_filename(resolver, _base_filename, 0, _extension));
-            _current_size = _file_helper.size(); //expensive. called only once
+            _current_size = _file_helper.size(); // expensive. called only once
             set_level(spdlog::level::trace);
         }
 
         void RotatingEncryptableSink::sink_it_(const spdlog::details::log_msg &msg) {
-            auto context = _context;
+            auto context                               = _context;
             std::shared_ptr<fmt::memory_buffer> buffer = std::make_shared<fmt::memory_buffer>();
             formatter_->format(msg, *buffer);
             auto self = shared_from_this();
@@ -129,7 +129,7 @@ namespace ledger {
             using spdlog::details::os::filename_to_str;
             _file_helper.close();
             for (auto i = _max_files; i > 0; --i) {
-                auto src = calc_filename(resolver, _base_filename, i - 1, _extension);
+                auto src    = calc_filename(resolver, _base_filename, i - 1, _extension);
                 auto target = calc_filename(resolver, _base_filename, i, _extension);
 
                 if (spdlog::details::file_helper::file_exists(target)) {

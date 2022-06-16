@@ -43,7 +43,6 @@ namespace ledger {
             };
 
             class AccountDatabaseHelper : public ledger::core::AccountDatabaseHelper {
-
               public:
                 static std::string createAccount(
                     soci::session &sql,

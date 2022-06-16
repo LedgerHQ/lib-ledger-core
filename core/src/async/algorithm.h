@@ -74,4 +74,4 @@ namespace ledger {
 
 #define ASYNC_FOREACH()
 
-#endif //LEDGER_CORE_ALGORITHM_H
+#endif // LEDGER_CORE_ALGORITHM_H
