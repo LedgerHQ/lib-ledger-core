@@ -33,6 +33,7 @@
 #include "../BaseFixture.h"
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <api/KeychainEngines.hpp>
+#include <api/PoolConfiguration.hpp>
 #include <api/BitcoinLikeOperation.hpp>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
 #include "ExplorerStorage.hpp"
