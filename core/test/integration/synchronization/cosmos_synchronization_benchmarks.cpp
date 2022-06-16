@@ -41,6 +41,7 @@
 
 #include <api/Configuration.hpp>
 #include <api/CosmosConfigurationDefaults.hpp>
+#include <api/PoolConfiguration.hpp>
 #include <collections/DynamicObject.hpp>
 #include <gtest/gtest.h>
 #include <test/cosmos/Fixtures.hpp>
