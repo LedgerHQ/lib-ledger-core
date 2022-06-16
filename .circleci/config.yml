@@ -345,8 +345,9 @@ jobs:
           command: |
             sudo apt-get update -q=2
             sudo apt-get install -qy doxygen rsync software-properties-common
-            sudo add-apt-repository --update "deb http://httpredir.debian.org/debian stretch-backports main"
-            sudo apt-get install -qy -t stretch-backports cmake
+            wget https://cmake.org/files/v3.16/cmake-3.16.9.tar.gz
+            tar -xvf cmake-3.16.9.tar.gz
+            cd cmake-3.16.9 && ./bootstrap && make && sudo make install
       - run: cmake -H. -Bbuild
       - run:
           command: make doc
