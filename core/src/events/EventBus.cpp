@@ -35,8 +35,7 @@ void ledger::core::EventBus::subscribe(const std::shared_ptr<ledger::core::api::
 
     std::weak_ptr<EventBus> weak_self(shared_from_this());
 
-    async<Unit>([=] () {
-
+    async<Unit>([=]() {
         auto local_self = weak_self.lock();
         if (!local_self) {
             throw make_exception(api::ErrorCode::NULL_POINTER, "EventBus was released.");
@@ -45,18 +44,18 @@ void ledger::core::EventBus::subscribe(const std::shared_ptr<ledger::core::api::
         auto local_context = context;
         auto local_receiver = receiver;
 
-        for (auto& i : local_self->_subscribers) {
-            auto& r = std::get<1>(i);
+        for (auto &i : local_self->_subscribers) {
+            auto &r = std::get<1>(i);
             if (r == local_receiver)
                 return unit;
         }
-        
+
         // Post all sticky event to the receiver
         //local_receiver is moved below when pushed in _subscribers, we need a new local_receiver
         //lambda passed to Future<Unit>::async
         std::weak_ptr<ledger::core::api::EventReceiver> local_weak_receiver(receiver);
-        for (auto& event : local_self->_stickies) {
-            auto lambda = [=] () {
+        for (auto &event : local_self->_stickies) {
+            auto lambda = [=]() {
                 auto local_r = local_weak_receiver.lock();
                 if (!local_r) {
                     throw make_exception(api::ErrorCode::NULL_POINTER, "Receiver was released.");
@@ -74,14 +73,14 @@ void ledger::core::EventBus::subscribe(const std::shared_ptr<ledger::core::api::
 
 void ledger::core::EventBus::unsubscribe(const std::shared_ptr<ledger::core::api::EventReceiver> &receiver) {
     std::weak_ptr<EventBus> weak_self(shared_from_this());
-    async<Unit>([=] () {
+    async<Unit>([=]() {
         auto local_self = weak_self.lock();
         if (!local_self) {
             throw make_exception(api::ErrorCode::NULL_POINTER, "EventBus was released.");
         }
         std::unique_lock<std::mutex> lock(local_self->_mutex);
         for (auto it = local_self->_subscribers.begin(); it != local_self->_subscribers.end(); it++) {
-            auto& r = std::get<1>(*it);
+            auto &r = std::get<1>(*it);
             if (r == receiver) {
                 local_self->_subscribers.erase(it);
                 return unit;
@@ -91,9 +90,9 @@ void ledger::core::EventBus::unsubscribe(const std::shared_ptr<ledger::core::api
     });
 }
 
-void ledger::core::EventBus::post(const std::shared_ptr<ledger::core::Event>& event) {
+void ledger::core::EventBus::post(const std::shared_ptr<ledger::core::Event> &event) {
     std::weak_ptr<EventBus> weak_self(shared_from_this());
-    run([=] () {
+    run([=]() {
         auto local_self = weak_self.lock();
         if (!local_self) {
             throw make_exception(api::ErrorCode::NULL_POINTER, "EventBus was released.");
@@ -102,12 +101,12 @@ void ledger::core::EventBus::post(const std::shared_ptr<ledger::core::Event>& ev
         if (event->isSticky()) {
             local_self->_stickies[event->getStickyTag()] = event;
         }
-        for (auto& subscriber : local_self->_subscribers) {
+        for (auto &subscriber : local_self->_subscribers) {
             auto c = std::get<0>(subscriber);
-            auto& r = std::get<1>(subscriber);
+            auto &r = std::get<1>(subscriber);
 
             std::weak_ptr<ledger::core::api::EventReceiver> weak_receiver(r);
-            Future<Unit>::async(c, [=] () {
+            Future<Unit>::async(c, [=]() {
                 auto local_receiver = weak_receiver.lock();
                 if (!local_receiver) {
                     throw make_exception(api::ErrorCode::NULL_POINTER, "Receiver was released.");
@@ -121,5 +120,4 @@ void ledger::core::EventBus::post(const std::shared_ptr<ledger::core::Event>& ev
 
 ledger::core::EventBus::EventBus(const std::shared_ptr<ledger::core::api::ExecutionContext> &context)
     : DedicatedContext(context) {
-
 }

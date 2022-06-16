@@ -31,45 +31,45 @@
 #ifndef LEDGER_CORE_ETHEREUMLIKEEXTENDEDPUBLICKEY_H
 #define LEDGER_CORE_ETHEREUMLIKEEXTENDEDPUBLICKEY_H
 
-#include <common/AbstractExtendedPublicKey.h>
-#include <api/EthereumLikeExtendedPublicKey.hpp>
-#include <crypto/DeterministicPublicKey.hpp>
-#include <api/EthereumLikeNetworkParameters.hpp>
-#include <memory>
-#include <utils/Option.hpp>
-#include <utils/DerivationPath.hpp>
 #include <api/Currency.hpp>
+#include <api/EthereumLikeExtendedPublicKey.hpp>
+#include <api/EthereumLikeNetworkParameters.hpp>
+#include <common/AbstractExtendedPublicKey.h>
+#include <crypto/DeterministicPublicKey.hpp>
+#include <memory>
+#include <utils/DerivationPath.hpp>
+#include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {
         using EthereumExtendedPublicKey = AbstractExtendedPublicKey<api::EthereumLikeNetworkParameters>;
         class EthereumLikeExtendedPublicKey : public EthereumExtendedPublicKey, public api::EthereumLikeExtendedPublicKey {
-        public:
+          public:
+            EthereumLikeExtendedPublicKey(const api::Currency &params,
+                                          const DeterministicPublicKey &key,
+                                          const DerivationPath &path = DerivationPath("m/"));
 
-            EthereumLikeExtendedPublicKey(const api::Currency& params,
-                                          const DeterministicPublicKey& key,
-                                          const DerivationPath& path = DerivationPath("m/"));
-
-            std::shared_ptr<api::EthereumLikeAddress> derive(const std::string & path) override ;
+            std::shared_ptr<api::EthereumLikeAddress> derive(const std::string &path) override;
             std::shared_ptr<EthereumLikeExtendedPublicKey> derive(const DerivationPath &path);
-            std::vector<uint8_t> derivePublicKey(const std::string & path) override ;
+            std::vector<uint8_t> derivePublicKey(const std::string &path) override;
 
-            std::vector<uint8_t> deriveHash160(const std::string & path) override ;
+            std::vector<uint8_t> deriveHash160(const std::string &path) override;
 
-            std::string toBase58() override ;
+            std::string toBase58() override;
 
-            std::string getRootPath() override ;
+            std::string getRootPath() override;
 
-            static std::shared_ptr<EthereumLikeExtendedPublicKey> fromRaw(const api::Currency& params,
-                                                                          const optional<std::vector<uint8_t>>& parentPublicKey,
-                                                                          const std::vector<uint8_t>& publicKey,
+            static std::shared_ptr<EthereumLikeExtendedPublicKey> fromRaw(const api::Currency &params,
+                                                                          const optional<std::vector<uint8_t>> &parentPublicKey,
+                                                                          const std::vector<uint8_t> &publicKey,
                                                                           const std::vector<uint8_t> &chainCode,
-                                                                          const std::string& path);
+                                                                          const std::string &path);
 
-            static std::shared_ptr<EthereumLikeExtendedPublicKey> fromBase58(const api::Currency& currency,
-                                                                             const std::string& xpubBase58,
-                                                                             const Option<std::string>& path);
-        protected:
+            static std::shared_ptr<EthereumLikeExtendedPublicKey> fromBase58(const api::Currency &currency,
+                                                                             const std::string &xpubBase58,
+                                                                             const Option<std::string> &path);
+
+          protected:
             const api::EthereumLikeNetworkParameters &params() const override {
                 return _currency.ethereumLikeNetworkParameters.value();
             };
@@ -82,14 +82,13 @@ namespace ledger {
             const api::Currency &getCurrency() const override {
                 return _currency;
             };
-        private:
+
+          private:
             const api::Currency _currency;
             const DerivationPath _path;
             const DeterministicPublicKey _key;
-
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMLIKEEXTENDEDPUBLICKEY_H

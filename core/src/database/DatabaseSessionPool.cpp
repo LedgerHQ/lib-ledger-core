@@ -30,10 +30,11 @@
  */
 
 #include "DatabaseSessionPool.hpp"
-#include "migrations.hpp"
+
 #include "SQLite3Backend.hpp"
+#include "migrations.hpp"
 #ifdef PG_SUPPORT
-    #include "PostgreSQLBackend.h"
+#include "PostgreSQLBackend.h"
 #endif
 
 namespace ledger {
@@ -41,10 +42,9 @@ namespace ledger {
         DatabaseSessionPool::DatabaseSessionPool(
             const std::shared_ptr<DatabaseBackend> &backend,
             const std::shared_ptr<api::PathResolver> &resolver,
-            const std::shared_ptr<spdlog::logger>& logger,
+            const std::shared_ptr<spdlog::logger> &logger,
             const std::string &dbName,
-            const std::string &password) :
-            _pool((size_t) backend->getConnectionPoolSize()), _readonlyPool((size_t)backend->getReadonlyConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
+            const std::string &password) : _pool((size_t)backend->getConnectionPoolSize()), _readonlyPool((size_t)backend->getReadonlyConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
             if (logger != nullptr && backend->isLoggingEnabled()) {
                 _logger = new std::ostream(&_buffer);
             } else {
@@ -53,7 +53,7 @@ namespace ledger {
 
             auto poolSize = _backend->getConnectionPoolSize();
             for (size_t i = 0; i < poolSize; i++) {
-                auto& session = getPool().at(i);
+                auto &session = getPool().at(i);
                 _backend->init(resolver, dbName, password, session);
                 if (_logger != nullptr) {
                     session.set_log_stream(_logger);
@@ -61,8 +61,7 @@ namespace ledger {
             }
 
 #ifdef PG_SUPPORT
-            _type = std::dynamic_pointer_cast<PostgreSQLBackend>(backend) != nullptr ?
-                    api::DatabaseBackendType::POSTGRESQL : api::DatabaseBackendType::SQLITE3;
+            _type = std::dynamic_pointer_cast<PostgreSQLBackend>(backend) != nullptr ? api::DatabaseBackendType::POSTGRESQL : api::DatabaseBackendType::SQLITE3;
 #else
             _type = api::DatabaseBackendType::SQLITE3;
 #endif
@@ -70,7 +69,7 @@ namespace ledger {
             performDatabaseMigration();
             auto readonlyPoolSize = _backend->getReadonlyConnectionPoolSize();
             for (size_t i = 0; i < readonlyPoolSize; i++) {
-                auto& session = getReadonlyPool().at(i);
+                auto &session = getReadonlyPool().at(i);
                 _backend->init(resolver, dbName, password, session);
                 if (_logger != nullptr) {
                     session.set_log_stream(_logger);
@@ -89,10 +88,9 @@ namespace ledger {
                                             const std::shared_ptr<spdlog::logger> &logger,
                                             const std::string &dbName,
                                             const std::string &password) {
-            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName, logger, password] () {
+            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName, logger, password]() {
                 auto pool = std::shared_ptr<DatabaseSessionPool>(new DatabaseSessionPool(
-                    backend, resolver, logger, dbName, password
-                ));
+                    backend, resolver, logger, dbName, password));
 
                 return pool;
             });
@@ -102,7 +100,7 @@ namespace ledger {
             return _pool;
         }
 
-        soci::connection_pool& DatabaseSessionPool::getReadonlyPool() {
+        soci::connection_pool &DatabaseSessionPool::getReadonlyPool() {
             return _readonlyPool;
         }
 
@@ -128,7 +126,7 @@ namespace ledger {
                                                         const std::string &newPassword) {
             auto poolSize = _backend->getConnectionPoolSize();
             for (size_t i = 0; i < poolSize; i++) {
-                auto& session = getPool().at(i);
+                auto &session = getPool().at(i);
                 _backend->changePassword(oldPassword, newPassword, session);
             }
         }
@@ -144,5 +142,5 @@ namespace ledger {
             return std::dynamic_pointer_cast<PostgreSQLBackend>(_backend) != nullptr;
 #endif
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

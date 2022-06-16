@@ -32,7 +32,6 @@
 #include <bytes/BytesReader.h>
 #include <collections/vector.hpp>
 #include <utils/Exception.hpp>
-#include <collections/vector.hpp>
 
 // #include <utils/VectorUtils.hpp>
 
@@ -43,7 +42,7 @@ namespace ledger {
 
         static std::vector<uint8_t> _pad(const std::vector<uint8_t> &input, int size) {
             auto output = input;
-            while(output.size() < size) {
+            while (output.size() < size) {
                 output.emplace(output.begin(), 0x00);
             }
             return output;
@@ -62,7 +61,6 @@ namespace ledger {
             return vector::concat(_pad(r, 32), _pad(s, 32));
         }
 
-
         DER DER::fromRaw(const std::vector<uint8_t> &raw) {
             BytesReader reader(raw);
             // DER SEQUENCE prefix
@@ -73,7 +71,7 @@ namespace ledger {
             }
             // Total payload length
             auto length = reader.readNextVarInt();
-            
+
             // Type of R element, should be an Integer
             if (reader.readNextByte() != ASN1::INTEGER) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
@@ -123,10 +121,8 @@ namespace ledger {
             return {rSignature, sSignature};
         }
 
-    }
-}
-
-
+    } // namespace core
+} // namespace ledger
 
 // void RippleLikeTransactionApi::setDERSignature(const std::vector<uint8_t> &signature) {
 //             BytesReader reader(signature);

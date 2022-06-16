@@ -32,34 +32,34 @@
 #define LEDGER_CORE_HTTPURLCONNECTIONINPUTSTREAM_HPP
 
 #include "../api/HttpUrlConnection.hpp"
-#include <vector>
+
 #include <memory>
+#include <vector>
 
 namespace ledger {
- namespace core {
-     class HttpUrlConnectionInputStream {
-     public:
-         typedef char Ch;
-         HttpUrlConnectionInputStream(const std::shared_ptr<api::HttpUrlConnection>& connection);
-         Ch Peek();
-         Ch Take();
-         size_t Tell() const;
-         Ch* PutBegin();
-         void Put(Ch);
-         void Flush();
-         size_t PutEnd(Ch*);
+    namespace core {
+        class HttpUrlConnectionInputStream {
+          public:
+            typedef char Ch;
+            HttpUrlConnectionInputStream(const std::shared_ptr<api::HttpUrlConnection> &connection);
+            Ch Peek();
+            Ch Take();
+            size_t Tell() const;
+            Ch *PutBegin();
+            void Put(Ch);
+            void Flush();
+            size_t PutEnd(Ch *);
 
-     private:
-         inline void refill();
+          private:
+            inline void refill();
 
-     private:
-         std::shared_ptr<api::HttpUrlConnection> _connection;
-         std::vector<uint8_t> _buffer;
-         off_t _index;
-         off_t _offset;
-     };
- }
-}
-
+          private:
+            std::shared_ptr<api::HttpUrlConnection> _connection;
+            std::vector<uint8_t> _buffer;
+            off_t _index;
+            off_t _offset;
+        };
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_HTTPURLCONNECTIONINPUTSTREAM_HPP

@@ -30,16 +30,16 @@
  */
 
 #include "JsonParserPath.hpp"
-#include <utils/Exception.hpp>
+
+#include <boost/lexical_cast.hpp>
 #include <sstream>
 #include <string>
-#include <boost/lexical_cast.hpp>
+#include <utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
 
         JsonParserPath::JsonParserPath() {
-
         }
 
         void JsonParserPath::startArray() {
@@ -76,24 +76,24 @@ namespace ledger {
             std::stringstream ss;
             const JsonParserPathNode *parent = nullptr;
             auto iterations = 0;
-            for (const auto& node : _path) {
+            for (const auto &node : _path) {
                 iterations += 1;
                 if (iterations - 1 < depth)
                     continue;
                 switch (node.type) {
-                    case JsonParserPathNodeType::OBJECT:
-                        ss << "/";
-                        break;
-                    case JsonParserPathNodeType::ARRAY:
-                        ss << "[";
-                        break;
-                    case JsonParserPathNodeType::VALUE:
-                        if (parent != nullptr && parent->type == JsonParserPathNodeType::OBJECT) {
-                            ss << node.key();
-                        } else if (parent != nullptr && parent->type == JsonParserPathNodeType::ARRAY) {
-                            ss << node.index() << "]";
-                        }
-                        break;
+                case JsonParserPathNodeType::OBJECT:
+                    ss << "/";
+                    break;
+                case JsonParserPathNodeType::ARRAY:
+                    ss << "[";
+                    break;
+                case JsonParserPathNodeType::VALUE:
+                    if (parent != nullptr && parent->type == JsonParserPathNodeType::OBJECT) {
+                        ss << node.key();
+                    } else if (parent != nullptr && parent->type == JsonParserPathNodeType::ARRAY) {
+                        ss << node.index() << "]";
+                    }
+                    break;
                 }
                 parent = &node;
             }
@@ -104,7 +104,7 @@ namespace ledger {
             return toString(0);
         }
 
-        bool JsonParserPath::match(const JsonParserPathMatcher& matcher, int depth) const {
+        bool JsonParserPath::match(const JsonParserPathMatcher &matcher, int depth) const {
             if ((_path.size() - depth) < matcher.getElements().size())
                 return false;
 
@@ -141,22 +141,23 @@ namespace ledger {
         }
 
         void JsonParserPath::value() {
-            if (_path.empty()) return ;
+            if (_path.empty())
+                return;
             switch (_path.back().type) {
-               case JsonParserPathNodeType::OBJECT:
-                    _path.emplace_back(JsonParserPathNode(JsonParserPathNodeType::VALUE, _lastKey));
-                    break;
-               case JsonParserPathNodeType::ARRAY:
-                   _path.emplace_back(JsonParserPathNode(JsonParserPathNodeType::VALUE, 0));
-                   break;
-               case JsonParserPathNodeType::VALUE:
-                    if (getParent().type == JsonParserPathNodeType::ARRAY) {
-                        _path.back().content = _path.back().index() + 1;
-                    } else {
-                        _path.back().content = _lastKey;
-                    }
-                    break;
-           }
+            case JsonParserPathNodeType::OBJECT:
+                _path.emplace_back(JsonParserPathNode(JsonParserPathNodeType::VALUE, _lastKey));
+                break;
+            case JsonParserPathNodeType::ARRAY:
+                _path.emplace_back(JsonParserPathNode(JsonParserPathNodeType::VALUE, 0));
+                break;
+            case JsonParserPathNodeType::VALUE:
+                if (getParent().type == JsonParserPathNodeType::ARRAY) {
+                    _path.back().content = _path.back().index() + 1;
+                } else {
+                    _path.back().content = _lastKey;
+                }
+                break;
+            }
         }
 
         const JsonParserPathNode &JsonParserPath::getCurrent() const {
@@ -178,49 +179,44 @@ namespace ledger {
         JsonParserPathMatcher::JsonParserPathMatcher(const std::string &filter) {
             char buffer[64]; // Assume max key size is sizeof(buffer)
             auto offset = 0;
-            auto emplace_value = [&] () {
-                if (offset == 0 || _elements.empty()) return ;
+            auto emplace_value = [&]() {
+                if (offset == 0 || _elements.empty())
+                    return;
                 std::string s(buffer, offset);
                 if ((_elements.back().node.type == JsonParserPathNodeType::ARRAY && s == "*") ||
                     (_elements.back().node.type == JsonParserPathNodeType::OBJECT && s == "*")) {
                     _elements.emplace_back(JsonParserPathMatcherElement(
-                            JsonParserPathMatcherFilter::WILDCARD,
-                            JsonParserPathNode(JsonParserPathNodeType::VALUE)
-                    ));
+                        JsonParserPathMatcherFilter::WILDCARD,
+                        JsonParserPathNode(JsonParserPathNodeType::VALUE)));
                 } else if (_elements.back().node.type == JsonParserPathNodeType::ARRAY) {
                     auto i = boost::lexical_cast<int>(s);
                     _elements.emplace_back(JsonParserPathMatcherElement(
-                            JsonParserPathMatcherFilter::EXACT,
-                            JsonParserPathNode(JsonParserPathNodeType::VALUE, i)
-                    ));
+                        JsonParserPathMatcherFilter::EXACT,
+                        JsonParserPathNode(JsonParserPathNodeType::VALUE, i)));
                 } else if (s != "?") {
                     _elements.emplace_back(JsonParserPathMatcherElement(
-                            JsonParserPathMatcherFilter::EXACT,
-                            JsonParserPathNode(JsonParserPathNodeType::VALUE, s)
-                    ));
+                        JsonParserPathMatcherFilter::EXACT,
+                        JsonParserPathNode(JsonParserPathNodeType::VALUE, s)));
                 }
                 offset = 0;
             };
-            for (auto& c : filter) {
+            for (auto &c : filter) {
                 if (_elements.size() > 0 && _elements.back().filter == JsonParserPathMatcherFilter::MATCH_ALL)
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "? digit can only be put at the end of the filter string");
                 if (c == '?') {
                     _elements.emplace_back(JsonParserPathMatcherElement(
-                            JsonParserPathMatcherFilter::MATCH_ALL,
-                            JsonParserPathNode(JsonParserPathNodeType::VALUE)
-                    ));
+                        JsonParserPathMatcherFilter::MATCH_ALL,
+                        JsonParserPathNode(JsonParserPathNodeType::VALUE)));
                 } else if (c == '/') {
                     emplace_value();
                     _elements.emplace_back(JsonParserPathMatcherElement(
-                            JsonParserPathMatcherFilter::EXACT,
-                            JsonParserPathNode(JsonParserPathNodeType::OBJECT)
-                            ));
+                        JsonParserPathMatcherFilter::EXACT,
+                        JsonParserPathNode(JsonParserPathNodeType::OBJECT)));
                 } else if (c == '[') {
                     emplace_value();
                     _elements.emplace_back(JsonParserPathMatcherElement(
-                            JsonParserPathMatcherFilter::EXACT,
-                            JsonParserPathNode(JsonParserPathNodeType::ARRAY)
-                    ));
+                        JsonParserPathMatcherFilter::EXACT,
+                        JsonParserPathNode(JsonParserPathNodeType::ARRAY)));
                 } else if (c != ']') {
                     if (offset < sizeof(buffer))
                         buffer[offset++] = c;
@@ -229,30 +225,30 @@ namespace ledger {
             emplace_value();
         }
 
-        const std::list<JsonParserPathMatcherElement>& JsonParserPathMatcher::getElements() const {
+        const std::list<JsonParserPathMatcherElement> &JsonParserPathMatcher::getElements() const {
             return _elements;
         }
 
         std::string JsonParserPathMatcher::toString() const {
             std::stringstream ss;
-            const JsonParserPathNode* parent = nullptr;
-            for (auto& elem : _elements) {
+            const JsonParserPathNode *parent = nullptr;
+            for (auto &elem : _elements) {
                 switch (elem.node.type) {
-                    case JsonParserPathNodeType::OBJECT:
-                        ss << "/";
-                        break;
-                    case JsonParserPathNodeType::ARRAY:
-                        ss << "[";
-                        break;
-                    case JsonParserPathNodeType::VALUE:
-                        if (elem.filter == JsonParserPathMatcherFilter::MATCH_ALL) {
-                            ss << "?";
-                        } else if (parent != nullptr && parent->type == JsonParserPathNodeType::OBJECT) {
-                            ss << (elem.filter == JsonParserPathMatcherFilter::WILDCARD ? "*" : elem.node.key());
-                        } else if (elem.filter != JsonParserPathMatcherFilter::WILDCARD) {
-                            ss << elem.node.index();
-                        }
-                        break;
+                case JsonParserPathNodeType::OBJECT:
+                    ss << "/";
+                    break;
+                case JsonParserPathNodeType::ARRAY:
+                    ss << "[";
+                    break;
+                case JsonParserPathNodeType::VALUE:
+                    if (elem.filter == JsonParserPathMatcherFilter::MATCH_ALL) {
+                        ss << "?";
+                    } else if (parent != nullptr && parent->type == JsonParserPathNodeType::OBJECT) {
+                        ss << (elem.filter == JsonParserPathMatcherFilter::WILDCARD ? "*" : elem.node.key());
+                    } else if (elem.filter != JsonParserPathMatcherFilter::WILDCARD) {
+                        ss << elem.node.index();
+                    }
+                    break;
                 }
                 parent = &elem.node;
             }
@@ -272,16 +268,15 @@ namespace ledger {
         }
 
         JsonParserPathView JsonParserPath::view() {
-            if (_path.empty())  {
+            if (_path.empty()) {
                 throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Attempt to create a view at an invalid range");
             }
             return {this, (int)_path.size() - 1};
         }
 
         JsonParserPathView JsonParserPath::view(int depth) {
-            return  {this, depth};
+            return {this, depth};
         }
 
-
-    }
-}
+    } // namespace core
+} // namespace ledger

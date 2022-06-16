@@ -32,12 +32,12 @@
 #ifndef LEDGER_CORE_KEYCHAIN_TEST_HELPER_H
 #define LEDGER_CORE_KEYCHAIN_TEST_HELPER_H
 
-#include <src/wallet/currencies.hpp>
-#include <api/EthereumLikeNetworkParameters.hpp>
-#include <api/Currency.hpp>
 #include "../BaseFixture.h"
 #include "MemPreferencesBackend.hpp"
 
+#include <api/Currency.hpp>
+#include <api/EthereumLikeNetworkParameters.hpp>
+#include <src/wallet/currencies.hpp>
 
 struct KeychainTestData {
 
@@ -50,26 +50,22 @@ struct KeychainTestData {
     KeychainTestData() = default;
 
     KeychainTestData(ledger::core::api::BitcoinLikeNetworkParameters parameters_,
-                      ledger::core::api::Currency currency_,
-                      std::string xpub_,
-                      std::string derivationPath_):
-            btc_parameters(std::move(parameters_)),
-            currency(std::move(currency_)),
-            xpub(std::move(xpub_)),
-            derivationPath(std::move(derivationPath_))
-    {
+                     ledger::core::api::Currency currency_,
+                     std::string xpub_,
+                     std::string derivationPath_) : btc_parameters(std::move(parameters_)),
+                                                    currency(std::move(currency_)),
+                                                    xpub(std::move(xpub_)),
+                                                    derivationPath(std::move(derivationPath_)) {
         currency.bitcoinLikeNetworkParameters = btc_parameters;
     }
 
     KeychainTestData(ledger::core::api::EthereumLikeNetworkParameters parameters_,
                      ledger::core::api::Currency currency_,
                      std::string xpub_,
-                     std::string derivationPath_):
-            eth_parameters(std::move(parameters_)),
-            currency(std::move(currency_)),
-            xpub(std::move(xpub_)),
-            derivationPath(std::move(derivationPath_))
-    {
+                     std::string derivationPath_) : eth_parameters(std::move(parameters_)),
+                                                    currency(std::move(currency_)),
+                                                    xpub(std::move(xpub_)),
+                                                    derivationPath(std::move(derivationPath_)) {
         currency.ethereumLikeNetworkParameters = eth_parameters;
     }
 
@@ -81,7 +77,7 @@ struct KeychainTestData {
         this->derivationPath = data.derivationPath;
     }
 
-    KeychainTestData& operator=(const KeychainTestData &data) {
+    KeychainTestData &operator=(const KeychainTestData &data) {
         this->btc_parameters = data.btc_parameters;
         this->eth_parameters = data.eth_parameters;
         this->currency = data.currency;
@@ -120,25 +116,24 @@ extern KeychainTestData ETHEREUM_DATA;
 
 template <class Keychain>
 class KeychainFixture : public BaseFixture {
-public:
-    void testKeychain(const KeychainTestData &data, std::function<void (Keychain&)> f) {
+  public:
+    void testKeychain(const KeychainTestData &data, std::function<void(Keychain &)> f) {
         auto backend = std::make_shared<ledger::core::test::MemPreferencesBackend>();
         testKeychain(data, std::move(backend), f);
     };
 
-    void testKeychain(const KeychainTestData &data, std::shared_ptr<api::PreferencesBackend> backend, std::function<void (Keychain&)> f) {
+    void testKeychain(const KeychainTestData &data, std::shared_ptr<api::PreferencesBackend> backend, std::function<void(Keychain &)> f) {
         auto configuration = std::make_shared<DynamicObject>();
         dispatcher->getMainExecutionContext()->execute(ledger::core::make_runnable([=]() {
             Keychain keychain(
-                    configuration,
-                    data.currency,
-                    0,
-                    ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(data.currency,
-                                                                           data.xpub,
-                                                                           optional<std::string>(data.derivationPath),
-                                                                           configuration),
-                    std::make_shared<ledger::core::Preferences>(*backend, randomKeychainName())
-            );
+                configuration,
+                data.currency,
+                0,
+                ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(data.currency,
+                                                                       data.xpub,
+                                                                       optional<std::string>(data.derivationPath),
+                                                                       configuration),
+                std::make_shared<ledger::core::Preferences>(*backend, randomKeychainName()));
             f(keychain);
             dispatcher->stop();
         }));

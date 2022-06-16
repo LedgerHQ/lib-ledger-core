@@ -30,39 +30,34 @@
 #ifndef LEDGER_CORE_ALGORANDACCOUNTDATABASEHELPER_H
 #define LEDGER_CORE_ALGORANDACCOUNTDATABASEHELPER_H
 
+#include <soci.h>
 #include <wallet/common/database/AccountDatabaseHelper.h>
 
-#include <soci.h>
-
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
 
-    struct AccountDatabaseEntry {
-        int32_t index;
-        std::string address;
-    };
+            struct AccountDatabaseEntry {
+                int32_t index;
+                std::string address;
+            };
 
-    class AccountDatabaseHelper : public ledger::core::AccountDatabaseHelper {
+            class AccountDatabaseHelper : public ledger::core::AccountDatabaseHelper {
 
-    public:
+              public:
+                static std::string createAccount(
+                    soci::session &sql,
+                    const std::string &walletUid,
+                    const AccountDatabaseEntry &account);
 
-        static std::string createAccount(
-            soci::session & sql,
-            const std::string & walletUid,
-            const AccountDatabaseEntry & account
-        );
+                static bool queryAccount(
+                    soci::session &sql,
+                    const std::string &accountUid,
+                    AccountDatabaseEntry &account);
+            };
 
-        static bool queryAccount(
-            soci::session & sql,
-            const std::string & accountUid,
-            AccountDatabaseEntry & account
-        );
-
-    };
-
-} // namespace algorand
-} // namespace core
+        } // namespace algorand
+    }     // namespace core
 } // namespace ledger
 
 #endif // LEDGER_CORE_ALGORANDACCOUNTDATABASEHELPER_H

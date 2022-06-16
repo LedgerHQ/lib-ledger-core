@@ -30,9 +30,10 @@
  */
 
 #include "StellarFixture.hpp"
-#include <wallet/stellar/transaction_builders/StellarLikeTransactionBuilder.hpp>
-#include <wallet/currencies.hpp>
+
 #include <api_impl/BigIntImpl.hpp>
+#include <wallet/currencies.hpp>
+#include <wallet/stellar/transaction_builders/StellarLikeTransactionBuilder.hpp>
 
 TEST_F(StellarFixture, DISABLED_PaymentTransaction) {
     auto pool = newPool();
@@ -56,15 +57,15 @@ TEST_F(StellarFixture, DISABLED_PaymentTransaction) {
     auto signature = hex::toByteArray("3045022100B2B31575F8536B284410D01217F688BE3A9FAF4BA0BA3A9093F983E40D630EC7022022A7A25B01403CFF0D00B3B853D230F8E96FF832B15D4CCC75203CB65896A2D5");
     auto builder = std::dynamic_pointer_cast<StellarLikeTransactionBuilder>(account->buildTransaction());
     auto sequence = uv::wait(account->getSequence());
-    auto fees =  100;//Disabled until nodes can handle this request ==> uv::wait(account->getFeeStats()).modeAcceptedFee;
+    auto fees = 100; //Disabled until nodes can handle this request ==> uv::wait(account->getFeeStats()).modeAcceptedFee;
     builder->setSequence(api::BigInt::fromLong(sequence.toInt64()));
     builder->addNativePayment("GA5IHE27VP64IR2JVVGQILN4JX43LFCC6MS2E6LAKGP3UULK3OFFBJXR", api::Amount::fromLong(wallet->getCurrency(), 20000000));
-    builder->setBaseFee( api::Amount::fromLong(wallet->getCurrency(), fees));
+    builder->setBaseFee(api::Amount::fromLong(wallet->getCurrency(), fees));
     auto tx = uv::wait(builder->build());
     tx->putSignature(signature, address);
     auto wrappedEnvelope = std::dynamic_pointer_cast<StellarLikeTransaction>(tx)->envelope();
-    const auto& envelope = boost::get<stellar::xdr::TransactionV1Envelope>(wrappedEnvelope.content);
-    EXPECT_EQ(envelope.signatures.size() , 1);
+    const auto &envelope = boost::get<stellar::xdr::TransactionV1Envelope>(wrappedEnvelope.content);
+    EXPECT_EQ(envelope.signatures.size(), 1);
     EXPECT_EQ(envelope.tx.sourceAccount.type, stellar::xdr::CryptoKeyType::KEY_TYPE_ED25519);
     auto accountPubKey = account->getKeychain()->getAddress()->toPublicKey();
     auto sourceAccount = boost::get<stellar::xdr::uint256>(envelope.tx.sourceAccount.content);

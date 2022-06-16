@@ -30,16 +30,17 @@
  */
 
 #include "StellarFixture.hpp"
-#include <wallet/common/OperationQuery.h>
-#include <math/BigInt.h>
-#include <wallet/stellar/StellarLikeMemo.hpp>
+
 #include <api/StellarLikeMemoType.hpp>
+#include <math/BigInt.h>
+#include <wallet/common/OperationQuery.h>
+#include <wallet/stellar/StellarLikeMemo.hpp>
 
 using namespace ledger::core;
 
 template <typename T>
-inline void expectThrowInvalidMemoType(StellarLikeMemo* obj, T (StellarLikeMemo::*method)()) {
-    auto run = [&] () {
+inline void expectThrowInvalidMemoType(StellarLikeMemo *obj, T (StellarLikeMemo::*method)()) {
+    auto run = [&]() {
         return (obj->*method)();
     };
     auto result = make_try<T>(run);
@@ -61,7 +62,6 @@ TEST_F(StellarFixture, GetMemoText) {
     expectThrowInvalidMemoType(&api, &StellarLikeMemo::getMemoHash);
     expectThrowInvalidMemoType(&api, &StellarLikeMemo::getMemoId);
     expectThrowInvalidMemoType(&api, &StellarLikeMemo::getMemoReturn);
-
 }
 
 TEST_F(StellarFixture, GetMemoId) {

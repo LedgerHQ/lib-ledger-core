@@ -31,26 +31,25 @@
 #ifndef LEDGER_CORE_BLOCKDATABASEHELPER_H
 #define LEDGER_CORE_BLOCKDATABASEHELPER_H
 
-#include <wallet/common/Block.h>
-#include <string>
-#include <soci.h>
 #include <api/Block.hpp>
+#include <soci.h>
+#include <string>
 #include <utils/Option.hpp>
+#include <wallet/common/Block.h>
 
 namespace ledger {
     namespace core {
         class BlockDatabaseHelper {
-        public:
-            static std::string createBlockUid(const Block& block);
-            static std::string createBlockUid(const std::string& blockhash, const std::string& currencyName);
-            static bool putBlock(soci::session& sql, const Block& block);
-            static bool blockExists(soci::session& sql, const std::string& blockHash, const std::string& currencyName);
-            static Option<api::Block> getLastBlock(soci::session& sql, const std::string& currencyName);
-            static Option<api::Block> getPreviousBlockInDatabase(soci::session& sql, const std::string& currencyName, int64_t blockHeight);
+          public:
+            static std::string createBlockUid(const Block &block);
+            static std::string createBlockUid(const std::string &blockhash, const std::string &currencyName);
+            static bool putBlock(soci::session &sql, const Block &block);
+            static bool blockExists(soci::session &sql, const std::string &blockHash, const std::string &currencyName);
+            static Option<api::Block> getLastBlock(soci::session &sql, const std::string &currencyName);
+            static Option<api::Block> getPreviousBlockInDatabase(soci::session &sql, const std::string &currencyName, int64_t blockHeight);
             static Option<api::Block> getPreviousBlockInDatabase(soci::session &sql, const std::string &currencyName, std::chrono::system_clock::time_point date);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_BLOCKDATABASEHELPER_H

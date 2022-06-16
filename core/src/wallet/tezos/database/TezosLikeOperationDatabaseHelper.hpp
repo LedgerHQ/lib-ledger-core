@@ -32,17 +32,16 @@
 #ifndef LEDGER_CORE_TEZOSLIKEOPERATIONDATABASEHELPER_HPP
 #define LEDGER_CORE_TEZOSLIKEOPERATIONDATABASEHELPER_HPP
 
-#include <wallet/common/Operation.h>
 #include <soci.h>
+#include <wallet/common/Operation.h>
 
 namespace ledger {
     namespace core {
         class TezosLikeOperationDatabaseHelper {
-        public:
-            static void bulkInsert(soci::session& sql, const std::vector<Operation>& operations);
+          public:
+            static void bulkInsert(soci::session &sql, const std::vector<Operation> &operations);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_TEZOSLIKEOPERATIONDATABASEHELPER_HPP

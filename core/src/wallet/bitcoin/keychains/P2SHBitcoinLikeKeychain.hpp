@@ -36,15 +36,15 @@ namespace ledger {
     namespace core {
 
         class P2SHBitcoinLikeKeychain : public CommonBitcoinLikeKeychains {
-        public:
+          public:
             P2SHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                     const api::Currency &params, int account,
-                                     const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                                     const std::shared_ptr<Preferences> &preferences);
-            int32_t getOutputSizeAsSignedTxInput() const override ;
+                                    const api::Currency &params,
+                                    int account,
+                                    const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
+                                    const std::shared_ptr<Preferences> &preferences);
+            int32_t getOutputSizeAsSignedTxInput() const override;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_P2SHBITCOINLIKEKEYCHAIN_H

@@ -39,18 +39,18 @@ namespace ledger {
         namespace functional {
 
             template <typename FromType, typename ToType>
-            std::vector<ToType> map(const std::vector<FromType>& container, std::function<ToType (const FromType&)> f) {
+            std::vector<ToType> map(const std::vector<FromType> &container, std::function<ToType(const FromType &)> f) {
                 std::vector<ToType> result(container.size());
                 auto index = 0;
-                for (auto& item : container) {
+                for (auto &item : container) {
                     result[index] = f(item);
                     index += 1;
                 }
                 return result;
             };
 
-        }
-    }
-}
+        } // namespace functional
+    }     // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_FUNCTIONAL_HPP

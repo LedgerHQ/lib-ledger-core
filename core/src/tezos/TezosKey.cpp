@@ -28,9 +28,10 @@
  * SOFTWARE.
  *
  */
+#include "TezosKey.h"
+
 #include <algorithm>
 #include <utils/Exception.hpp>
-#include "TezosKey.h"
 
 namespace ledger {
     namespace core {
@@ -41,7 +42,7 @@ namespace ledger {
             }
 
             // std::vector<Encoding> ALL = {EDPK, SPPK, P2PK};
-        }
+        } // namespace TezosKeyType
 
         std::experimental::optional<TezosKeyType::Encoding>
         TezosKeyType::fromVersion(std::vector<uint8_t> version) {
@@ -104,5 +105,5 @@ namespace ledger {
 
             return {*encoding};
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

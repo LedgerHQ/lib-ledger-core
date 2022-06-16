@@ -30,19 +30,19 @@
  */
 
 #include "AESCipher.hpp"
-#include "PBKDF2.hpp"
+
 #include "AES256.hpp"
+#include "PBKDF2.hpp"
+
 #include <cassert>
 
 namespace ledger {
     namespace core {
-        AESCipher::AESCipher(const std::shared_ptr<api::RandomNumberGenerator> &rng, const std::string &password,
-                             const std::string &salt, uint32_t iter) {
+        AESCipher::AESCipher(const std::shared_ptr<api::RandomNumberGenerator> &rng, const std::string &password, const std::string &salt, uint32_t iter) {
             _rng = rng;
             _key = PBKDF2::derive(
-                    std::vector<uint8_t>(password.data(), password.data() + password.size()),
-                    std::vector<uint8_t>(salt.data(), salt.data() + salt.size())
-                    , iter, 32);
+                std::vector<uint8_t>(password.data(), password.data() + password.size()),
+                std::vector<uint8_t>(salt.data(), salt.data() + salt.size()), iter, 32);
         }
 
         void AESCipher::encrypt(std::istream *input, std::ostream *output) {
@@ -98,12 +98,12 @@ namespace ledger {
 #endif
         }
 
-        void AESCipher::encrypt(BytesReader& input, BytesWriter& output) {
+        void AESCipher::encrypt(BytesReader &input, BytesWriter &output) {
             uint32_t maxRead = 254 * AES256::BLOCK_SIZE;
             do {
                 // Read 254 * AES_BLOCK_SIZE bytes (we want at most 0xFF blocks to encrypt we the same IV)
                 uint32_t available = input.available();
-                uint32_t minEncryptedRead = std::min(maxRead,available);
+                uint32_t minEncryptedRead = std::min(maxRead, available);
                 std::vector<uint8_t> dataToEncrypt = input.read(minEncryptedRead);
                 uint32_t read = dataToEncrypt.size();
                 // Create an IVt
@@ -123,20 +123,20 @@ namespace ledger {
             } while (input.hasNext());
         }
 
-        void AESCipher::decrypt(BytesReader& input, BytesWriter& output) const {
+        void AESCipher::decrypt(BytesReader &input, BytesWriter &output) const {
             uint32_t maxRead = 255 * AES256::BLOCK_SIZE;
             do {
                 //Get number of blocks in encrypted data
                 uint8_t blocksCount = input.readNextByte();
                 //Size of encrypted (chunk of) data
-                uint32_t encryptedDataSize = blocksCount*AES256::BLOCK_SIZE;
+                uint32_t encryptedDataSize = blocksCount * AES256::BLOCK_SIZE;
                 //Get data that we read
                 uint32_t dataSize = input.readNextVarInt();
                 //Read IV
                 std::vector<uint8_t> IV = input.read(AES256::BLOCK_SIZE);
                 //Get number of bytes to read
                 uint32_t available = input.available();
-                if(available < encryptedDataSize) {
+                if (available < encryptedDataSize) {
                     //Should not read than more available data
                     break;
                 }
@@ -145,12 +145,12 @@ namespace ledger {
                 //Decrypt
                 auto decrypted = AES256::decrypt(IV, _key, encryptedData);
                 //Truncate if needed to size of encrypted data that we stored in dataSize bytes
-                if(dataSize <  decrypted.size()){
+                if (dataSize < decrypted.size()) {
                     decrypted.resize(dataSize);
                 }
                 //Store decrypted data
                 output.writeByteArray(decrypted);
             } while (input.hasNext());
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

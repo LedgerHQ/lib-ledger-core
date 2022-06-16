@@ -29,5 +29,3 @@
  *
  */
 #include "vector.hpp"
-
-

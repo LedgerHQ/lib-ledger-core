@@ -41,7 +41,7 @@ namespace ledger {
         namespace ASN1 {
             static const uint8_t SEQUENCE = 0x30;
             static const uint8_t INTEGER = 0x02;
-        };
+        }; // namespace ASN1
 
         /**
          * @brief Represent a DER packed signature
@@ -66,8 +66,7 @@ namespace ledger {
              */
             static DER fromRaw(const std::vector<uint8_t> &raw);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_DER_HPP

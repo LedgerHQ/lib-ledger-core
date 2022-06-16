@@ -44,5 +44,5 @@ namespace ledger {
                                                       const BitcoinLikeBlockchainExplorer::Block &block) {
             return false;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

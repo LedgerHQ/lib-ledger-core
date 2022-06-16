@@ -29,23 +29,24 @@
  *
  */
 #include "OperationDatabaseHelper.h"
+
 #include "BlockDatabaseHelper.h"
-#include <crypto/SHA256.hpp>
-#include <api/Amount.hpp>
-#include <api/BigInt.hpp>
-#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
-#include <database/soci-number.h>
-#include <database/soci-date.h>
-#include <database/soci-option.h>
-#include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
-#include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
-#include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
-#include <bytes/serialization.hpp>
-#include <collections/strings.hpp>
-#include <wallet/common/TrustIndicator.h>
-#include <wallet/stellar/database/StellarLikeTransactionDatabaseHelper.hpp>
 
 #include <algorithm>
+#include <api/Amount.hpp>
+#include <api/BigInt.hpp>
+#include <bytes/serialization.hpp>
+#include <collections/strings.hpp>
+#include <crypto/SHA256.hpp>
+#include <database/soci-date.h>
+#include <database/soci-number.h>
+#include <database/soci-option.h>
+#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <wallet/common/TrustIndicator.h>
+#include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
+#include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
+#include <wallet/stellar/database/StellarLikeTransactionDatabaseHelper.hpp>
+#include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
 
 using namespace soci;
 
@@ -53,24 +54,19 @@ namespace ledger {
     namespace core {
 
         std::vector<std::string> OperationDatabaseHelper::fetchFromBlocks(soci::session &sql, std::vector<std::string> const &blockUIDs) {
-            rowset<std::string> rows = (
-                sql.prepare << "SELECT uid "
-                               "FROM operations AS op "
-                               "WHERE block_uid IN (:uids)",
-                use(blockUIDs));
+            rowset<std::string> rows = (sql.prepare << "SELECT uid "
+                                                       "FROM operations AS op "
+                                                       "WHERE block_uid IN (:uids)",
+                                        use(blockUIDs));
 
             return std::vector<std::string>(rows.begin(), rows.end());
         }
 
-
-        std::string OperationDatabaseHelper::createUid(const std::string &accountUid, const std::string &txId,
-                                                       const api::OperationType type) {
+        std::string OperationDatabaseHelper::createUid(const std::string &accountUid, const std::string &txId, const api::OperationType type) {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}", accountUid, txId, api::to_string(type)));
         }
 
-        void OperationDatabaseHelper::queryOperations(soci::session &sql, int32_t from, int32_t to, bool complete,
-                                                      bool excludeDropped, std::vector<Operation> &out) {
-
+        void OperationDatabaseHelper::queryOperations(soci::session &sql, int32_t from, int32_t to, bool complete, bool excludeDropped, std::vector<Operation> &out) {
         }
 
         std::size_t
@@ -78,14 +74,13 @@ namespace ledger {
                                                  const std::string &accountUid,
                                                  std::vector<Operation> &operations,
                                                  std::function<bool(const std::string &address)> filter) {
-            rowset<row> rows = (sql.prepare <<
-                                            "SELECT op.amount, op.fees, op.type, op.date, op.senders, op.recipients"
-                                                    " FROM operations AS op "
-                                                    " WHERE op.account_uid = :uid ORDER BY op.date",
-                                                    use(accountUid));
+            rowset<row> rows = (sql.prepare << "SELECT op.amount, op.fees, op.type, op.date, op.senders, op.recipients"
+                                               " FROM operations AS op "
+                                               " WHERE op.account_uid = :uid ORDER BY op.date",
+                                use(accountUid));
 
-            auto filterList = [&] (const std::vector<std::string> &list) -> bool {
-                for (auto& elem : list) {
+            auto filterList = [&](const std::vector<std::string> &list) -> bool {
+                for (auto &elem : list) {
                     if (filter(elem)) {
                         return true;
                     }
@@ -94,7 +89,7 @@ namespace ledger {
             };
 
             std::size_t c = 0;
-            for (auto& row : rows) {
+            for (auto &row : rows) {
                 auto type = api::from_string<api::OperationType>(row.get<std::string>(2));
                 auto senders = strings::split(row.get<std::string>(4), ",");
                 auto recipients = strings::split(row.get<std::string>(5), ",");
@@ -116,38 +111,34 @@ namespace ledger {
         }
 
         Option<bool> OperationDatabaseHelper::isOperationInBlock(soci::session &sql, const std::string &opUid) {
-            rowset<row> rows = (sql.prepare <<
-                                            "SELECT block_uid "
-                                            "FROM operations "
-                                            "WHERE uid = :uid",
-                    use(opUid));
-            for (auto& row : rows) {
+            rowset<row> rows = (sql.prepare << "SELECT block_uid "
+                                               "FROM operations "
+                                               "WHERE uid = :uid",
+                                use(opUid));
+            for (auto &row : rows) {
                 return Option<bool>(!row.get<Option<std::string>>(0).getValueOr("").empty());
             }
             return Option<bool>::NONE;
         }
 
         void OperationDatabaseHelper::eraseDataSince(
-                    soci::session &sql,
-                    const std::string &accountUid,
-                    const std::chrono::system_clock::time_point & date,
-                    const std::string &specificOperationsTableName,
-                    const std::string &specificTransactionsTableName) {
-            
-            rowset<std::string> rows = (sql.prepare <<
-                "SELECT transaction_uid FROM " << specificOperationsTableName << " AS sop "
-                "JOIN operations AS op ON sop.uid = op.uid "
-                "WHERE op.account_uid = :uid AND op.date >= :date", 
-                use(accountUid), use(date)
-            );
+            soci::session &sql,
+            const std::string &accountUid,
+            const std::chrono::system_clock::time_point &date,
+            const std::string &specificOperationsTableName,
+            const std::string &specificTransactionsTableName) {
+
+            rowset<std::string> rows = (sql.prepare << "SELECT transaction_uid FROM " << specificOperationsTableName << " AS sop "
+                                                                                                                        "JOIN operations AS op ON sop.uid = op.uid "
+                                                                                                                        "WHERE op.account_uid = :uid AND op.date >= :date",
+                                        use(accountUid), use(date));
             std::vector<std::string> txToDelete(rows.begin(), rows.end());
             if (!txToDelete.empty()) {
-                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date", 
+                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date",
                     use(accountUid), use(date);
-                sql << "DELETE FROM " << specificTransactionsTableName <<
-                    " WHERE transaction_uid IN (:uids)", use(txToDelete);
+                sql << "DELETE FROM " << specificTransactionsTableName << " WHERE transaction_uid IN (:uids)", use(txToDelete);
             }
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

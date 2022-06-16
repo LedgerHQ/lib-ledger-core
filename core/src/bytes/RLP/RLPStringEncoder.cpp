@@ -28,8 +28,8 @@
  *
  */
 
-
 #include "RLPStringEncoder.h"
+
 #include <utils/hex.h>
 
 /*
@@ -40,11 +40,10 @@
 namespace ledger {
     namespace core {
         //TODO : other constructors (operators)
-        RLPStringEncoder::RLPStringEncoder(const std::string &data) : _data(data.begin(),data.end()) {
+        RLPStringEncoder::RLPStringEncoder(const std::string &data) : _data(data.begin(), data.end()) {
         }
 
-        RLPStringEncoder::RLPStringEncoder(const std::vector<uint8_t> &data) : _data(data){
-
+        RLPStringEncoder::RLPStringEncoder(const std::vector<uint8_t> &data) : _data(data) {
         }
 
         std::vector<uint8_t> RLPStringEncoder::encode() {
@@ -83,5 +82,5 @@ namespace ledger {
         std::vector<std::shared_ptr<RLPEncoder>> RLPStringEncoder::getChildren() {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "RLP string encoder: string encoder has no children");
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

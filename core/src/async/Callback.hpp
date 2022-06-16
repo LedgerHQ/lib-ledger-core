@@ -31,31 +31,31 @@
 #ifndef LEDGER_CORE_CALLBACK_H
 #define LEDGER_CORE_CALLBACK_H
 
-#include <future>
 #include "ExecutionContext.hpp"
+
+#include <future>
 
 namespace ledger {
     namespace core {
 
         template <typename T>
         class CallbackResult {
-
         };
 
         template <typename T>
         class Callback {
 
-        public:
-            Callback(ExecutionContext *_context, const std::function<void (CallbackResult<T>)>& function) {};
-            void operator()(T result) {
+          public:
+            Callback(ExecutionContext *_context, const std::function<void(CallbackResult<T>)> &function){};
+            void operator()(T result){
 
             };
 
-        private:
+          private:
             ExecutionContext *_context;
             T _function;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_CALLBACK_H

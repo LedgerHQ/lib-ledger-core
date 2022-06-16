@@ -31,19 +31,20 @@
 #ifndef LEDGER_CORE_PREFERENCESEDITOR_HPP
 #define LEDGER_CORE_PREFERENCESEDITOR_HPP
 
-#include "../api/PreferencesEditor.hpp"
 #include "../api/PreferencesChange.hpp"
-#include <memory>
-#include <cereal/cereal.hpp>
+#include "../api/PreferencesEditor.hpp"
+
 #include <cereal/archives/portable_binary.hpp>
+#include <cereal/cereal.hpp>
+#include <memory>
 
 namespace ledger {
     namespace core {
         class Preferences;
 
         class PreferencesEditor : public api::PreferencesEditor, public std::enable_shared_from_this<PreferencesEditor> {
-        public:
-            PreferencesEditor(Preferences& preferences);
+          public:
+            PreferencesEditor(Preferences &preferences);
 
             std::shared_ptr<api::PreferencesEditor>
             putString(const std::string &key, const std::string &value) override;
@@ -60,12 +61,12 @@ namespace ledger {
             std::shared_ptr<api::PreferencesEditor> remove(const std::string &key) override;
 
             template <typename T>
-            std::shared_ptr<PreferencesEditor> putObject(const std::string& key, T& object) {
+            std::shared_ptr<PreferencesEditor> putObject(const std::string &key, T &object) {
                 std::stringstream is;
                 ::cereal::PortableBinaryOutputArchive archive(is);
                 archive(object);
                 auto savedState = is.str();
-                putData(key, std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data() + savedState.length()));
+                putData(key, std::vector<uint8_t>((const uint8_t *)savedState.data(), (const uint8_t *)savedState.data() + savedState.length()));
                 return shared_from_this();
             };
 
@@ -77,12 +78,11 @@ namespace ledger {
             /// Clear all preferences.
             void clear() override;
 
-        private:
+          private:
             std::vector<api::PreferencesChange> _changes;
-            Preferences& _preferences;
+            Preferences &_preferences;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_PREFERENCESEDITOR_HPP

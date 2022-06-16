@@ -29,16 +29,17 @@
  *
  */
 
-#include "BaseFixture.h"
 #include "../fixtures/medium_xpub_fixtures.h"
 #include "../fixtures/testnet_xpub_fixtures.h"
-#include <wallet/common/OperationQuery.h>
+#include "BaseFixture.h"
+
 #include <api/KeychainEngines.hpp>
-#include <utils/DateUtils.hpp>
 #include <iostream>
+#include <utils/DateUtils.hpp>
+#include <wallet/common/OperationQuery.h>
 using namespace std;
 class AccountsPublicInterfaceTest : public BaseFixture {
-public:
+  public:
     void SetUp() override {
         BaseFixture::SetUp();
         walletName = randomWalletName();
@@ -110,15 +111,15 @@ TEST_F(AccountsPublicInterfaceTest, QueryOperationsOnEmptyAccount) {
 
 TEST_F(AccountsPublicInterfaceTest, GetTestnetUnits) {
     auto configuration = DynamicObject::newInstance();
-    configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
+    configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
     wallet = uv::wait(pool->createWallet("my_wallet_testnet", "bitcoin_testnet", configuration));
     auto currency = pool->getCurrency("bitcoin");
     EXPECT_EQ(currency->name, "bitcoin");
-    cout<<">>>> Get account"<<endl;
+    cout << ">>>> Get account" << endl;
     auto account = ledger::testing::testnet_xpub::inflate(pool, wallet);
-    cout<<">>>> Get balance"<<endl;
+    cout << ">>>> Get balance" << endl;
     auto balance = uv::wait(account->getBalance());
-    cout<<">>>> Get balance toLong"<<endl;
+    cout << ">>>> Get balance toLong" << endl;
     auto balanceLong = balance->toLong();
     //EXPECT_EQ(balanceLong, 100L);
     //auto balance = uv::wait(account->getBalance());

@@ -29,49 +29,50 @@
  *
  */
 
-#include <api/Currency.hpp>
 #include "EthereumLikeKeychain.hpp"
+
+#include <api/Currency.hpp>
 #include <api/KeychainEngines.hpp>
-#include <cereal/cereal.hpp>
 #include <cereal/archives/binary.hpp>
+#include <cereal/cereal.hpp>
 #include <cereal/types/set.hpp>
 #include <ethereum/EthereumLikeExtendedPublicKey.h>
 
 namespace ledger {
     namespace core {
 
-        EthereumLikeKeychain::EthereumLikeKeychain(const std::shared_ptr<api::DynamicObject>& configuration,
-                                                   const api::Currency &params, int account,
-                                                   const std::shared_ptr<Preferences>& preferences) :
-                _account(account), _preferences(preferences), _configuration(configuration), _currency(params),
-                _fullScheme(DerivationScheme(configuration
-                                                     ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
-                                                     .value_or("44'/<coin_type>'/<account>'/<node>/<address>"))),
-                _scheme(DerivationScheme(configuration
-                                                 ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
-                                                 .value_or("44'/<coin_type>'/<account>'/<node>/<address>")).getSchemeFrom(DerivationSchemeLevel::ACCOUNT_INDEX).shift())
-        {
+        EthereumLikeKeychain::EthereumLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
+                                                   const api::Currency &params,
+                                                   int account,
+                                                   const std::shared_ptr<Preferences> &preferences) : _account(account), _preferences(preferences), _configuration(configuration), _currency(params),
+                                                                                                      _fullScheme(DerivationScheme(configuration
+                                                                                                                                       ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
+                                                                                                                                       .value_or("44'/<coin_type>'/<account>'/<node>/<address>"))),
+                                                                                                      _scheme(DerivationScheme(configuration
+                                                                                                                                   ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
+                                                                                                                                   .value_or("44'/<coin_type>'/<account>'/<node>/<address>"))
+                                                                                                                  .getSchemeFrom(DerivationSchemeLevel::ACCOUNT_INDEX)
+                                                                                                                  .shift()) {
         }
-        
+
         EthereumLikeKeychain::EthereumLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
                                                    const api::Currency &params,
                                                    int account,
                                                    const std::shared_ptr<api::EthereumLikeExtendedPublicKey> &xpub,
                                                    const std::shared_ptr<Preferences> &preferences)
-                : EthereumLikeKeychain(configuration, params, account, preferences) {
+            : EthereumLikeKeychain(configuration, params, account, preferences) {
 
             _xpub = xpub;
-            getAllObservableAddresses(0,0);
+            getAllObservableAddresses(0, 0);
         }
 
         EthereumLikeKeychain::EthereumLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
                                                    const api::Currency &params,
                                                    int account,
                                                    const std::string &accountAddress,
-                                                   const std::shared_ptr<Preferences>& preferences)
-                : EthereumLikeKeychain(configuration, params, account, preferences)
-        {}
-        
+                                                   const std::shared_ptr<Preferences> &preferences)
+            : EthereumLikeKeychain(configuration, params, account, preferences) {}
+
         int EthereumLikeKeychain::getAccountIndex() const {
             return _account;
         }
@@ -79,7 +80,6 @@ namespace ledger {
         const api::EthereumLikeNetworkParameters &EthereumLikeKeychain::getNetworkParameters() const {
             return _currency.ethereumLikeNetworkParameters.value();
         }
-
 
         std::shared_ptr<Preferences> EthereumLikeKeychain::getPreferences() const {
             return _preferences;
@@ -89,7 +89,7 @@ namespace ledger {
             return _configuration;
         }
 
-        const api::Currency& EthereumLikeKeychain::getCurrency() const {
+        const api::Currency &EthereumLikeKeychain::getCurrency() const {
             return _currency;
         }
 
@@ -104,7 +104,6 @@ namespace ledger {
         const DerivationScheme &EthereumLikeKeychain::getFullDerivationScheme() const {
             return _fullScheme;
         }
-
 
         std::shared_ptr<EthereumLikeAddress> EthereumLikeKeychain::getAddress() const {
             if (_address.empty()) {
@@ -125,9 +124,8 @@ namespace ledger {
 
         std::vector<EthereumLikeKeychain::Address>
         EthereumLikeKeychain::getAllObservableAddresses(uint32_t from, uint32_t to) {
-            return { derive() };
+            return {derive()};
         }
-
 
         std::shared_ptr<api::EthereumLikeExtendedPublicKey> EthereumLikeKeychain::getExtendedPublicKey() const {
             return _xpub;
@@ -136,7 +134,6 @@ namespace ledger {
         std::string EthereumLikeKeychain::getRestoreKey() const {
             return _xpub->toBase58();
         }
-
 
         bool EthereumLikeKeychain::contains(const std::string &address) const {
             return getAddressDerivationPath(address).nonEmpty();
@@ -160,25 +157,27 @@ namespace ledger {
 
                 auto coinType = _fullScheme.getCoinType() ? _fullScheme.getCoinType() : getCurrency().bip44CoinType;
                 _localPath = getDerivationScheme()
-                        .setCoinType(coinType)
-                        .getPath().toString();
+                                 .setCoinType(coinType)
+                                 .getPath()
+                                 .toString();
 
                 auto cacheKey = fmt::format("path:{}", _localPath);
                 _address = getPreferences()->getString(cacheKey, "");
                 if (_address.empty()) {
                     auto nodeScheme = getDerivationScheme()
-                            .getSchemeFrom(DerivationSchemeLevel::NODE);
+                                          .getSchemeFrom(DerivationSchemeLevel::NODE);
                     auto p = nodeScheme.getPath().getDepth() > 0 ? nodeScheme
-                            .shift(1)
-                            .setCoinType(coinType)
-                            .getPath()
-                            .toString() : "";
+                                                                       .shift(1)
+                                                                       .setCoinType(coinType)
+                                                                       .getPath()
+                                                                       .toString()
+                                                                 : "";
 
                     auto localNodeScheme = getDerivationScheme()
-                            .getSchemeTo(DerivationSchemeLevel::NODE)
-                            .setCoinType(coinType);
+                                               .getSchemeTo(DerivationSchemeLevel::NODE)
+                                               .setCoinType(coinType);
                     // If node level is hardened we don't derive according to it since private
-                    // derivation are not supported 
+                    // derivation are not supported
                     auto xpub = localNodeScheme.getPath().getDepth() > 0 && localNodeScheme.getPath().isHardened(0) ? std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(DerivationPath("")) : std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(localNodeScheme.getPath());
                     auto strScheme = localNodeScheme.getPath().toString();
 
@@ -186,10 +185,10 @@ namespace ledger {
                     // Feed path -> address cache
                     // Feed address -> path cache
                     getPreferences()
-                            ->edit()
-                            ->putString(cacheKey, _address)
-                            ->putString(fmt::format("address:{}", _address), _localPath)
-                            ->commit();
+                        ->edit()
+                        ->putString(cacheKey, _address)
+                        ->putString(fmt::format("address:{}", _address), _localPath)
+                        ->commit();
                 }
             }
 
@@ -200,6 +199,5 @@ namespace ledger {
             return std::dynamic_pointer_cast<EthereumLikeAddress>(ethAddress);
         }
 
-
-    }
-}
+    } // namespace core
+} // namespace ledger

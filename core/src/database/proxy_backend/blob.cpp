@@ -34,7 +34,6 @@
 using namespace ledger::core;
 using namespace soci;
 
-
 std::size_t proxy_blob_backend::get_len() {
     return static_cast<size_t>(_backend->size());
 }

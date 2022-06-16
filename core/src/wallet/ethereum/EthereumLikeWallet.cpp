@@ -28,20 +28,17 @@
  *
  */
 
-
 #include "EthereumLikeWallet.h"
+
 #include "EthereumLikeAccount.h"
 
 #include <algorithm>
-
-#include <async/wait.h>
-#include <api/ErrorCode.hpp>
 #include <api/AccountCallback.hpp>
 #include <api/ConfigurationDefaults.hpp>
+#include <api/ErrorCode.hpp>
 #include <api/KeychainEngines.hpp>
-
+#include <async/wait.h>
 #include <ethereum/EthereumLikeExtendedPublicKey.h>
-
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 
@@ -51,14 +48,14 @@ namespace ledger {
         const api::WalletType EthereumLikeWallet::type = api::WalletType::ETHEREUM;
 
         EthereumLikeWallet::EthereumLikeWallet(const std::string &name,
-                                             const std::shared_ptr<EthereumLikeBlockchainExplorer>& explorer,
-                                             const std::shared_ptr<EthereumLikeKeychainFactory> &keychainFactory,
-                                             const EthereumLikeAccountSynchronizerFactory &synchronizer,
-                                             const std::shared_ptr<WalletPool> &pool, const api::Currency &network,
-                                             const std::shared_ptr<DynamicObject>& configuration,
-                                             const DerivationScheme& scheme
-        )
-                : AbstractWallet(name, network, pool, configuration, scheme) {
+                                               const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer,
+                                               const std::shared_ptr<EthereumLikeKeychainFactory> &keychainFactory,
+                                               const EthereumLikeAccountSynchronizerFactory &synchronizer,
+                                               const std::shared_ptr<WalletPool> &pool,
+                                               const api::Currency &network,
+                                               const std::shared_ptr<DynamicObject> &configuration,
+                                               const DerivationScheme &scheme)
+            : AbstractWallet(name, network, pool, configuration, scheme) {
             _explorer = explorer;
             _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
@@ -78,32 +75,32 @@ namespace ledger {
             if (info.chainCodes.size() != 1 || info.publicKeys.size() != 1 || info.owners.size() != 1)
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (only one public key is needed)");
             auto self = getSelf();
-            return async<api::ExtendedKeyAccountCreationInfo>([self, info] () -> api::ExtendedKeyAccountCreationInfo {
-                if (info.owners.size() != info.derivations.size() || info.owners.size() != info.chainCodes.size() ||
-                    info.publicKeys.size() != info.owners.size())
-                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (size of arrays differs)");
-                api::ExtendedKeyAccountCreationInfo result;
+            return async<api::ExtendedKeyAccountCreationInfo>([self, info]() -> api::ExtendedKeyAccountCreationInfo {
+                       if (info.owners.size() != info.derivations.size() || info.owners.size() != info.chainCodes.size() ||
+                           info.publicKeys.size() != info.owners.size())
+                           throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (size of arrays differs)");
+                       api::ExtendedKeyAccountCreationInfo result;
 
-                auto pkSize = info.publicKeys[0].size();
-                if (info.chainCodes[0].size() != 32 || (pkSize != 65 && pkSize != 33))
-                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (contains invalid public key(s))");
-                DerivationPath occurencePath(info.derivations[0]);
+                       auto pkSize = info.publicKeys[0].size();
+                       if (info.chainCodes[0].size() != 32 || (pkSize != 65 && pkSize != 33))
+                           throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (contains invalid public key(s))");
+                       DerivationPath occurencePath(info.derivations[0]);
 
-                auto xpub = EthereumLikeExtendedPublicKey::fromRaw(
-                        self->getCurrency(),
-                        Option<std::vector<uint8_t>>(),
-                        info.publicKeys[0],
-                        info.chainCodes[0],
-                        info.derivations[0]
-                );
-                result.owners.push_back(info.owners[0]);
-                result.derivations.push_back(info.derivations[0]);
-                result.extendedKeys.push_back(xpub->toBase58());
-                result.index = info.index;
-                return result;
-            }).flatMap<std::shared_ptr<ledger::core::api::Account>>(getContext(), [self] (const api::ExtendedKeyAccountCreationInfo& info) -> Future<std::shared_ptr<ledger::core::api::Account>> {
-                return self->newAccountWithExtendedKeyInfo(info);
-            });
+                       auto xpub = EthereumLikeExtendedPublicKey::fromRaw(
+                           self->getCurrency(),
+                           Option<std::vector<uint8_t>>(),
+                           info.publicKeys[0],
+                           info.chainCodes[0],
+                           info.derivations[0]);
+                       result.owners.push_back(info.owners[0]);
+                       result.derivations.push_back(info.derivations[0]);
+                       result.extendedKeys.push_back(xpub->toBase58());
+                       result.index = info.index;
+                       return result;
+                   })
+                .flatMap<std::shared_ptr<ledger::core::api::Account>>(getContext(), [self](const api::ExtendedKeyAccountCreationInfo &info) -> Future<std::shared_ptr<ledger::core::api::Account>> {
+                    return self->newAccountWithExtendedKeyInfo(info);
+                });
         }
 
         FuturePtr<ledger::core::api::Account>
@@ -118,15 +115,14 @@ namespace ledger {
             scheme.setCoinType(_coinType).setAccountIndex(info.index);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
             auto index = info.index;
-            return async<std::shared_ptr<api::Account> >([=] () -> std::shared_ptr<api::Account> {
+            return async<std::shared_ptr<api::Account>>([=]() -> std::shared_ptr<api::Account> {
                 auto keychain = self->_keychainFactory->build(
-                        index,
-                        xpubPath,
-                        getConfig(),
-                        info,
-                        getAccountInternalPreferences(index),
-                        getCurrency()
-                );
+                    index,
+                    xpubPath,
+                    getConfig(),
+                    info,
+                    getAccountInternalPreferences(index),
+                    getCurrency());
                 soci::session sql(self->getDatabase()->getPool());
                 soci::transaction tr(sql);
                 auto accountUid = AccountDatabaseHelper::createAccountUid(self->getWalletUid(), index);
@@ -136,12 +132,11 @@ namespace ledger {
                 EthereumLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index, info.extendedKeys[info.extendedKeys.size() - 1]);
                 tr.commit();
                 auto account = std::static_pointer_cast<api::Account>(std::make_shared<EthereumLikeAccount>(
-                        self->shared_from_this(),
-                        index,
-                        self->_explorer,
-                        self->_synchronizerFactory(),
-                        keychain
-                ));
+                    self->shared_from_this(),
+                    index,
+                    self->_explorer,
+                    self->_synchronizerFactory(),
+                    keychain));
                 self->addAccountInstanceToInstanceCache(std::dynamic_pointer_cast<AbstractAccount>(account));
                 return account;
             });
@@ -166,7 +161,7 @@ namespace ledger {
         Future<api::ExtendedKeyAccountCreationInfo>
         EthereumLikeWallet::getExtendedKeyAccountCreationInfo(int32_t accountIndex) {
             auto self = std::dynamic_pointer_cast<EthereumLikeWallet>(shared_from_this());
-            return async<api::ExtendedKeyAccountCreationInfo>([self, accountIndex] () -> api::ExtendedKeyAccountCreationInfo {
+            return async<api::ExtendedKeyAccountCreationInfo>([self, accountIndex]() -> api::ExtendedKeyAccountCreationInfo {
                 api::ExtendedKeyAccountCreationInfo info;
                 info.index = accountIndex;
                 auto scheme = self->getDerivationScheme();
@@ -186,7 +181,7 @@ namespace ledger {
 
         Future<api::AccountCreationInfo> EthereumLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
             auto self = std::dynamic_pointer_cast<EthereumLikeWallet>(shared_from_this());
-            return getExtendedKeyAccountCreationInfo(accountIndex).map<api::AccountCreationInfo>(getContext(), [self, accountIndex] (const api::ExtendedKeyAccountCreationInfo info) -> api::AccountCreationInfo {
+            return getExtendedKeyAccountCreationInfo(accountIndex).map<api::AccountCreationInfo>(getContext(), [self, accountIndex](const api::ExtendedKeyAccountCreationInfo info) -> api::AccountCreationInfo {
                 api::AccountCreationInfo result;
                 result.index = accountIndex;
                 auto length = info.derivations.size();
@@ -205,8 +200,7 @@ namespace ledger {
         }
 
         std::shared_ptr<AbstractAccount>
-        EthereumLikeWallet::createAccountInstance(soci::session &sql, const std::string &accountUid)
-        {
+        EthereumLikeWallet::createAccountInstance(soci::session &sql, const std::string &accountUid) {
             EthereumLikeAccountDatabaseEntry entry;
             EthereumLikeAccountDatabaseHelper::queryAccount(sql, accountUid, entry);
             auto scheme = getDerivationScheme();
@@ -228,5 +222,5 @@ namespace ledger {
             return _explorer;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

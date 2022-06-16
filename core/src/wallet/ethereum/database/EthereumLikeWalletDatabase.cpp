@@ -28,11 +28,10 @@
  *
  */
 
-
 #include "EthereumLikeWalletDatabase.h"
 
 namespace ledger {
     namespace core {
 
     }
-}
+} // namespace ledger

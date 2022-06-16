@@ -1,18 +1,18 @@
 #ifndef __TEZOS_FIXTURES_H_
 #define __TEZOS_FIXTURES_H_
 
-#include <string>
+#include "../integration/BaseFixture.h"
+
 #include <api/AccountCreationInfo.hpp>
 #include <api/DynamicObject.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
-#include <wallet/tezos/TezosLikeWallet.h>
-#include <wallet/tezos/TezosLikeAccount.h>
-#include <wallet/tezos/transaction_builders/TezosLikeTransactionBuilder.h>
-#include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
+#include <string>
 #include <test/integration/IntegrationEnvironment.h>
-
-#include "../integration/BaseFixture.h"
+#include <wallet/tezos/TezosLikeAccount.h>
+#include <wallet/tezos/TezosLikeWallet.h>
+#include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
+#include <wallet/tezos/transaction_builders/TezosLikeTransactionBuilder.h>
 
 using namespace ledger::core;
 
@@ -76,7 +76,7 @@ namespace ledger {
             };
 
             struct TezosBaseTest : public ::testing::TestWithParam<TezosTestData> {
-                public:
+              public:
                 TezosBaseTest() {
                     TezosTestData data = GetParam();
                     auto configuration = DynamicObject::newInstance();
@@ -87,49 +87,46 @@ namespace ledger {
 
             ::testing::internal::ParamGenerator<TezosTestData> TezosParams();
 
-            std::string TezosParamsNames(const ::testing::TestParamInfo<TezosBaseTest::ParamType>& info);
+            std::string TezosParamsNames(const ::testing::TestParamInfo<TezosBaseTest::ParamType> &info);
 
             // Legacy fixture extracted from core/test/fixtures/xtz_fixtures.h
             extern api::AccountCreationInfo XPUB_INFO;
-			extern const std::string TX_1;
-			extern const std::string TX_2;
-			extern const std::string TX_3;
-			extern const std::string TX_4;
-			extern const std::string TX_5;
-			extern const std::string TX_6;
-			extern const std::string TX_7;
-			extern const std::string TX_8;
+            extern const std::string TX_1;
+            extern const std::string TX_2;
+            extern const std::string TX_3;
+            extern const std::string TX_4;
+            extern const std::string TX_5;
+            extern const std::string TX_6;
+            extern const std::string TX_7;
+            extern const std::string TX_8;
 
-			std::shared_ptr<core::TezosLikeAccount> inflate(
-                const std::shared_ptr<core::WalletPool>& pool,
-                const std::shared_ptr<core::AbstractWallet>& wallet
-            );
+            std::shared_ptr<core::TezosLikeAccount> inflate(
+                const std::shared_ptr<core::WalletPool> &pool,
+                const std::shared_ptr<core::AbstractWallet> &wallet);
 
             std::shared_ptr<core::TezosLikeAccount> inflate_ED25519(
-                const std::shared_ptr<core::WalletPool>& pool,
-                const std::shared_ptr<core::AbstractWallet>& wallet
-            );
+                const std::shared_ptr<core::WalletPool> &pool,
+                const std::shared_ptr<core::AbstractWallet> &wallet);
 
             std::shared_ptr<core::TezosLikeAccount> inflate_SECP256K1(
-                const std::shared_ptr<core::WalletPool>& pool,
-                const std::shared_ptr<core::AbstractWallet>& wallet
-            );
+                const std::shared_ptr<core::WalletPool> &pool,
+                const std::shared_ptr<core::AbstractWallet> &wallet);
 
             std::shared_ptr<core::TezosLikeAccount> inflate_P256(
-                const std::shared_ptr<core::WalletPool>& pool,
-                const std::shared_ptr<core::AbstractWallet>& wallet
-            );
+                const std::shared_ptr<core::WalletPool> &pool,
+                const std::shared_ptr<core::AbstractWallet> &wallet);
 
             struct TransactionTestData {
                 std::shared_ptr<api::DynamicObject> configuration;
                 std::string walletName;
                 std::string currencyName;
-                std::function<std::shared_ptr<TezosLikeAccount> (const std::shared_ptr<WalletPool>&,
-                                                                const std::shared_ptr<AbstractWallet>& )> inflate_xtz;
+                std::function<std::shared_ptr<TezosLikeAccount>(const std::shared_ptr<WalletPool> &,
+                                                                const std::shared_ptr<AbstractWallet> &)>
+                    inflate_xtz;
             };
 
-        }
-    }
-}
+        } // namespace tezos
+    }     // namespace testing
+} // namespace ledger
 
 #endif // __TEZOS_FIXTURES_H_

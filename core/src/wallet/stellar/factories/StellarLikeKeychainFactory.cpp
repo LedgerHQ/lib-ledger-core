@@ -30,33 +30,26 @@
  */
 
 #include "StellarLikeKeychainFactory.hpp"
+
 #include "../keychains/DefaultStellarLikeKeychain.hpp"
 
 namespace ledger {
     namespace core {
 
         std::shared_ptr<StellarLikeKeychain>
-        StellarLikeKeychainFactory::build(int32_t index, const DerivationPath &path,
-                                          const std::shared_ptr<DynamicObject> &configuration,
-                                          const api::AccountCreationInfo &info,
-                                          const std::shared_ptr<Preferences> &accountPreferences,
-                                          const api::Currency &currency) {
+        StellarLikeKeychainFactory::build(int32_t index, const DerivationPath &path, const std::shared_ptr<DynamicObject> &configuration, const api::AccountCreationInfo &info, const std::shared_ptr<Preferences> &accountPreferences, const api::Currency &currency) {
             return std::make_shared<DefaultStellarLikeKeychain>(
-                    std::make_shared<StellarLikeAddress>(info.publicKeys[0], currency, Option<uint64_t>::NONE, Option<std::string>(info.derivations[0])),
-                    configuration,
-                    currency, accountPreferences);
+                std::make_shared<StellarLikeAddress>(info.publicKeys[0], currency, Option<uint64_t>::NONE, Option<std::string>(info.derivations[0])),
+                configuration,
+                currency, accountPreferences);
         }
 
         std::shared_ptr<StellarLikeKeychain>
-        StellarLikeKeychainFactory::restore(int32_t index, const DerivationPath &path,
-                                            const std::shared_ptr<DynamicObject> &configuration,
-                                            const std::string &address,
-                                            const std::shared_ptr<Preferences> &accountPreferences,
-                                            const api::Currency &currency) {
+        StellarLikeKeychainFactory::restore(int32_t index, const DerivationPath &path, const std::shared_ptr<DynamicObject> &configuration, const std::string &address, const std::shared_ptr<Preferences> &accountPreferences, const api::Currency &currency) {
             return std::make_shared<DefaultStellarLikeKeychain>(
-                    std::make_shared<StellarLikeAddress>(address, currency, Option<std::string>("")),
-                    configuration,
-                    currency, accountPreferences);
+                std::make_shared<StellarLikeAddress>(address, currency, Option<std::string>("")),
+                configuration,
+                currency, accountPreferences);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

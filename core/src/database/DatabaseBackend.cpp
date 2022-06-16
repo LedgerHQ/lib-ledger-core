@@ -29,14 +29,16 @@
  *
  */
 #include "DatabaseBackend.hpp"
+
 #include "SQLite3Backend.hpp"
 #ifdef PG_SUPPORT
 #include "PostgreSQLBackend.h"
 #endif
+#include "ProxyBackend.hpp"
+
 #include <api/DatabaseEngine.hpp>
 #include <api/Error.hpp>
 #include <utils/Exception.hpp>
-#include "ProxyBackend.hpp"
 
 namespace ledger {
     namespace core {
@@ -54,7 +56,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::createBackendFromEngine(
-                const std::shared_ptr<ledger::core::api::DatabaseEngine> &engine) {
+            const std::shared_ptr<ledger::core::api::DatabaseEngine> &engine) {
             return std::make_shared<ProxyBackend>(engine);
         }
 
@@ -66,5 +68,5 @@ namespace ledger {
         bool DatabaseBackend::isLoggingEnabled() {
             return _enableLogging;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -32,8 +32,9 @@
 #define LEDGER_CORE_WAIT_H
 
 #include "Future.hpp"
-#include <utils/ImmediateExecutionContext.hpp>
+
 #include <condition_variable>
+#include <utils/ImmediateExecutionContext.hpp>
 
 namespace ledger {
     namespace core {
@@ -45,7 +46,7 @@ namespace ledger {
                 std::unique_lock<std::mutex> lock(mutex);
                 std::condition_variable barrier;
                 Try<T> res;
-                future.onComplete(ImmediateExecutionContext::INSTANCE, [&] (const Try<T>& result) {
+                future.onComplete(ImmediateExecutionContext::INSTANCE, [&](const Try<T> &result) {
                     res = result;
                     barrier.notify_all();
                 });
@@ -57,8 +58,8 @@ namespace ledger {
                 }
             }
 
-        }
-    }
-}
+        } // namespace async
+    }     // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_WAIT_H

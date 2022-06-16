@@ -31,21 +31,20 @@
 #ifndef LEDGER_CORE_BITCOINLIKEBLOCKCHAINEXPLORER_HPP
 #define LEDGER_CORE_BITCOINLIKEBLOCKCHAINEXPLORER_HPP
 
-#include <string>
-#include <chrono>
-#include <vector>
-
-#include <api/Error.hpp>
 #include <api/BigInt.hpp>
 #include <api/Currency.hpp>
+#include <api/Error.hpp>
 #include <async/Future.hpp>
+#include <chrono>
 #include <collections/collections.hpp>
 #include <math/BigInt.h>
+#include <string>
 #include <utils/ConfigurationMatchable.h>
-#include <utils/optional.hpp>
 #include <utils/Option.hpp>
-#include <wallet/common/explorers/AbstractBlockchainExplorer.h>
+#include <utils/optional.hpp>
+#include <vector>
 #include <wallet/common/Amount.h>
+#include <wallet/common/explorers/AbstractBlockchainExplorer.h>
 
 namespace ledger {
     namespace core {
@@ -73,8 +72,8 @@ namespace ledger {
             bool replaceable;
 
             BitcoinLikeBlockchainExplorerOutput() = default;
-            BitcoinLikeBlockchainExplorerOutput(BitcoinLikeBlockchainExplorerOutput const&) = default;
-            BitcoinLikeBlockchainExplorerOutput& operator+=(const BitcoinLikeBlockchainExplorerOutput& rhs){
+            BitcoinLikeBlockchainExplorerOutput(BitcoinLikeBlockchainExplorerOutput const &) = default;
+            BitcoinLikeBlockchainExplorerOutput &operator+=(const BitcoinLikeBlockchainExplorerOutput &rhs) {
                 if (rhs.index > index) {
                     index = rhs.index;
                 }
@@ -84,7 +83,7 @@ namespace ledger {
         };
 
         struct BitcoinLikeBlockchainExplorerTransaction {
-            uint32_t  version;
+            uint32_t version;
             std::string hash;
             std::chrono::system_clock::time_point receivedAt;
             uint64_t lockTime;
@@ -104,17 +103,16 @@ namespace ledger {
 
         class BitcoinLikeBlockchainExplorer : public ConfigurationMatchable,
                                               public AbstractBlockchainExplorer<BitcoinLikeBlockchainExplorerTransaction> {
-        public:
+          public:
             typedef ledger::core::Block Block;
             using Transaction = BitcoinLikeBlockchainExplorerTransaction;
 
-            BitcoinLikeBlockchainExplorer(const std::shared_ptr<api::DynamicObject>& configuration,
+            BitcoinLikeBlockchainExplorer(const std::shared_ptr<api::DynamicObject> &configuration,
                                           const std::vector<std::string> &matchableKeys);
 
             virtual Future<std::vector<std::shared_ptr<api::BigInt>>> getFees() = 0;
-
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_BITCOINLIKEBLOCKCHAINEXPLORER_HPP

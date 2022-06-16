@@ -31,12 +31,12 @@
 #ifndef LEDGER_CORE_WALLETPOOL_API_HPP
 #define LEDGER_CORE_WALLETPOOL_API_HPP
 
-#include <api/WalletPool.hpp>
-#include <wallet/pool/WalletPool.hpp>
-#include <api/WalletPoolCallback.hpp>
 #include <api/ErrorCodeCallback.hpp>
 #include <api/PreferencesBackend.hpp>
+#include <api/WalletPool.hpp>
+#include <api/WalletPoolCallback.hpp>
 #include <debug/LoggerApi.hpp>
+#include <wallet/pool/WalletPool.hpp>
 
 namespace ledger {
     namespace core {
@@ -44,8 +44,8 @@ namespace ledger {
         class BitcoinLikeWalletFactory;
 
         class WalletPoolApi : public api::WalletPool, public std::enable_shared_from_this<WalletPoolApi> {
-        public:
-            WalletPoolApi(const std::shared_ptr<ledger::core::WalletPool>& pool);
+          public:
+            WalletPoolApi(const std::shared_ptr<ledger::core::WalletPool> &pool);
             std::shared_ptr<api::Logger> getLogger() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
 
@@ -59,11 +59,9 @@ namespace ledger {
 
             void getWallets(int32_t from, int32_t size, const std::shared_ptr<api::WalletListCallback> &callback) override;
 
-            void createWallet(const std::string &name, const api::Currency &currency,
-                              const std::shared_ptr<api::DynamicObject> &configuration,
-                              const std::shared_ptr<api::WalletCallback> &callback) override;
+            void createWallet(const std::string &name, const api::Currency &currency, const std::shared_ptr<api::DynamicObject> &configuration, const std::shared_ptr<api::WalletCallback> &callback) override;
 
-            void getCurrencies(const std::shared_ptr <api::CurrencyListCallback> &callback) override;
+            void getCurrencies(const std::shared_ptr<api::CurrencyListCallback> &callback) override;
 
             void getCurrency(const std::string &name, const std::shared_ptr<api::CurrencyCallback> &callback) override;
 
@@ -74,22 +72,22 @@ namespace ledger {
             void
             getLastBlock(const std::string &currencyName, const std::shared_ptr<api::BlockCallback> &callback) override;
 
-            void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override;
+            void eraseDataSince(const std::chrono::system_clock::time_point &date, const std::shared_ptr<api::ErrorCodeCallback> &callback) override;
 
-            void freshResetAll(const std::shared_ptr<api::ErrorCodeCallback>& callback) override;
+            void freshResetAll(const std::shared_ptr<api::ErrorCodeCallback> &callback) override;
 
             void changePassword(const std::string &oldPassword,
                                 const std::string &newPassword,
-                                const std::shared_ptr<api::ErrorCodeCallback> & callback) override;
+                                const std::shared_ptr<api::ErrorCodeCallback> &callback) override;
 
             ~WalletPoolApi();
 
-        private:
+          private:
             std::shared_ptr<ledger::core::WalletPool> _pool;
             std::shared_ptr<LoggerApi> _logger;
             std::shared_ptr<api::ExecutionContext> _mainContext;
 
-        public:
+          public:
             static void open(const std::string &name,
                              const std::string &password,
                              const std::shared_ptr<api::HttpClient> &httpClient,
@@ -97,15 +95,14 @@ namespace ledger {
                              const std::shared_ptr<api::PathResolver> &pathResolver,
                              const std::shared_ptr<api::LogPrinter> &logPrinter,
                              const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                             const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                             const std::shared_ptr<api::RandomNumberGenerator> &rng,
                              const std::shared_ptr<api::DatabaseBackend> &backend,
-                             const std::shared_ptr<api::DynamicObject>& configuration,
+                             const std::shared_ptr<api::DynamicObject> &configuration,
                              const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
                              const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend,
-                             const std::shared_ptr<api::WalletPoolCallback>& listener);
+                             const std::shared_ptr<api::WalletPoolCallback> &listener);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_WALLETPOOL_API_HPP

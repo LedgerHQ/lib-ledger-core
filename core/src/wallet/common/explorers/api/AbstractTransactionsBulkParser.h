@@ -28,23 +28,21 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ABSTRACTTRANSACTIONSBULKPARSER_H
 #define LEDGER_CORE_ABSTRACTTRANSACTIONSBULKPARSER_H
 
-#define PROXY_PARSE_TXS(method, ...)                                            \
-    if (_depth > 0) {                                                       \
-        return getTransactionsParser().method(__VA_ARGS__);                     \
-    } else {                                                                \
-        return true;                                                        \
+#define PROXY_PARSE_TXS(method, ...)                        \
+    if (_depth > 0) {                                       \
+        return getTransactionsParser().method(__VA_ARGS__); \
+    } else {                                                \
+        return true;                                        \
     }
 
 namespace ledger {
     namespace core {
         template <typename BlockchainExplorerTransactionsBulk, typename TxsParser>
         class AbstractTransactionsBulkParser {
-        public:
-
+          public:
             bool Null() {
                 PROXY_PARSE_TXS(Null)
             }
@@ -120,14 +118,14 @@ namespace ledger {
                 _bulk = bulk;
             }
 
-        protected:
+          protected:
             virtual TxsParser &getTransactionsParser() = 0;
             virtual std::string &getLastKey() = 0;
             int _depth;
-            BlockchainExplorerTransactionsBulk* _bulk;
+            BlockchainExplorerTransactionsBulk *_bulk;
         };
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ABSTRACTTRANSACTIONSBULKPARSER_H

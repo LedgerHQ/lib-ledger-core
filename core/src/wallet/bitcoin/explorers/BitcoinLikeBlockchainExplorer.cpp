@@ -36,5 +36,5 @@ namespace ledger {
                                                                      const std::vector<std::string> &matchableKeys) : ConfigurationMatchable(matchableKeys) {
             setConfiguration(configuration);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

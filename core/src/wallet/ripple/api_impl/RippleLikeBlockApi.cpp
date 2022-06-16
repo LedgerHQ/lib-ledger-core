@@ -28,13 +28,12 @@
  *
  */
 
-
 #include "RippleLikeBlockApi.h"
 
 namespace ledger {
     namespace core {
 
-        RippleLikeBlockApi::RippleLikeBlockApi(const Block& block) {
+        RippleLikeBlockApi::RippleLikeBlockApi(const Block &block) {
             _block = block;
         }
 
@@ -49,5 +48,5 @@ namespace ledger {
         std::chrono::system_clock::time_point RippleLikeBlockApi::getTime() {
             return _block.time;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

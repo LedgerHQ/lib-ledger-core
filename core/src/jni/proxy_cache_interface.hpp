@@ -16,13 +16,13 @@
 
 #pragma once
 
-#include <memory>
 #include <functional>
+#include <memory>
 #include <typeindex>
 
 namespace djinni {
 
-/*
+    /*
  * The template parameters we receive here can be a number of different types: C++ smart
  * pointers, custom wrappers, or language-specific types (like ObjC's `id` / `__weak id`).
  * If custom wrapper types are used, like the `JavaWeakRef` type in the JNI library, then
@@ -33,12 +33,14 @@ namespace djinni {
  *
  * (The helper for .lock() is only used by proxy_cache_impl.hpp, so it's defined there.)
  */
-template <typename T> static inline auto get_unowning(const T & ptr) -> decltype(ptr.get()) {
-    return ptr.get();
-}
-template <typename T> static inline T * get_unowning(T * ptr) { return ptr; }
+    template <typename T>
+    static inline auto get_unowning(const T &ptr) -> decltype(ptr.get()) {
+        return ptr.get();
+    }
+    template <typename T>
+    static inline T *get_unowning(T *ptr) { return ptr; }
 
-/*
+    /*
  * ProxyCache provides a mechanism for re-using proxy objects generated in one language
  * that wrap around implementations in a different language. This is for correctness, not
  * just performance: when we pass the same object across a language boundary twice, we want
@@ -97,18 +99,18 @@ template <typename T> static inline T * get_unowning(T * ptr) { return ptr; }
  * to minimize duplication of code and make it so the unordered_map is as contained as
  * possible.
  */
-template <typename Traits>
-class ProxyCache {
-public:
-    using UnowningImplPointer = typename Traits::UnowningImplPointer;
-    using OwningImplPointer = typename Traits::OwningImplPointer;
-    using OwningProxyPointer = typename Traits::OwningProxyPointer;
-    using WeakProxyPointer = typename Traits::WeakProxyPointer;
-    using UnowningImplPointerHash = typename Traits::UnowningImplPointerHash;
-    using UnowningImplPointerEqual = typename Traits::UnowningImplPointerEqual;
-    class Pimpl;
+    template <typename Traits>
+    class ProxyCache {
+      public:
+        using UnowningImplPointer = typename Traits::UnowningImplPointer;
+        using OwningImplPointer = typename Traits::OwningImplPointer;
+        using OwningProxyPointer = typename Traits::OwningProxyPointer;
+        using WeakProxyPointer = typename Traits::WeakProxyPointer;
+        using UnowningImplPointerHash = typename Traits::UnowningImplPointerHash;
+        using UnowningImplPointerEqual = typename Traits::UnowningImplPointerEqual;
+        class Pimpl;
 
-    /*
+        /*
      * Each proxy object must own a Handle. The Handle carries a strong reference to whatever
      * the proxy wraps. When `ProxyCache::get()` creates a proxy, it also adds the proxy to
      * the global proxy cache; Handle::~Handle() removes the reference from the cache.
@@ -127,25 +129,29 @@ public:
      * cases like Java where all object types are uniformly represented as `jobject` in C++,
      * another type may be used.
      */
-    template <typename T, typename TagType = T>
-    class Handle {
-    public:
-        template <typename... Args> Handle(Args &&... args)
-            : m_cache(get_base()), m_obj(std::forward<Args>(args)...) {}
-        Handle(const Handle &) = delete;
-        Handle & operator=(const Handle &) = delete;
-        ~Handle() { if (m_obj) cleanup(m_cache, typeid(TagType), get_unowning(m_obj), true); }
+        template <typename T, typename TagType = T>
+        class Handle {
+          public:
+            template <typename... Args>
+            Handle(Args &&... args)
+                : m_cache(get_base()), m_obj(std::forward<Args>(args)...) {}
+            Handle(const Handle &) = delete;
+            Handle &operator=(const Handle &) = delete;
+            ~Handle() {
+                if (m_obj)
+                    cleanup(m_cache, typeid(TagType), get_unowning(m_obj), true);
+            }
 
-        void assign(const T & obj) { m_obj = obj; }
+            void assign(const T &obj) { m_obj = obj; }
 
-        const T & get() const & noexcept { return m_obj; }
+            const T &get() const &noexcept { return m_obj; }
 
-    private:
-        const std::shared_ptr<Pimpl> m_cache;
-        T m_obj;
-    };
+          private:
+            const std::shared_ptr<Pimpl> m_cache;
+            T m_obj;
+        };
 
-    /*
+        /*
      * Function typedef for helpers passed in to allocate new objects.
      * To reduce code size, the proxy cache type-erases the objects inside it.
      *
@@ -164,23 +170,23 @@ public:
      * returns a pair: the first element is the newly created proxy, and the second is an
      * UnowningImplPointer that will be used as a key in the map.
      */
-    using AllocatorFunction =
-        std::pair<OwningProxyPointer, UnowningImplPointer>(const OwningImplPointer &);
+        using AllocatorFunction =
+            std::pair<OwningProxyPointer, UnowningImplPointer>(const OwningImplPointer &);
 
-    /*
+        /*
      * Return the existing proxy for `impl`, if any. If not, create one by calling `alloc`,
      * store a weak reference to it in the proxy cache, and return it.
      */
-    static OwningProxyPointer get(const std::type_index &,
-                                  const OwningImplPointer & impl,
-                                  AllocatorFunction * alloc);
+        static OwningProxyPointer get(const std::type_index &,
+                                      const OwningImplPointer &impl,
+                                      AllocatorFunction *alloc);
 
-private:
-    static void cleanup(const std::shared_ptr<Pimpl> &,
-                        const std::type_index &,
-                        UnowningImplPointer,
-                        bool force_kill);
-    static const std::shared_ptr<Pimpl> & get_base();
-};
+      private:
+        static void cleanup(const std::shared_ptr<Pimpl> &,
+                            const std::type_index &,
+                            UnowningImplPointer,
+                            bool force_kill);
+        static const std::shared_ptr<Pimpl> &get_base();
+    };
 
 } // namespace djinni

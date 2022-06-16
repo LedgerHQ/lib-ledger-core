@@ -29,8 +29,9 @@
  *
  */
 #include "PreferencesEditor.hpp"
-#include "Preferences.hpp"
+
 #include "../bytes/BytesWriter.h"
+#include "Preferences.hpp"
 
 namespace ledger {
     namespace core {
@@ -86,7 +87,7 @@ namespace ledger {
             change.type = api::PreferencesChangeType::PUT_TYPE;
             change.key = _preferences.wrapKey(key);
             BytesWriter writer;
-            for (auto& item : value) {
+            for (auto &item : value) {
                 writer.writeVarString(item);
             }
             change.value = writer.toByteArray();
@@ -113,7 +114,6 @@ namespace ledger {
         }
 
         PreferencesEditor::PreferencesEditor(Preferences &preferences) : _preferences(preferences) {
-
         }
 
         std::shared_ptr<api::PreferencesEditor>
@@ -127,5 +127,5 @@ namespace ledger {
             _changes.push_back(change);
             return shared_from_this();
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

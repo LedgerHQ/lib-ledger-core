@@ -32,22 +32,20 @@
 #ifndef LEDGER_CORE_XDRDECODER_HPP
 #define LEDGER_CORE_XDRDECODER_HPP
 
+#include <array>
+#include <boost/variant/variant.hpp>
 #include <bytes/BytesReader.h>
 #include <list>
-#include <boost/variant/variant.hpp>
-#include <array>
-#include <utils/Option.hpp>
 #include <typeinfo>
+#include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {
         namespace stellar {
             namespace xdr {
 
-                struct UnsupportedObjectException : public std::exception
-                {
-                    const char * what () const throw ()
-                    {
+                struct UnsupportedObjectException : public std::exception {
+                    const char *what() const throw() {
                         return "XDR decoder has met an unsupported object during XDR parsing.";
                     }
                 };
@@ -64,19 +62,18 @@ namespace ledger {
                 * @return A function able to decode the object
                 */
                 template <class T>
-                ObjectDecoder make_decoder(T& object);
+                ObjectDecoder make_decoder(T &object);
 
                 class Decoder {
 
-                public:
-
+                  public:
                     Decoder(const std::vector<uint8_t> &data);
 
-                    template<class Object>
-                    Decoder& operator>>(std::list<Object> &list) {
+                    template <class Object>
+                    Decoder &operator>>(std::list<Object> &list) {
                         list.clear();
                         auto listLength = _reader.readNextBeInt();
-                        for (int i=0 ; i<listLength ; i++) {
+                        for (int i = 0; i < listLength; i++) {
                             Object item;
                             *this >> item;
                             list.push_back(item);
@@ -84,12 +81,12 @@ namespace ledger {
                         return *this;
                     }
 
-                    template<class Object>
-                    Decoder& operator>>(std::vector<Object> &list) {
+                    template <class Object>
+                    Decoder &operator>>(std::vector<Object> &list) {
                         list.clear();
                         auto listLength = _reader.readNextBeInt();
                         list.resize(listLength);
-                        for (int i=0 ; i < listLength ; i++) {
+                        for (int i = 0; i < listLength; i++) {
                             Object item;
                             *this >> item;
                             list[i] = item;
@@ -97,9 +94,9 @@ namespace ledger {
                         return *this;
                     }
 
-                    template<class Object, std::size_t N>
-                    Decoder& operator>>(std::array<Object, N> &list) {
-                        for (int i=0 ; i<N ; i++) {
+                    template <class Object, std::size_t N>
+                    Decoder &operator>>(std::array<Object, N> &list) {
+                        for (int i = 0; i < N; i++) {
                             Object item;
                             *this >> item;
                             list[i] = item;
@@ -107,8 +104,8 @@ namespace ledger {
                         return *this;
                     };
 
-                    template<class Object>
-                    Decoder& operator>>(Option<Object> &option) {
+                    template <class Object>
+                    Decoder &operator>>(Option<Object> &option) {
                         auto optionNonEmpty = false;
                         *this >> optionNonEmpty;
                         if (optionNonEmpty) {
@@ -119,38 +116,35 @@ namespace ledger {
                         return *this;
                     };
 
-                    template<class Object>
-                    Decoder& operator>>(Object &object) {
+                    template <class Object>
+                    Decoder &operator>>(Object &object) {
                         make_decoder(object)(*this);
                         return *this;
                     }
 
-                    Decoder& operator>>(ObjectDecoder &d);
+                    Decoder &operator>>(ObjectDecoder &d);
 
-                    Decoder& operator>>(int32_t &i);
+                    Decoder &operator>>(int32_t &i);
 
-                    Decoder& operator>>(uint32_t &i);
+                    Decoder &operator>>(uint32_t &i);
 
-                    Decoder& operator>>(int64_t &i);
+                    Decoder &operator>>(int64_t &i);
 
-                    Decoder& operator>>(uint64_t &i);
+                    Decoder &operator>>(uint64_t &i);
 
-                    Decoder& operator>>(bool &b);
+                    Decoder &operator>>(bool &b);
 
-                    Decoder& operator>>(uint8_t &byte);
+                    Decoder &operator>>(uint8_t &byte);
 
-                    Decoder& operator>>(std::string &str);
+                    Decoder &operator>>(std::string &str);
 
-
-                private:
-
+                  private:
                     BytesReader _reader;
                 };
 
-            }
-        }
-    }
-}
-
+            } // namespace xdr
+        }     // namespace stellar
+    }         // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_XDRDECODER_HPP

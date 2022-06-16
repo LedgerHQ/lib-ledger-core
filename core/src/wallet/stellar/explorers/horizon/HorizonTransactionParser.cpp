@@ -30,9 +30,10 @@
  */
 
 #include "HorizonTransactionParser.hpp"
+
+#include <math/BaseConverter.hpp>
 #include <utils/DateUtils.hpp>
 #include <wallet/stellar/xdr/XDRDecoder.hpp>
-#include <math/BaseConverter.hpp>
 
 using namespace ledger::core;
 
@@ -82,9 +83,8 @@ namespace ledger {
             return true;
         }
 
-        bool
-        HorizonTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-           if (_path.match(LEDGER_MATCHER)) {
+        bool HorizonTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+            if (_path.match(LEDGER_MATCHER)) {
                 _transaction->ledger = BigInt::fromString(std::string(str, length)).toUint64();
             }
             return true;
@@ -112,7 +112,7 @@ namespace ledger {
                 try {
                     _transaction->envelope = stellar::xdr::TransactionEnvelope();
                     decoder >> _transaction->envelope.getValue();
-                } catch (stellar::xdr::UnsupportedObjectException& ex) {
+                } catch (stellar::xdr::UnsupportedObjectException &ex) {
                     _transaction->envelope = Option<stellar::xdr::TransactionEnvelope>::NONE;
                 }
             } else if (_path.match(FEE_MATCHER)) {
@@ -150,5 +150,5 @@ namespace ledger {
         void HorizonTransactionParser::setPathView(const JsonParserPathView &path) {
             _path = path;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

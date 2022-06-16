@@ -33,27 +33,26 @@
 #include <string>
 
 namespace ledger {
-namespace core {
-namespace algorand {
-namespace model {
+    namespace core {
+        namespace algorand {
+            namespace model {
 
-    struct TransactionParams {
-        // Genesis ID of the node
-        std::string genesisID;
-        // Genesis hash (32 bytes in Base64) of the node
-        std::string genesisHash;
-        // The last round seen by the node
-        uint64_t lastRound;
-        // The consensus protocol version (as of lastRound) applied by the node
-        std::string consensusVersion;
-        // The suggested transaction fee, in micro-Algos per byte
-        uint64_t suggestedFeePerByte;
-        // The minimum transaction fee (not per byte) required in the current network protocol
-        uint64_t minFee;
-    };
+                struct TransactionParams {
+                    // Genesis ID of the node
+                    std::string genesisID;
+                    // Genesis hash (32 bytes in Base64) of the node
+                    std::string genesisHash;
+                    // The last round seen by the node
+                    uint64_t lastRound;
+                    // The consensus protocol version (as of lastRound) applied by the node
+                    std::string consensusVersion;
+                    // The suggested transaction fee, in micro-Algos per byte
+                    uint64_t suggestedFeePerByte;
+                    // The minimum transaction fee (not per byte) required in the current network protocol
+                    uint64_t minFee;
+                };
 
-} // namespace model
-} // namespace algorand
-} // namespace core
+            } // namespace model
+        }     // namespace algorand
+    }         // namespace core
 } // namespace ledger
-

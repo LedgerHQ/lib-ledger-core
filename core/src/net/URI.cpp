@@ -29,19 +29,18 @@
  *
  */
 #include "URI.hpp"
-#include <regex>
+
 #include <boost/lexical_cast.hpp>
+#include <regex>
 
 namespace ledger {
     namespace core {
 
-
         URI::URI(const String &uri) {
             std::regex ex("(http|https)://([^/ :]+):?([^/ ]*)(/?[^ #?]*)\\x3f?([^ #]*)#?([^ ]*)");
             std::cmatch what;
-            if(regex_match(uri.toCString(), what, ex))
-            {
-                _scheme =  std::string(what[1].first, what[1].second);
+            if (regex_match(uri.toCString(), what, ex)) {
+                _scheme = std::string(what[1].first, what[1].second);
                 _domain = std::string(what[2].first, what[2].second);
                 _port = std::string(what[3].first, what[3].second);
                 _path = std::string(what[4].first, what[4].second);
@@ -74,5 +73,5 @@ namespace ledger {
             return _fragment;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -29,8 +29,9 @@
  *
  */
 
-#include "gtest/gtest.h"
 #include "utils/DerivationScheme.hpp"
+
+#include "gtest/gtest.h"
 
 using namespace ledger::core;
 
@@ -42,10 +43,10 @@ TEST(DerivationScheme, SimpleCases) {
 TEST(DerivationScheme, BIP44) {
     DerivationScheme scheme("44'/<coin_type>'/<account>'/<node>/<address>");
     scheme
-      .setCoinType(0)
-      .setAccountIndex(1)
-      .setNode(1)
-      .setAddressIndex(42);
+        .setCoinType(0)
+        .setAccountIndex(1)
+        .setNode(1)
+        .setAddressIndex(42);
     EXPECT_EQ(scheme.getPath().toString(), "44'/0'/1'/1/42");
 }
 

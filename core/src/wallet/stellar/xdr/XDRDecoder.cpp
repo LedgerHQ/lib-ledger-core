@@ -30,35 +30,34 @@
  */
 
 #include "XDRDecoder.hpp"
+
 #include <cmath>
 
 using namespace ledger::core::stellar::xdr;
 
-Decoder::Decoder(const std::vector<uint8_t> &data) :
-_reader(data)
-{}
+Decoder::Decoder(const std::vector<uint8_t> &data) : _reader(data) {}
 
-Decoder& Decoder::operator>>(int32_t &i) {
+Decoder &Decoder::operator>>(int32_t &i) {
     i = _reader.readNextBeInt();
     return *this;
 }
 
-Decoder& Decoder::operator>>(uint32_t &i) {
+Decoder &Decoder::operator>>(uint32_t &i) {
     i = _reader.readNextBeUint();
     return *this;
 }
 
-Decoder& Decoder::operator>>(int64_t &i) {
+Decoder &Decoder::operator>>(int64_t &i) {
     i = _reader.readNextBeLong();
     return *this;
 }
 
-Decoder& Decoder::operator>>(uint64_t &i) {
+Decoder &Decoder::operator>>(uint64_t &i) {
     i = _reader.readNextBeUlong();
     return *this;
 }
 
-Decoder& Decoder::operator>>(std::string &str) {
+Decoder &Decoder::operator>>(std::string &str) {
     uint32_t size;
     *this >> size;
     str = _reader.readString(size);
@@ -68,21 +67,19 @@ Decoder& Decoder::operator>>(std::string &str) {
     return *this;
 }
 
-Decoder& Decoder::operator>>(ObjectDecoder &r) {
+Decoder &Decoder::operator>>(ObjectDecoder &r) {
     r(*this);
     return *this;
 }
 
-Decoder& Decoder::operator>>(bool &b) {
+Decoder &Decoder::operator>>(bool &b) {
     int32_t v;
     (*this) >> v;
     b = (v == 0) ? false : true;
     return *this;
 }
 
-Decoder& Decoder::operator>>(uint8_t &byte) {
+Decoder &Decoder::operator>>(uint8_t &byte) {
     byte = _reader.readNextByte();
     return *this;
 }
-
-

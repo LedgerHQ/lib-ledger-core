@@ -34,22 +34,23 @@
 #include "../api/DynamicArray.hpp"
 #include "../api/DynamicObject.hpp"
 #include "../api/DynamicType.hpp"
-#include <cereal/cereal.hpp>
 #include "../collections/collections.hpp"
-#include "DynamicValue.hpp"
 #include "DynamicArray.hpp"
+#include "DynamicValue.hpp"
+
+#include <cereal/cereal.hpp>
 #include <cereal/types/map.hpp>
 #include <cereal/types/unordered_map.hpp>
 
 namespace ledger {
     namespace core {
         class DynamicObject : public api::DynamicObject, public std::enable_shared_from_this<DynamicObject> {
-        public:
+          public:
             DynamicObject() : _readOnly(false) {}
 
             /// A generic indexed and type-safe getter.
             template <typename T>
-            optional<T> get(const std::string& key) {
+            optional<T> get(const std::string &key) {
                 const auto v = optional<DynamicValue>(_values.lift(key));
 
                 if (v) {
@@ -61,7 +62,7 @@ namespace ledger {
 
             /// A generic and type-safe put.
             template <typename T>
-            std::shared_ptr<DynamicObject> put(const std::string& key, T value) {
+            std::shared_ptr<DynamicObject> put(const std::string &key, T value) {
                 if (!_readOnly) {
                     _values[key] = DynamicValue(value);
                 }
@@ -105,18 +106,18 @@ namespace ledger {
             std::shared_ptr<api::DynamicObject> updateWithConfiguration(const std::shared_ptr<DynamicObject> &configuration);
             int64_t size() override;
 
-            std::ostream& dump(std::ostream& ss, int depth) const;
+            std::ostream &dump(std::ostream &ss, int depth) const;
 
             template <class Archive>
-            void serialize(Archive& ar) {
+            void serialize(Archive &ar) {
                 ar(_values.getContainer());
             }
 
-        private:
+          private:
             Map<std::string, DynamicValue> _values;
             bool _readOnly;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_DYNAMICOBJECT_HPP

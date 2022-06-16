@@ -30,44 +30,46 @@
  */
 
 #include "DateUtils.hpp"
-#include <regex>
+
 #include "Exception.hpp"
+
 #include <boost/lexical_cast.hpp>
 #include <ctime>
+#include <regex>
 #include <unordered_map>
 
 namespace {
     const std::unordered_map<std::string, std::string> MONTHS = {
-            {"Jan", "01"},
-            {"Feb", "02"},
-            {"Mar", "03"},
-            {"Apr", "04"},
-            {"May", "05"},
-            {"Jun", "06"},
-            {"Jul", "07"},
-            {"Aug", "08"},
-            {"Sep", "09"},
-            {"Oct", "10"},
-            {"Nov", "11"},
-            {"Dec", "12"},
+        {"Jan", "01"},
+        {"Feb", "02"},
+        {"Mar", "03"},
+        {"Apr", "04"},
+        {"May", "05"},
+        {"Jun", "06"},
+        {"Jul", "07"},
+        {"Aug", "08"},
+        {"Sep", "09"},
+        {"Oct", "10"},
+        {"Nov", "11"},
+        {"Dec", "12"},
     };
 
     constexpr auto PARSE_JSON_DATE_REGEX("([0-9]+)-([0-9]+)-([0-9]+)T([0-9]+):([0-9]+):([0-9]+)[\\.0-9]*([Z]?)");
     constexpr auto FORMAT_JSON_DATE_REGEX("([0-9]+)-([a-zA-Z]+)-([0-9]+) ([0-9]+):([0-9]+):([0-9]+)[\\.0-9]*([Z]?)");
-}
+} // namespace
 
 #if defined(_WIN32) || defined(_WIN64)
-    #if defined(_MSC_VER)
-        time_t timegm(struct tm* tm) { return _mkgmtime(tm); }
-    #else
-        time_t timegm(struct tm* tm) { return mktime(tm) - timezone; }
-    #endif
+#if defined(_MSC_VER)
+time_t timegm(struct tm *tm) { return _mkgmtime(tm); }
+#else
+time_t timegm(struct tm *tm) { return mktime(tm) - timezone; }
+#endif
 #endif
 
 namespace ledger {
     namespace core {
         std::chrono::system_clock::time_point ledger::core::DateUtils::fromJSON(const std::string &str) {
-            static const std::regex parseJsonDateRegex {PARSE_JSON_DATE_REGEX};
+            static const std::regex parseJsonDateRegex{PARSE_JSON_DATE_REGEX};
 
             std::cmatch what;
 
@@ -103,10 +105,10 @@ namespace ledger {
                 }
             }
         }
-    }
+    } // namespace core
 
     std::string ledger::core::DateUtils::formatDateFromJSON(const std::string &str) {
-        static const std::regex formatJsonDateRegex {FORMAT_JSON_DATE_REGEX};
+        static const std::regex formatJsonDateRegex{FORMAT_JSON_DATE_REGEX};
 
         std::cmatch what;
 
@@ -147,8 +149,7 @@ namespace ledger {
     }
 
     std::chrono::system_clock::time_point ledger::core::DateUtils::incrementDate(const std::chrono::system_clock::time_point &date,
-        api::TimePeriod precision
-    ) {
+                                                                                 api::TimePeriod precision) {
         std::tm tm = {0};
         std::time_t tt = std::chrono::system_clock::to_time_t(date);
 #if defined(_WIN32) || defined(_WIN64)
@@ -158,26 +159,26 @@ namespace ledger {
 #endif
 
         switch (precision) {
-            case api::TimePeriod::HOUR:
-                tm.tm_hour += 1;
-                break;
+        case api::TimePeriod::HOUR:
+            tm.tm_hour += 1;
+            break;
 
-            case api::TimePeriod::DAY:
-                tm.tm_mday += 1;
-                break;
+        case api::TimePeriod::DAY:
+            tm.tm_mday += 1;
+            break;
 
-            case api::TimePeriod::WEEK:
-                tm.tm_mday += 7;
-                break;
+        case api::TimePeriod::WEEK:
+            tm.tm_mday += 7;
+            break;
 
-            case api::TimePeriod::MONTH:
-                tm.tm_mon += 1;
-                break;
+        case api::TimePeriod::MONTH:
+            tm.tm_mon += 1;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
 
         return std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::from_time_t(timegm(&tm)));
     }
-}
+} // namespace ledger

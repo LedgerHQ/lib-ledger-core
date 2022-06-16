@@ -32,17 +32,16 @@
 #ifndef LEDGER_CORE_STELLARLIKEOPERATIONDATABASEHELPER_HPP
 #define LEDGER_CORE_STELLARLIKEOPERATIONDATABASEHELPER_HPP
 
-#include <wallet/common/Operation.h>
 #include <soci.h>
+#include <wallet/common/Operation.h>
 
 namespace ledger {
     namespace core {
         class StellarLikeOperationDatabaseHelper {
-        public:
-            static void bulkInsert(soci::session& sql, const std::vector<Operation>& operations);
+          public:
+            static void bulkInsert(soci::session &sql, const std::vector<Operation> &operations);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_STELLARLIKEOPERATIONDATABASEHELPER_HPP

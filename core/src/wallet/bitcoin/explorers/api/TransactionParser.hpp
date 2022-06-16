@@ -32,24 +32,25 @@
 #define LEDGER_CORE_TRANSACTIONPARSER_HPP
 
 #include "../../../../collections/collections.hpp"
-#include <cstdio>
-#include <cstdint>
-#include "../BitcoinLikeBlockchainExplorer.hpp"
 #include "../../../../net/HttpClient.hpp"
+#include "../BitcoinLikeBlockchainExplorer.hpp"
 #include "BlockParser.hpp"
-#include <rapidjson/reader.h>
-#include <stack>
 #include "InputParser.hpp"
 #include "OutputParser.hpp"
+
+#include <cstdint>
+#include <cstdio>
+#include <rapidjson/reader.h>
+#include <stack>
 
 namespace ledger {
     namespace core {
         class TransactionParser {
-        public:
+          public:
             typedef BitcoinLikeBlockchainExplorerTransaction Result;
 
-            TransactionParser(std::string& lastKey);
-            void init(BitcoinLikeBlockchainExplorerTransaction* transaction);
+            TransactionParser(std::string &lastKey);
+            void init(BitcoinLikeBlockchainExplorerTransaction *transaction);
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -57,25 +58,24 @@ namespace ledger {
             bool Int64(int64_t i);
             bool Uint64(uint64_t i);
             bool Double(double d);
-            bool RawNumber(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool String(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
+            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
             bool StartObject();
-            bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
             bool EndObject(rapidjson::SizeType memberCount);
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
 
-        private:
-            std::string& _lastKey;
-            BitcoinLikeBlockchainExplorerTransaction* _transaction;
+          private:
+            std::string &_lastKey;
+            BitcoinLikeBlockchainExplorerTransaction *_transaction;
             std::stack<std::string> _hierarchy;
             uint32_t _arrayDepth;
             BlockParser _blockParser;
             InputParser _inputParser;
             OutputParser _outputParser;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_TRANSACTIONPARSER_HPP

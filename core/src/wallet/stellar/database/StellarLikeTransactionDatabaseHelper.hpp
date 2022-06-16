@@ -32,36 +32,35 @@
 #ifndef LEDGER_CORE_STELLARLIKETRANSACTIONDATABASEHELPER_HPP
 #define LEDGER_CORE_STELLARLIKETRANSACTIONDATABASEHELPER_HPP
 
+#include <api/Currency.hpp>
 #include <soci.h>
 #include <wallet/stellar/stellar.hpp>
-#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
         class StellarLikeTransactionDatabaseHelper {
-        public:
-            static bool putTransaction(soci::session& sql, const api::Currency& currency,
-                    const stellar::Transaction& tx);
+          public:
+            static bool putTransaction(soci::session &sql, const api::Currency &currency, const stellar::Transaction &tx);
             static std::string putOperation(soci::session &sql,
-                    const std::string& accountUid, const std::string& currencyName, const stellar::Operation& op);
-            static bool transactionExists(soci::session& sql, const std::string& uid);
+                                            const std::string &accountUid,
+                                            const std::string &currencyName,
+                                            const stellar::Operation &op);
+            static bool transactionExists(soci::session &sql, const std::string &uid);
             static std::string createTransactionUid(const std::string &currencyName,
-                    const std::string& transactionHash);
-            static bool operationExists(soci::session& sql, const std::string& operationUid);
-            static std::string createOperationUid(const std::string& accountUid, const std::string& opHash);
-            static bool getOperation(soci::session& sql, const std::string& accountOperationUid, stellar::Operation& out);
-            static bool getTransaction(soci::session& sql, const std::string& hash, stellar::Transaction& out);
+                                                    const std::string &transactionHash);
+            static bool operationExists(soci::session &sql, const std::string &operationUid);
+            static std::string createOperationUid(const std::string &accountUid, const std::string &opHash);
+            static bool getOperation(soci::session &sql, const std::string &accountOperationUid, stellar::Operation &out);
+            static bool getTransaction(soci::session &sql, const std::string &hash, stellar::Transaction &out);
 
-            static int countOperationsForTransaction(soci::session& sql, const std::string& txHash,
-                    const std::string& senderAddress);
+            static int countOperationsForTransaction(soci::session &sql, const std::string &txHash, const std::string &senderAddress);
 
             static void eraseDataSince(
-                    soci::session &sql,
-                    const std::string &accountUid,
-                    const std::chrono::system_clock::time_point & date);
+                soci::session &sql,
+                const std::string &accountUid,
+                const std::chrono::system_clock::time_point &date);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_STELLARLIKETRANSACTIONDATABASEHELPER_HPP

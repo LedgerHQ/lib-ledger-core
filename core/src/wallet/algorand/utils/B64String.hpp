@@ -34,27 +34,25 @@
 #include <vector>
 
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
 
-    class B64String
-    {
-    public:
-        B64String() {}
-        explicit B64String(std::string b64);
+            class B64String {
+              public:
+                B64String() {}
+                explicit B64String(std::string b64);
 
-        const std::string& getRawString() const;
-        std::vector<uint8_t> toBinary() const;
+                const std::string &getRawString() const;
+                std::vector<uint8_t> toBinary() const;
 
-    private:
-        std::string b64;
-    };
+              private:
+                std::string b64;
+            };
 
-    inline bool operator==(const B64String & first, const B64String & second) {
-        return first.getRawString() == second.getRawString();
-    }
+            inline bool operator==(const B64String &first, const B64String &second) {
+                return first.getRawString() == second.getRawString();
+            }
 
+        } // namespace algorand
+    }     // namespace core
 } // namespace ledger
-} // namespace core
-} // namespace algorand
-

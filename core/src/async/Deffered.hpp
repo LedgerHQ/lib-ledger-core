@@ -31,16 +31,17 @@
 #ifndef LEDGER_CORE_DEFFERED_HPP
 #define LEDGER_CORE_DEFFERED_HPP
 
-#include <memory>
-#include <functional>
+#include "../api/ExecutionContext.hpp"
+#include "../utils/Exception.hpp"
+#include "../utils/LambdaRunnable.hpp"
 #include "../utils/Option.hpp"
 #include "../utils/Try.hpp"
+
+#include <functional>
+#include <memory>
 #include <mutex>
-#include "../utils/Exception.hpp"
 #include <queue>
-#include "../api/ExecutionContext.hpp"
 #include <tuple>
-#include "../utils/LambdaRunnable.hpp"
 
 namespace ledger {
     namespace core {
@@ -54,18 +55,18 @@ namespace ledger {
         template <typename T>
         class Deffered {
 
-        public:
-            using Callback = std::function<void (const Try<T>&)>;
+          public:
+            using Callback = std::function<void(const Try<T> &)>;
 
             friend class Future<T>;
             friend class Promise<T>;
-            Deffered() {
+            Deffered(){
 
             };
-            Deffered(const Deffered&) = delete;
-            Deffered(Deffered&&) = delete;
+            Deffered(const Deffered &) = delete;
+            Deffered(Deffered &&) = delete;
 
-            void setResult(const Try<T>& result) {
+            void setResult(const Try<T> &result) {
                 {
                     std::lock_guard<std::recursive_mutex> lock(_lock);
                     ensureNotCompleted();
@@ -74,14 +75,14 @@ namespace ledger {
                 trigger();
             }
 
-            void setValue(const T& value) {
+            void setValue(const T &value) {
                 std::lock_guard<std::recursive_mutex> lock(_lock);
                 ensureNotCompleted();
                 _value = Try<T>(value);
                 _trigger();
             };
 
-            void setError(const Exception& exception) {
+            void setError(const Exception &exception) {
                 std::lock_guard<std::recursive_mutex> lock(_lock);
                 ensureNotCompleted();
                 Try<T> ex;
@@ -112,7 +113,7 @@ namespace ledger {
                 _trigger();
             }
 
-        private:
+          private:
             inline void ensureNotCompleted() {
                 if (_value.hasValue())
                     throw Exception(api::ErrorCode::ALREADY_COMPLETED, "This promise is already completed");
@@ -120,29 +121,26 @@ namespace ledger {
 
             inline void _trigger() {
                 if (_value.isEmpty() || _callbacks.empty()) {
-                    return ;
+                    return;
                 }
                 while (!_callbacks.empty()) {
                     std::tuple<Callback, std::shared_ptr<api::ExecutionContext>> callback = _callbacks.front();
                     Callback cb = std::get<0>(callback);
                     auto value = _value.getValue();
-                    std::get<1>(callback)->execute(make_runnable([cb, value] () {
+                    std::get<1>(callback)->execute(make_runnable([cb, value]() {
                         cb(value);
                     }));
                     _callbacks.pop();
                 }
             }
 
-        private:
+          private:
             mutable std::recursive_mutex _lock;
             Option<Try<T>> _value;
             std::queue<std::tuple<Callback, std::shared_ptr<api::ExecutionContext>>> _callbacks;
         };
 
-
-
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_DEFFERED_HPP

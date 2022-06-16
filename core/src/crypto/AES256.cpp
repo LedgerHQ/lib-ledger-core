@@ -29,16 +29,16 @@
  *
  */
 #include "AES256.hpp"
-#include <openssl/aes.h>
+
 #include <cstdio>
 #include <cstring>
+#include <openssl/aes.h>
 
 const uint32_t ledger::core::AES256::BLOCK_SIZE = AES_BLOCK_SIZE;
 
-std::vector<uint8_t> ledger::core::AES256::encrypt(const std::vector<uint8_t> &IV, const std::vector<uint8_t> &key,
-                                                   const std::vector<uint8_t> &data) {
+std::vector<uint8_t> ledger::core::AES256::encrypt(const std::vector<uint8_t> &IV, const std::vector<uint8_t> &key, const std::vector<uint8_t> &data) {
     const size_t encslength = ((data.size() + AES_BLOCK_SIZE) / AES_BLOCK_SIZE) * AES_BLOCK_SIZE;
-    std::vector<uint8_t> enc_out(encslength,0);
+    std::vector<uint8_t> enc_out(encslength, 0);
     std::vector<uint8_t> iv(IV);
     AES_KEY enc_key;
     AES_set_encrypt_key(key.data(), key.size() * 8, &enc_key);
@@ -47,13 +47,12 @@ std::vector<uint8_t> ledger::core::AES256::encrypt(const std::vector<uint8_t> &I
     return enc_out;
 }
 
-std::vector<uint8_t> ledger::core::AES256::decrypt(const std::vector<uint8_t> &IV, const std::vector<uint8_t> &key,
-                                                   const std::vector<uint8_t> &data) {
+std::vector<uint8_t> ledger::core::AES256::decrypt(const std::vector<uint8_t> &IV, const std::vector<uint8_t> &key, const std::vector<uint8_t> &data) {
     /* init vector */
     unsigned char iv_enc[AES_BLOCK_SIZE], iv_dec[AES_BLOCK_SIZE];
 
     // buffers for encryption and decryption
-    std::vector<uint8_t> dec_out(data.size(),0);
+    std::vector<uint8_t> dec_out(data.size(), 0);
     std::vector<uint8_t> iv(IV);
 
     AES_KEY dec_key;

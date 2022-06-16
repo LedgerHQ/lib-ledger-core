@@ -29,8 +29,10 @@
  *
  */
 #include "QueryFilter.h"
-#include <utils/Exception.hpp>
+
 #include "CompoundQueryFilter.h"
+
+#include <utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
@@ -116,5 +118,5 @@ namespace ledger {
         QueryFilterOperator QueryFilter::getOperatorForNextFilter() const {
             return std::const_pointer_cast<QueryFilter>(shared_from_this())->_siblings.op;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -35,7 +35,7 @@ int ledger::core::LoggerStreamBuffer::overflow(int c) {
         _logger->info("[{}] {}", _tag, _buffer.str());
         std::stringstream().swap(_buffer);
     } else {
-        _buffer.put((char_type) c);
+        _buffer.put((char_type)c);
     }
     return c;
 }

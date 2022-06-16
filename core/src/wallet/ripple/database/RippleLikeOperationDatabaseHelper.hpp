@@ -38,11 +38,10 @@
 namespace ledger {
     namespace core {
         class RippleLikeOperationDatabaseHelper {
-        public:
-            static void bulkInsert(soci::session& sql, const std::vector<Operation>& ops);
+          public:
+            static void bulkInsert(soci::session &sql, const std::vector<Operation> &ops);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_RIPPLELIKEOPERATIONDATABASEHELPER_HPP

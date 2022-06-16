@@ -28,35 +28,32 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMLIKEACCOUNTDATABASEHELPER_H
 #define LEDGER_CORE_ETHEREUMLIKEACCOUNTDATABASEHELPER_H
 
-#include <string>
-
-#include <soci.h>
-#include <wallet/ethereum/database/EthereumLikeAccountDatabaseEntry.h>
 #include <api/ERC20Token.hpp>
+#include <soci.h>
+#include <string>
+#include <wallet/ethereum/database/EthereumLikeAccountDatabaseEntry.h>
 
 namespace ledger {
     namespace core {
         class EthereumLikeAccountDatabaseHelper {
-        public:
-            static void createAccount(soci::session& sql,
+          public:
+            static void createAccount(soci::session &sql,
                                       const std::string walletUid,
                                       int32_t index,
-                                      const std::string& address);
+                                      const std::string &address);
             static void createERC20Account(soci::session &sql,
                                            const std::string &ethAccountUid,
                                            const std::string &erc20AccountUid,
                                            const std::string &contractAddress);
-            static bool queryAccount(soci::session& sql,
-                                     const std::string& accountUid,
-                                     EthereumLikeAccountDatabaseEntry& entry);
+            static bool queryAccount(soci::session &sql,
+                                     const std::string &accountUid,
+                                     EthereumLikeAccountDatabaseEntry &entry);
             static api::ERC20Token getOrCreateERC20Token(soci::session &sql, const std::string &contractAddress);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMLIKEACCOUNTDATABASEHELPER_H

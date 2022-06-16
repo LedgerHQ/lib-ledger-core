@@ -29,138 +29,122 @@
 
 #pragma once
 
+#include <cstdint>
+#include <msgpack.hpp>
+#include <string>
 #include <utils/Option.hpp>
 
-#include <msgpack.hpp>
-
-#include <cstdint>
-#include <string>
-
 namespace msgpack {
-MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
-namespace adaptor {
+    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+        namespace adaptor {
 
-    using ledger::core::Option;
+            using ledger::core::Option;
 
-    template<typename T>
-    struct KeyValue
-    {
-        KeyValue(std::string key, T value)
-            : key(std::move(key))
-            , value(std::forward<T>(value))
-        {}
+            template <typename T>
+            struct KeyValue {
+                KeyValue(std::string key, T value)
+                    : key(std::move(key)), value(std::forward<T>(value)) {}
 
-        std::string key;
-        T value;
-    };
+                std::string key;
+                T value;
+            };
 
-    template<typename T>
-    KeyValue<T> makeKeyValue(std::string key, T value)
-    {
-        return KeyValue<T>(std::move(key), value);
-    }
+            template <typename T>
+            KeyValue<T> makeKeyValue(std::string key, T value) {
+                return KeyValue<T>(std::move(key), value);
+            }
 
-    namespace impl {
+            namespace impl {
 
-        template<typename T>
-        using IsBool =
-            std::enable_if_t<std::is_same<std::decay_t<T>, bool>::value, bool>;
+                template <typename T>
+                using IsBool =
+                    std::enable_if_t<std::is_same<std::decay_t<T>, bool>::value, bool>;
 
-        template<typename T>
-        using IsNotBool =
-            std::enable_if_t<!std::is_same<std::decay_t<T>, bool>::value, bool>;
+                template <typename T>
+                using IsNotBool =
+                    std::enable_if_t<!std::is_same<std::decay_t<T>, bool>::value, bool>;
 
-    } // namespace details
+            } // namespace impl
 
-    /// The enable_if are there because algorand does not serialize a boolean if its
-    /// value is false, making the implementation of this function different for bool...
-    template<typename T, impl::IsNotBool<T> = true>
-    uint32_t isValueValid(const T&)
-    {
-        return 1;
-    }
+            /// The enable_if are there because algorand does not serialize a boolean if its
+            /// value is false, making the implementation of this function different for bool...
+            template <typename T, impl::IsNotBool<T> = true>
+            uint32_t isValueValid(const T &) {
+                return 1;
+            }
 
-    /// Specific implementation for boolean
-    template<typename T, impl::IsBool<T> = true>
-    uint32_t isValueValid(const T& value)
-    {
-        return value ? 1 : 0;
-    }
+            /// Specific implementation for boolean
+            template <typename T, impl::IsBool<T> = true>
+            uint32_t isValueValid(const T &value) {
+                return value ? 1 : 0;
+            }
 
-    template<typename T>
-    uint32_t isValueValid(const Option<T>& value)
-    {
-        if (value.hasValue()) {
-            return isValueValid<T>(*value);
-        }
-        return 0;
-    }
+            template <typename T>
+            uint32_t isValueValid(const Option<T> &value) {
+                if (value.hasValue()) {
+                    return isValueValid<T>(*value);
+                }
+                return 0;
+            }
 
-    template<typename Stream, typename T>
-    void packKeyValue(packer<Stream>& o, KeyValue<T> keyvalue)
-    {
-        o.pack(keyvalue.key);
-        o.pack(keyvalue.value);
-    }
+            template <typename Stream, typename T>
+            void packKeyValue(packer<Stream> &o, KeyValue<T> keyvalue) {
+                o.pack(keyvalue.key);
+                o.pack(keyvalue.value);
+            }
 
-    template<typename Stream>
-    void packKeyValue(packer<Stream>& o, KeyValue<bool> keyvalue)
-    {
-        if (keyvalue.value) {
-            o.pack(keyvalue.key);
-            o.pack(keyvalue.value);
-        }
-    }
+            template <typename Stream>
+            void packKeyValue(packer<Stream> &o, KeyValue<bool> keyvalue) {
+                if (keyvalue.value) {
+                    o.pack(keyvalue.key);
+                    o.pack(keyvalue.value);
+                }
+            }
 
-    template<typename Stream, typename T>
-    void packKeyValue(packer<Stream>& o, KeyValue<Option<T>>&& keyvalue)
-    {
-        if (keyvalue.value.hasValue()) {
-            packKeyValue(o, makeKeyValue(keyvalue.key, *keyvalue.value));
-        }
-    }
+            template <typename Stream, typename T>
+            void packKeyValue(packer<Stream> &o, KeyValue<Option<T>> &&keyvalue) {
+                if (keyvalue.value.hasValue()) {
+                    packKeyValue(o, makeKeyValue(keyvalue.key, *keyvalue.value));
+                }
+            }
 
-    // FIXME(remibarjon): use fold expression (C++17)
-    // template<typename... T>
-    // uint32_t countValidValues(const T&... value)
-    // {
-    //     return (isValueValid(value) + ...);
-    // }
+            // FIXME(remibarjon): use fold expression (C++17)
+            // template<typename... T>
+            // uint32_t countValidValues(const T&... value)
+            // {
+            //     return (isValueValid(value) + ...);
+            // }
 
-    template<typename T>
-    uint32_t countValidValues(T&& value)
-    {
-        return isValueValid(std::forward<T>(value));
-    }
+            template <typename T>
+            uint32_t countValidValues(T &&value) {
+                return isValueValid(std::forward<T>(value));
+            }
 
-    /// Returns the number of valid elements.
-    /// All values are valid except empty Options.
-    template<typename T, typename... Ts>
-    uint32_t countValidValues(T&& value, Ts&&... values)
-    {
-        return isValueValid(std::forward<T>(value)) + countValidValues(std::forward<Ts>(values)...);
-    }
+            /// Returns the number of valid elements.
+            /// All values are valid except empty Options.
+            template <typename T, typename... Ts>
+            uint32_t countValidValues(T &&value, Ts &&... values) {
+                return isValueValid(std::forward<T>(value)) + countValidValues(std::forward<Ts>(values)...);
+            }
 
-    // FIXME(remibarjon): use fold expression (C++17)
-    // template<typename Stream, typename... T>
-    // packer<Stream>& packKeyValues(packer<Stream>& o, T&&... keyvalue)
-    // {
-    //     (packKeyValue(o, std::forward<T>(keyvalue)), ...);
-    //
-    //     return o;
-    // }
+            // FIXME(remibarjon): use fold expression (C++17)
+            // template<typename Stream, typename... T>
+            // packer<Stream>& packKeyValues(packer<Stream>& o, T&&... keyvalue)
+            // {
+            //     (packKeyValue(o, std::forward<T>(keyvalue)), ...);
+            //
+            //     return o;
+            // }
 
-    /// Pack all the keyvalues filtering out the invalid ones
-    template<typename Stream, typename... T>
-    packer<Stream>& packKeyValues(packer<Stream>& o, T&&... keyvalue)
-    {
-        using _t = std::array<int, sizeof...(T)>;
-        (void)_t { (packKeyValue(o, std::forward<T>(keyvalue)), 0)... };
+            /// Pack all the keyvalues filtering out the invalid ones
+            template <typename Stream, typename... T>
+            packer<Stream> &packKeyValues(packer<Stream> &o, T &&... keyvalue) {
+                using _t = std::array<int, sizeof...(T)>;
+                (void)_t{(packKeyValue(o, std::forward<T>(keyvalue)), 0)...};
 
-        return o;
-    }
+                return o;
+            }
 
-} // namespace adaptor
-} // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+        } // namespace adaptor
+    }     // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
 } // namespace msgpack
-

@@ -26,13 +26,11 @@
  * SOFTWARE.
  *
  */
-#include <api/AlgorandAddress.hpp>
 #include <api/Address.hpp>
-
-#include <wallet/currencies.hpp>
-#include <utils/hex.h>
-
+#include <api/AlgorandAddress.hpp>
 #include <gtest/gtest.h>
+#include <utils/hex.h>
+#include <wallet/currencies.hpp>
 
 using namespace ledger::core;
 

@@ -29,56 +29,51 @@
 
 #pragma once
 
-#include <api/AlgorandNetworkParameters.hpp>
+#include "model/AlgorandAccount.hpp"
 #include "model/transactions/AlgorandTransaction.hpp"
 #include "model/transactions/AlgorandTransactionParams.hpp"
-#include "model/AlgorandAccount.hpp"
 
+#include <api/AlgorandNetworkParameters.hpp>
+#include <api/Block.hpp>
 #include <async/DedicatedContext.hpp>
+#include <net/HttpClient.hpp>
 #include <utils/ConfigurationMatchable.h>
 
-#include <api/Block.hpp>
-#include <net/HttpClient.hpp>
-
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
 
-    class BlockchainExplorer : public ConfigurationMatchable, public DedicatedContext
-    {
+            class BlockchainExplorer : public ConfigurationMatchable, public DedicatedContext {
 
-    public:
+              public:
+                BlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
+                                   const std::shared_ptr<HttpClient> &http,
+                                   const api::AlgorandNetworkParameters &parameters,
+                                   const std::shared_ptr<api::DynamicObject> &configuration);
 
-        BlockchainExplorer(const std::shared_ptr<api::ExecutionContext> & context,
-                           const std::shared_ptr<HttpClient> & http,
-                           const api::AlgorandNetworkParameters & parameters,
-                           const std::shared_ptr<api::DynamicObject> & configuration);
+                Future<api::Block> getBlock(uint64_t blockHeight) const;
 
-        Future<api::Block> getBlock(uint64_t blockHeight) const;
+                Future<api::Block> getLatestBlock() const;
 
-        Future<api::Block> getLatestBlock() const;
+                Future<model::Account> getAccount(const std::string &address) const;
 
-        Future<model::Account> getAccount(const std::string & address) const;
+                Future<model::AssetParams> getAssetById(uint64_t id) const;
 
-        Future<model::AssetParams> getAssetById(uint64_t id) const;
+                Future<model::Transaction> getTransactionById(const std::string &txId) const;
 
-        Future<model::Transaction> getTransactionById(const std::string & txId) const;
+                Future<model::TransactionsBulk> getTransactionsForAddress(const std::string &address,
+                                                                          const Option<uint64_t> &firstRound = Option<uint64_t>(),
+                                                                          const Option<uint64_t> &lastRound = Option<uint64_t>()) const;
 
-        Future<model::TransactionsBulk> getTransactionsForAddress(const std::string & address,
-                                                                  const Option<uint64_t> & firstRound = Option<uint64_t>(),
-                                                                  const Option<uint64_t> & lastRound = Option<uint64_t>()) const;
+                Future<model::TransactionParams> getTransactionParams() const;
 
-        Future<model::TransactionParams> getTransactionParams() const;
+                Future<std::string> pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "");
 
-        Future<std::string> pushTransaction(const std::vector<uint8_t> & transaction, const std::string& correlationId="");
+              private:
+                std::shared_ptr<HttpClient> _http;
+                api::AlgorandNetworkParameters _parameters;
+            };
 
-    private:
-
-        std::shared_ptr<HttpClient> _http;
-        api::AlgorandNetworkParameters _parameters;
-    };
-
-} // namespace algorand
-} // namespace core
+        } // namespace algorand
+    }     // namespace core
 } // namespace ledger
-

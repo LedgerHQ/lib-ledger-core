@@ -28,38 +28,33 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMLIKEKEYCHAINFACTORY_H
 #define LEDGER_CORE_ETHEREUMLIKEKEYCHAINFACTORY_H
 
-#include <collections/DynamicObject.hpp>
-
-#include <api/ExtendedKeyAccountCreationInfo.hpp>
 #include <api/Currency.hpp>
-
-#include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
+#include <api/ExtendedKeyAccountCreationInfo.hpp>
+#include <collections/DynamicObject.hpp>
 #include <preferences/Preferences.hpp>
+#include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 
 namespace ledger {
     namespace core {
         class EthereumLikeKeychainFactory {
-        public:
+          public:
             std::shared_ptr<EthereumLikeKeychain> build(int32_t index,
                                                         const DerivationPath &path,
-                                                        const std::shared_ptr<DynamicObject>& configuration,
-                                                        const api::ExtendedKeyAccountCreationInfo& info,
-                                                        const std::shared_ptr<Preferences>& accountPreferences,
-                                                        const api::Currency& currency);
+                                                        const std::shared_ptr<DynamicObject> &configuration,
+                                                        const api::ExtendedKeyAccountCreationInfo &info,
+                                                        const std::shared_ptr<Preferences> &accountPreferences,
+                                                        const api::Currency &currency);
             std::shared_ptr<EthereumLikeKeychain> restore(int32_t index,
                                                           const DerivationPath &path,
-                                                          const std::shared_ptr<DynamicObject>& configuration,
+                                                          const std::shared_ptr<DynamicObject> &configuration,
                                                           const std::string &databaseXpubEntry,
-                                                          const std::shared_ptr<Preferences>& accountPreferences,
-                                                          const api::Currency& currency);
+                                                          const std::shared_ptr<Preferences> &accountPreferences,
+                                                          const api::Currency &currency);
         };
-    }
-}
-
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMLIKEKEYCHAINFACTORY_H

@@ -34,73 +34,62 @@
 #include <sstream>
 
 namespace ledger {
-namespace core {
-namespace algorand {
-namespace model {
+    namespace core {
+        namespace algorand {
+            namespace model {
 
-    SignedTransaction::SignedTransaction(Option<std::vector<uint8_t>> sig,
-                                         Transaction txn)
-        : sig(std::move(sig))
-        , txn(std::move(txn))
-    {}
+                SignedTransaction::SignedTransaction(Option<std::vector<uint8_t>> sig,
+                                                     Transaction txn)
+                    : sig(std::move(sig)), txn(std::move(txn)) {}
 
-    SignedTransaction::SignedTransaction(std::vector<uint8_t> sig,
-                                         Transaction txn)
-        : SignedTransaction(Option<std::vector<uint8_t>>(std::move(sig)),
-                            std::move(txn))
-    {}
+                SignedTransaction::SignedTransaction(std::vector<uint8_t> sig,
+                                                     Transaction txn)
+                    : SignedTransaction(Option<std::vector<uint8_t>>(std::move(sig)),
+                                        std::move(txn)) {}
 
-    SignedTransaction::SignedTransaction(Transaction txn)
-        : SignedTransaction(Option<std::vector<uint8_t>>(),
-                            std::move(txn))
-    {}
+                SignedTransaction::SignedTransaction(Transaction txn)
+                    : SignedTransaction(Option<std::vector<uint8_t>>(),
+                                        std::move(txn)) {}
 
-    const Option<std::vector<uint8_t>>& SignedTransaction::getSig() const
-    {
-        return sig;
-    }
+                const Option<std::vector<uint8_t>> &SignedTransaction::getSig() const {
+                    return sig;
+                }
 
-    const Transaction& SignedTransaction::getTxn() const
-    {
-        return txn;
-    }
+                const Transaction &SignedTransaction::getTxn() const {
+                    return txn;
+                }
 
-    std::vector<uint8_t> SignedTransaction::serialize() const
-    {
-        std::stringstream ss;
-        if (!sig) {
-            msgpack::pack(ss, txn);
-        } else {
-            msgpack::pack(ss, *this);
-        }
-        const auto str = ss.str();
+                std::vector<uint8_t> SignedTransaction::serialize() const {
+                    std::stringstream ss;
+                    if (!sig) {
+                        msgpack::pack(ss, txn);
+                    } else {
+                        msgpack::pack(ss, *this);
+                    }
+                    const auto str = ss.str();
 
-        return { std::begin(str), std::end(str) };
-    }
+                    return {std::begin(str), std::end(str)};
+                }
 
-    std::vector<uint8_t> SignedTransaction::serializeFromTxAndSig(
-            const std::vector<uint8_t>& rawUnsignedTransaction,
-            const std::vector<uint8_t>& signature)
-    {
-        std::stringstream ss;
-        msgpack::concatTxnAndSig(ss, rawUnsignedTransaction, signature);
+                std::vector<uint8_t> SignedTransaction::serializeFromTxAndSig(
+                    const std::vector<uint8_t> &rawUnsignedTransaction,
+                    const std::vector<uint8_t> &signature) {
+                    std::stringstream ss;
+                    msgpack::concatTxnAndSig(ss, rawUnsignedTransaction, signature);
 
-        const auto str = ss.str();
-        return { std::begin(str), std::end(str) };
-    }
+                    const auto str = ss.str();
+                    return {std::begin(str), std::end(str)};
+                }
 
-    void SignedTransaction::setSignature(const std::vector<uint8_t>& signature)
-    {
-        sig = signature;
-    }
+                void SignedTransaction::setSignature(const std::vector<uint8_t> &signature) {
+                    sig = signature;
+                }
 
-    const std::string& SignedTransaction::getType() const
-    {
-        return txn.header.type;
-    }
+                const std::string &SignedTransaction::getType() const {
+                    return txn.header.type;
+                }
 
-} // namespace model
+            } // namespace model
+        }     // namespace algorand
+    }         // namespace core
 } // namespace ledger
-} // namespace core
-} // namespace algorand
-

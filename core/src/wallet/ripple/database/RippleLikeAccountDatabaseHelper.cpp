@@ -28,8 +28,8 @@
  *
  */
 
-
 #include "RippleLikeAccountDatabaseHelper.h"
+
 #include <wallet/common/database/AccountDatabaseHelper.h>
 
 using namespace soci;
@@ -37,17 +37,18 @@ using namespace soci;
 namespace ledger {
     namespace core {
         void RippleLikeAccountDatabaseHelper::createAccount(soci::session &sql,
-                                                              const std::string walletUid, int32_t index,
-                                                              const std::string &address) {
+                                                            const std::string walletUid,
+                                                            int32_t index,
+                                                            const std::string &address) {
             auto uid = AccountDatabaseHelper::createAccountUid(walletUid, index);
-            sql << "INSERT INTO ripple_accounts VALUES(:uid, :wallet_uid, :idx, :address)",use(uid), use(walletUid), use(index), use(address);
+            sql << "INSERT INTO ripple_accounts VALUES(:uid, :wallet_uid, :idx, :address)", use(uid), use(walletUid), use(index), use(address);
         }
 
         bool RippleLikeAccountDatabaseHelper::queryAccount(soci::session &sql,
-                                                             const std::string &accountUid,
-                                                             RippleLikeAccountDatabaseEntry &entry) {
+                                                           const std::string &accountUid,
+                                                           RippleLikeAccountDatabaseEntry &entry) {
             rowset<row> rows = (sql.prepare << "SELECT idx, address FROM ripple_accounts WHERE uid = :uid", use(accountUid));
-            for (auto& row : rows) {
+            for (auto &row : rows) {
                 entry.index = row.get<int32_t>(0);
                 entry.address = row.get<std::string>(1);
                 return true;
@@ -55,5 +56,5 @@ namespace ledger {
             return false;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -32,8 +32,8 @@
 #ifndef LEDGER_CORE_ETHEREUMLIKEOPERATIONDATABASEHELPER_HPP
 #define LEDGER_CORE_ETHEREUMLIKEOPERATIONDATABASEHELPER_HPP
 
-#include <soci.h>
 #include <database/PreparedStatement.hpp>
+#include <soci.h>
 #include <wallet/common/Operation.h>
 #include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
 #include <wallet/ethereum/ERC20/ERC20LikeOperation.h>
@@ -49,13 +49,10 @@ namespace ledger {
         };
 
         class EthereumLikeOperationDatabaseHelper {
-        public:
-            static void bulkInsert(soci::session& sql, const std::vector<Operation>& ops,
-                    const std::string& accountAddress);
+          public:
+            static void bulkInsert(soci::session &sql, const std::vector<Operation> &ops, const std::string &accountAddress);
         };
-    }
-}
-
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMLIKEOPERATIONDATABASEHELPER_HPP

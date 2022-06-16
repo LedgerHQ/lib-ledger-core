@@ -31,16 +31,15 @@
 #ifndef LEDGER_CORE_CONCURRENCY_H
 #define LEDGER_CORE_CONCURRENCY_H
 
-#include <thread>
 #include <mutex>
+#include <thread>
 
 namespace ledger {
     namespace core {
         class Concurrency {
-        public:
+          public:
             template <typename InputIter, typename UnaryFunction>
-            static void parallel_for_each(InputIter first, InputIter last, UnaryFunction f)
-            {
+            static void parallel_for_each(InputIter first, InputIter last, UnaryFunction f) {
                 auto range = std::distance(first, last);
                 size_t approxNumThreads = std::thread::hardware_concurrency();
                 // number of elements for one thread
@@ -51,25 +50,21 @@ namespace ledger {
                 std::vector<std::thread> threads(approxNumThreads - 1);
                 InputIter block_start = first;
                 InputIter block_end = first + jobsForThread;
-                for(size_t i = 0; i < approxNumThreads - 1; ++i)
-                {
+                for (size_t i = 0; i < approxNumThreads - 1; ++i) {
                     threads[i] = std::thread(std::for_each<InputIter, UnaryFunction>,
                                              block_start, block_end, f);
                     block_start = block_end;
                     block_end += jobsForThread;
                 }
                 std::for_each(block_start, block_start + jobsForMainThread, f);
-                for(auto& t : threads)
-                {
-                    if(t.joinable())
-                    {
+                for (auto &t : threads) {
+                    if (t.joinable()) {
                         t.join();
                     }
                 }
             }
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //  LEDGER_CORE_CONCURRENCY_H

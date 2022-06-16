@@ -31,21 +31,22 @@
 #ifndef OBJECT_JSON_SAX_PARSER_HPP
 #define OBJECT_JSON_SAX_PARSER_HPP
 
-#include <rapidjson/reader.h>
 #include "ArrayJsonSaxParser.hpp"
 
+#include <rapidjson/reader.h>
+
 namespace ledger {
-    namespace  core {
+    namespace core {
 
         /**
          * Helper class to parse a JSON objects with rapidjson SAX parser and LedgerApiParser like classes.
          * Note that this helper only works if you need to parse a single object or Array from your object.
          */
-        template <class Parser, class R/*Result*/>
+        template <class Parser, class R /*Result*/>
         class SingleObjectJsonSaxParser {
-        public:
+          public:
             typedef Parser::Result Result;
-            SingleObjectJsonSaxParser(std::string& lastKey) : _lastKey(lastKey) {};
+            SingleObjectJsonSaxParser(std::string &lastKey) : _lastKey(lastKey){};
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -62,15 +63,15 @@ namespace ledger {
             bool EndArray(rapidjson::SizeType elementCount);
             void init(Result *result);
 
-        private:
-            std::string& _lastKey;
+          private:
+            std::string &_lastKey;
         };
 
-        template<class Parser, class R/*Result*/>
-        class SingleObjectJsonSaxParser <Parser, std::vector<Result>> {
-        public:
-            typedef std::vector<std::shared_ptr<typename Parser::Result>>  Result;
-            SingleObjectJsonSaxParser(std::string& lastKey) : _lastKey(lastKey) {};
+        template <class Parser, class R /*Result*/>
+        class SingleObjectJsonSaxParser<Parser, std::vector<Result>> {
+          public:
+            typedef std::vector<std::shared_ptr<typename Parser::Result>> Result;
+            SingleObjectJsonSaxParser(std::string &lastKey) : _lastKey(lastKey){};
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -87,10 +88,10 @@ namespace ledger {
             bool EndArray(rapidjson::SizeType elementCount);
             void init(std::vector<Result> *result);
 
-        private:
-            std::string& _lastKey;
+          private:
+            std::string &_lastKey;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif

@@ -28,15 +28,16 @@
  *
  */
 
-#include <wallet/currencies.hpp>
 #include "RippleLikeTransactionParser.h"
+
+#include <wallet/currencies.hpp>
 #include <wallet/ripple/utils/Time.hpp>
 
-#define PROXY_PARSE(method, ...)                                    \
- auto& currentObject = _hierarchy.top();                            \
- if (currentObject == "block") {                                    \
-    return _blockParser.method(__VA_ARGS__);                        \
- } else                                                             \
+#define PROXY_PARSE(method, ...)                 \
+    auto &currentObject = _hierarchy.top();      \
+    if (currentObject == "block") {              \
+        return _blockParser.method(__VA_ARGS__); \
+    } else
 
 namespace ledger {
     namespace core {
@@ -123,8 +124,7 @@ namespace ledger {
             }
         }
 
-        bool RippleLikeTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length,
-                                                    bool copy) {
+        bool RippleLikeTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(RawNumber, str, length, copy) {
 
                 std::string number(str, length);
@@ -140,26 +140,25 @@ namespace ledger {
                     block.hash = number;
                     _transaction->block = block;
                 } else if (_lastKey == "DestinationTag") {
-                  _transaction->destinationTag = Option<int64_t>(value.toInt64());
+                    _transaction->destinationTag = Option<int64_t>(value.toInt64());
                 } else if (_lastKey == "date" && currentObject != "transaction") {
-                  _transaction->receivedAt = xrp_utils::toTimePoint<std::chrono::system_clock>(value.toUint64());
-                  if (_transaction->block.hasValue()) {
-                      _transaction->block.getValue().time = _transaction->receivedAt;
-                  }
+                    _transaction->receivedAt = xrp_utils::toTimePoint<std::chrono::system_clock>(value.toUint64());
+                    if (_transaction->block.hasValue()) {
+                        _transaction->block.getValue().time = _transaction->receivedAt;
+                    }
                 }
 
                 return true;
             }
         }
 
-        bool
-        RippleLikeTransactionParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+        bool RippleLikeTransactionParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(String, str, length, copy) {
                 std::string value(str, length);
 
                 if (_lastKey == "hash") {
                     _transaction->hash = value;
-                } else if (_lastKey == "Account" && (currentObject == "tx" || currentObject == "transaction")){
+                } else if (_lastKey == "Account" && (currentObject == "tx" || currentObject == "transaction")) {
                     _transaction->sender = value;
                 } else if (_lastKey == "Destination") {
                     _transaction->receiver = value;
@@ -184,8 +183,7 @@ namespace ledger {
             }
         }
 
-        RippleLikeTransactionParser::RippleLikeTransactionParser(std::string &lastKey) :
-                _lastKey(lastKey), _blockParser(lastKey) {
+        RippleLikeTransactionParser::RippleLikeTransactionParser(std::string &lastKey) : _lastKey(lastKey), _blockParser(lastKey) {
             _arrayDepth = 0;
         }
 
@@ -193,5 +191,5 @@ namespace ledger {
             _transaction = transaction;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

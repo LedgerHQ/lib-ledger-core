@@ -30,13 +30,13 @@
  */
 
 #include <gtest/gtest.h>
+#include <iostream>
 #include <math/BaseConverter.hpp>
 #include <utils/hex.h>
-#include <iostream>
 
 using namespace ledger::core;
 
-static std::vector<std::string> data {
+static std::vector<std::string> data{
     "FF11223344556677889900AABBCCFF00",
     "0011223344556677889900AABBCCFF00",
     "FF",
@@ -58,8 +58,7 @@ static std::vector<std::string> expected_base32rfc_no_padding_encoding = {
     "MZXW6",
     "MZXW6YQ",
     "MZXW6YTB",
-    "MZXW6YTBOI"
-};
+    "MZXW6YTBOI"};
 
 static std::vector<std::string> expected_base32rfc_encoding = {
     "74ISEM2EKVTHPCEZACVLXTH7AA======",
@@ -70,8 +69,7 @@ static std::vector<std::string> expected_base32rfc_encoding = {
     "MZXW6===",
     "MZXW6YQ=",
     "MZXW6YTB",
-    "MZXW6YTBOI======"
-};
+    "MZXW6YTBOI======"};
 
 static std::vector<std::string> expected_base64_encoding = {
     "/xEiM0RVZneImQCqu8z/AA==",
@@ -82,12 +80,11 @@ static std::vector<std::string> expected_base64_encoding = {
     "Zm9v",
     "Zm9vYg==",
     "Zm9vYmE=",
-    "Zm9vYmFy"
-};
+    "Zm9vYmFy"};
 
 TEST(BaseConverterTests, EncodeInBase32NoPadding) {
     auto index = 0;
-    for (auto& d : data) {
+    for (auto &d : data) {
         auto bytes = hex::toByteArray(d);
         auto base32Rfc = BaseConverter::encode(bytes, BaseConverter::BASE32_RFC4648_NO_PADDING);
         std::cout << "Base32: " << base32Rfc << std::endl;
@@ -97,7 +94,7 @@ TEST(BaseConverterTests, EncodeInBase32NoPadding) {
 
 TEST(BaseConverterTests, EncodeInBase32) {
     auto index = 0;
-    for (auto& d : data) {
+    for (auto &d : data) {
         auto bytes = hex::toByteArray(d);
         auto base32Rfc = BaseConverter::encode(bytes, BaseConverter::BASE32_RFC4648);
         std::cout << "Base32: " << base32Rfc << std::endl;
@@ -107,7 +104,7 @@ TEST(BaseConverterTests, EncodeInBase32) {
 
 TEST(BaseConverterTests, DecodeWithBase32NoPadding) {
     auto index = 0;
-    for (auto& encoded : expected_base32rfc_no_padding_encoding) {
+    for (auto &encoded : expected_base32rfc_no_padding_encoding) {
         std::vector<uint8_t> decoded;
         BaseConverter::decode(encoded, BaseConverter::BASE32_RFC4648_NO_PADDING, decoded);
         auto hexDecoded = hex::toString(decoded, true);
@@ -118,7 +115,7 @@ TEST(BaseConverterTests, DecodeWithBase32NoPadding) {
 
 TEST(BaseConverterTests, DecodeWithBase32) {
     auto index = 0;
-    for (auto& encoded : expected_base32rfc_encoding) {
+    for (auto &encoded : expected_base32rfc_encoding) {
         std::vector<uint8_t> decoded;
         BaseConverter::decode(encoded, BaseConverter::BASE32_RFC4648, decoded);
         auto hexDecoded = hex::toString(decoded, true);
@@ -129,7 +126,7 @@ TEST(BaseConverterTests, DecodeWithBase32) {
 
 TEST(BaseConverterTests, EncodeInBase64) {
     auto index = 0;
-    for (auto& d : data) {
+    for (auto &d : data) {
         auto bytes = hex::toByteArray(d);
         auto base64Rfc = BaseConverter::encode(bytes, BaseConverter::BASE64_RFC4648);
         std::cout << "Base64: " << base64Rfc << std::endl;
@@ -139,7 +136,7 @@ TEST(BaseConverterTests, EncodeInBase64) {
 
 TEST(BaseConverterTests, DecodeWithBase64) {
     auto index = 0;
-    for (auto& encoded : expected_base64_encoding) {
+    for (auto &encoded : expected_base64_encoding) {
         std::vector<uint8_t> decoded;
         BaseConverter::decode(encoded, BaseConverter::BASE64_RFC4648, decoded);
         auto hexDecoded = hex::toString(decoded, true);

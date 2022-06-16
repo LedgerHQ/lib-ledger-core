@@ -28,16 +28,16 @@
  *
  */
 
-
 #include "TezosLikeTransactionParser.h"
-#include <wallet/currencies.hpp>
-#include <api/TezosOperationTag.hpp>
+
 #include <api/BigInt.hpp>
-#define PROXY_PARSE(method, ...)                                    \
- auto& currentObject = _hierarchy.top();                            \
- if (currentObject == "block") {                                    \
-    return _blockParser.method(__VA_ARGS__);                        \
- } else                                                             \
+#include <api/TezosOperationTag.hpp>
+#include <wallet/currencies.hpp>
+#define PROXY_PARSE(method, ...)                 \
+    auto &currentObject = _hierarchy.top();      \
+    if (currentObject == "block") {              \
+        return _blockParser.method(__VA_ARGS__); \
+    } else
 
 namespace ledger {
     namespace core {
@@ -83,11 +83,9 @@ namespace ledger {
 
         bool TezosLikeTransactionParser::Bool(bool b) {
             PROXY_PARSE(Bool, b) {
-                if ((_lastKey == "spendable" || _lastKey == "is_spendable")
-                    && _transaction->originatedAccount.hasValue()) {
+                if ((_lastKey == "spendable" || _lastKey == "is_spendable") && _transaction->originatedAccount.hasValue()) {
                     _transaction->originatedAccount.getValue().spendable = b;
-                } else if ((_lastKey == "delegatable" || _lastKey == "is_delegatable")
-                           && _transaction->originatedAccount.hasValue()) {
+                } else if ((_lastKey == "delegatable" || _lastKey == "is_delegatable") && _transaction->originatedAccount.hasValue()) {
                     _transaction->originatedAccount.getValue().delegatable = b;
                 } else if (_lastKey == "failed") {
                     // For Tzscan
@@ -124,21 +122,19 @@ namespace ledger {
             }
         }
 
-        bool TezosLikeTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length,
-                                                   bool copy) {
+        bool TezosLikeTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(RawNumber, str, length, copy) {
                 std::string number(str, length);
-                auto toValue = [] (const std::string &v, bool forceConversion) -> BigInt {
+                auto toValue = [](const std::string &v, bool forceConversion) -> BigInt {
                     if (v.find('.') != std::string::npos || forceConversion) {
                         return BigInt(api::BigInt::fromDecimalString(v, 6, ".")->toString(10));
                     }
                     return BigInt::fromString(v);
                 };
-                if ((_lastKey == "op_level" || _lastKey == "height")
-                    && _transaction->block.hasValue()) {
+                if ((_lastKey == "op_level" || _lastKey == "height") && _transaction->block.hasValue()) {
                     _transaction->block.getValue().height = BigInt::fromString(number).toUint64();
                 } else if (_lastKey == "amount" || _lastKey == "volume") {
-                    if(_transaction->type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                    if (_transaction->type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
                         _transaction->value = toValue(number, _lastKey == "volume");
                     }
                 } else if (_lastKey == "fee") {
@@ -158,11 +154,10 @@ namespace ledger {
             }
         }
 
-        bool
-        TezosLikeTransactionParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+        bool TezosLikeTransactionParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(String, str, length, copy) {
                 std::string value(str, length);
-                auto toValue = [] (const std::string &v, bool forceConversion) -> BigInt {
+                auto toValue = [](const std::string &v, bool forceConversion) -> BigInt {
                     if (v.find('.') != std::string::npos || forceConversion) {
                         return BigInt(api::BigInt::fromDecimalString(v, 6, ".")->toString(10));
                     }
@@ -191,18 +186,18 @@ namespace ledger {
                         _transaction->block.getValue().time = date;
                     }
                 } else if (_lastKey == "sender" ||
-                        (currentObject == "src" && _lastKey == "tz")) {
+                           (currentObject == "src" && _lastKey == "tz")) {
                     _transaction->sender = value;
-                } else if((_lastKey == "receiver" || _lastKey == "previous_baker") && _transaction->type == api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                } else if ((_lastKey == "receiver" || _lastKey == "previous_baker") && _transaction->type == api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
                     // For undelegation, the API returns type=delegation & receiver attribute is defined
                     // For delegation, the API returns type=delegation but receiver is not defined ('delegate' used instead)
                     // Receiver should be empty to differentiate delegate from undelegate in db
                     _transaction->receiver = "";
                 } else if (_lastKey == "receiver" || _lastKey == "delegate" || _lastKey == "baker" ||
-                        ((currentObject == "destination" || currentObject == "delegate") && _lastKey == "tz")) {
+                           ((currentObject == "destination" || currentObject == "delegate") && _lastKey == "tz")) {
                     _transaction->receiver = value;
                     if ((_lastKey == "receiver" || _lastKey == "baker") &&
-                            _transaction->type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
+                        _transaction->type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
                         _transaction->originatedAccount.getValue().address = value;
                     }
                 } else if (currentObject == "tz1" && _lastKey == "tz") {
@@ -212,11 +207,11 @@ namespace ledger {
                 } else if (_lastKey == "storage_limit") {
                     _transaction->storage_limit = BigInt::fromString(value);
                 } else if ((_lastKey == "kind" || _lastKey == "type") && _transaction->type == api::TezosOperationTag::OPERATION_TAG_NONE) {
-                    static std::unordered_map<std::string, api::TezosOperationTag> opTags {
-                            std::make_pair("reveal", api::TezosOperationTag::OPERATION_TAG_REVEAL),
-                            std::make_pair("transaction", api::TezosOperationTag::OPERATION_TAG_TRANSACTION),
-                            std::make_pair("origination", api::TezosOperationTag::OPERATION_TAG_ORIGINATION),
-                            std::make_pair("delegation", api::TezosOperationTag::OPERATION_TAG_DELEGATION),
+                    static std::unordered_map<std::string, api::TezosOperationTag> opTags{
+                        std::make_pair("reveal", api::TezosOperationTag::OPERATION_TAG_REVEAL),
+                        std::make_pair("transaction", api::TezosOperationTag::OPERATION_TAG_TRANSACTION),
+                        std::make_pair("origination", api::TezosOperationTag::OPERATION_TAG_ORIGINATION),
+                        std::make_pair("delegation", api::TezosOperationTag::OPERATION_TAG_DELEGATION),
                     };
                     if (opTags.count(value)) {
                         _transaction->type = opTags[value];
@@ -225,15 +220,15 @@ namespace ledger {
                     }
 
                     if (_lastKey == "type" &&
-                            _transaction->type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
+                        _transaction->type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
                         _transaction->originatedAccount = TezosLikeBlockchainExplorerOriginatedAccount();
-                    } else if(_lastKey == "type" &&
-                            _transaction->type == api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                    } else if (_lastKey == "type" &&
+                               _transaction->type == api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
                         _transaction->value = BigInt(0);
                     }
 
                 } else if (_lastKey == "public_key" ||
-                        (_lastKey == "data" && _transaction->type == api::TezosOperationTag::OPERATION_TAG_REVEAL)) {
+                           (_lastKey == "data" && _transaction->type == api::TezosOperationTag::OPERATION_TAG_REVEAL)) {
                     _transaction->publicKey = value;
                 } else if (_lastKey == "burn_tez") {
                     _transaction->fees = _transaction->fees + toValue(value, false);
@@ -242,8 +237,7 @@ namespace ledger {
             }
         }
 
-        TezosLikeTransactionParser::TezosLikeTransactionParser(std::string &lastKey) :
-                _lastKey(lastKey), _blockParser(lastKey) {
+        TezosLikeTransactionParser::TezosLikeTransactionParser(std::string &lastKey) : _lastKey(lastKey), _blockParser(lastKey) {
             _arrayDepth = 0;
         }
 
@@ -251,5 +245,5 @@ namespace ledger {
             _transaction = transaction;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

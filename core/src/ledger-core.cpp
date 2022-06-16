@@ -30,6 +30,7 @@
  */
 
 #include "ledger-core.h"
+
 #include <boost/preprocessor.hpp>
 
 namespace ledger {
@@ -39,8 +40,6 @@ namespace ledger {
         const int VERSION_MINOR = LIB_VERSION_MINOR;
         const int VERSION_PATCH = LIB_VERSION_PATCH;
         const std::string LIB_STRING_VERSION =
-                        BOOST_PP_STRINGIZE(LIB_VERSION_MAJOR) "."
-                        BOOST_PP_STRINGIZE(LIB_VERSION_MINOR) "."
-                        BOOST_PP_STRINGIZE(LIB_VERSION_PATCH);
-    }
-}
+            BOOST_PP_STRINGIZE(LIB_VERSION_MAJOR) "." BOOST_PP_STRINGIZE(LIB_VERSION_MINOR) "." BOOST_PP_STRINGIZE(LIB_VERSION_PATCH);
+    } // namespace core
+} // namespace ledger

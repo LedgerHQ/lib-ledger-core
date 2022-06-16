@@ -30,32 +30,27 @@
  */
 
 #include "StellarLikeWallet.hpp"
-#include <async/Promise.hpp>
+
 #include "StellarLikeAccount.hpp"
+#include "database/StellarLikeAccountDatabaseHelper.hpp"
 #include "explorers/HorizonBlockchainExplorer.hpp"
 #include "synchronizers/StellarLikeBlockchainExplorerAccountSynchronizer.hpp"
-#include <wallet/common/database/AccountDatabaseHelper.h>
-#include "database/StellarLikeAccountDatabaseHelper.hpp"
+
 #include <api/BoolCallback.hpp>
+#include <async/Promise.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
 
         const api::WalletType StellarLikeWallet::type = api::WalletType::STELLAR;
 
-        StellarLikeWallet::StellarLikeWallet(const std::string &walletName, const api::Currency &currency,
-                                             const std::shared_ptr<WalletPool> &pool,
-                                             const std::shared_ptr<DynamicObject> &configuration,
-                                             const DerivationScheme &derivationScheme,
-                                             const StellarLikeWalletParams &params) :
-                                             AbstractWallet(walletName, currency, pool, configuration, derivationScheme),
-                                             _params(params) {
-
+        StellarLikeWallet::StellarLikeWallet(const std::string &walletName, const api::Currency &currency, const std::shared_ptr<WalletPool> &pool, const std::shared_ptr<DynamicObject> &configuration, const DerivationScheme &derivationScheme, const StellarLikeWalletParams &params) : AbstractWallet(walletName, currency, pool, configuration, derivationScheme),
+                                                                                                                                                                                                                                                                                            _params(params) {
         }
 
-
         bool StellarLikeWallet::isSynchronizing() {
-           return false;
+            return false;
         }
 
         std::shared_ptr<api::EventBus> StellarLikeWallet::synchronize() {
@@ -73,7 +68,7 @@ namespace ledger {
         FuturePtr<api::Account>
         StellarLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
             auto self = getSelf();
-            return async<std::shared_ptr<api::Account>>([=] () -> std::shared_ptr<api::Account> {
+            return async<std::shared_ptr<api::Account>>([=]() -> std::shared_ptr<api::Account> {
                 DerivationPath path(info.derivations[0]);
                 if (info.publicKeys.size() < 1) {
                     throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Missing pubkey in account creation info.");
@@ -84,9 +79,8 @@ namespace ledger {
                         throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {} already exists", info.index);
                     }
                     auto keychain = self->_params.keychainFactory->build(
-                            info.index, path, std::dynamic_pointer_cast<DynamicObject>(self->getConfiguration()),
-                            info, self->getAccountInternalPreferences(info.index), self->getCurrency()
-                    );
+                        info.index, path, std::dynamic_pointer_cast<DynamicObject>(self->getConfiguration()),
+                        info, self->getAccountInternalPreferences(info.index), self->getCurrency());
                     soci::transaction tr(sql);
                     AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), info.index);
                     stellar::Account account;
@@ -114,7 +108,7 @@ namespace ledger {
         Future<api::AccountCreationInfo> StellarLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
             auto scheme = getDerivationScheme();
             auto path = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
-            api::AccountCreationInfo info {accountIndex, {"main"}, {path.toString()}, {}, {}};
+            api::AccountCreationInfo info{accountIndex, {"main"}, {path.toString()}, {}, {}};
             return Future<api::AccountCreationInfo>::successful(info);
         }
 
@@ -129,9 +123,8 @@ namespace ledger {
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(account.accountIndex);
             auto path = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
             params.keychain = _params.keychainFactory->restore(
-                    account.accountIndex, path, std::dynamic_pointer_cast<DynamicObject>(getConfiguration()),
-                    account.accountId, getAccountInternalPreferences(account.accountIndex), getCurrency()
-            );
+                account.accountIndex, path, std::dynamic_pointer_cast<DynamicObject>(getConfiguration()),
+                account.accountId, getAccountInternalPreferences(account.accountIndex), getCurrency());
             params.explorer = _params.blockchainExplorer;
             params.synchronizer = _params.accountSynchronizer;
             params.database = getDatabase();
@@ -143,7 +136,7 @@ namespace ledger {
         }
 
         void StellarLikeWallet::exists(const std::string &address, const std::shared_ptr<api::BoolCallback> &callback) {
-            exists(address).onComplete(getContext(), [=] (const Try<bool>& result) {
+            exists(address).onComplete(getContext(), [=](const Try<bool> &result) {
                 if (result.isFailure()) {
                     callback->onCallback(optional<bool>(), optional<api::Error>(api::Error(result.getFailure().getErrorCode(), result.getFailure().getMessage())));
                 } else {
@@ -155,14 +148,15 @@ namespace ledger {
         Future<bool> StellarLikeWallet::exists(const std::string &address) {
             auto explorer = _params.blockchainExplorer;
             StellarLikeAddress addr(address, getCurrency(), Option<std::string>::NONE);
-            return explorer->getAccount(address).map<bool>(getContext(), [] (const auto& result) {
-                return true;
-            }).recover(getContext(), [] (const Exception& ex) {
-                if (ex.getErrorCode() == api::ErrorCode::ACCOUNT_NOT_FOUND)
-                    return false;
-                throw ex;
-            });
+            return explorer->getAccount(address).map<bool>(getContext(), [](const auto &result) {
+                                                    return true;
+                                                })
+                .recover(getContext(), [](const Exception &ex) {
+                    if (ex.getErrorCode() == api::ErrorCode::ACCOUNT_NOT_FOUND)
+                        return false;
+                    throw ex;
+                });
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

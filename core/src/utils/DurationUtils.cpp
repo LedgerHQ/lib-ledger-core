@@ -33,7 +33,5 @@
 namespace ledger {
     namespace core {
 
-
-
     }
-}
+} // namespace ledger

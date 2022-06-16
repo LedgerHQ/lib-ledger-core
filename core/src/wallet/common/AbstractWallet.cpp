@@ -29,21 +29,23 @@
  *
  */
 #include "AbstractWallet.hpp"
-#include <wallet/pool/WalletPool.hpp>
+
+#include "AbstractAccount.hpp"
+
+#include <api/AccountListCallback.hpp>
+#include <api/ConfigurationDefaults.hpp>
+#include <api/I32Callback.hpp>
+#include <async/DedicatedContext.hpp>
+#include <async/algorithm.h>
+#include <database/soci-date.h>
+#include <database/soci-number.h>
+#include <database/soci-option.h>
 #include <debug/LoggerApi.hpp>
 #include <wallet/bitcoin/BitcoinLikeWallet.hpp>
-#include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/common/database/AccountDatabaseHelper.h>
-#include <api/I32Callback.hpp>
-#include "AbstractAccount.hpp"
-#include <api/AccountListCallback.hpp>
-#include <async/algorithm.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-#include <database/soci-number.h>
-#include <database/soci-date.h>
-#include <database/soci-option.h>
-#include <async/DedicatedContext.hpp>
-#include <api/ConfigurationDefaults.hpp>
+#include <wallet/cosmos/CosmosLikeWallet.hpp>
+#include <wallet/pool/WalletPool.hpp>
 #include <wallet/stellar/StellarLikeAccount.hpp>
 #include <wallet/stellar/StellarLikeWallet.hpp>
 
@@ -54,20 +56,19 @@ namespace ledger {
                                        const std::shared_ptr<WalletPool> &pool,
                                        const std::shared_ptr<DynamicObject> &configuration,
                                        const DerivationScheme &derivationScheme)
-                : DedicatedContext(pool->getThreadPoolExecutionContext()),
-                  _scheme(derivationScheme),
-                  _balanceCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
-                                                             .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE)))
-        {
+            : DedicatedContext(pool->getThreadPoolExecutionContext()),
+              _scheme(derivationScheme),
+              _balanceCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
+                                                     .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE))) {
             _pool = pool;
             _name = walletName;
             _uid = WalletDatabaseEntry::createWalletUid(pool->getName(), _name);
             _currency = currency;
             _configuration = configuration;
             _externalPreferences = pool->getExternalPreferences()->getSubPreferences(
-                    fmt::format("wallet_{}", walletName));
+                fmt::format("wallet_{}", walletName));
             _internalPreferences = pool->getInternalPreferences()->getSubPreferences(
-                    fmt::format("wallet_{}", walletName));
+                fmt::format("wallet_{}", walletName));
             _publisher = std::make_shared<EventPublisher>(getContext());
             _logger = pool->logger();
             _loggerApi = std::make_shared<LoggerApi>(pool->logger());
@@ -133,7 +134,8 @@ namespace ledger {
         }
 
         std::shared_ptr<Preferences> AbstractWallet::getAccountExternalPreferences(int32_t index) {
-            return getExternalPreferences()->getSubPreferences(fmt::format("account_{}", index));;
+            return getExternalPreferences()->getSubPreferences(fmt::format("account_{}", index));
+            ;
         }
 
         std::shared_ptr<api::Preferences> AbstractWallet::getAccountPreferences(int32_t index) {
@@ -205,13 +207,12 @@ namespace ledger {
             getAccountCount().callback(getMainExecutionContext(), callback);
         }
 
-        void
-        AbstractWallet::getNextAccountCreationInfo(const std::shared_ptr<api::AccountCreationInfoCallback> &callback) {
+        void AbstractWallet::getNextAccountCreationInfo(const std::shared_ptr<api::AccountCreationInfoCallback> &callback) {
             this->getNextAccountCreationInfo().callback(getMainExecutionContext(), callback);
         }
 
         void AbstractWallet::getNextExtendedKeyAccountCreationInfo(
-                const std::shared_ptr<api::ExtendedKeyAccountCreationInfoCallback> &callback) {
+            const std::shared_ptr<api::ExtendedKeyAccountCreationInfoCallback> &callback) {
             this->getNextExtendedKeyAccountCreationInfo().callback(getMainExecutionContext(), callback);
         }
 
@@ -220,19 +221,19 @@ namespace ledger {
             return getNextAccountIndex().flatMap<api::AccountCreationInfo>(getContext(),
                                                                            [self](const int32_t &index) -> Future<api::AccountCreationInfo> {
                                                                                return self->getAccountCreationInfo(
-                                                                                       index);
+                                                                                   index);
                                                                            });
         }
 
         Future<api::ExtendedKeyAccountCreationInfo> AbstractWallet::getNextExtendedKeyAccountCreationInfo() {
             auto self = shared_from_this();
             return getNextAccountIndex()
-                    .flatMap<api::ExtendedKeyAccountCreationInfo>(getContext(),
-          [self](const int32_t &index) -> Future<api::ExtendedKeyAccountCreationInfo> {
-              return self->getExtendedKeyAccountCreationInfo(
-                      index);
-                  });
-}
+                .flatMap<api::ExtendedKeyAccountCreationInfo>(getContext(),
+                                                              [self](const int32_t &index) -> Future<api::ExtendedKeyAccountCreationInfo> {
+                                                                  return self->getExtendedKeyAccountCreationInfo(
+                                                                      index);
+                                                              });
+        }
 
         void AbstractWallet::getAccountCreationInfo(int32_t accountIndex,
                                                     const std::shared_ptr<api::AccountCreationInfoCallback> &callback) {
@@ -251,13 +252,13 @@ namespace ledger {
         }
 
         void AbstractWallet::newAccountWithExtendedKeyInfo(
-                const api::ExtendedKeyAccountCreationInfo &extendedKeyAccountCreationInfo,
-                const std::shared_ptr<api::AccountCallback> &callback) {
+            const api::ExtendedKeyAccountCreationInfo &extendedKeyAccountCreationInfo,
+            const std::shared_ptr<api::AccountCallback> &callback) {
             auto self = shared_from_this();
             newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo).callback(getMainExecutionContext(), callback);
         }
 
-        void AbstractWallet::getAccount(int32_t index, const std::shared_ptr<api::AccountCallback>& callback) {
+        void AbstractWallet::getAccount(int32_t index, const std::shared_ptr<api::AccountCallback> &callback) {
             getAccount(index).callback(getMainExecutionContext(), callback);
         }
 
@@ -272,10 +273,10 @@ namespace ledger {
                 }
             }
             auto self = shared_from_this();
-            return FuturePtr<api::Account>::async(getPool()->getThreadPoolExecutionContext(), [self, index] () -> std::shared_ptr<api::Account> {
+            return FuturePtr<api::Account>::async(getPool()->getThreadPoolExecutionContext(), [self, index]() -> std::shared_ptr<api::Account> {
                 soci::session sql(self->getDatabase()->getPool());
                 if (!AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), index)) {
-                    throw make_exception(api::ErrorCode::ACCOUNT_NOT_FOUND, "Account {}, for wallet '{}', doesn't exist", index,  self->getName());
+                    throw make_exception(api::ErrorCode::ACCOUNT_NOT_FOUND, "Account {}, for wallet '{}', doesn't exist", index, self->getName());
                 }
                 auto account = self->createAccountInstance(sql, AccountDatabaseHelper::createAccountUid(self->getWalletUid(), index));
                 self->addAccountInstanceToInstanceCache(account);
@@ -283,19 +284,18 @@ namespace ledger {
             });
         }
 
-        void AbstractWallet::getAccounts(int32_t offset, int32_t count,
-                                         const std::shared_ptr<api::AccountListCallback> &callback) {
+        void AbstractWallet::getAccounts(int32_t offset, int32_t count, const std::shared_ptr<api::AccountListCallback> &callback) {
             getAccounts(offset, count).callback(getMainExecutionContext(), callback);
         }
 
         Future<std::vector<std::shared_ptr<api::Account>>> AbstractWallet::getAccounts(int32_t offset, int32_t count) {
             auto self = shared_from_this();
-            return Future<std::vector<std::shared_ptr<api::Account>>>::async(getPool()->getThreadPoolExecutionContext(), [=] () {
-                std::vector<Future<std::shared_ptr<api::Account>> > accounts;
+            return Future<std::vector<std::shared_ptr<api::Account>>>::async(getPool()->getThreadPoolExecutionContext(), [=]() {
+                std::vector<Future<std::shared_ptr<api::Account>>> accounts;
                 std::list<int32_t> indexes;
                 soci::session sql(getDatabase()->getPool());
                 AccountDatabaseHelper::getAccountsIndexes(sql, getWalletUid(), offset, count, indexes);
-                for (auto& index : indexes) {
+                for (auto &index : indexes) {
                     accounts.push_back(getAccount(index));
                 }
                 return core::async::sequence(getMainExecutionContext(), accounts);
@@ -323,7 +323,7 @@ namespace ledger {
             getLastBlock().callback(getMainExecutionContext(), callback);
         }
 
-        void AbstractWallet::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
+        void AbstractWallet::eraseDataSince(const std::chrono::system_clock::time_point &date, const std::shared_ptr<api::ErrorCodeCallback> &callback) {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
         }
 
@@ -332,14 +332,12 @@ namespace ledger {
             auto uid = getWalletUid();
             //auto accounts = _accounts;
             _logger->debug("Start erasing data of wallet : {} since : {}", uid, DateUtils::toJSON(date));
-            static std::function<Future<api::ErrorCode> (int , const std::unordered_map<int32_t, std::shared_ptr<AbstractAccount>> &)> eraseAccount = [date] (int index, const std::unordered_map<int32_t, std::shared_ptr<AbstractAccount>> &accountsToErase) -> Future<api::ErrorCode> {
-
+            static std::function<Future<api::ErrorCode>(int, const std::unordered_map<int32_t, std::shared_ptr<AbstractAccount>> &)> eraseAccount = [date](int index, const std::unordered_map<int32_t, std::shared_ptr<AbstractAccount>> &accountsToErase) -> Future<api::ErrorCode> {
                 if (index == accountsToErase.size()) {
                     return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
                 }
 
-                return accountsToErase.at(index)->eraseDataSince(date).flatMap<api::ErrorCode>(ImmediateExecutionContext::INSTANCE,[index, accountsToErase] (const api::ErrorCode &errorCode) -> Future<api::ErrorCode> {
-
+                return accountsToErase.at(index)->eraseDataSince(date).flatMap<api::ErrorCode>(ImmediateExecutionContext::INSTANCE, [index, accountsToErase](const api::ErrorCode &errorCode) -> Future<api::ErrorCode> {
                     if (errorCode != api::ErrorCode::FUTURE_WAS_SUCCESSFULL) {
                         return Future<api::ErrorCode>::failure(make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to erase accounts of wallet !"));
                     }
@@ -347,8 +345,7 @@ namespace ledger {
                     return eraseAccount(index + 1, accountsToErase);
                 });
             };
-            return eraseAccount(0, _accounts).flatMap<api::ErrorCode>(ImmediateExecutionContext::INSTANCE, [self, date, uid] (const api::ErrorCode &err) {
-
+            return eraseAccount(0, _accounts).flatMap<api::ErrorCode>(ImmediateExecutionContext::INSTANCE, [self, date, uid](const api::ErrorCode &err) {
                 if (err != api::ErrorCode::FUTURE_WAS_SUCCESSFULL) {
                     return Future<api::ErrorCode>::failure(make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to erase accounts of wallet {}", uid));
                 }
@@ -356,19 +353,18 @@ namespace ledger {
                 soci::session sql(self->getDatabase()->getPool());
                 //Remove all accounts created after date
                 soci::rowset<soci::row> accounts = (sql.prepare << "SELECT idx FROM accounts "
-                                                                    "WHERE wallet_uid = :wallet_uid AND created_at >= :date",
-                                                                    soci::use(uid), soci::use(date));
+                                                                   "WHERE wallet_uid = :wallet_uid AND created_at >= :date",
+                                                    soci::use(uid), soci::use(date));
 
-                for (auto& account : accounts) {
+                for (auto &account : accounts) {
                     if (account.get_indicator(0) != soci::i_null) {
                         self->_accounts.erase(account.get<int32_t>(0));
                     }
                 }
                 sql << "DELETE FROM accounts WHERE wallet_uid = :wallet_uid AND created_at >= :date", soci::use(uid), soci::use(date);
-                self->logger()->debug("Finish erasing data of wallet : {} since : {}",uid, DateUtils::toJSON(date));
+                self->logger()->debug("Finish erasing data of wallet : {} since : {}", uid, DateUtils::toJSON(date));
                 return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
             });
-
         }
 
         bool AbstractWallet::isInstanceOfStellarLikeWallet() const {
@@ -378,7 +374,6 @@ namespace ledger {
         std::shared_ptr<api::StellarLikeWallet> AbstractWallet::asStellarLikeWallet() {
             return asInstanceOf<StellarLikeWallet>();
         }
-
 
         Option<Amount> AbstractWallet::getBalanceFromCache(size_t accountIndex) {
             return _balanceCache.get(fmt::format("{}-{}", _currency.name, accountIndex));
@@ -396,5 +391,5 @@ namespace ledger {
             return getConfig();
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

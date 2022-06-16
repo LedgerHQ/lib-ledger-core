@@ -31,9 +31,10 @@
 #ifndef LEDGER_CORE_DERIVATIONSCHEME_HPP
 #define LEDGER_CORE_DERIVATIONSCHEME_HPP
 
+#include "DerivationPath.hpp"
+
 #include <string>
 #include <vector>
-#include "DerivationPath.hpp"
 
 namespace ledger {
     namespace core {
@@ -53,10 +54,10 @@ namespace ledger {
         };
 
         class DerivationScheme {
-        public:
-            DerivationScheme(const std::string& scheme);
-            DerivationScheme(const std::vector<DerivationSchemeNode>& nodes);
-            DerivationScheme(const DerivationScheme& cpy);
+          public:
+            DerivationScheme(const std::string &scheme);
+            DerivationScheme(const std::vector<DerivationSchemeNode> &nodes);
+            DerivationScheme(const DerivationScheme &cpy);
             DerivationScheme getSchemeFrom(DerivationSchemeLevel level);
             DerivationScheme getSchemeTo(DerivationSchemeLevel level) const;
             DerivationScheme getSchemeToDepth(size_t depth) const;
@@ -71,22 +72,21 @@ namespace ledger {
 
             int getPositionForLevel(DerivationSchemeLevel level) const;
 
-            DerivationScheme& setCoinType(int type);
-            DerivationScheme& setAccountIndex(int index);
-            DerivationScheme& setNode(int node);
-            DerivationScheme& setAddressIndex(int index);
+            DerivationScheme &setCoinType(int type);
+            DerivationScheme &setAccountIndex(int index);
+            DerivationScheme &setNode(int node);
+            DerivationScheme &setAddressIndex(int index);
 
             std::string toString() const;
 
-        private:
-            DerivationScheme& setVariable(DerivationSchemeLevel level, int value);
+          private:
+            DerivationScheme &setVariable(DerivationSchemeLevel level, int value);
             int getVariable(DerivationSchemeLevel level) const;
 
-        private:
+          private:
             std::vector<DerivationSchemeNode> _scheme;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_DERIVATIONSCHEME_HPP

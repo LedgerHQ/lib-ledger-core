@@ -31,12 +31,13 @@
 #pragma once
 
 #include "DatabaseBackend.hpp"
+
 #include <memory>
 #include <mutex>
 namespace ledger {
     namespace core {
         class PostgreSQLBackend : public DatabaseBackend {
-        public:
+          public:
             PostgreSQLBackend();
             PostgreSQLBackend(int32_t connectionPoolSize, int32_t readonlyConnectionPoolSize);
 
@@ -51,16 +52,17 @@ namespace ledger {
             void setPassword(const std::string &password,
                              soci::session &session) override;
 
-            void changePassword(const std::string & oldPassword,
-                                const std::string & newPassword,
+            void changePassword(const std::string &oldPassword,
+                                const std::string &newPassword,
                                 soci::session &session) override;
             static std::once_flag sslFlag;
             static void initSSLLibraries();
-        private:
+
+          private:
             // Resolved path to db
             std::string _dbName;
             int32_t _connectionPoolSize;
             int32_t _readonlyConnectionPoolSize;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger

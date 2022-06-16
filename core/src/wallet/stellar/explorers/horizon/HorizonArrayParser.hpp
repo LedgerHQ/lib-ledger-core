@@ -32,28 +32,27 @@
 #ifndef LEDGER_CORE_HORIZONARRAYPARSER_HPP
 #define LEDGER_CORE_HORIZONARRAYPARSER_HPP
 
+#include <fmt/printf.h>
 #include <rapidjson/reader.h>
 #include <utils/JsonParserPath.hpp>
-#include <fmt/printf.h>
+#include <vector>
 
 namespace ledger {
     namespace core {
 
-    #define DELEGATE(x, ...) \
-        if (_path.match(_itemMatcher)) { \
-            _parser.x(__VA_ARGS__); \
-        } \
-        return true;
+#define DELEGATE(x, ...)             \
+    if (_path.match(_itemMatcher)) { \
+        _parser.x(__VA_ARGS__);      \
+    }                                \
+    return true;
 
         template <class Parser, class Item>
         class HorizonArrayParser {
-        public:
-
+          public:
             HorizonArrayParser() : _itemMatcher("/records[*]/?"),
                                    _arrayMatcher("/records[*]/")
 
             {
-
             }
 
             bool Null() {
@@ -120,21 +119,21 @@ namespace ledger {
                 _array = array;
             }
 
-            void setPathView(const JsonParserPathView& path) {
+            void setPathView(const JsonParserPathView &path) {
                 _path = path;
                 _parser.setPathView(_path.view(4));
             }
 
-        private:
+          private:
             JsonParserPathMatcher _arrayMatcher;
             JsonParserPathMatcher _itemMatcher;
             JsonParserPathView _path;
             Parser _parser;
-            std::vector<std::shared_ptr<Item>>* _array;
+            std::vector<std::shared_ptr<Item>> *_array;
         };
 
-    #undef DELEGATE
-    }
-}
+#undef DELEGATE
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_HORIZONARRAYPARSER_HPP

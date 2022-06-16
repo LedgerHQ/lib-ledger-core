@@ -27,70 +27,65 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H
 #define LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H
 
 #include "AlgorandAddress.hpp"
 #include "AlgorandBlockchainExplorer.hpp"
 
-#include <wallet/pool/WalletPool.hpp>
-#include <wallet/common/AbstractWallet.hpp>
 #include <events/ProgressNotifier.h>
-
+#include <map>
 #include <mutex>
 #include <string>
-#include <map>
 #include <vector>
+#include <wallet/common/AbstractWallet.hpp>
+#include <wallet/pool/WalletPool.hpp>
 
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
 
-    struct SavedState {
-        uint64_t round;
+            struct SavedState {
+                uint64_t round;
 
-        SavedState() : round(0) {}
+                SavedState() : round(0) {}
 
-        template<class Archive>
-        void serialize(Archive & archive) {
-            archive(round); // Serialize things by passing them to the archive
-        };
-    };
+                template <class Archive>
+                void serialize(Archive &archive) {
+                    archive(round); // Serialize things by passing them to the archive
+                };
+            };
 
-    class Account;
+            class Account;
 
-    class AccountSynchronizer : public DedicatedContext,
-                                public std::enable_shared_from_this<AccountSynchronizer> {
+            class AccountSynchronizer : public DedicatedContext,
+                                        public std::enable_shared_from_this<AccountSynchronizer> {
 
-    public:
+              public:
+                AccountSynchronizer(const std::shared_ptr<WalletPool> &pool,
+                                    const std::shared_ptr<BlockchainExplorer> &explorer);
 
-        AccountSynchronizer(const std::shared_ptr<WalletPool>& pool,
-                            const std::shared_ptr<BlockchainExplorer> & explorer);
+                std::shared_ptr<ProgressNotifier<Unit>> synchronizeAccount(const std::shared_ptr<Account> &account);
 
-        std::shared_ptr<ProgressNotifier<Unit>> synchronizeAccount(const std::shared_ptr<Account> & account);
+              private:
+                Future<Unit> performSynchronization(const std::shared_ptr<Account> &account);
 
-    private:
+                Future<bool> synchronizeBatch(const std::shared_ptr<Account> &account,
+                                              const bool hadTransactions,
+                                              const Option<uint64_t> &lowestRound = Option<uint64_t>(),
+                                              const Option<uint64_t> &highestRound = Option<uint64_t>());
 
-        Future<Unit> performSynchronization(const std::shared_ptr<Account> & account);
+                Future<Unit> updateLatestBlock(const std::shared_ptr<api::ExecutionContext> &context);
 
-        Future<bool> synchronizeBatch(const std::shared_ptr<Account> & account,
-                                      const bool hadTransactions,
-                                      const Option<uint64_t> & lowestRound = Option<uint64_t>(),
-                                      const Option<uint64_t> & highestRound = Option<uint64_t>());
+                std::shared_ptr<Account> _account;
+                std::shared_ptr<BlockchainExplorer> _explorer;
+                std::shared_ptr<Preferences> _internalPreferences;
+                std::shared_ptr<ProgressNotifier<Unit>> _notifier;
+                std::mutex _lock;
+            };
 
-        Future<Unit> updateLatestBlock(const std::shared_ptr<api::ExecutionContext> &context);
-
-        std::shared_ptr<Account> _account;
-        std::shared_ptr<BlockchainExplorer> _explorer;
-        std::shared_ptr<Preferences> _internalPreferences;
-        std::shared_ptr<ProgressNotifier<Unit>> _notifier;
-        std::mutex _lock;
-
-    };
-
-} // namespace algorand
-} // namespace core
+        } // namespace algorand
+    }     // namespace core
 } // namespace ledger
 
 #endif // LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H

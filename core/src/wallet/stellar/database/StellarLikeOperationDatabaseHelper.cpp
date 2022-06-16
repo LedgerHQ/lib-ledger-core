@@ -30,15 +30,16 @@
  */
 
 #include "StellarLikeOperationDatabaseHelper.hpp"
+
+#include <api/BigInt.hpp>
 #include <database/PreparedStatement.hpp>
+#include <database/soci-backend-utils.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
-#include <api/BigInt.hpp>
-#include <database/soci-backend-utils.h>
 #include <debug/Benchmarker.h>
 #include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
-#include <wallet/stellar/database/StellarLikeTransactionDatabaseHelper.hpp>
 #include <wallet/stellar/database/StellarLikeAssetDatabaseHelper.hpp>
+#include <wallet/stellar/database/StellarLikeTransactionDatabaseHelper.hpp>
 
 using namespace soci;
 
@@ -56,11 +57,11 @@ namespace {
         std::vector<std::string> memoType;
         std::vector<std::string> memo;
 
-        void update(const stellar::Transaction& tx, const std::string& txUid) {
+        void update(const stellar::Transaction &tx, const std::string &txUid) {
             const auto feePaid = tx.feePaid.toString();
             const auto seq = tx.sourceAccountSequence.toString();
             const auto success = tx.successful ? 1 : 0;
-            
+
             uid.push_back(txUid);
             hash.push_back(tx.hash);
             sourceAccount.push_back(tx.sourceAccount);
@@ -88,9 +89,9 @@ namespace {
         "INSERT INTO stellar_transactions VALUES(:uid, :hash, :account, :sequence, :fee, :success, :ledger,"
         ":memo_type, :memo) "
         "ON CONFLICT DO NOTHING",
-        [] (auto& s, auto&  b) {
+        [](auto &s, auto &b) {
             s, use(b.uid), use(b.hash), use(b.sourceAccount), use(b.sequence), use(b.fee),
-            use(b.successful), use(b.ledger), use(b.memoType), use(b.memo);
+                use(b.successful), use(b.ledger), use(b.memoType), use(b.memo);
         });
 
     // Assets
@@ -100,7 +101,7 @@ namespace {
         std::vector<Option<std::string>> code;
         std::vector<Option<std::string>> issuer;
 
-        void update(const stellar::Asset &asset) { 
+        void update(const stellar::Asset &asset) {
             Option<std::string> assetCode;
             Option<std::string> assetIssuer;
 
@@ -109,7 +110,7 @@ namespace {
             if (!asset.issuer.empty())
                 assetIssuer = asset.issuer;
 
-            const auto assetUid = StellarLikeAssetDatabaseHelper::createAssetUid(asset.type, assetCode, assetIssuer);  
+            const auto assetUid = StellarLikeAssetDatabaseHelper::createAssetUid(asset.type, assetCode, assetIssuer);
             uid.push_back(assetUid);
             type.push_back(asset.type);
             code.push_back(assetCode);
@@ -126,7 +127,7 @@ namespace {
     const auto UPSERT_ASSERT = db::stmt<AssetBinding>(
         "INSERT INTO stellar_assets VALUES (:uid, :type, :code, :issuer) "
         "ON CONFLICT DO NOTHING",
-        [] (auto& s, auto&  b) {
+        [](auto &s, auto &b) {
             s, use(b.uid), use(b.type), use(b.code), use(b.issuer);
         });
 
@@ -144,19 +145,19 @@ namespace {
         std::vector<std::string> to;
         std::vector<int> type;
 
-        void update(const std::string &accountUid, const std::string& currencyName, const stellar::Operation &op) {
+        void update(const std::string &accountUid, const std::string &currencyName, const stellar::Operation &op) {
             auto opUid = StellarLikeTransactionDatabaseHelper::createOperationUid(accountUid, op.id);
             auto hash = StellarLikeTransactionDatabaseHelper::createTransactionUid(currencyName, op.transactionHash);
             auto auid = StellarLikeAssetDatabaseHelper::createAssetUid(op.asset);
-            auto sourceAuid = op.sourceAsset.map<std::string>([] (const stellar::Asset& asset) {
+            auto sourceAuid = op.sourceAsset.map<std::string>([](const stellar::Asset &asset) {
                 return StellarLikeAssetDatabaseHelper::createAssetUid(asset);
             });
             auto opAmount = op.amount.toString();
-            auto opSourceAmount = op.sourceAmount.map<std::string>([] (const BigInt& b) {
+            auto opSourceAmount = op.sourceAmount.map<std::string>([](const BigInt &b) {
                 return b.toString();
             });
             int opType = static_cast<int>(op.type);
-            
+
             uid.push_back(opUid);
             txUid.push_back(hash);
             id.push_back(op.id);
@@ -189,21 +190,20 @@ namespace {
         ":uid, :tx_uid, :hash, :time, :asset_uid, :src_asset_uid, :amount, :src_amount, :from, :to, :type"
         ") "
         "ON CONFLICT DO NOTHING",
-        [] (auto& s, auto&  b) {
-            s, 
-            use(b.uid), 
-            use(b.txUid), 
-            use(b.id), 
-            use(b.createdAt), 
-            use(b.assetUid), 
-            use(b.sourceAssetUid),
-            use(b.amount), 
-            use(b.srcAmount), 
-            use(b.from), 
-            use(b.to), 
-            use(b.type);
+        [](auto &s, auto &b) {
+            s,
+                use(b.uid),
+                use(b.txUid),
+                use(b.id),
+                use(b.createdAt),
+                use(b.assetUid),
+                use(b.sourceAssetUid),
+                use(b.amount),
+                use(b.srcAmount),
+                use(b.from),
+                use(b.to),
+                use(b.type);
         });
-    
 
     // stellar_account_operations
     struct StellarAccountOperationBinding {
@@ -211,8 +211,8 @@ namespace {
         std::vector<std::string> opUid;
 
         void update(const Operation &operation) {
-            auto& operationValue = operation.stellarOperation.getValue().operation;
-            auto stellarOpId = StellarLikeTransactionDatabaseHelper::createOperationUid(operation.accountUid, operationValue.id);       
+            auto &operationValue = operation.stellarOperation.getValue().operation;
+            auto stellarOpId = StellarLikeTransactionDatabaseHelper::createOperationUid(operation.accountUid, operationValue.id);
             uid.push_back(operation.uid);
             opUid.push_back(stellarOpId);
         }
@@ -225,19 +225,18 @@ namespace {
     const auto UPSERT_STELLAR_ACCOUNT_OPERATION = db::stmt<StellarAccountOperationBinding>(
         "INSERT INTO stellar_account_operations VALUES(:uid, :op_uid) "
         "ON CONFLICT DO NOTHING",
-        [] (auto& s, auto&  b) {
-            s, 
-            use(b.uid), 
-            use(b.opUid);
+        [](auto &s, auto &b) {
+            s,
+                use(b.uid),
+                use(b.opUid);
         });
 
-
-}
+} // namespace
 namespace ledger {
     namespace core {
 
         void StellarLikeOperationDatabaseHelper::bulkInsert(soci::session &sql,
-                const std::vector<Operation> &operations) {
+                                                            const std::vector<Operation> &operations) {
             if (operations.empty())
                 return;
             Benchmarker rawInsert("raw_db_insert_stellar", nullptr);
@@ -248,28 +247,28 @@ namespace ledger {
             PreparedStatement<AssetBinding> assetStmt;
             PreparedStatement<StellarOperationBinding> stellarOperationStmt;
             PreparedStatement<StellarAccountOperationBinding> stellarAccountOperationStmt;
-            
+
             BulkInsertDatabaseHelper::UPSERT_OPERATION(sql, operationStmt);
             BulkInsertDatabaseHelper::UPSERT_BLOCK(sql, blockStmt);
             UPSERT_TRANSACTION(sql, transactionStmt);
             UPSERT_ASSERT(sql, assetStmt);
             UPSERT_STELLAR_OPERATION(sql, stellarOperationStmt);
             UPSERT_STELLAR_ACCOUNT_OPERATION(sql, stellarAccountOperationStmt);
-                   
-            for (const auto& op : operations) {
+
+            for (const auto &op : operations) {
                 if (op.block.hasValue()) {
                     blockStmt.bindings.update(op.block.getValue());
                 }
                 // Upsert operation
                 operationStmt.bindings.update(op);
                 // Upsert transaction
-                auto& tx = op.stellarOperation.getValue().transaction;
+                auto &tx = op.stellarOperation.getValue().transaction;
                 const auto txUid = StellarLikeTransactionDatabaseHelper::createTransactionUid(op.currencyName, tx.hash);
-                transactionStmt.bindings.update(tx, txUid); 
+                transactionStmt.bindings.update(tx, txUid);
                 // Upsert assets
-                auto& stOp = op.stellarOperation.getValue().operation;
+                auto &stOp = op.stellarOperation.getValue().operation;
                 assetStmt.bindings.update(stOp.asset);
-                if (stOp.sourceAsset)  {
+                if (stOp.sourceAsset) {
                     assetStmt.bindings.update(stOp.sourceAsset.getValue());
                 }
                 // Upsert stellar operations
@@ -287,11 +286,11 @@ namespace ledger {
             // operations
             operationStmt.execute();
             // stellar operations
-            stellarOperationStmt.execute(); 
+            stellarOperationStmt.execute();
             //stellar accounts operations
             stellarAccountOperationStmt.execute();
-            
+
             rawInsert.stop();
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -28,25 +28,23 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEBLOCKCHAINEXPLORER_H
 #define LEDGER_CORE_TEZOSLIKEBLOCKCHAINEXPLORER_H
-
-#include <string>
 
 #include <api/DynamicObject.hpp>
 #include <api/ExecutionContext.hpp>
 #include <api/TezosLikeNetworkParameters.hpp>
+#include <api/TezosOperationTag.hpp>
 #include <async/DedicatedContext.hpp>
 #include <collections/DynamicObject.hpp>
 #include <math/BigInt.h>
 #include <net/HttpClient.hpp>
+#include <string>
 #include <utils/ConfigurationMatchable.h>
 #include <utils/Option.hpp>
 #include <wallet/common/Block.h>
 #include <wallet/common/explorers/AbstractBlockchainExplorer.h>
 #include <wallet/tezos/keychains/TezosLikeKeychain.h>
-#include <api/TezosOperationTag.hpp>
 
 namespace ledger {
     namespace core {
@@ -54,11 +52,9 @@ namespace ledger {
         struct TezosLikeBlockchainExplorerOriginatedAccount {
             TezosLikeBlockchainExplorerOriginatedAccount(const std::string &a = "",
                                                          bool isSpendable = false,
-                                                         bool isDelegatable = false) :
-                    address(a),
-                    spendable(isSpendable),
-                    delegatable(isDelegatable) {
-            };
+                                                         bool isDelegatable = false) : address(a),
+                                                                                       spendable(isSpendable),
+                                                                                       delegatable(isDelegatable){};
 
             std::string address;
             bool spendable;
@@ -91,24 +87,21 @@ namespace ledger {
             }
 
             TezosLikeBlockchainExplorerTransaction(const TezosLikeBlockchainExplorerTransaction &cpy) = default;
-
         };
 
         struct GasLimit {
             BigInt reveal;
             BigInt transaction;
 
-            GasLimit() :
-                reveal(0), transaction(0) {}
+            GasLimit() : reveal(0), transaction(0) {}
 
-            GasLimit(const BigInt& r, const BigInt& t) :
-                reveal(r), transaction(t) {}
+            GasLimit(const BigInt &r, const BigInt &t) : reveal(r), transaction(t) {}
         };
 
         class TezosLikeTransactionApi;
         class TezosLikeBlockchainExplorer : public ConfigurationMatchable,
                                             public AbstractBlockchainExplorer<TezosLikeBlockchainExplorerTransaction> {
-        public:
+          public:
             typedef ledger::core::Block Block;
             using Transaction = TezosLikeBlockchainExplorerTransaction;
 
@@ -142,11 +135,9 @@ namespace ledger {
                 const std::shared_ptr<TezosLikeTransactionApi> &transaction,
                 const std::string &chainId);
 
-
             Future<std::string> getChainId(
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<HttpClient> &http);
-
 
             virtual Future<std::shared_ptr<BigInt>>
             getStorage(const std::string &address) = 0;
@@ -189,16 +180,17 @@ namespace ledger {
 
             /// Get a token balance for an account
             virtual Future<std::shared_ptr<BigInt>>
-            getTokenBalance(const std::string& accountAddress,
-                            const std::string& tokenAddress) const = 0;
+            getTokenBalance(const std::string &accountAddress,
+                            const std::string &tokenAddress) const = 0;
 
-        protected:
+          protected:
             std::string getRPCNodeEndpoint() const {
                 return _rpcNode;
             };
-        private:
+
+          private:
             std::string _rpcNode;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_TEZOSLIKEBLOCKCHAINEXPLORER_H

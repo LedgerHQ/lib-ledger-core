@@ -32,25 +32,30 @@
 
 void ledger::core::LoggerApi::d(const std::string &tag, const std::string &message) {
     auto i = _logger.lock();
-    if (i) i->debug("[{}] {}", tag, message);
+    if (i)
+        i->debug("[{}] {}", tag, message);
 }
 
 void ledger::core::LoggerApi::i(const std::string &tag, const std::string &message) {
     auto i = _logger.lock();
-    if (i) i->info("[{}] {}", tag, message);
+    if (i)
+        i->info("[{}] {}", tag, message);
 }
 
 void ledger::core::LoggerApi::e(const std::string &tag, const std::string &message) {
     auto i = _logger.lock();
-    if (i) i->error("[{}] {}", tag, message);
+    if (i)
+        i->error("[{}] {}", tag, message);
 }
 
 void ledger::core::LoggerApi::w(const std::string &tag, const std::string &message) {
     auto i = _logger.lock();
-    if (i) i->warn("[{}] {}", tag, message);
+    if (i)
+        i->warn("[{}] {}", tag, message);
 }
 
 void ledger::core::LoggerApi::c(const std::string &tag, const std::string &message) {
     auto i = _logger.lock();
-    if (i) i->critical("[{}] {}", tag, message);
+    if (i)
+        i->critical("[{}] {}", tag, message);
 }

@@ -34,9 +34,8 @@
 #include <api/BitcoinLikeNetworkParameters.hpp>
 #include <api/CosmosLikeNetworkParameters.hpp>
 #include <api/EthereumLikeNetworkParameters.hpp>
+#include <api/Networks.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
 #include <api/TezosLikeNetworkParameters.hpp>
-#include <api/Networks.hpp>
-
 
 #endif //LEDGER_CORE_NETWORKS_HPP

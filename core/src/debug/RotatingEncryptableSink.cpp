@@ -28,11 +28,12 @@
  * SOFTWARE.
  *
  */
-#include "fmt/format.h"
 #include "RotatingEncryptableSink.hpp"
-#include "utils/LambdaRunnable.hpp"
+
 #include "../api/ErrorCode.hpp"
 #include "../utils/Exception.hpp"
+#include "fmt/format.h"
+#include "utils/LambdaRunnable.hpp"
 
 namespace ledger {
     namespace core {
@@ -63,23 +64,22 @@ namespace ledger {
             std::shared_ptr<fmt::memory_buffer> buffer = std::make_shared<fmt::memory_buffer>();
             formatter_->format(msg, *buffer);
             auto self = shared_from_this();
-            context->execute(make_runnable([self, buffer] () {
+            context->execute(make_runnable([self, buffer]() {
                 self->_sink_it(buffer);
             }));
         }
 
         void RotatingEncryptableSink::flush_() {
             auto context = _context;
-            context->execute(make_runnable([this] () {
-               _file_helper.flush();
+            context->execute(make_runnable([this]() {
+                _file_helper.flush();
             }));
         }
 
         void RotatingEncryptableSink::_sink_it(std::shared_ptr<fmt::memory_buffer> msg) {
             // TODO: implement encryption
             _current_size += msg->size();
-            if (_current_size > _max_size)
-            {
+            if (_current_size > _max_size) {
                 _rotate();
                 _current_size = msg->size();
             }
@@ -87,7 +87,8 @@ namespace ledger {
         }
 
         spdlog::filename_t RotatingEncryptableSink::calc_filename(std::shared_ptr<api::PathResolver> resolver,
-                                                                  const spdlog::filename_t &filename, std::size_t index,
+                                                                  const spdlog::filename_t &filename,
+                                                                  std::size_t index,
                                                                   const spdlog::filename_t &extension) {
             auto mangledFilename = fmt::format(SPDLOG_FILENAME_T("{}.{}"), filename, extension);
             if (index) {
@@ -109,14 +110,14 @@ namespace ledger {
 #if defined(_WIN32) || defined(_WIN64)
         void RotatingEncryptableSink::ToWide(const std::string &input, std::wstring &output) {
             wchar_t buffer[MAX_PATH];
-	        MultiByteToWideChar(CP_UTF8, 0, input.c_str(), -1, buffer, MAX_PATH);
-	        output = buffer;
+            MultiByteToWideChar(CP_UTF8, 0, input.c_str(), -1, buffer, MAX_PATH);
+            output = buffer;
         }
 
         void RotatingEncryptableSink::ToNarrow(const std::wstring &input, std::string &output) {
             char buffer[MAX_PATH];
-	        WideCharToMultiByte(CP_UTF8, 0, input.c_str(), -1, buffer, MAX_PATH, NULL, NULL);
-	        output = buffer;
+            WideCharToMultiByte(CP_UTF8, 0, input.c_str(), -1, buffer, MAX_PATH, NULL, NULL);
+            output = buffer;
         }
 #endif
 
@@ -127,24 +128,20 @@ namespace ledger {
             }
             using spdlog::details::os::filename_to_str;
             _file_helper.close();
-            for (auto i = _max_files; i > 0; --i)
-            {
+            for (auto i = _max_files; i > 0; --i) {
                 auto src = calc_filename(resolver, _base_filename, i - 1, _extension);
                 auto target = calc_filename(resolver, _base_filename, i, _extension);
 
-                if (spdlog::details::file_helper::file_exists(target))
-                {
-                    if (spdlog::details::os::remove(target) != 0)
-                    {
+                if (spdlog::details::file_helper::file_exists(target)) {
+                    if (spdlog::details::os::remove(target) != 0) {
                         throw spdlog::spdlog_ex("rotating_file_sink: failed removing " + spdlog::details::os::filename_to_str(target), errno);
                     }
                 }
-                if (spdlog::details::file_helper::file_exists(src) && spdlog::details::os::rename(src, target))
-                {
+                if (spdlog::details::file_helper::file_exists(src) && spdlog::details::os::rename(src, target)) {
                     throw spdlog::spdlog_ex("rotating_file_sink: failed renaming " + spdlog::details::os::filename_to_str(src) + " to " + spdlog::details::os::filename_to_str(target), errno);
                 }
             }
             _file_helper.reopen(true);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

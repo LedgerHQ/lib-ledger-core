@@ -32,51 +32,45 @@
 
 #include "AlgorandLikeCurrencies.hpp"
 
-#include <wallet/common/AbstractAddress.h>
-
 #include <string>
 #include <vector>
+#include <wallet/common/AbstractAddress.h>
 
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
 
-    class Address : public AbstractAddress {
+            class Address : public AbstractAddress {
 
-    public:
+              public:
+                // Currency-generic constructors
+                Address(const api::Currency &currency, const std::vector<uint8_t> &pubKey);
+                Address(const api::Currency &currency, const std::string &address);
 
-        // Currency-generic constructors
-        Address(const api::Currency& currency, const std::vector<uint8_t> & pubKey);
-        Address(const api::Currency& currency, const std::string & address);
+                // Convenience constructors using default ALGO currency
+                Address();
+                explicit Address(const std::string &address);
 
-        // Convenience constructors using default ALGO currency
-        Address();
-        explicit Address(const std::string & address);
+                std::string toString() override;
+                const std::string &toString() const;
+                std::vector<uint8_t> getPublicKey() const;
 
-        std::string toString() override;
-        const std::string& toString() const;
-        std::vector<uint8_t> getPublicKey() const;
+                // Utility methods for easy conversion, could be useful for tests
+                static std::string fromPublicKey(const std::vector<uint8_t> &pubKey);
+                static std::vector<uint8_t> toPublicKey(const std::string &address);
 
-        // Utility methods for easy conversion, could be useful for tests
-        static std::string fromPublicKey(const std::vector<uint8_t> & pubKey);
-        static std::vector<uint8_t> toPublicKey(const std::string & address);
+                static std::shared_ptr<ledger::core::AbstractAddress>
+                parse(const std::string &address, const api::Currency &currency);
 
-        static std::shared_ptr<ledger::core::AbstractAddress>
-        parse(const std::string& address, const api::Currency& currency);
+              private:
+                std::string _address;
+            };
 
-    private:
+            bool operator==(const Address &first, const Address &second);
+            bool operator!=(const Address &first, const Address &second);
 
-        std::string _address;
-
-    };
-
-
-    bool operator==(const Address& first, const Address& second);
-    bool operator!=(const Address& first, const Address& second);
-
-} // namespace algorand
-} // namespace core
+        } // namespace algorand
+    }     // namespace core
 } // namespace ledger
 
 #endif // LEDGER_CORE_ALGORANDADDRESS_H
-

@@ -28,12 +28,12 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKETRANSACTIONSBULKPARSER_H
 #define LEDGER_CORE_TEZOSLIKETRANSACTIONSBULKPARSER_H
 
 #include "../TezosLikeBlockchainExplorer.h"
 #include "TezosLikeTransactionsParser.h"
+
 #include <wallet/common/explorers/api/AbstractTransactionsBulkParser.h>
 
 namespace ledger {
@@ -41,8 +41,8 @@ namespace ledger {
         class TezosLikeBlockchainExplorer;
 
         class TezosLikeTransactionsBulkParser
-                : public AbstractTransactionsBulkParser<TezosLikeBlockchainExplorer::TransactionsBulk, TezosLikeTransactionsParser> {
-        public:
+            : public AbstractTransactionsBulkParser<TezosLikeBlockchainExplorer::TransactionsBulk, TezosLikeTransactionsParser> {
+          public:
             TezosLikeTransactionsBulkParser(std::string &lastKey) : _lastKey(lastKey),
                                                                     _transactionsParser(lastKey) {
                 _depth = 0;
@@ -50,7 +50,7 @@ namespace ledger {
 
             bool StartArray() {
                 if (_depth >= 1 || getLastKey() == "" ||
-                        (_depth == 0 && getLastKey() == "ops")) {
+                    (_depth == 0 && getLastKey() == "ops")) {
                     _depth += 1;
                 }
 
@@ -70,8 +70,7 @@ namespace ledger {
                 PROXY_PARSE_TXS(Bool, b)
             }
 
-
-        protected:
+          protected:
             TezosLikeTransactionsParser &getTransactionsParser() override {
                 return _transactionsParser;
             }
@@ -80,10 +79,10 @@ namespace ledger {
                 return _lastKey;
             }
 
-        private:
+          private:
             TezosLikeTransactionsParser _transactionsParser;
             std::string &_lastKey;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_TEZOSLIKETRANSACTIONSBULKPARSER_H

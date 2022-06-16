@@ -28,17 +28,15 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_NODERIPPLELIKEBLOCKCHAINEXPLORER_H
 #define LEDGER_CORE_NODERIPPLELIKEBLOCKCHAINEXPLORER_H
 
-
+#include <api/RippleLikeNetworkParameters.hpp>
 #include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/ripple/explorers/api/RippleLikeTransactionsParser.h>
-#include <wallet/ripple/explorers/api/RippleLikeTransactionsBulkParser.h>
 #include <wallet/ripple/explorers/api/RippleLikeBlockParser.h>
-#include <api/RippleLikeNetworkParameters.hpp>
+#include <wallet/ripple/explorers/api/RippleLikeTransactionsBulkParser.h>
+#include <wallet/ripple/explorers/api/RippleLikeTransactionsParser.h>
 
 namespace ledger {
     namespace core {
@@ -52,7 +50,7 @@ namespace ledger {
 
         class NodeRippleLikeBodyRequest {
 
-        public:
+          public:
             NodeRippleLikeBodyRequest() {
                 //Document should be defined as object
                 _document.SetObject();
@@ -89,10 +87,9 @@ namespace ledger {
                 return *this;
             };
 
-            NodeRippleLikeBodyRequest& pushPagination(
+            NodeRippleLikeBodyRequest &pushPagination(
                 const std::string &ledger,
-                const std::string &seq
-            ) {
+                const std::string &seq) {
                 std::string key = "marker";
                 std::string ledgerKeyStr = "ledger";
                 std::string seqKeyStr = "seq";
@@ -134,7 +131,7 @@ namespace ledger {
                 return buffer.GetString();
             };
 
-        private:
+          private:
             rapidjson::Document _document;
             rapidjson::Value _params;
         };
@@ -143,7 +140,7 @@ namespace ledger {
                                                  public LedgerApiBlockchainExplorer,
                                                  public DedicatedContext,
                                                  public std::enable_shared_from_this<NodeRippleLikeBlockchainExplorer> {
-        public:
+          public:
             NodeRippleLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
                                              const std::shared_ptr<HttpClient> &http,
                                              const api::RippleLikeNetworkParameters &parameters,
@@ -167,7 +164,7 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getServerState(const std::string &field);
 
-            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId="") override;
+            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
 
             Future<void *> startSession() override;
 
@@ -175,7 +172,7 @@ namespace ledger {
 
             Future<Bytes> getRawTransaction(const String &transactionHash) override;
 
-            Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId="") override;
+            Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
 
             FuturePtr<RippleLikeBlockchainExplorer::TransactionsBulk>
             getTransactions(const std::vector<std::string> &addresses,
@@ -195,7 +192,7 @@ namespace ledger {
 
             std::string getExplorerVersion() const override;
 
-        private:
+          private:
             Future<std::shared_ptr<BigInt>>
             getAccountInfo(const std::string &address,
                            const std::string &key,
@@ -204,8 +201,7 @@ namespace ledger {
             api::RippleLikeNetworkParameters _parameters;
             std::string _paginationMarker;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_NODERIPPLELIKEBLOCKCHAINEXPLORER_H

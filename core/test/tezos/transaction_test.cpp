@@ -29,20 +29,21 @@
  */
 
 #include "transaction_test.hpp"
+
 #include "Fixtures.hpp"
 // #include "../BaseFixture.h"
 // #include "../../fixtures/xtz_fixtures.h"
+#include <api/BlockchainExplorerEngines.hpp>
 #include <api/DynamicObject.hpp>
 #include <api/KeychainEngines.hpp>
-#include <api/TezosLikeOriginatedAccount.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
-#include <api/BlockchainExplorerEngines.hpp>
-#include <utils/hex.h>
-#include <utils/DateUtils.hpp>
-#include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
-#include <wallet/currencies.hpp>
+#include <api/TezosLikeOriginatedAccount.hpp>
 #include <iostream>
+#include <utils/DateUtils.hpp>
+#include <utils/hex.h>
+#include <wallet/currencies.hpp>
+#include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
 #include <wallet/tezos/tezosNetworks.h>
 
 using namespace std;
@@ -70,14 +71,14 @@ void TezosMakeBaseTransaction::TearDown() {
 
 void TezosMakeBaseTransaction::broadcast(std::shared_ptr<TezosLikeTransactionApi> tx) {
     dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto callback = std::make_shared<Callback>(dispatcher);  
+    auto callback = std::make_shared<Callback>(dispatcher);
     account->broadcastTransaction(tx, callback);
     dispatcher->waitUntilStopped();
 }
 
 void TezosMakeBaseTransaction::broadcast(const std::vector<uint8_t> &raw) {
     dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto callback = std::make_shared<Callback>(dispatcher);  
+    auto callback = std::make_shared<Callback>(dispatcher);
     account->broadcastRawTransaction(raw, callback);
     dispatcher->waitUntilStopped();
 }
@@ -85,7 +86,6 @@ void TezosMakeBaseTransaction::broadcast(const std::vector<uint8_t> &raw) {
 std::shared_ptr<TezosLikeTransactionBuilder> TezosMakeBaseTransaction::tx_builder() {
     return std::dynamic_pointer_cast<TezosLikeTransactionBuilder>(account->buildTransaction());
 }
-
 
 struct TransactionTest : public TezosBaseTest {};
 
@@ -162,6 +162,4 @@ TEST_F(TransactionTest, DISABLED_ParseSignedRawDelegationTransaction) {
     EXPECT_EQ(tx->getGasLimit()->toLong(), 10300L);
     EXPECT_EQ(tx->getStorageLimit()->toString(10), "300");
     EXPECT_EQ(tx->getCounter()->toString(10), "1294302");
-    
-
 }

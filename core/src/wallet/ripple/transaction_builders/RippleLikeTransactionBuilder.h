@@ -28,22 +28,18 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKETRANSACTIONBUILDER_H
 #define LEDGER_CORE_RIPPLELIKETRANSACTIONBUILDER_H
 
-#include <api/RippleLikeTransactionBuilder.hpp>
+#include <api/Amount.hpp>
 #include <api/Currency.hpp>
 #include <api/ExecutionContext.hpp>
-#include <api/Amount.hpp>
-
+#include <api/RippleLikeTransactionBuilder.hpp>
+#include <async/Future.hpp>
+#include <math/BigInt.h>
+#include <spdlog/logger.h>
 #include <wallet/common/Amount.h>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-
-#include <math/BigInt.h>
-
-#include <async/Future.hpp>
-#include <spdlog/logger.h>
 
 namespace ledger {
     namespace core {
@@ -63,13 +59,12 @@ namespace ledger {
         };
 
         using RippleLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::RippleLikeTransaction>>(
-                const RippleLikeTransactionBuildRequest &, const std::shared_ptr<RippleLikeBlockchainExplorer> &)>;
+            const RippleLikeTransactionBuildRequest &, const std::shared_ptr<RippleLikeBlockchainExplorer> &)>;
 
         class RippleLikeTransactionBuilder
-                : public api::RippleLikeTransactionBuilder,
-                  public std::enable_shared_from_this<RippleLikeTransactionBuilder> {
-        public:
-
+            : public api::RippleLikeTransactionBuilder,
+              public std::enable_shared_from_this<RippleLikeTransactionBuilder> {
+          public:
             explicit RippleLikeTransactionBuilder(const std::shared_ptr<api::ExecutionContext> &context,
                                                   const api::Currency &params,
                                                   const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
@@ -83,13 +78,13 @@ namespace ledger {
 
             std::shared_ptr<api::RippleLikeTransactionBuilder> wipeToAddress(const std::string &address) override;
 
-            std::shared_ptr<api::RippleLikeTransactionBuilder> setFees(const std::shared_ptr<api::Amount> & fees) override;
+            std::shared_ptr<api::RippleLikeTransactionBuilder> setFees(const std::shared_ptr<api::Amount> &fees) override;
 
-            std::shared_ptr<api::RippleLikeTransactionBuilder> addMemo(const api::RippleLikeMemo& memo) override;
+            std::shared_ptr<api::RippleLikeTransactionBuilder> addMemo(const api::RippleLikeMemo &memo) override;
 
             std::shared_ptr<api::RippleLikeTransactionBuilder> setDestinationTag(int64_t tag) override;
 
-            std::shared_ptr<api::RippleLikeTransactionBuilder> setCorrelationId(const std::string &correlationId) override;        
+            std::shared_ptr<api::RippleLikeTransactionBuilder> setCorrelationId(const std::string &correlationId) override;
 
             void build(const std::shared_ptr<api::RippleLikeTransactionCallback> &callback) override;
 
@@ -103,16 +98,15 @@ namespace ledger {
                                                                                    const std::vector<uint8_t> &rawTransaction,
                                                                                    bool isSigned);
 
-        private:
+          private:
             api::Currency _currency;
             std::shared_ptr<RippleLikeBlockchainExplorer> _explorer;
             RippleLikeTransactionBuildFunction _build;
             RippleLikeTransactionBuildRequest _request;
             std::shared_ptr<api::ExecutionContext> _context;
             std::shared_ptr<spdlog::logger> _logger;
-
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_RIPPLELIKETRANSACTIONBUILDER_H

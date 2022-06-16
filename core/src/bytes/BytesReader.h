@@ -31,12 +31,13 @@
 #ifndef LEDGER_CORE_BYTESREADER_H
 #define LEDGER_CORE_BYTESREADER_H
 
-#include <cstdint>
-#include <array>
-#include <vector>
-#include <math/BigInt.h>
 #include "../ledger-core.h"
+
+#include <array>
+#include <cstdint>
+#include <math/BigInt.h>
 #include <utils/endian.h>
+#include <vector>
 
 namespace ledger {
 
@@ -47,27 +48,27 @@ namespace ledger {
          */
         class BytesReader {
 
-        public:
+          public:
             enum Seek {
                 SET,
                 CUR,
                 END
             };
 
-        public:
+          public:
             /**
              * Creates a new bytes reader starting at the given offset and able to read up to length bytes.
              * @param data The data to read.
              * @param offset The reader will start reading at this index in the vector.
              * @param length The maximum size on which the reader can read data.
              */
-            BytesReader(const std::vector<uint8_t>& data, unsigned long offset, unsigned long length);
+            BytesReader(const std::vector<uint8_t> &data, unsigned long offset, unsigned long length);
             /**
              * Creates a new bytes reader starting at byte 0 and able to read bytes until the end of data.
              * @param data The data to read.
              * @return
              */
-            BytesReader(const std::vector<uint8_t>& data) : BytesReader(data, 0, data.size()) {};
+            BytesReader(const std::vector<uint8_t> &data) : BytesReader(data, 0, data.size()){};
 
             /**
              * Sets the position indicator associated with the BytesReader to a new position.
@@ -82,7 +83,7 @@ namespace ledger {
              * @return A vector of read bytes.
              */
             std::vector<uint8_t> read(unsigned long length);
-            void read(unsigned long length, std::vector<uint8_t>& out);
+            void read(unsigned long length, std::vector<uint8_t> &out);
 
             /**
              * Reads a single byte.
@@ -124,7 +125,7 @@ namespace ledger {
             /**
              * Reads the next big endian unsigned short (unsigned 16bits integer)
              */
-             uint16_t readNextBeUint16();
+            uint16_t readNextBeUint16();
 
             /**
              * Reads the next little endian unsigned short (unsigned 16bits integer)
@@ -188,22 +189,21 @@ namespace ledger {
              */
             unsigned long available() const;
 
-
-        private:
-
+          private:
             /**
              * Read a value (int, long, short, byte, struct) from the reader using big endian bytes ordering.
              * @return
              */
-            template<typename T, endianness::Endianness endianness> T readNextValue() {
+            template <typename T, endianness::Endianness endianness>
+            T readNextValue() {
                 T result;
                 auto ptr = reinterpret_cast<uint8_t *>(&result);
                 for (auto i = 0; i < sizeof(result); i++) {
                     ptr[i] = readNextByte();
                 }
                 ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
-                                                            endianness,
-                                                            endianness::getSystemEndianness());
+                                                           endianness,
+                                                           endianness::getSystemEndianness());
                 return result;
             }
 
@@ -213,6 +213,6 @@ namespace ledger {
             unsigned long _length;
         };
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_BYTESREADER_H

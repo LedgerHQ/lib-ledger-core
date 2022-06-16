@@ -33,40 +33,37 @@
 #define LEDGER_CORE_WEBSOCKETNOTIFICATIONPARSER_H
 
 #include "../../../../collections/collections.hpp"
-#include <cstdio>
-#include <cstdint>
-#include "../BitcoinLikeBlockchainExplorer.hpp"
 #include "../../../../net/HttpClient.hpp"
+#include "../BitcoinLikeBlockchainExplorer.hpp"
 #include "BlockParser.hpp"
+#include "TransactionParser.hpp"
+
+#include <cstdint>
+#include <cstdio>
 #include <rapidjson/reader.h>
 #include <stack>
-#include "TransactionParser.hpp"
 #include <wallet/common/explorers/api/AbstractWebSocketNotificationParser.h>
 
 namespace ledger {
     namespace core {
         class WebSocketNotificationParser : public AbstractWebSocketNotificationParser<BitcoinLikeBlockchainExplorerTransaction, BitcoinLikeBlockchainExplorer::Block, TransactionParser, BlockParser> {
-        public:
-
-
-            explicit WebSocketNotificationParser(std::string& lastKey) : _lastKey(lastKey),
-                                                                        _blockParser(lastKey),
-                                                                        _transactionParser(lastKey) {
-
+          public:
+            explicit WebSocketNotificationParser(std::string &lastKey) : _lastKey(lastKey),
+                                                                         _blockParser(lastKey),
+                                                                         _transactionParser(lastKey) {
             }
 
-            bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy) override {
+            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) override {
                 _lastKey = std::string(str, length);
                 return AbstractWebSocketNotificationParser<BitcoinLikeBlockchainExplorerTransaction,
-                        BitcoinLikeBlockchainExplorer::Block,
-                        TransactionParser,
-                        BlockParser>::Key(str, length, copy);
+                                                           BitcoinLikeBlockchainExplorer::Block,
+                                                           TransactionParser,
+                                                           BlockParser>::Key(str, length, copy);
             }
 
-        protected:
-
+          protected:
             TransactionParser &getTransactionParser() override {
-              return _transactionParser;
+                return _transactionParser;
             };
             BlockParser &getBlockParser() override {
                 return _blockParser;
@@ -75,13 +72,12 @@ namespace ledger {
                 return _lastKey;
             };
 
-        private:
-            std::string& _lastKey;
+          private:
+            std::string &_lastKey;
             BlockParser _blockParser;
             TransactionParser _transactionParser;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_WEBSOCKETNOTIFICATIONPARSER_H

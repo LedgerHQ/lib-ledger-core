@@ -30,15 +30,14 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-#include <vector>
-
 #include <api/OperationType.hpp>
 #include <api/TimePeriod.hpp>
 #include <async/Future.hpp>
+#include <memory>
+#include <string>
 #include <utils/DateUtils.hpp>
 #include <utils/Option.hpp>
+#include <vector>
 
 namespace ledger {
     namespace core {
@@ -59,13 +58,12 @@ namespace ledger {
             // type. Finally, it must be comparable with itself.
             template <typename Op, typename Value, typename CastValue, typename OperationIt>
             std::vector<std::shared_ptr<CastValue>> getBalanceHistoryFor(
-                std::chrono::system_clock::time_point const& startDate,
-                std::chrono::system_clock::time_point const& endDate,
+                std::chrono::system_clock::time_point const &startDate,
+                std::chrono::system_clock::time_point const &endDate,
                 api::TimePeriod precision,
                 OperationIt operationIt,
                 OperationIt operationEnd,
-                Value zero
-            ) {
+                Value zero) {
                 if (startDate >= endDate) {
                     throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
                                          "Start date should be strictly lower than end date");
@@ -100,6 +98,6 @@ namespace ledger {
 
                 return values;
             }
-        }
-    }
-}
+        } // namespace agnostic
+    }     // namespace core
+} // namespace ledger

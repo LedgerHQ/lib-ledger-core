@@ -33,8 +33,7 @@
 namespace ledger {
     namespace core {
 
-        HttpClient::HttpClient(const std::string &baseUrl, const std::shared_ptr<api::HttpClient> &client,
-                               const std::shared_ptr<api::ExecutionContext> & sequentialContext, const std::shared_ptr<api::ExecutionContext>& threadpoolContext) {
+        HttpClient::HttpClient(const std::string &baseUrl, const std::shared_ptr<api::HttpClient> &client, const std::shared_ptr<api::ExecutionContext> &sequentialContext, const std::shared_ptr<api::ExecutionContext> &threadpoolContext) {
             _baseUrl = baseUrl;
             _client = client;
             _sequentialContext = sequentialContext;
@@ -50,8 +49,7 @@ namespace ledger {
             return createRequest(api::HttpMethod::GET, path, std::experimental::optional<std::vector<uint8_t>>(), headers, baseUrl);
         }
 
-        HttpRequest HttpClient::PUT(const std::string &path, const std::vector<uint8_t> &body,
-                                    const std::unordered_map<std::string, std::string> &headers) {
+        HttpRequest HttpClient::PUT(const std::string &path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string> &headers) {
             return createRequest(api::HttpMethod::PUT, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
         }
 
@@ -70,55 +68,47 @@ namespace ledger {
                                  baseUrl);
         }
 
-        HttpClient& HttpClient::addHeader(const std::string &key, const std::string &value) {
+        HttpClient &HttpClient::addHeader(const std::string &key, const std::string &value) {
             _headers[key] = value;
             return *this;
         }
 
-        HttpClient& HttpClient::removeHeader(const std::string &key) {
+        HttpClient &HttpClient::removeHeader(const std::string &key) {
             _headers.erase(key);
             return *this;
         }
 
         HttpRequest HttpClient::createRequest(api::HttpMethod method,
                                               const std::string &path,
-                                              const std::experimental::optional<std::vector<uint8_t >> body,
+                                              const std::experimental::optional<std::vector<uint8_t>> body,
                                               const std::unordered_map<std::string, std::string> &headers,
                                               const std::string &baseUrl) {
-            auto url = baseUrl.empty() ? _baseUrl :
-                       baseUrl.back() != '/' ? baseUrl + "/" : baseUrl;
+            auto url = baseUrl.empty() ? _baseUrl : baseUrl.back() != '/' ? baseUrl + "/" : baseUrl;
             if (path.front() == '/') {
                 url += std::string(path.data() + 1);
             } else {
                 url += path;
             }
             auto fullheaders = _headers;
-            for (const auto& item : headers) {
+            for (const auto &item : headers) {
                 fullheaders[item.first] = item.second;
             }
             return HttpRequest(
-                    method,
-                    url,
-                    fullheaders,
-                    body,
-                    _client,
-                    _sequentialContext,
-                    _threadpoolContext,
-                    _logger
-            );
+                method,
+                url,
+                fullheaders,
+                body,
+                _client,
+                _sequentialContext,
+                _threadpoolContext,
+                _logger);
         }
 
         void HttpClient::setLogger(const std::shared_ptr<spdlog::logger> &logger) {
             _logger = make_option(logger);
         }
 
-        HttpRequest::HttpRequest(api::HttpMethod method, const std::string &url,
-                                 const std::unordered_map<std::string, std::string> &headers,
-                                 const std::experimental::optional<std::vector<uint8_t>>& body,
-                                 const std::shared_ptr<api::HttpClient> &client,
-                                 const std::shared_ptr<api::ExecutionContext> & sequentialContext,
-                                 const std::shared_ptr<api::ExecutionContext> & threadpoolContext,
-                                 const Option<std::shared_ptr<spdlog::logger>>& logger) {
+        HttpRequest::HttpRequest(api::HttpMethod method, const std::string &url, const std::unordered_map<std::string, std::string> &headers, const std::experimental::optional<std::vector<uint8_t>> &body, const std::shared_ptr<api::HttpClient> &client, const std::shared_ptr<api::ExecutionContext> &sequentialContext, const std::shared_ptr<api::ExecutionContext> &threadpoolContext, const Option<std::shared_ptr<spdlog::logger>> &logger) {
             _method = method;
             _url = url;
             _headers = headers;
@@ -130,7 +120,7 @@ namespace ledger {
             _logger = logger;
         }
 
-        HttpRequest::ApiRequest::ApiRequest(const std::shared_ptr<const ledger::core::HttpRequest>& self) {
+        HttpRequest::ApiRequest::ApiRequest(const std::shared_ptr<const ledger::core::HttpRequest> &self) {
             _self = self;
         }
 
@@ -141,13 +131,13 @@ namespace ledger {
         Future<std::shared_ptr<api::HttpUrlConnection>> HttpRequest::operator()() const {
             auto request = std::dynamic_pointer_cast<ApiRequest>(toApiRequest());
             _client->execute(request);
-            _logger.foreach([&] (const std::shared_ptr<spdlog::logger>& logger) {
+            _logger.foreach ([&](const std::shared_ptr<spdlog::logger> &logger) {
                 logger->info("{} {}", api::to_string(request->getMethod()), request->getUrl());
             });
             auto logger = _logger;
-            return  request->getFuture().map<std::shared_ptr<api::HttpUrlConnection>>(_context, [=] (const std::shared_ptr<api::HttpUrlConnection>& connection) {
-                logger.foreach([&] (const std::shared_ptr<spdlog::logger>& l) {
-                    l->info("{} {} - {} {}", api::to_string(request->getMethod()), request->getUrl(),  connection->getStatusCode(), connection->getStatusText());
+            return request->getFuture().map<std::shared_ptr<api::HttpUrlConnection>>(_context, [=](const std::shared_ptr<api::HttpUrlConnection> &connection) {
+                logger.foreach ([&](const std::shared_ptr<spdlog::logger> &l) {
+                    l->info("{} {} - {} {}", api::to_string(request->getMethod()), request->getUrl(), connection->getStatusCode(), connection->getStatusText());
                 });
                 if (connection->getStatusCode() < 200 || connection->getStatusCode() >= 300) {
                     throw Exception(HttpRequest::getErrorCode(connection->getStatusCode()), connection->getStatusText(),
@@ -159,29 +149,29 @@ namespace ledger {
 
         Future<HttpRequest::JsonResult> HttpRequest::json(bool parseNumbersAsString, bool ignoreStatusCode, bool multiThread) const {
             _context = (multiThread ? _threadpoolContext : _sequentialContext);
-            return operator()().recover(_context, [] (const Exception& exception) {
-                if (HttpRequest::isHttpError(exception.getErrorCode()) &&
-                exception.getUserData().nonEmpty()) {
-                    return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
-                }
-                throw exception;
-            }).map<JsonResult>
-                    (_context, [parseNumbersAsString, ignoreStatusCode] (const std::shared_ptr<api::HttpUrlConnection>& co) {
-                        std::shared_ptr<api::HttpUrlConnection> connection = co;
-                        auto doc = std::make_shared<rapidjson::Document>();
-                        HttpUrlConnectionInputStream is(connection);
-                        if (parseNumbersAsString) {
-                            doc->ParseStream<rapidjson::kParseNumbersAsStringsFlag>(is);
-                        } else {
-                            doc->ParseStream(is);
-                        }
-                        std::shared_ptr<JsonResult> result(new std::tuple<std::shared_ptr<api::HttpUrlConnection>, std::shared_ptr<rapidjson::Document>>(std::make_tuple(connection, doc)));
-                        if (!ignoreStatusCode && (connection->getStatusCode() < 200 || connection->getStatusCode() >= 300)) {
-                            throw Exception(HttpRequest::getErrorCode(connection->getStatusCode()), connection->getStatusText(),
-                                            Option<std::shared_ptr<void>>(std::static_pointer_cast<void>(result)));
-                        }
-                        return std::make_tuple(connection, doc);
-            });
+            return operator()().recover(_context, [](const Exception &exception) {
+                                   if (HttpRequest::isHttpError(exception.getErrorCode()) &&
+                                       exception.getUserData().nonEmpty()) {
+                                       return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
+                                   }
+                                   throw exception;
+                               })
+                .map<JsonResult>(_context, [parseNumbersAsString, ignoreStatusCode](const std::shared_ptr<api::HttpUrlConnection> &co) {
+                    std::shared_ptr<api::HttpUrlConnection> connection = co;
+                    auto doc = std::make_shared<rapidjson::Document>();
+                    HttpUrlConnectionInputStream is(connection);
+                    if (parseNumbersAsString) {
+                        doc->ParseStream<rapidjson::kParseNumbersAsStringsFlag>(is);
+                    } else {
+                        doc->ParseStream(is);
+                    }
+                    std::shared_ptr<JsonResult> result(new std::tuple<std::shared_ptr<api::HttpUrlConnection>, std::shared_ptr<rapidjson::Document>>(std::make_tuple(connection, doc)));
+                    if (!ignoreStatusCode && (connection->getStatusCode() < 200 || connection->getStatusCode() >= 300)) {
+                        throw Exception(HttpRequest::getErrorCode(connection->getStatusCode()), connection->getStatusText(),
+                                        Option<std::shared_ptr<void>>(std::static_pointer_cast<void>(result)));
+                    }
+                    return std::make_tuple(connection, doc);
+                });
         }
 
         api::HttpMethod HttpRequest::ApiRequest::getMethod() {
@@ -201,7 +191,6 @@ namespace ledger {
         }
 
         HttpRequest::ApiRequest::~ApiRequest() {
-
         }
 
         void HttpRequest::ApiRequest::complete(const std::shared_ptr<api::HttpUrlConnection> &response,
@@ -209,8 +198,7 @@ namespace ledger {
             if (error) {
                 if (response) {
                     _promise.failure(Exception(error->code, error->message, Option<std::shared_ptr<void>>(std::move(response))));
-                }
-                else {
+                } else {
                     _promise.failure(Exception(error->code, error->message));
                 }
             } else {
@@ -221,7 +209,6 @@ namespace ledger {
         Future<std::shared_ptr<api::HttpUrlConnection>> HttpRequest::ApiRequest::getFuture() const {
             return _promise.getFuture();
         }
-    }
+    } // namespace core
 
-
-}
+} // namespace ledger

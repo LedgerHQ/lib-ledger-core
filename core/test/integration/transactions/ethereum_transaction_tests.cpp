@@ -28,22 +28,23 @@
  *
  */
 
-#include "../BaseFixture.h"
 #include "../../fixtures/eth_xpub_fixtures.h"
-#include <api/KeychainEngines.hpp>
+#include "../BaseFixture.h"
 #include "transaction_test_helper.h"
-#include <utils/hex.h>
-#include <utils/DateUtils.hpp>
-#include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
-#include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
-#include <wallet/currencies.hpp>
+
+#include <api/KeychainEngines.hpp>
 #include <iostream>
+#include <utils/DateUtils.hpp>
+#include <utils/hex.h>
+#include <wallet/currencies.hpp>
+#include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
+#include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 using namespace std;
 
 struct EthereumMakeTransaction : public EthereumMakeBaseTransaction {
     void SetUpConfig() override {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v3");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
         testData.configuration = configuration;
         testData.walletName = randomWalletName();
         testData.currencyName = "ethereum";
@@ -102,7 +103,6 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     //Check if wallet was successfully deleted
     auto walletCount = uv::wait(pool->getWalletCount());
     EXPECT_EQ(walletCount, 0);
-
 }
 
 TEST_F(EthereumMakeTransaction, ParseUnsignedRawTransaction) {
@@ -121,7 +121,7 @@ TEST_F(EthereumMakeTransaction, ParseSignedRawTransactionAndBuildETHBlockchainEx
     // For test purposes sender is account's address (real sender is 0xd0ec064cff693453ef4595aa555ce65244b212a5)
     auto sender = account->getKeychain()->getAddress()->toEIP55();
     auto receiver = "0xAc6603e97e774Cd34603293b69bBBB1980acEeaA";
-    EXPECT_EQ(ethLikeBCTx.sender,  sender);
+    EXPECT_EQ(ethLikeBCTx.sender, sender);
     EXPECT_EQ(ethLikeBCTx.receiver, receiver);
     EXPECT_EQ(ethLikeBCTx.value.toString(), "256");
     EXPECT_EQ(ethLikeBCTx.gasPrice.toString(), "1000000000");

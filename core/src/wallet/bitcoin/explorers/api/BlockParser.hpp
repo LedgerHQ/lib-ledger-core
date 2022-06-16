@@ -31,24 +31,25 @@
 #ifndef LEDGER_CORE_BLOCKPARSER_HPP
 #define LEDGER_CORE_BLOCKPARSER_HPP
 
-#include <wallet/common/explorers/api/AbstractBlockParser.h>
 #include "../BitcoinLikeBlockchainExplorer.hpp"
+
+#include <wallet/common/explorers/api/AbstractBlockParser.h>
 
 namespace ledger {
     namespace core {
         class BlockParser : public AbstractBlockParser<BitcoinLikeBlockchainExplorer::Block> {
-        public:
-            BlockParser(std::string &lastKey) : _lastKey(lastKey) {};
+          public:
+            BlockParser(std::string &lastKey) : _lastKey(lastKey){};
 
-        protected:
+          protected:
             std::string &getLastKey() override {
                 return _lastKey;
             };
 
-        private:
-            std::string& _lastKey;
+          private:
+            std::string &_lastKey;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_BLOCKPARSER_HPP

@@ -29,14 +29,15 @@
  *
  */
 #include "LambdaEventReceiver.hpp"
-#include <utils/Unit.hpp>
-#include <async/Promise.hpp>
+
 #include <api/DynamicObject.hpp>
+#include <async/Promise.hpp>
+#include <utils/Unit.hpp>
 
 namespace ledger {
     namespace core {
 
-        std::shared_ptr<LambdaEventReceiver> make_receiver(std::function<void (const std::shared_ptr<api::Event> &)> f) {
+        std::shared_ptr<LambdaEventReceiver> make_receiver(std::function<void(const std::shared_ptr<api::Event> &)> f) {
             return std::make_shared<LambdaEventReceiver>(f);
         }
 
@@ -49,18 +50,17 @@ namespace ledger {
         }
 
         std::shared_ptr<LambdaEventReceiver> make_promise_receiver(
-                Promise<Unit>& promise,
-                const std::vector<api::EventCode> &successCodes,
-                const std::vector<api::EventCode> &failureCodes
-        ) {
-            return make_receiver([=] (const std::shared_ptr<api::Event> &event) mutable {
-                for (const auto& code : successCodes) {
+            Promise<Unit> &promise,
+            const std::vector<api::EventCode> &successCodes,
+            const std::vector<api::EventCode> &failureCodes) {
+            return make_receiver([=](const std::shared_ptr<api::Event> &event) mutable {
+                for (const auto &code : successCodes) {
                     if (code == event->getCode()) {
                         promise.success(unit);
                         return;
                     }
                 }
-                for (const auto& code : failureCodes) {
+                for (const auto &code : failureCodes) {
                     if (code == event->getCode()) {
                         promise.failure(make_exception(api::ErrorCode::RUNTIME_ERROR, event->getPayload()->dump()));
                         return;
@@ -69,5 +69,5 @@ namespace ledger {
             });
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

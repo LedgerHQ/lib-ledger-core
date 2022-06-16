@@ -34,13 +34,14 @@
 #include "../api/Preferences.hpp"
 #include "../api/PreferencesBackend.hpp"
 #include "../api/PreferencesEditor.hpp"
-#include "PreferencesEditor.hpp"
 #include "../utils/Option.hpp"
-#include <cereal/cereal.hpp>
-#include <cereal/archives/portable_binary.hpp>
-#include <cereal/types/set.hpp>
+#include "PreferencesEditor.hpp"
+
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
+#include <cereal/archives/portable_binary.hpp>
+#include <cereal/cereal.hpp>
+#include <cereal/types/set.hpp>
 
 namespace ledger {
     namespace core {
@@ -48,7 +49,7 @@ namespace ledger {
         class PreferencesEditor;
 
         class Preferences : public api::Preferences {
-        public:
+          public:
             Preferences(api::PreferencesBackend &backend, const std::vector<uint8_t> &keyPrefix);
 
             Preferences(api::PreferencesBackend &backend, const std::string &keyPrefix);
@@ -72,13 +73,13 @@ namespace ledger {
             std::vector<uint8_t> getData(const std::string &key, const std::vector<uint8_t> &fallbackValue) const override;
 
             template <typename T>
-            Option<T> getObject(const std::string& key) const {
+            Option<T> getObject(const std::string &key) const {
                 auto data = getData(key, {});
                 if (data.size() == 0) {
                     return Option<T>();
                 }
                 T object;
-                boost::iostreams::array_source my_vec_source(reinterpret_cast<char*>(&data[0]), data.size());
+                boost::iostreams::array_source my_vec_source(reinterpret_cast<char *>(&data[0]), data.size());
                 boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
                 ::cereal::PortableBinaryInputArchive archive(is);
                 archive(object);
@@ -87,15 +88,15 @@ namespace ledger {
 
             std::shared_ptr<Preferences> getSubPreferences(std::string prefix) const;
 
-        protected:
-            std::vector<uint8_t> wrapKey(const std::string& key) const;
+          protected:
+            std::vector<uint8_t> wrapKey(const std::string &key) const;
 
-        private:
-            api::PreferencesBackend& _backend;
+          private:
+            api::PreferencesBackend &_backend;
             std::vector<uint8_t> _keyPrefix;
             friend class ledger::core::PreferencesEditor;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_PREFERENCES_HPP

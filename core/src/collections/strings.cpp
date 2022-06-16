@@ -29,20 +29,21 @@
  *
  */
 #include "strings.hpp"
+
+#include "String.hpp"
+
 #include <boost/algorithm/string.hpp>
-#include "String.hpp"
-#include "String.hpp"
 
 namespace ledger {
     namespace core {
         namespace strings {
 
-            bool startsWith(const std::string& str, const std::string& prefix) {
+            bool startsWith(const std::string &str, const std::string &prefix) {
                 return boost::starts_with(str, prefix);
             }
 
-            std::function<std::string (const std::string&, const Option<std::string>&)> mkString(const std::string& separator) {
-                return [separator] (const std::string& item, const Option<std::string>& carry) -> std::string {
+            std::function<std::string(const std::string &, const Option<std::string> &)> mkString(const std::string &separator) {
+                return [separator](const std::string &item, const Option<std::string> &carry) -> std::string {
                     if (carry.isEmpty()) {
                         return item;
                     } else {
@@ -51,16 +52,16 @@ namespace ledger {
                 };
             }
 
-            int indexOf(const std::string& src, const std::string& search) {
+            int indexOf(const std::string &src, const std::string &search) {
                 auto i = src.find(search);
                 if (i != std::string::npos) {
-                    return (int) i;
+                    return (int)i;
                 } else {
                     return -1;
                 }
             }
 
-            std::string& replace(std::string& str, const std::string& from, const std::string& to) {
+            std::string &replace(std::string &str, const std::string &from, const std::string &to) {
                 std::string::size_type i;
                 while ((i = str.find(from)) != std::string::npos) {
                     str.replace(i, from.length(), to);
@@ -68,13 +69,13 @@ namespace ledger {
                 return str;
             }
 
-            std::vector<std::string> split(const std::string& str, const std::string& delimiter) {
+            std::vector<std::string> split(const std::string &str, const std::string &delimiter) {
                 std::vector<std::string> splitted;
                 boost::split(splitted, str, boost::is_any_of(delimiter));
                 return splitted;
             }
 
-            void join(const std::vector<std::string>& values, std::stringstream& ss, const std::string& separator) {
+            void join(const std::vector<std::string> &values, std::stringstream &ss, const std::string &separator) {
                 auto size = values.size();
                 for (auto index = 0; index < size; index++) {
                     if (index > 0) {
@@ -84,16 +85,16 @@ namespace ledger {
                 }
             }
 
-        }
+        } // namespace strings
 
-        String operator "" _S(const char* str, size_t size) {
+        String operator"" _S(const char *str, size_t size) {
             return String(str, size);
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-std::ostream &operator<<(std::ostream & os, const ledger::core::String& str) {
+std::ostream &operator<<(std::ostream &os, const ledger::core::String &str) {
     os << str.str();
     return os;
 }

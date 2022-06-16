@@ -30,23 +30,21 @@
  */
 
 #include "StellarFixture.hpp"
+
 #include <wallet/stellar/StellarLikeAddress.hpp>
 
 static std::vector<std::string> pub_keys = {
-        "a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f",
-        "3a83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a50"
-};
+    "a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f",
+    "3a83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a50"};
 
 static std::vector<std::string> addresses = {
-        "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3",
-        "GA5IHE27VP64IR2JVVGQILN4JX43LFCC6MS2E6LAKGP3UULK3OFFBJXR"
-};
+    "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3",
+    "GA5IHE27VP64IR2JVVGQILN4JX43LFCC6MS2E6LAKGP3UULK3OFFBJXR"};
 
 static std::vector<std::string> invalid_addresses = {
-        "GCQQQPIROIEFHIWAO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3",
-        "GA5IHE2",
-        "OCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3"
-};
+    "GCQQQPIROIEFHIWAO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3",
+    "GA5IHE2",
+    "OCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3"};
 
 TEST_F(StellarFixture, AddressFromPubKey) {
     for (auto i = 0; i < pub_keys.size(); i++) {
@@ -57,10 +55,10 @@ TEST_F(StellarFixture, AddressFromPubKey) {
 }
 
 TEST_F(StellarFixture, AddressValidation) {
-    for (const auto& address : addresses) {
+    for (const auto &address : addresses) {
         EXPECT_TRUE(StellarLikeAddress::isValid(address, getCurrency()));
     }
-    for (const auto& address : invalid_addresses) {
+    for (const auto &address : invalid_addresses) {
         EXPECT_FALSE(StellarLikeAddress::isValid(address, getCurrency()));
     }
 }

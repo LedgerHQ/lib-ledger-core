@@ -29,4 +29,3 @@
  *
  */
 #include "BitcoinLikeAccountDatabaseEntry.h"
-

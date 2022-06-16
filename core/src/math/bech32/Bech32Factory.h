@@ -28,20 +28,20 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_BECH32FACTORY_H
 #define LEDGER_CORE_BECH32FACTORY_H
 
 #include "Bech32.h"
-#include <string>
+
 #include <memory>
+#include <string>
 #include <utils/Option.hpp>
 namespace ledger {
     namespace core {
         class Bech32Factory {
-        public:
+          public:
             static Option<std::shared_ptr<Bech32>> newBech32Instance(const std::string &networkIdentifier);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_BECH32FACTORY_H

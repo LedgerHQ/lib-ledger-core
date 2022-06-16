@@ -30,12 +30,13 @@
  */
 
 #include "StellarFixture.hpp"
-#include <wallet/stellar/xdr/models.hpp>
-#include <wallet/stellar/xdr/XDREncoder.hpp>
-#include <wallet/stellar/xdr/XDRDecoder.hpp>
-#include <wallet/stellar/StellarLikeAddress.hpp>
+
 #include <algorithm>
+#include <wallet/stellar/StellarLikeAddress.hpp>
 #include <wallet/stellar/xdr/StellarModelUtils.hpp>
+#include <wallet/stellar/xdr/XDRDecoder.hpp>
+#include <wallet/stellar/xdr/XDREncoder.hpp>
+#include <wallet/stellar/xdr/models.hpp>
 
 using namespace ledger::core::stellar::xdr;
 
@@ -84,8 +85,8 @@ TEST_F(StellarFixture, XDRCreateAccountDecode) {
     decoder >> envelope;
 
     EXPECT_EQ(envelope.type, EnvelopeType::ENVELOPE_TYPE_TX_V0);
-    const auto& v0 = boost::get<TransactionV0Envelope>(envelope.content);
-    const auto& tx = v0.tx;
+    const auto &v0 = boost::get<TransactionV0Envelope>(envelope.content);
+    const auto &tx = v0.tx;
     auto sourceAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(tx.sourceAccountEd25519.begin(), tx.sourceAccountEd25519.end()), Option<uint64_t>::NONE, getCurrency().stellarLikeNetworkParameters.value());
     EXPECT_EQ(sourceAddr, SOURCE_ADDR);
     EXPECT_EQ(tx.fee, 100);
@@ -96,13 +97,11 @@ TEST_F(StellarFixture, XDRCreateAccountDecode) {
     EXPECT_EQ(operation.type, stellar::OperationType::CREATE_ACCOUNT);
 
     CreateAccountOp op = boost::get<CreateAccountOp>(operation.content);
-    auto destAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(op.destination.content.begin(), op.destination.content.end()),  Option<uint64_t>::NONE, getCurrency().stellarLikeNetworkParameters.value());
+    auto destAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(op.destination.content.begin(), op.destination.content.end()), Option<uint64_t>::NONE, getCurrency().stellarLikeNetworkParameters.value());
     EXPECT_EQ(destAddr, DEST_ADDR);
     EXPECT_EQ(op.destination.type, PublicKeyType::PUBLIC_KEY_TYPE_ED25519);
     EXPECT_EQ(op.startingBalance, 25000000000000000UL);
-
 }
-
 
 TEST_F(StellarFixture, XDRPaymentEncode) {
     auto hexTx = "00000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b6"
@@ -147,8 +146,8 @@ TEST_F(StellarFixture, XDRPaymentDecode) {
     decoder >> envelope;
 
     EXPECT_EQ(envelope.type, EnvelopeType::ENVELOPE_TYPE_TX_V0);
-    const auto& v0 = boost::get<TransactionV0Envelope>(envelope.content);
-    const auto& tx = v0.tx;
+    const auto &v0 = boost::get<TransactionV0Envelope>(envelope.content);
+    const auto &tx = v0.tx;
 
     auto sourceAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(tx.sourceAccountEd25519.begin(), tx.sourceAccountEd25519.end()), Option<uint64_t>::NONE, getCurrency().stellarLikeNetworkParameters.value());
     EXPECT_EQ(sourceAddr, SOURCE_ADDR);
@@ -168,16 +167,14 @@ TEST_F(StellarFixture, XDRPaymentDecode) {
 }
 
 TEST_F(StellarFixture, XDRStringsEncodeDecode) {
-    std::vector<std::string> decodedRef {
-        "123", "1", "1234567890", "12345678"
-    };
+    std::vector<std::string> decodedRef{
+        "123", "1", "1234567890", "12345678"};
 
-    std::vector<std::string> encodedRef {
+    std::vector<std::string> encodedRef{
         "0000000331323300",
         "0000000131000000",
         "0000000a313233343536373839300000",
-        "000000083132333435363738"
-    };
+        "000000083132333435363738"};
 
     // Encode/decode std::strings individually
     for (auto i = 0; i < decodedRef.size(); i += 1) {
@@ -205,7 +202,6 @@ TEST_F(StellarFixture, XDRStringsEncodeDecode) {
             EXPECT_EQ(decodedRef[i], decoded[i]);
         }
     }
-
 }
 
 TEST_F(StellarFixture, XDRDecodeEnvelopeWithCustomAsset4) {
@@ -221,11 +217,10 @@ TEST_F(StellarFixture, XDRDecodeEnvelopeWithCustomAsset4) {
     try {
         decoder >> envelope;
     } catch (...) {
-
     }
     EXPECT_EQ(envelope.type, EnvelopeType::ENVELOPE_TYPE_TX_V0);
-    const auto& v0 = boost::get<TransactionV0Envelope>(envelope.content);
-    const auto& tx = v0.tx;
+    const auto &v0 = boost::get<TransactionV0Envelope>(envelope.content);
+    const auto &tx = v0.tx;
 
     EXPECT_EQ(tx.fee, 10000);
     EXPECT_EQ(tx.memo.type, MemoType::MEMO_TEXT);
@@ -233,7 +228,7 @@ TEST_F(StellarFixture, XDRDecodeEnvelopeWithCustomAsset4) {
     EXPECT_EQ(tx.operations.size(), 1);
     EXPECT_EQ(tx.seqNum, 98448948301135882UL);
     EXPECT_EQ(tx.timeBounds.isEmpty(), true);
-    auto sourceAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(tx.sourceAccountEd25519.begin(), tx.sourceAccountEd25519.end()), Option<uint64_t>::NONE,getCurrency().stellarLikeNetworkParameters.value());
+    auto sourceAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(tx.sourceAccountEd25519.begin(), tx.sourceAccountEd25519.end()), Option<uint64_t>::NONE, getCurrency().stellarLikeNetworkParameters.value());
     EXPECT_EQ(sourceAddr, "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
     EXPECT_EQ(tx.operations.begin()->type, OperationType::PAYMENT);
     auto operation = boost::get<PaymentOp>(tx.operations.begin()->content);

@@ -36,18 +36,17 @@
 namespace ledger {
     namespace core {
         class ConfigurationMatchable {
-        public:
-            ConfigurationMatchable(const std::vector<std::string>& matchableKeys);
-            bool match(const std::shared_ptr<api::DynamicObject>& configuration);
-            void setConfiguration(const std::shared_ptr<api::DynamicObject>& configuration);
-            std::shared_ptr<api::DynamicObject> const & getConfiguration() const;
+          public:
+            ConfigurationMatchable(const std::vector<std::string> &matchableKeys);
+            bool match(const std::shared_ptr<api::DynamicObject> &configuration);
+            void setConfiguration(const std::shared_ptr<api::DynamicObject> &configuration);
+            std::shared_ptr<api::DynamicObject> const &getConfiguration() const;
 
-        private:
+          private:
             std::vector<std::string> _matchableKeys;
             std::shared_ptr<api::DynamicObject> _configuration;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_CONFIGURATIONMATCHABLE_H

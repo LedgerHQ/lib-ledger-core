@@ -32,28 +32,26 @@
 #define LEDGER_CORE_OPERATIONDATABASEHELPER_H
 
 #include <api/OperationType.hpp>
-#include <wallet/common/Operation.h>
 #include <soci.h>
 #include <string>
 #include <vector>
+#include <wallet/common/Operation.h>
 
 namespace ledger {
     namespace core {
         class OperationDatabaseHelper {
-        public:
-
+          public:
             static std::vector<std::string> fetchFromBlocks(soci::session &sql,
                                                             std::vector<std::string> const &blockUIDs);
-            static std::string createUid(const std::string& accountUid,
-                                         const std::string& txId,
+            static std::string createUid(const std::string &accountUid,
+                                         const std::string &txId,
                                          const api::OperationType type);
-            static void queryOperations(soci::session& sql, int32_t from, int32_t to,
-                                        bool complete, bool excludeDropped, std::vector<Operation>& out);
+            static void queryOperations(soci::session &sql, int32_t from, int32_t to, bool complete, bool excludeDropped, std::vector<Operation> &out);
 
             static std::size_t queryOperations(soci::session &sql,
                                                const std::string &accountUid,
-                                               std::vector<Operation>& out,
-                                               std::function<bool (const std::string& address)> filter);
+                                               std::vector<Operation> &out,
+                                               std::function<bool(const std::string &address)> filter);
 
             /**
              * Checks if an operation is in a block or not
@@ -63,16 +61,15 @@ namespace ledger {
              * @return Option(true) if the operation is in a block, Option(false) if the operation
              * exists but not in a block,  Option() if the operation is unknown
              */
-            static Option<bool> isOperationInBlock(soci::session& sql, const std::string& opUid);
+            static Option<bool> isOperationInBlock(soci::session &sql, const std::string &opUid);
 
             static void eraseDataSince(soci::session &sql,
-                                        const std::string &accountUid,
-                                        const std::chrono::system_clock::time_point & date,
-                                        const std::string &specificOperationsTableName,
-                                        const std::string &specificTransactionsTableName);
+                                       const std::string &accountUid,
+                                       const std::chrono::system_clock::time_point &date,
+                                       const std::string &specificOperationsTableName,
+                                       const std::string &specificTransactionsTableName);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_OPERATIONDATABASEHELPER_H

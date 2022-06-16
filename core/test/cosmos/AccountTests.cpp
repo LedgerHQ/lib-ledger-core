@@ -30,15 +30,14 @@
  *
  */
 
-#include <gtest/gtest.h>
-
 #include "../integration/BaseFixture.h"
-#include <wallet/cosmos/CosmosLikeWallet.hpp>
+
+#include <gtest/gtest.h>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
 
 struct CosmosAccounts : public BaseFixture {
-
 };
 
 TEST_F(CosmosAccounts, DISABLED_FirstATOMAccountInfo) {

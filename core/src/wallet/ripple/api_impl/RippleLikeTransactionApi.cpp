@@ -28,23 +28,23 @@
  *
  */
 
-
 #include "RippleLikeTransactionApi.h"
-#include <wallet/common/Amount.h>
-#include <wallet/common/AbstractAccount.hpp>
-#include <wallet/common/AbstractWallet.hpp>
-#include <ripple/RippleLikeAddress.h>
-#include <bytes/BytesWriter.h>
+
+#include <api_impl/BigIntImpl.hpp>
 #include <bytes/BytesReader.h>
+#include <bytes/BytesWriter.h>
 #include <bytes/RLP/RLPListEncoder.h>
 #include <bytes/RLP/RLPStringEncoder.h>
+#include <ripple/RippleLikeAddress.h>
 #include <utils/hex.h>
-#include <api_impl/BigIntImpl.hpp>
+#include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/AbstractWallet.hpp>
+#include <wallet/common/Amount.h>
 
 namespace ledger {
     namespace core {
         // a helper to write VLE fields
-        bool writeLengthPrefix(BytesWriter& writer, uint64_t size) {
+        bool writeLengthPrefix(BytesWriter &writer, uint64_t size) {
             // encoding here: https://developers.ripple.com/serialization.html#length-prefixing
             if (size <= 192) {
                 writer.writeByte(static_cast<uint8_t>(size));
@@ -103,7 +103,7 @@ namespace ledger {
             _sequence = std::make_shared<api::BigIntImpl>(tx.sequence);
 
             if (tx.destinationTag.nonEmpty()) {
-              _destinationTag = static_cast<int64_t>(tx.destinationTag.getValue());
+                _destinationTag = static_cast<int64_t>(tx.destinationTag.getValue());
             }
 
             if (tx.block.hasValue()) {
@@ -201,12 +201,11 @@ namespace ledger {
                 //1 byte Destination tag:   Type Code = 2, Field Code = 14
                 writer.writeByte(0x2E);
                 //4 bytes Destination tag
-                const int64_t& destinationTagValue = _destinationTag.getValue();
-                if(destinationTagValue  > static_cast<int64_t>(std::numeric_limits<uint32_t>::max()) ||
-                     destinationTagValue  < static_cast<int64_t>(std::numeric_limits<uint32_t>::min()))
-                {
+                const int64_t &destinationTagValue = _destinationTag.getValue();
+                if (destinationTagValue > static_cast<int64_t>(std::numeric_limits<uint32_t>::max()) ||
+                    destinationTagValue < static_cast<int64_t>(std::numeric_limits<uint32_t>::min())) {
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR,
-                                     "RippleLikeTransactionApi::serialize: destinationTag value does not fit in uint32");
+                                         "RippleLikeTransactionApi::serialize: destinationTag value does not fit in uint32");
                 }
                 writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(destinationTagValue));
             }
@@ -215,7 +214,6 @@ namespace ledger {
             writer.writeByteArray({0x20, 0x1B});
             //LastLedgerSequence
             writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(_ledgerSequence->intValue()));
-
 
             auto maxAmountBound = std::vector<uint8_t>({0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
             auto bigIntMax = BigInt::fromHex(hex::toString(maxAmountBound));
@@ -287,7 +285,7 @@ namespace ledger {
             if (!_memos.empty()) {
                 writer.writeByte(0xF9); // STI_ARRAY (Memos); Type Code = 15, Memos; Field ID = 9
 
-                for (auto& memo : _memos) {
+                for (auto &memo : _memos) {
                     writer.writeByte(0xEA); // STI_OBJECT (Memo); Type Code = 10
 
                     if (!memo.ty.empty()) {
@@ -338,12 +336,12 @@ namespace ledger {
             return *this;
         }
 
-        RippleLikeTransactionApi &RippleLikeTransactionApi::setSequence(const BigInt& sequence) {
+        RippleLikeTransactionApi &RippleLikeTransactionApi::setSequence(const BigInt &sequence) {
             _sequence = std::make_shared<api::BigIntImpl>(sequence);
             return *this;
         }
 
-        RippleLikeTransactionApi & RippleLikeTransactionApi::setLedgerSequence(const BigInt& ledgerSequence) {
+        RippleLikeTransactionApi &RippleLikeTransactionApi::setLedgerSequence(const BigInt &ledgerSequence) {
             _ledgerSequence = std::make_shared<api::BigIntImpl>(ledgerSequence);
             return *this;
         }
@@ -381,7 +379,7 @@ namespace ledger {
             return _memos;
         }
 
-        void RippleLikeTransactionApi::addMemo(api::RippleLikeMemo const& memo) {
+        void RippleLikeTransactionApi::addMemo(api::RippleLikeMemo const &memo) {
             _memos.push_back(memo);
         }
 
@@ -389,16 +387,15 @@ namespace ledger {
             return _status;
         }
 
-        
         std::string RippleLikeTransactionApi::getCorrelationId() {
             return _correlationId;
         }
 
-        std::string RippleLikeTransactionApi::setCorrelationId(const std::string& newId)  {
+        std::string RippleLikeTransactionApi::setCorrelationId(const std::string &newId) {
             auto oldId = _correlationId;
             _correlationId = newId;
             return oldId;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -31,26 +31,26 @@
 #ifndef LEDGER_CORE_DEDICATEDCONTEXT_HPP
 #define LEDGER_CORE_DEDICATEDCONTEXT_HPP
 
-#include "api/ExecutionContext.hpp"
 #include "Future.hpp"
+#include "api/ExecutionContext.hpp"
 
 namespace ledger {
     namespace core {
         class DedicatedContext {
-        public:
-            DedicatedContext(const std::shared_ptr<api::ExecutionContext>& context) : _executionContext(context) {};
-            template<typename T>
-            Future<T> async(std::function<T ()> f) {
+          public:
+            DedicatedContext(const std::shared_ptr<api::ExecutionContext> &context) : _executionContext(context){};
+            template <typename T>
+            Future<T> async(std::function<T()> f) {
                 return Future<T>::async(_executionContext, f);
             };
 
-            template<typename T>
-            Future<T> async(std::function<T ()> f) const {
+            template <typename T>
+            Future<T> async(std::function<T()> f) const {
                 return Future<T>::async(_executionContext, f);
             };
 
-            Future<Unit> run(std::function<void ()> f) {
-                return async<Unit>([=] () {
+            Future<Unit> run(std::function<void()> f) {
+                return async<Unit>([=]() {
                     f();
                     return unit;
                 });
@@ -58,11 +58,11 @@ namespace ledger {
             inline std::shared_ptr<api::ExecutionContext> getContext() const {
                 return _executionContext;
             };
-        protected:
+
+          protected:
             std::shared_ptr<api::ExecutionContext> _executionContext;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_DEDICATEDCONTEXT_HPP

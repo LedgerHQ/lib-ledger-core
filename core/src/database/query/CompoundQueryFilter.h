@@ -36,16 +36,15 @@
 namespace ledger {
     namespace core {
         class CompoundQueryFilter : public QueryFilter {
-        public:
-            CompoundQueryFilter(const std::shared_ptr<api::QueryFilter>& filters);
+          public:
+            CompoundQueryFilter(const std::shared_ptr<api::QueryFilter> &filters);
             void toString(std::stringstream &ss) const override;
             void bindValue(soci::details::prepare_temp_type &statement) const override;
 
-        private:
+          private:
             std::shared_ptr<QueryFilter> _children;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_COMPOUNDQUERYFILTER_H

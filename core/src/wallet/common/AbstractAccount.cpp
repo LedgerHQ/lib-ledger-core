@@ -28,24 +28,24 @@
  * SOFTWARE.
  *
  */
-#include <wallet/common/database/AccountDatabaseHelper.h>
 #include "AbstractAccount.hpp"
-#include <wallet/common/OperationQuery.h>
+
 #include <api/AmountCallback.hpp>
-#include <utils/Exception.hpp>
 #include <api/ErrorCode.hpp>
 #include <events/Event.hpp>
+#include <utils/Exception.hpp>
+#include <wallet/common/OperationQuery.h>
+#include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
+#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 #include <wallet/pool/WalletPool.hpp>
 #include <wallet/stellar/StellarLikeAccount.hpp>
-#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 
 namespace ledger {
     namespace core {
 
         AbstractAccount::AbstractAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index)
-                : DedicatedContext(wallet->getPool()->getDispatcher()->getThreadPoolExecutionContext(fmt::format("account_{}_{}", wallet->getName(), index)))
-        {
+            : DedicatedContext(wallet->getPool()->getDispatcher()->getThreadPoolExecutionContext(fmt::format("account_{}_{}", wallet->getName(), index))) {
             _uid = AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index);
             _logger = wallet->logger();
             _index = index;
@@ -147,13 +147,13 @@ namespace ledger {
             return wallet;
         }
 
-		std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() {
+        std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() {
             auto wallet = _wallet.lock();
             if (!wallet) {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Wallet was already released");
             }
             return wallet;
-		}
+        }
 
         const std::shared_ptr<api::ExecutionContext> AbstractAccount::getMainExecutionContext() const {
             return _mainExecutionContext;
@@ -161,11 +161,10 @@ namespace ledger {
 
         std::shared_ptr<api::OperationQuery> AbstractAccount::queryOperations() {
             return std::make_shared<OperationQuery>(
-                    api::QueryFilter::accountEq(getAccountUid()),
-                    getWallet()->getDatabase(),
-                    getWallet()->getPool()->getThreadPoolExecutionContext(),
-                    getMainExecutionContext()
-            );
+                api::QueryFilter::accountEq(getAccountUid()),
+                getWallet()->getDatabase(),
+                getWallet()->getPool()->getThreadPoolExecutionContext(),
+                getMainExecutionContext());
         }
 
         std::shared_ptr<Preferences> AbstractAccount::getInternalPreferences() const {
@@ -184,10 +183,10 @@ namespace ledger {
             getBalance().callback(getMainExecutionContext(), callback);
         }
 
-        void AbstractAccount::getBalanceHistory(const std::string & start,
-                               const std::string & end,
-                               api::TimePeriod precision,
-                               const std::shared_ptr<api::AmountListCallback> & callback) {
+        void AbstractAccount::getBalanceHistory(const std::string &start,
+                                                const std::string &end,
+                                                api::TimePeriod precision,
+                                                const std::shared_ptr<api::AmountListCallback> &callback) {
             getBalanceHistory(start, end, precision).callback(getMainExecutionContext(), callback);
         }
 
@@ -196,7 +195,7 @@ namespace ledger {
         }
 
         void AbstractAccount::emitNewOperationEvent(const Operation &operation) {
-           emitNewOperationsEvent({ operation });
+            emitNewOperationsEvent({operation});
         }
 
         void AbstractAccount::emitNewOperationsEvent(const std::vector<Operation> &operations) {
@@ -208,11 +207,11 @@ namespace ledger {
                 _batchedOperationsEvent->getPayload()->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
                 _batchedOperationsEvent->getPayload()->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
             }
-            for (const auto& operation : operations) {
+            for (const auto &operation : operations) {
                 _batchedOperationsEvent
-                ->getPayload()
-                ->getArray(api::Account::EV_NEW_OP_UID)
-                ->pushString(operation.uid);
+                    ->getPayload()
+                    ->getArray(api::Account::EV_NEW_OP_UID)
+                    ->pushString(operation.uid);
             }
         }
 
@@ -225,7 +224,7 @@ namespace ledger {
             pushEvent(event);
         }
 
-        void AbstractAccount::emitDeletedOperationEvent(std::string const& uid) {
+        void AbstractAccount::emitDeletedOperationEvent(std::string const &uid) {
             auto payload = DynamicObject::newInstance();
             payload->putString(api::Account::EV_DELETED_OP_UID, uid);
             auto event = Event::newInstance(api::EventCode::DELETED_OPERATION, payload);
@@ -234,7 +233,7 @@ namespace ledger {
 
         void AbstractAccount::emitEventsNow() {
             auto self = shared_from_this();
-            run([self] () {
+            run([self]() {
                 std::list<std::shared_ptr<api::Event>> events;
                 std::shared_ptr<api::Event> batchedOperationsEvent;
                 std::shared_ptr<api::Event> batchedBlocksEvent;
@@ -246,7 +245,7 @@ namespace ledger {
                 }
                 if (batchedOperationsEvent)
                     self->_publisher->post(batchedOperationsEvent);
-                for (auto& event : events) {
+                for (auto &event : events) {
                     self->_publisher->post(event);
                 }
             });
@@ -254,7 +253,7 @@ namespace ledger {
 
         void AbstractAccount::pushEvent(const std::shared_ptr<api::Event> &event) {
             auto self = shared_from_this();
-            run([event, self] () {
+            run([event, self]() {
                 std::lock_guard<std::mutex> lock(self->_eventsLock);
                 self->_events.push_back(std::move(event));
             });
@@ -268,7 +267,7 @@ namespace ledger {
             getLastBlock().callback(getMainExecutionContext(), callback);
         }
 
-        void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
+        void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point &date, const std::shared_ptr<api::ErrorCodeCallback> &callback) {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
         }
 
@@ -280,17 +279,17 @@ namespace ledger {
             return _type == api::WalletType::STELLAR;
         }
 
-		void AbstractAccount::eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date) {
+        void AbstractAccount::eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date) {
             //Update account's internal preferences (for synchronization)
             auto savedState = getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
             if (savedState.nonEmpty()) {
                 //Reset batches to blocks mined before given date
                 auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
-                for (auto& batch : savedState.getValue().batches) {
+                for (auto &batch : savedState.getValue().batches) {
                     if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
-                        batch.blockHeight = (uint32_t) previousBlock.getValue().height;
+                        batch.blockHeight = (uint32_t)previousBlock.getValue().height;
                         batch.blockHash = previousBlock.getValue().blockHash;
-                    } else if (!previousBlock.nonEmpty()) {//if no previous block, sync should go back from genesis block
+                    } else if (!previousBlock.nonEmpty()) { //if no previous block, sync should go back from genesis block
                         batch.blockHeight = 0;
                         batch.blockHash = "";
                     }
@@ -299,5 +298,5 @@ namespace ledger {
             }
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -32,31 +32,25 @@
 #include "../AlgorandAddress.hpp"
 
 namespace ledger {
-namespace core {
-namespace algorand {
-namespace model {
+    namespace core {
+        namespace algorand {
+            namespace model {
 
-    struct AssetAmount
-    {
-        AssetAmount() = default;
-        AssetAmount(Address creatorAddress,
-                    uint64_t amount,
-                    bool frozen,
-                    uint64_t assetId)
-            : creatorAddress(std::move(creatorAddress))
-            , amount(amount)
-            , frozen(frozen)
-            , assetId(assetId)
-        {}
+                struct AssetAmount {
+                    AssetAmount() = default;
+                    AssetAmount(Address creatorAddress,
+                                uint64_t amount,
+                                bool frozen,
+                                uint64_t assetId)
+                        : creatorAddress(std::move(creatorAddress)), amount(amount), frozen(frozen), assetId(assetId) {}
 
-        Address creatorAddress;
-        uint64_t amount;
-        bool frozen;
-        uint64_t assetId;
-    };
+                    Address creatorAddress;
+                    uint64_t amount;
+                    bool frozen;
+                    uint64_t assetId;
+                };
 
-} // namespace model
+            } // namespace model
+        }     // namespace algorand
+    }         // namespace core
 } // namespace ledger
-} // namespace core
-} // namespace algorand
-

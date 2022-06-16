@@ -30,37 +30,35 @@
  */
 
 #include "TezosLikeAddress.h"
+
 #include "TezosKey.h"
-#include <utils/Exception.hpp>
-#include <math/Base58.hpp>
-#include <collections/vector.hpp>
-#include <utils/hex.h>
+
 #include <collections/DynamicObject.hpp>
+#include <collections/vector.hpp>
 #include <crypto/BLAKE.h>
+#include <math/Base58.hpp>
+#include <utils/Exception.hpp>
+#include <utils/hex.h>
 
 namespace ledger {
     namespace core {
         TezosLikeAddress::TezosLikeAddress(const api::Currency &currency,
                                            const std::vector<uint8_t> &hash160,
                                            const std::vector<uint8_t> &version,
-                                           const Option<std::string> &derivationPath) :
-                AbstractAddress(currency, derivationPath),
-                _hash160(hash160),
-                _version(version),
-                _params(currency.tezosLikeNetworkParameters.value()),
-                _derivationPath(derivationPath)
-        {}
+                                           const Option<std::string> &derivationPath) : AbstractAddress(currency, derivationPath),
+                                                                                        _hash160(hash160),
+                                                                                        _version(version),
+                                                                                        _params(currency.tezosLikeNetworkParameters.value()),
+                                                                                        _derivationPath(derivationPath) {}
 
         TezosLikeAddress::TezosLikeAddress(const api::Currency &currency,
                                            const std::vector<uint8_t> &pubKey,
                                            const std::vector<uint8_t> &version,
                                            api::TezosCurve curve,
-                                           const Option<std::string> &derivationPath) :
-                TezosLikeAddress(currency,
-                                 getPublicKeyHash160(pubKey, curve),
-                                 getPrefixFromImplicitVersion(version, curve),
-                                 derivationPath)
-        {}
+                                           const Option<std::string> &derivationPath) : TezosLikeAddress(currency,
+                                                                                                         getPublicKeyHash160(pubKey, curve),
+                                                                                                         getPrefixFromImplicitVersion(version, curve),
+                                                                                                         derivationPath) {}
 
         std::vector<uint8_t> TezosLikeAddress::getVersion() {
             return _version;
@@ -75,7 +73,7 @@ namespace ledger {
         }
 
         std::string TezosLikeAddress::toBase58() {
-            if(_hash160.empty()) {
+            if (_hash160.empty()) {
                 return std::string();
             }
             auto config = std::make_shared<DynamicObject>();
@@ -138,91 +136,72 @@ namespace ledger {
         // Reference: https://gitlab.com/tezos/tezos/blob/952dacac820e337577d5a6ea8db881883d9d865c/src/lib_signer_backends/ledger.ml#L100
         std::vector<uint8_t> TezosLikeAddress::getPublicKeyHash160(
             const std::vector<uint8_t> &pubKey,
-            api::TezosCurve curve
-        ) {
+            api::TezosCurve curve) {
             // std::string out;
             // out.assign(pubKey.begin(), pubKey.end());
             // auto out = std::string str(pubKey.begin(), pubKey.end());
             switch (curve) {
-                case api::TezosCurve::ED25519 : {
-                    if (pubKey.size() == TezosKeyType::EDPK.length) {
-                        return BLAKE::blake2b(pubKey, 20);
-                    }
-					else if (pubKey.size() == TezosKeyType::XPUB.length) {
-						return BLAKE::blake2b(std::vector<uint8_t>{pubKey.begin() + 1, pubKey.end()}, 20);
-					}
-                    std::string msg = "Invalid ED25519 public key: should be "
-                        + std::to_string(TezosKeyType::EDPK.length)
-                        + " or " + std::to_string(TezosKeyType::XPUB.length)
-                        + " bytes.";
-                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, msg);
+            case api::TezosCurve::ED25519: {
+                if (pubKey.size() == TezosKeyType::EDPK.length) {
+                    return BLAKE::blake2b(pubKey, 20);
+                } else if (pubKey.size() == TezosKeyType::XPUB.length) {
+                    return BLAKE::blake2b(std::vector<uint8_t>{pubKey.begin() + 1, pubKey.end()}, 20);
+                }
+                std::string msg = "Invalid ED25519 public key: should be " + std::to_string(TezosKeyType::EDPK.length) + " or " + std::to_string(TezosKeyType::XPUB.length) + " bytes.";
+                throw Exception(api::ErrorCode::INVALID_ARGUMENT, msg);
+            }
+
+            case api::TezosCurve::SECP256K1: {
+                if (pubKey.size() == TezosKeyType::SPPK.length) {
+                    return BLAKE::blake2b(
+                        vector::concat(
+                            std::vector<uint8_t>{static_cast<uint8_t>(pubKey[00])},
+                            std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}),
+                        20);
+                } else if (pubKey.size() == 65) {
+                    return BLAKE::blake2b(
+                        vector::concat(
+                            std::vector<uint8_t>{static_cast<uint8_t>(0x02 + (pubKey[64] & 0x01))},
+                            std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}),
+                        20);
                 }
 
-                case api::TezosCurve::SECP256K1: {
-                    if (pubKey.size() == TezosKeyType::SPPK.length) {
-                        return BLAKE::blake2b(
-                            vector::concat(
-                                std::vector<uint8_t>{static_cast<uint8_t>(pubKey[00])},
-                                std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}
-                            ),
-                            20
-                        );
-                    }
-                    else if (pubKey.size() == 65) {
-                        return BLAKE::blake2b(
-                            vector::concat(
-                                    std::vector<uint8_t>{static_cast<uint8_t>(0x02 + (pubKey[64] & 0x01))},
-                                    std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}
-                            ),
-                            20
-                        );
-                    }
-
-                    std::string msg = "Invalid SECP256K1 public key: should be ";
-                    msg += std::to_string(TezosKeyType::SPPK.length);
-                    msg += " or 65 bytes.";
-                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, msg);
+                std::string msg = "Invalid SECP256K1 public key: should be ";
+                msg += std::to_string(TezosKeyType::SPPK.length);
+                msg += " or 65 bytes.";
+                throw Exception(api::ErrorCode::INVALID_ARGUMENT, msg);
+            }
+            case api::TezosCurve::P256: {
+                if (pubKey.size() == TezosKeyType::P2PK.length) {
+                    return BLAKE::blake2b(
+                        vector::concat(
+                            std::vector<uint8_t>{static_cast<uint8_t>(pubKey[00])},
+                            std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}),
+                        20);
+                } else if (pubKey.size() == 65) {
+                    return BLAKE::blake2b(
+                        vector::concat(
+                            std::vector<uint8_t>{static_cast<uint8_t>(0x02 + (pubKey[64] & 0x01))},
+                            std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}),
+                        20);
                 }
-                case api::TezosCurve::P256: {
-                    if (pubKey.size() == TezosKeyType::P2PK.length) {
-                        return BLAKE::blake2b(
-                            vector::concat(
-                                std::vector<uint8_t>{static_cast<uint8_t>(pubKey[00])},
-                                std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}
-                            ),
-                            20
-                        );
-                    }
-                    else if (pubKey.size() == 65) {
-                        return BLAKE::blake2b(
-                            vector::concat(
-                                    std::vector<uint8_t>{static_cast<uint8_t>(0x02 + (pubKey[64] & 0x01))},
-                                    std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}
-                            ),
-                            20
-                        );
-                    }
-                    std::string msg = "Invalid P256 public key: should be ";
-                    msg += std::to_string(TezosKeyType::P2PK.length);
-                    msg += " or 65 bytes.";
-                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, msg);
-                }
-                default : {
-                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid public key type.");
-                }
+                std::string msg = "Invalid P256 public key: should be ";
+                msg += std::to_string(TezosKeyType::P2PK.length);
+                msg += " or 65 bytes.";
+                throw Exception(api::ErrorCode::INVALID_ARGUMENT, msg);
+            }
+            default: {
+                throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid public key type.");
+            }
             }
         }
 
         std::vector<uint8_t> TezosLikeAddress::getPrefixFromImplicitVersion(const std::vector<uint8_t> &implicitVersion,
                                                                             api::TezosCurve curve) {
             return vector::concat(
-                    std::vector<uint8_t>{implicitVersion.begin(), implicitVersion.end() - 1},
-                    std::vector<uint8_t>{static_cast<uint8_t>(implicitVersion.back() + static_cast<uint8_t>(
-                            curve == api::TezosCurve::SECP256K1 ? 2 :
-                            curve == api::TezosCurve::P256 ? 5 :
-                            0)
-                    )}
-            );
+                std::vector<uint8_t>{implicitVersion.begin(), implicitVersion.end() - 1},
+                std::vector<uint8_t>{static_cast<uint8_t>(implicitVersion.back() + static_cast<uint8_t>(
+                                                                                       curve == api::TezosCurve::SECP256K1 ? 2 : curve == api::TezosCurve::P256 ? 5 : 0))});
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

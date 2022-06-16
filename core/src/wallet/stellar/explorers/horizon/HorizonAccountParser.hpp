@@ -32,16 +32,17 @@
 #ifndef LEDGER_CORE_HORIZONACCOUNTPARSER_HPP
 #define LEDGER_CORE_HORIZONACCOUNTPARSER_HPP
 
-#include <rapidjson/reader.h>
-#include <wallet/stellar/stellar.hpp>
-#include <utils/JsonParserPath.hpp>
-#include "HorizonFlagsParser.hpp"
 #include "HorizonBalanceParser.hpp"
+#include "HorizonFlagsParser.hpp"
+
+#include <rapidjson/reader.h>
+#include <utils/JsonParserPath.hpp>
+#include <wallet/stellar/stellar.hpp>
 
 namespace ledger {
     namespace core {
         class HorizonAccountParser {
-        public:
+          public:
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -57,16 +58,15 @@ namespace ledger {
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
             void init(stellar::Account *account);
-            void setPathView(const JsonParserPathView& path);
+            void setPathView(const JsonParserPathView &path);
 
-        private:
+          private:
             JsonParserPathView _path;
             stellar::Account *_account;
             HorizonFlagsParser _flagsParser;
             HorizonBalanceParser _balancesParser;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_HORIZONACCOUNTPARSER_HPP

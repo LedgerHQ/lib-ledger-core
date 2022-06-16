@@ -28,9 +28,10 @@
  *
  */
 
-
 #include "SHA512.hpp"
+
 #include "../utils/hex.h"
+
 #include <openssl/sha.h>
 
 namespace ledger {
@@ -49,7 +50,7 @@ namespace ledger {
             SHA512_Init(&sha512);
             SHA512_Update(&sha512, data, size);
             SHA512_Final(hash, &sha512);
-            return std::vector<uint8_t >(hash, hash + SHA512_DIGEST_LENGTH);
+            return std::vector<uint8_t>(hash, hash + SHA512_DIGEST_LENGTH);
         }
 
         std::vector<uint8_t> SHA512::stringToBytesHash(const std::string &input) {
@@ -59,5 +60,5 @@ namespace ledger {
         std::vector<uint8_t> SHA512::bytesToBytesHash(const std::vector<uint8_t> &bytes) {
             return dataToBytesHash(bytes.data(), bytes.size());
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

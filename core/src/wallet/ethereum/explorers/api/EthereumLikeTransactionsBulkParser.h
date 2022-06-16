@@ -28,25 +28,24 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMLIKETRANSACTIONSBULKPARSER_H
 #define LEDGER_CORE_ETHEREUMLIKETRANSACTIONSBULKPARSER_H
 
 #include "../EthereumLikeBlockchainExplorer.h"
-#include <wallet/ethereum/explorers/api/EthereumLikeTransactionsParser.h>
+
 #include <wallet/common/explorers/api/AbstractTransactionsBulkParser.h>
+#include <wallet/ethereum/explorers/api/EthereumLikeTransactionsParser.h>
 namespace ledger {
     namespace core {
         class EthereumLikeBlockchainExplorer;
         class EthereumLikeTransactionsBulkParser : public AbstractTransactionsBulkParser<EthereumLikeBlockchainExplorer::TransactionsBulk, EthereumLikeTransactionsParser> {
-        public:
-            EthereumLikeTransactionsBulkParser(std::string& lastKey) : _lastKey(lastKey),
-                                                                       _transactionsParser(lastKey)
-            {
+          public:
+            EthereumLikeTransactionsBulkParser(std::string &lastKey) : _lastKey(lastKey),
+                                                                       _transactionsParser(lastKey) {
                 _depth = 0;
             };
 
-        protected:
+          protected:
             EthereumLikeTransactionsParser &getTransactionsParser() override {
                 return _transactionsParser;
             }
@@ -54,12 +53,12 @@ namespace ledger {
             std::string &getLastKey() override {
                 return _lastKey;
             }
-        private:
-            EthereumLikeTransactionsParser _transactionsParser;
-            std::string& _lastKey;
-        };
-    }
-}
 
+          private:
+            EthereumLikeTransactionsParser _transactionsParser;
+            std::string &_lastKey;
+        };
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMLIKETRANSACTIONSBULKPARSER_H

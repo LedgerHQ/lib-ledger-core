@@ -36,15 +36,15 @@
 namespace ledger {
     namespace core {
         class LambdaEventReceiver : public api::EventReceiver {
-        public:
-            LambdaEventReceiver(std::function<void (const std::shared_ptr<api::Event> &)> f);
+          public:
+            LambdaEventReceiver(std::function<void(const std::shared_ptr<api::Event> &)> f);
             void onEvent(const std::shared_ptr<api::Event> &event) override;
 
-        private:
-            std::function<void (const std::shared_ptr<api::Event> &)> _function;
+          private:
+            std::function<void(const std::shared_ptr<api::Event> &)> _function;
         };
 
-        std::shared_ptr<LambdaEventReceiver> make_receiver(std::function<void (const std::shared_ptr<api::Event> &)> f);
+        std::shared_ptr<LambdaEventReceiver> make_receiver(std::function<void(const std::shared_ptr<api::Event> &)> f);
 
         /**
          * Create a receiver which will resolve the current promise in case it is callback with one success or failure code.
@@ -54,12 +54,10 @@ namespace ledger {
          * @return
          */
         std::shared_ptr<LambdaEventReceiver> make_promise_receiver(
-                Promise<Unit>& promise,
-                const std::vector<api::EventCode> &successCodes,
-                const std::vector<api::EventCode> &failureCodes
-        );
-    }
-}
-
+            Promise<Unit> &promise,
+            const std::vector<api::EventCode> &successCodes,
+            const std::vector<api::EventCode> &failureCodes);
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_LAMBDAEVENTRECEIVER_HPP

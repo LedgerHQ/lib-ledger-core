@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKEACCOUNTDATABASEENTRY_H
 #define LEDGER_CORE_RIPPLELIKEACCOUNTDATABASEENTRY_H
 
@@ -39,6 +38,6 @@ namespace ledger {
             int32_t index;
             std::string address;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_RIPPLELIKEACCOUNTDATABASEENTRY_H

@@ -31,11 +31,11 @@
 #ifndef LEDGER_CORE_LOGPRINTERSINK_HPP
 #define LEDGER_CORE_LOGPRINTERSINK_HPP
 
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/sink.h>
-#include <spdlog/sinks/base_sink.h>
 #include <memory>
 #include <mutex>
+#include <spdlog/sinks/base_sink.h>
+#include <spdlog/sinks/sink.h>
+#include <spdlog/spdlog.h>
 
 namespace spd = spdlog;
 
@@ -45,20 +45,19 @@ namespace ledger {
             class LogPrinter;
         };
         class LogPrinterSink : public spd::sinks::base_sink<std::mutex> {
-        public:
-            LogPrinterSink(const std::shared_ptr<api::LogPrinter>& printer);
+          public:
+            LogPrinterSink(const std::shared_ptr<api::LogPrinter> &printer);
 
             virtual void sink_it_(const spdlog::details::log_msg &msg) override;
 
             virtual void flush_() override;
 
-            const std::weak_ptr<api::LogPrinter>& getPrinter() const;
+            const std::weak_ptr<api::LogPrinter> &getPrinter() const;
 
-        private:
+          private:
             std::weak_ptr<api::LogPrinter> _printer;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_LOGPRINTERSINK_HPP

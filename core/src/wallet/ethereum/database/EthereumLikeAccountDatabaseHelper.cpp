@@ -28,8 +28,8 @@
  *
  */
 
-
 #include "EthereumLikeAccountDatabaseHelper.h"
+
 #include <wallet/common/database/AccountDatabaseHelper.h>
 
 using namespace soci;
@@ -37,28 +37,30 @@ using namespace soci;
 namespace ledger {
     namespace core {
         void EthereumLikeAccountDatabaseHelper::createAccount(soci::session &sql,
-                                                         const std::string walletUid, int32_t index,
-                                                         const std::string &address) {
+                                                              const std::string walletUid,
+                                                              int32_t index,
+                                                              const std::string &address) {
             auto uid = AccountDatabaseHelper::createAccountUid(walletUid, index);
-            sql << "INSERT INTO ethereum_accounts VALUES(:uid, :wallet_uid, :idx, :address)",use(uid), use(walletUid), use(index), use(address);
+            sql << "INSERT INTO ethereum_accounts VALUES(:uid, :wallet_uid, :idx, :address)", use(uid), use(walletUid), use(index), use(address);
         }
 
         void EthereumLikeAccountDatabaseHelper::createERC20Account(soci::session &sql,
                                                                    const std::string &ethAccountUid,
                                                                    const std::string &erc20AccountUid,
                                                                    const std::string &contractAddress) {
-            sql << "INSERT INTO erc20_accounts VALUES(:uid, :ethereum_account_uid, :contract_address)",use(erc20AccountUid), use(ethAccountUid), use(contractAddress);
+            sql << "INSERT INTO erc20_accounts VALUES(:uid, :ethereum_account_uid, :contract_address)", use(erc20AccountUid), use(ethAccountUid), use(contractAddress);
         }
 
         bool EthereumLikeAccountDatabaseHelper::queryAccount(soci::session &sql,
                                                              const std::string &accountUid,
                                                              EthereumLikeAccountDatabaseEntry &entry) {
             rowset<row> rows = (sql.prepare << "SELECT eth.idx, eth.address, "
-                    "erc20.uid, erc20.contract_address "
-                    "FROM ethereum_accounts AS eth "
-                    "LEFT JOIN erc20_accounts AS erc20 ON erc20.ethereum_account_uid = eth.uid"
-                    " WHERE eth.uid = :uid", use(accountUid));
-            for (auto& row : rows) {
+                                               "erc20.uid, erc20.contract_address "
+                                               "FROM ethereum_accounts AS eth "
+                                               "LEFT JOIN erc20_accounts AS erc20 ON erc20.ethereum_account_uid = eth.uid"
+                                               " WHERE eth.uid = :uid",
+                                use(accountUid));
+            for (auto &row : rows) {
                 if (entry.address.empty()) {
                     entry.index = row.get<int32_t>(0);
                     entry.address = row.get<std::string>(1);
@@ -80,7 +82,7 @@ namespace ledger {
             sql << "SELECT COUNT(*) FROM erc20_tokens WHERE contract_address = :contract_address", soci::use(contractAddress), soci::into(count);
             if (count > 0) {
                 soci::rowset<soci::row> rows = (sql.prepare << "SELECT name, symbol, number_of_decimal FROM erc20_tokens WHERE contract_address = :contract_address", soci::use(contractAddress));
-                for (auto& row : rows) {
+                for (auto &row : rows) {
                     auto name = row.get<std::string>(0);
                     auto symbol = row.get<std::string>(1);
                     auto numberOfDecimals = row.get<int32_t>(2);
@@ -89,13 +91,13 @@ namespace ledger {
             } else {
                 erc20Token = api::ERC20Token("UNKNOWN_TOKEN", "UNKNOWN", contractAddress, 0);
                 sql << "INSERT INTO erc20_tokens VALUES(:contract_address, :name, :symbol, :number_of_decimal)",
-                        use(erc20Token.contractAddress),
-                        use(erc20Token.name),
-                        use(erc20Token.symbol),
-                        use(erc20Token.numberOfDecimal);
+                    use(erc20Token.contractAddress),
+                    use(erc20Token.name),
+                    use(erc20Token.symbol),
+                    use(erc20Token.numberOfDecimal);
             }
             return erc20Token;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

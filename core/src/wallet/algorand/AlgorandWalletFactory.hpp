@@ -31,34 +31,34 @@
 #ifndef LEDGER_CORE_ALGORANDWALLETFACTORY_H
 #define LEDGER_CORE_ALGORANDWALLETFACTORY_H
 
-#include "AlgorandBlockchainExplorer.hpp"
 #include "AlgorandAccountSynchronizer.hpp"
+#include "AlgorandBlockchainExplorer.hpp"
 
 #include <wallet/common/AbstractWalletFactory.hpp>
 #include <wallet/pool/WalletPool.hpp>
 
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
 
-    using AlgorandAccountSynchronizerFactory = std::function<std::shared_ptr<AccountSynchronizer>()>;
+            using AlgorandAccountSynchronizerFactory = std::function<std::shared_ptr<AccountSynchronizer>()>;
 
-    class WalletFactory : public AbstractWalletFactory {
-    public:
-        WalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool>& pool);
+            class WalletFactory : public AbstractWalletFactory {
+              public:
+                WalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
 
-        std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
+                std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
-    private:
-        std::shared_ptr<BlockchainExplorer>
-        getExplorer(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
+              private:
+                std::shared_ptr<BlockchainExplorer>
+                getExplorer(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
 
-    private:
-        std::list<std::weak_ptr<BlockchainExplorer>> _runningExplorers;
-    };
+              private:
+                std::list<std::weak_ptr<BlockchainExplorer>> _runningExplorers;
+            };
 
-} // namespace algorand
-} // namespace core
-} // namespace ledeger
+        } // namespace algorand
+    }     // namespace core
+} // namespace ledger
 
 #endif // LEDGER_CORE_ALGORANDWALLETFACTORY_H

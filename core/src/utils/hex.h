@@ -60,23 +60,23 @@ namespace ledger {
              * @throw std::invalid_argument When encountering an invalid character.
              * @return
              */
-            std::vector<uint8_t> toByteArray(const std::string& hexString);
+            std::vector<uint8_t> toByteArray(const std::string &hexString);
             /**
              * Encodes the given byte array into an hexadecimal string.
              * @param data A byte array
              * @param uppercase True if the output should be expressed in uppercase characters, false otherwise
              * @return
              */
-            std::string toString(const std::vector<uint8_t>& data, bool uppercase);
+            std::string toString(const std::vector<uint8_t> &data, bool uppercase);
             /**
              * Encodes the given byte array into an hexadecimal string (lowercase).
              * @param data
              * @return
              */
-            std::string toString(const std::vector<uint8_t>& data);
-        }
+            std::string toString(const std::vector<uint8_t> &data);
+        } // namespace hex
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_HEX_H

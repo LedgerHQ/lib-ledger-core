@@ -30,6 +30,7 @@
  */
 
 #include "HorizonLedgerParser.hpp"
+
 #include <utils/DateUtils.hpp>
 
 using namespace ledger::core;
@@ -118,5 +119,5 @@ namespace ledger {
         void HorizonLedgerParser::setPathView(const JsonParserPathView &path) {
             _path = path;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

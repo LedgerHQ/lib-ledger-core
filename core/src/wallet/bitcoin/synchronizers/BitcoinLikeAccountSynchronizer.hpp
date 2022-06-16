@@ -37,9 +37,8 @@ namespace ledger {
     namespace core {
         class BitcoinLikeAccount;
         class BitcoinLikeAccountSynchronizer : public AbstractAccountSynchronizer<BitcoinLikeAccount> {
-
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_BITCOINLIKEACCOUNTSYNCHRONIZER_HPP

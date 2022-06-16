@@ -2,9 +2,9 @@
 // Created by PIERRE POLLASTRI on 28/08/2017.
 //
 
-#include <gtest/gtest.h>
-#include <crypto/Secp256k1Api.h>
 #include <crypto/SHA256.hpp>
+#include <crypto/Secp256k1Api.h>
+#include <gtest/gtest.h>
 
 using namespace ledger::core;
 

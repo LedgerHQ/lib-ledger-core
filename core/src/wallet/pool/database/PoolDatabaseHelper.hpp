@@ -31,31 +31,32 @@
 #ifndef LEDGER_CORE_POOLDATABASEHELPER_HPP
 #define LEDGER_CORE_POOLDATABASEHELPER_HPP
 
+#include "WalletDatabaseEntry.hpp"
+
 #include <soci.h>
 #include <wallet/pool/WalletPool.hpp>
-#include "WalletDatabaseEntry.hpp"
 
 namespace ledger {
     namespace core {
         class PoolDatabaseHelper {
-        public:
-            static bool insertPool(soci::session& sql, const WalletPool& pool);
+          public:
+            static bool insertPool(soci::session &sql, const WalletPool &pool);
             static void putWallet(soci::session &sql, const WalletDatabaseEntry &wallet);
-            static int64_t getWallets(soci::session& sql,
-                                      const WalletPool& pool, int64_t offset,
-                                      std::vector<WalletDatabaseEntry>& wallets);
-            static int64_t getWalletCount(soci::session& sql, const WalletPool& pool);
-            static bool getWallet(soci::session& sql, const WalletPool& pool, const std::string& walletName, WalletDatabaseEntry& entry);
-            static bool removeWallet(soci::session& sql, const WalletDatabaseEntry& entry);
-            static void removeWalletByName(soci::session& sql, const std::string& name);
-            static bool walletExists(soci::session& sql, const WalletDatabaseEntry& entry);
+            static int64_t getWallets(soci::session &sql,
+                                      const WalletPool &pool,
+                                      int64_t offset,
+                                      std::vector<WalletDatabaseEntry> &wallets);
+            static int64_t getWalletCount(soci::session &sql, const WalletPool &pool);
+            static bool getWallet(soci::session &sql, const WalletPool &pool, const std::string &walletName, WalletDatabaseEntry &entry);
+            static bool removeWallet(soci::session &sql, const WalletDatabaseEntry &entry);
+            static void removeWalletByName(soci::session &sql, const std::string &name);
+            static bool walletExists(soci::session &sql, const WalletDatabaseEntry &entry);
 
-        private:
+          private:
             PoolDatabaseHelper() = delete;
-            static void inflateWalletEntry(soci::row& row, const WalletPool& pool, WalletDatabaseEntry& entry);
+            static void inflateWalletEntry(soci::row &row, const WalletPool &pool, WalletDatabaseEntry &entry);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_POOLDATABASEHELPER_HPP

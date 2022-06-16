@@ -29,10 +29,12 @@
  *
  */
 #include "BitcoinLikeAccountDatabase.h"
+
 #include "../../common/database/AccountDatabaseHelper.h"
-#include <utils/DateUtils.hpp>
-#include <database/soci-option.h>
+
 #include <database/soci-date.h>
+#include <database/soci-option.h>
+#include <utils/DateUtils.hpp>
 
 using namespace soci;
 
@@ -43,6 +45,5 @@ namespace ledger {
             _accountUid = AccountDatabaseHelper::createAccountUid(walletUid, index);
         }
 
-
-    }
-}
+    } // namespace core
+} // namespace ledger

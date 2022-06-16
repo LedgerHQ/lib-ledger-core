@@ -28,33 +28,27 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ABSTRACTEXTENDEDPUBLICKEY_H
 #define LEDGER_CORE_ABSTRACTEXTENDEDPUBLICKEY_H
 
-#include <memory>
-
-#include <math/Base58.hpp>
-
-#include <crypto/SECP256k1Point.hpp>
-#include <crypto/HashAlgorithm.h>
-#include <crypto/DeterministicPublicKey.hpp>
-#include <crypto/RIPEMD160.hpp>
-
-#include <utils/Option.hpp>
-#include <utils/DerivationPath.hpp>
-
-#include <bytes/BytesReader.h>
-
 #include <api/Currency.hpp>
+#include <bytes/BytesReader.h>
 #include <collections/DynamicObject.hpp>
+#include <crypto/DeterministicPublicKey.hpp>
+#include <crypto/HashAlgorithm.h>
+#include <crypto/RIPEMD160.hpp>
+#include <crypto/SECP256k1Point.hpp>
+#include <math/Base58.hpp>
+#include <memory>
+#include <utils/DerivationPath.hpp>
+#include <utils/Option.hpp>
 namespace ledger {
     namespace core {
         template <class NetworkParameters>
         class AbstractExtendedPublicKey {
 
-        public:
-            static inline DeterministicPublicKey _derive(int index, const std::vector<uint32_t>& childNums, const DeterministicPublicKey& key) {
+          public:
+            static inline DeterministicPublicKey _derive(int index, const std::vector<uint32_t> &childNums, const DeterministicPublicKey &key) {
                 if (index >= childNums.size()) {
                     return key;
                 }
@@ -110,7 +104,7 @@ namespace ledger {
                 //4 bytes of version
                 auto version = reader.read(params.XPUBVersion.size());
                 if (version != params.XPUBVersion) {
-                    throw  Exception(api::ErrorCode::INVALID_NETWORK_ADDRESS_VERSION, "Provided network parameters and address version do not match.");
+                    throw Exception(api::ErrorCode::INVALID_NETWORK_ADDRESS_VERSION, "Provided network parameters and address version do not match.");
                 }
                 //1 byte of depth
                 auto depth = reader.readNextByte();
@@ -137,14 +131,13 @@ namespace ledger {
                 return key.getPublicKeyHash160();
             }
 
-        protected:
+          protected:
             virtual const NetworkParameters &params() const = 0;
             virtual const DeterministicPublicKey &getKey() const = 0;
             virtual const DerivationPath &getPath() const = 0;
             virtual const api::Currency &getCurrency() const = 0;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ABSTRACTEXTENDEDPUBLICKEY_H

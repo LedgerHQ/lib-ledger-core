@@ -57,7 +57,6 @@ TEST(JsonParserPath, ToStringOnlyObjects) {
     path.endObject();
     EXPECT_EQ(path.toString(), "/foo");
     path.endObject();
-
 }
 
 TEST(JsonParserPath, ToStringObjectsAndArray) {
@@ -95,7 +94,6 @@ TEST(JsonParserPath, ToStringObjectsAndArray) {
     path.endObject();
     EXPECT_EQ(path.toString(), "/foo");
     path.endObject();
-
 }
 
 TEST(JsonParserPath, MatchPaths) {
@@ -109,8 +107,6 @@ TEST(JsonParserPath, MatchPaths) {
     JsonParserPathMatcher m_6("/*/malachite[*]");
     JsonParserPathMatcher m_7("/foo/malachite");
     JsonParserPathMatcher m_8("/foo");
-
-
 
     JsonParserPath path;
 
@@ -147,13 +143,11 @@ TEST(JsonParserPath, MatchPaths) {
     path.endObject();
     EXPECT_TRUE(path.root().match(m_8));
     path.endObject();
-
 }
 
 TEST(JsonParserPath, MatchViews) {
     JsonParserPathMatcher m_1("/topaz[*]/rare");
     JsonParserPathMatcher m_2("/useful");
-
 
     JsonParserPath path;
 

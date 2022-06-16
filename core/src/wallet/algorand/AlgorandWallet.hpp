@@ -27,7 +27,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ALGORANDWALLET_H
 #define LEDGER_CORE_ALGORANDWALLET_H
 
@@ -35,58 +34,55 @@
 #include "AlgorandBlockchainExplorer.hpp"
 
 #include <api/AlgorandWallet.hpp>
-
 #include <wallet/common/AbstractWallet.hpp>
 
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
 
-    using AccountSynchronizerFactory = std::function<std::shared_ptr<AccountSynchronizer>()>;
+            using AccountSynchronizerFactory = std::function<std::shared_ptr<AccountSynchronizer>()>;
 
-    class Wallet : public api::AlgorandWallet, public AbstractWallet {
+            class Wallet : public api::AlgorandWallet, public AbstractWallet {
 
-    public:
+              public:
+                Wallet(
+                    const std::string &name,
+                    const api::Currency &currency,
+                    const std::shared_ptr<WalletPool> &pool,
+                    const std::shared_ptr<DynamicObject> &configuration,
+                    const DerivationScheme &scheme,
+                    const std::shared_ptr<BlockchainExplorer> &explorer,
+                    const AccountSynchronizerFactory &synchronizerFactory);
 
-        Wallet(
-            const std::string & name,
-            const api::Currency & currency,
-            const std::shared_ptr<WalletPool>& pool,
-            const std::shared_ptr<DynamicObject> & configuration,
-            const DerivationScheme & scheme,
-            const std::shared_ptr<BlockchainExplorer> & explorer,
-            const AccountSynchronizerFactory & synchronizerFactory
-        );
+                bool isSynchronizing() override;
 
-        bool isSynchronizing() override;
+                std::shared_ptr<api::EventBus> synchronize() override;
 
-        std::shared_ptr<api::EventBus> synchronize() override;
+                FuturePtr<ledger::core::api::Account> newAccountWithInfo(const api::AccountCreationInfo &info) override;
 
-        FuturePtr<ledger::core::api::Account> newAccountWithInfo(const api::AccountCreationInfo & info) override;
+                FuturePtr<ledger::core::api::Account>
+                newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) override;
 
-        FuturePtr<ledger::core::api::Account>
-        newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo & info) override;
+                Future<api::ExtendedKeyAccountCreationInfo>
+                getExtendedKeyAccountCreationInfo(int32_t accountIndex) override;
 
-        Future<api::ExtendedKeyAccountCreationInfo>
-        getExtendedKeyAccountCreationInfo(int32_t accountIndex) override;
+                Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
 
-        Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
+                bool hasMultipleAddresses() const;
 
-        bool hasMultipleAddresses() const;
+              protected:
+                std::shared_ptr<AbstractAccount>
+                createAccountInstance(soci::session &sql, const std::string &accountUid) override;
 
-    protected:
-        std::shared_ptr<AbstractAccount>
-        createAccountInstance(soci::session & sql, const std::string & accountUid) override;
+              private:
+                std::shared_ptr<Wallet> getSelf();
 
-    private:
-        std::shared_ptr<Wallet> getSelf();
+                std::shared_ptr<BlockchainExplorer> _explorer;
+                AccountSynchronizerFactory _synchronizerFactory;
+            };
 
-        std::shared_ptr<BlockchainExplorer> _explorer;
-        AccountSynchronizerFactory _synchronizerFactory;
-    };
-
-} // namespace algorand
-} // namespace core
+        } // namespace algorand
+    }     // namespace core
 } // namespace ledger
 
 #endif // LEDGER_CORE_ALGORANDWALLET_H

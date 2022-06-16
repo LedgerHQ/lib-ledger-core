@@ -29,8 +29,9 @@
  *
  */
 
-#include <api/Currency.hpp>
 #include "BitcoinLikeKeychain.hpp"
+
+#include <api/Currency.hpp>
 #include <api/KeychainEngines.hpp>
 namespace ledger {
     namespace core {
@@ -45,7 +46,7 @@ namespace ledger {
 
         bool BitcoinLikeKeychain::markAsUsed(const std::vector<std::string> &addresses) {
             bool result = false;
-            for (auto& address : addresses) {
+            for (auto &address : addresses) {
                 result = markAsUsed(address) || result;
             }
             return result;
@@ -59,20 +60,21 @@ namespace ledger {
             return _configuration;
         }
 
-        BitcoinLikeKeychain::BitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject>& configuration,
-                                                 const api::Currency &params, int account,
-                                                 const std::shared_ptr<Preferences>& preferences) :
-            _account(account), _preferences(preferences), _configuration(configuration), _currency(params),
-            _fullScheme(DerivationScheme(configuration
-                                                 ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
-                                                 .value_or("44'/<coin_type>'/<account>'/<node>/<address>"))),
-            _scheme(DerivationScheme(configuration
-                    ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
-                    .value_or("44'/<coin_type>'/<account>'/<node>/<address>")).getSchemeFrom(DerivationSchemeLevel::ACCOUNT_INDEX).shift())
-        {
+        BitcoinLikeKeychain::BitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
+                                                 const api::Currency &params,
+                                                 int account,
+                                                 const std::shared_ptr<Preferences> &preferences) : _account(account), _preferences(preferences), _configuration(configuration), _currency(params),
+                                                                                                    _fullScheme(DerivationScheme(configuration
+                                                                                                                                     ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
+                                                                                                                                     .value_or("44'/<coin_type>'/<account>'/<node>/<address>"))),
+                                                                                                    _scheme(DerivationScheme(configuration
+                                                                                                                                 ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
+                                                                                                                                 .value_or("44'/<coin_type>'/<account>'/<node>/<address>"))
+                                                                                                                .getSchemeFrom(DerivationSchemeLevel::ACCOUNT_INDEX)
+                                                                                                                .shift()) {
         }
 
-        const api::Currency& BitcoinLikeKeychain::getCurrency() const {
+        const api::Currency &BitcoinLikeKeychain::getCurrency() const {
             return _currency;
         }
 
@@ -120,5 +122,5 @@ namespace ledger {
             return keychainEngine == api::KeychainEngines::BIP173_P2WPKH ||
                    keychainEngine == api::KeychainEngines::BIP173_P2WSH;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -29,22 +29,23 @@
  *
  */
 #include "OperationApi.h"
+
+#include <api/WalletType.hpp>
 #include <iterator>
-#include <wallet/common/Amount.h>
-#include <wallet/common/AbstractAccount.hpp>
-#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
+#include <wallet/algorand/operations/AlgorandOperation.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOperation.h>
+#include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/Amount.h>
+#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 #include <wallet/ethereum/api_impl/EthereumLikeOperation.h>
 #include <wallet/ripple/api_impl/RippleLikeOperation.h>
-#include <wallet/tezos/api_impl/TezosLikeOperation.h>
-#include <wallet/algorand/operations/AlgorandOperation.hpp>
-#include <api/WalletType.hpp>
 #include <wallet/stellar/StellarLikeOperation.hpp>
+#include <wallet/tezos/api_impl/TezosLikeOperation.h>
 
 namespace ledger {
     namespace core {
 
-        OperationApi::OperationApi(const std::shared_ptr<AbstractAccount> &account)  : ManagedObject<OperationApi>() {
+        OperationApi::OperationApi(const std::shared_ptr<AbstractAccount> &account) : ManagedObject<OperationApi>() {
             _account = account;
         }
 
@@ -86,10 +87,9 @@ namespace ledger {
                 _backend.recipients.cbegin(),
                 _backend.recipients.cend(),
                 std::back_inserter(recipients),
-                [&](std::string const& addr) -> bool
-            {
-                return keychain->contains(addr);
-            });
+                [&](std::string const &addr) -> bool {
+                    return keychain->contains(addr);
+                });
 
             return recipients;
         }
@@ -152,8 +152,8 @@ namespace ledger {
         }
 
         optional<int64_t> OperationApi::getBlockHeight() {
-            return _backend.block.map<int64_t>([] (const Block& block) {
-                return (int64_t) block.height;
+            return _backend.block.map<int64_t>([](const Block &block) {
+                return (int64_t)block.height;
             });
         }
 
@@ -226,5 +226,5 @@ namespace ledger {
             return _backend.walletType == api::WalletType::STELLAR;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

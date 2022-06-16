@@ -28,30 +28,27 @@
  *
  */
 
-
 #include "api_impl/BigIntImpl.hpp"
-#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 
+#include <api/Amount.hpp>
+#include <api/CosmosLikeMsgType.hpp>
+#include <bytes/BytesReader.h>
+#include <bytes/BytesWriter.h>
+#include <cereal/external/base64.hpp>
+#include <cosmos/CosmosLikeAddress.hpp>
 #include <fmt/format.h>
+#include <math/BigInt.h>
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
-#include <cereal/external/base64.hpp>
-
-#include <api/Amount.hpp>
+#include <utils/hex.h>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/AbstractWallet.hpp>
-#include <bytes/BytesWriter.h>
-#include <bytes/BytesReader.h>
-#include <utils/hex.h>
-#include <math/BigInt.h>
-
-#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
-#include <cosmos/CosmosLikeAddress.hpp>
-#include <api/CosmosLikeMsgType.hpp>
-#include <wallet/cosmos/CosmosLikeMessage.hpp>
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/CosmosLikeMessage.hpp>
 #include <wallet/cosmos/CosmosNetworks.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 
 using namespace rapidjson;
 
@@ -84,14 +81,11 @@ static void sortJson(Value &val) {
 namespace ledger {
     namespace core {
 
-        CosmosLikeTransactionApi::CosmosLikeTransactionApi(const cosmos::Transaction& txData) :
-            _txData(txData)
-        {
+        CosmosLikeTransactionApi::CosmosLikeTransactionApi(const cosmos::Transaction &txData) : _txData(txData) {
             _currency = currencies::ATOM;
         }
 
-        CosmosLikeTransactionApi::CosmosLikeTransactionApi(const std::shared_ptr<OperationApi>& baseOp):
-        CosmosLikeTransactionApi(baseOp->getBackend().cosmosTransaction.getValue().tx){
+        CosmosLikeTransactionApi::CosmosLikeTransactionApi(const std::shared_ptr<OperationApi> &baseOp) : CosmosLikeTransactionApi(baseOp->getBackend().cosmosTransaction.getValue().tx) {
             _currency = baseOp->getCurrency();
         }
 
@@ -102,16 +96,15 @@ namespace ledger {
         std::vector<std::shared_ptr<api::CosmosLikeMessage>> CosmosLikeTransactionApi::getMessages() const {
             auto result = std::vector<std::shared_ptr<api::CosmosLikeMessage>>();
             std::transform(_txData.messages.begin(), _txData.messages.end(), std::back_inserter(result),
-                           [](const auto& message) -> std::shared_ptr<CosmosLikeMessage> {
+                           [](const auto &message) -> std::shared_ptr<CosmosLikeMessage> {
                                return std::make_shared<CosmosLikeMessage>(message);
-                           }
-            );
+                           });
             return result;
         }
 
-        void CosmosLikeTransactionApi::setMessages(const std::vector<std::shared_ptr<api::CosmosLikeMessage>> & cmessages) {
+        void CosmosLikeTransactionApi::setMessages(const std::vector<std::shared_ptr<api::CosmosLikeMessage>> &cmessages) {
             auto result = std::vector<cosmos::Message>();
-            for (auto& message : cmessages) {
+            for (auto &message : cmessages) {
                 auto concrete_message = std::dynamic_pointer_cast<CosmosLikeMessage>(message);
                 if (!concrete_message) {
                     throw Exception(
@@ -131,7 +124,7 @@ namespace ledger {
             return std::make_shared<Amount>(_currency, 0, BigInt(_txData.fee.amount[0].amount));
         }
 
-       std::chrono::system_clock::time_point CosmosLikeTransactionApi::getDate() const {
+        std::chrono::system_clock::time_point CosmosLikeTransactionApi::getDate() const {
             return _txData.timestamp;
         }
 
@@ -185,11 +178,11 @@ namespace ledger {
             }
         }
 
-		void CosmosLikeTransactionApi::setRawData(const cosmos::Transaction &txData) {
-			_txData = txData;
-		}
+        void CosmosLikeTransactionApi::setRawData(const cosmos::Transaction &txData) {
+            _txData = txData;
+        }
 
-        const cosmos::Transaction & CosmosLikeTransactionApi::getRawData() const {
+        const cosmos::Transaction &CosmosLikeTransactionApi::getRawData() const {
             return _txData;
         }
 
@@ -202,7 +195,7 @@ namespace ledger {
 
             Document document;
             document.SetObject();
-            Document::AllocatorType& allocator = document.GetAllocator();
+            Document::AllocatorType &allocator = document.GetAllocator();
 
             // Account nb
             vString.SetString(_accountNumber.c_str(), static_cast<SizeType>(_accountNumber.length()), allocator);
@@ -220,7 +213,7 @@ namespace ledger {
                 vString.SetString(gas.c_str(), static_cast<SizeType>(gas.length()), allocator);
                 feeObject.AddMember(kGas, vString, allocator);
 
-                auto getAmountObject = [&] (const std::string &denom, const std::string &amount) {
+                auto getAmountObject = [&](const std::string &denom, const std::string &amount) {
                     Value amountObject(kObjectType);
                     vString.SetString(amount.c_str(), static_cast<SizeType>(amount.length()), allocator);
                     amountObject.AddMember(kAmount, vString, allocator);
@@ -246,7 +239,7 @@ namespace ledger {
 
             // Messages
             Value msgArray(kArrayType);
-            for (const auto& msg: _txData.messages) {
+            for (const auto &msg : _txData.messages) {
                 msgArray.PushBack(std::make_shared<CosmosLikeMessage>(msg)->toJson(allocator), allocator);
             }
             document.AddMember(kMessages, msgArray, allocator);
@@ -265,19 +258,19 @@ namespace ledger {
         // Builds the payload to broadcast the transaction
         // NOTE The produced payload is not a 1:1 mapping of this CosmosLikeTransactionApi because a "mode" is added to the json.
         // (cf.https://github.com/cosmos/cosmos-sdk/blob/2e42f9cb745aaa4c1a52ee730a969a5eaa938360/x/auth/client/rest/broadcast.go#L13-L16))
-        std::string CosmosLikeTransactionApi::serializeForBroadcast(const std::string& mode) {
+        std::string CosmosLikeTransactionApi::serializeForBroadcast(const std::string &mode) {
 
             using namespace cosmos::constants;
             Value vString(kStringType);
 
             Document document;
             document.SetObject();
-            Document::AllocatorType& allocator = document.GetAllocator();
+            Document::AllocatorType &allocator = document.GetAllocator();
 
             Value txObject(kObjectType);
             {
                 Value msgArray(kArrayType);
-                for (const auto& msg: _txData.messages) {
+                for (const auto &msg : _txData.messages) {
                     msgArray.PushBack(std::make_shared<CosmosLikeMessage>(msg)->toJson(allocator), allocator);
                 }
                 txObject.AddMember(kMessage, msgArray, allocator);
@@ -291,7 +284,7 @@ namespace ledger {
                     feeObject.AddMember(kGas, vString, allocator);
 
                     Value feeAmountArray(kArrayType);
-                    auto getAmountObject = [&] (const std::string &denom, const std::string &amount) {
+                    auto getAmountObject = [&](const std::string &denom, const std::string &amount) {
                         Value amountObject(kObjectType);
                         vString.SetString(amount.c_str(), static_cast<SizeType>(amount.length()), allocator);
                         amountObject.AddMember(kAmount, vString, allocator);
@@ -331,9 +324,9 @@ namespace ledger {
                     }
 
                     { // Set signature
-                        auto pad = [] (const std::vector<uint8_t> &input) {
+                        auto pad = [](const std::vector<uint8_t> &input) {
                             auto output = input;
-                            while(output.size() < 32) {
+                            while (output.size() < 32) {
                                 output.emplace(output.begin(), 0x00);
                             }
                             return output;
@@ -367,7 +360,7 @@ namespace ledger {
             return buffer.GetString();
         }
 
-        void CosmosLikeTransactionApi::setCurrency(const api::Currency& currency) {
+        void CosmosLikeTransactionApi::setCurrency(const api::Currency &currency) {
             _currency = currency;
         }
 
@@ -413,38 +406,31 @@ namespace ledger {
             _accountNumber = accountNumber;
         }
 
-        const std::string& CosmosLikeTransactionApi::getAccountNumber() const
-        {
+        const std::string &CosmosLikeTransactionApi::getAccountNumber() const {
             return _accountNumber;
         }
 
-        const std::string& CosmosLikeTransactionApi::getAccountSequence() const
-        {
+        const std::string &CosmosLikeTransactionApi::getAccountSequence() const {
             return _accountSequence;
         }
 
-        const api::Currency& CosmosLikeTransactionApi::getCurrency() const
-        {
+        const api::Currency &CosmosLikeTransactionApi::getCurrency() const {
             return _currency;
         }
 
-        const cosmos::Transaction& CosmosLikeTransactionApi::getTxData() const
-        {
+        const cosmos::Transaction &CosmosLikeTransactionApi::getTxData() const {
             return _txData;
         }
 
-        std::string CosmosLikeTransactionApi::setCorrelationId(const std::string& newId)  {
+        std::string CosmosLikeTransactionApi::setCorrelationId(const std::string &newId) {
             auto oldId = _correlationId;
             _correlationId = newId;
             return oldId;
         }
 
-
-        std::string CosmosLikeTransactionApi::getCorrelationId() const
-        {
+        std::string CosmosLikeTransactionApi::getCorrelationId() const {
             return _correlationId;
         }
 
-
-    }
-}
+    } // namespace core
+} // namespace ledger

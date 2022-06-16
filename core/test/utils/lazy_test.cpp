@@ -32,7 +32,6 @@
 #include <gtest/gtest.h>
 #include <ledger/core/utils/Lazy.hpp>
 
-
 struct MySuperClass {
 
     MySuperClass() {
@@ -44,17 +43,17 @@ struct MySuperClass {
         _id = id;
     }
 
-    MySuperClass(const MySuperClass& c) {
+    MySuperClass(const MySuperClass &c) {
         _id = c._id;
     }
 
     int getId() const {
-      return _id;
+        return _id;
     };
 
     static int counter;
 
-private:
+  private:
     int _id;
 };
 

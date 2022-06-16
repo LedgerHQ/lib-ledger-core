@@ -32,17 +32,17 @@
 #define LEDGER_CORE_CONDITIONQUERYFILTER_H
 
 #include "QueryFilter.h"
-#include <fmt/format.h>
+
 #include <api/Amount.hpp>
+#include <fmt/format.h>
 #include <metrics/ManagedObject.hpp>
 
 namespace ledger {
     namespace core {
         template <typename T>
         class ConditionQueryFilter : public QueryFilter, public ManagedObject<ConditionQueryFilter<T>> {
-        public:
-            ConditionQueryFilter(const std::string& fieldName, const std::string& symbol, const T& value,
-                                 const std::string& prefix) : ManagedObject<ConditionQueryFilter<T>>() {
+          public:
+            ConditionQueryFilter(const std::string &fieldName, const std::string &symbol, const T &value, const std::string &prefix) : ManagedObject<ConditionQueryFilter<T>>() {
                 _fieldName = std::move(fieldName);
                 _symbol = std::move(symbol);
                 _value = value;
@@ -61,18 +61,18 @@ namespace ledger {
                 }
                 if (!isTail()) {
                     switch (getOperatorForNextFilter()) {
-                        case QueryFilterOperator::OP_AND :
-                            ss << " AND ";
-                            break;
-                        case QueryFilterOperator::OP_AND_NOT :
-                            ss << " AND NOT ";
-                            break;
-                        case QueryFilterOperator::OP_OR :
-                            ss << " OR ";
-                            break;
-                        case QueryFilterOperator::OP_OR_NOT :
-                            ss << " OR NOT ";
-                            break;
+                    case QueryFilterOperator::OP_AND:
+                        ss << " AND ";
+                        break;
+                    case QueryFilterOperator::OP_AND_NOT:
+                        ss << " AND NOT ";
+                        break;
+                    case QueryFilterOperator::OP_OR:
+                        ss << " OR ";
+                        break;
+                    case QueryFilterOperator::OP_OR_NOT:
+                        ss << " OR NOT ";
+                        break;
                     }
                     getNext()->toString(ss);
                 }
@@ -87,9 +87,9 @@ namespace ledger {
                 }
             }
 
-            ~ConditionQueryFilter() {};
+            ~ConditionQueryFilter(){};
 
-        private:
+          private:
             std::string _fieldName;
             std::string _symbol;
             std::string _prefixedName;
@@ -97,18 +97,17 @@ namespace ledger {
         };
 
         class PlainTextConditionQueryFilter : public QueryFilter {
-        public:
-            PlainTextConditionQueryFilter(const std::string& condition) : _condition(std::move(condition)) {};
+          public:
+            PlainTextConditionQueryFilter(const std::string &condition) : _condition(std::move(condition)){};
 
             void toString(std::stringstream &ss) const override;
 
             void bindValue(soci::details::prepare_temp_type &statement) const override;
 
-        private:
+          private:
             std::string _condition;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_CONDITIONQUERYFILTER_H

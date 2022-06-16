@@ -32,19 +32,17 @@
 #pragma once
 
 #include "BaseFixture.h"
-#include <wallet/common/AbstractWallet.hpp>
-#include <wallet/pool/WalletPool.hpp>
-#include <collections/DynamicObject.hpp>
+
 #include <api/ErrorCode.hpp>
 #include <api/PoolConfiguration.hpp>
-
+#include <collections/DynamicObject.hpp>
 #include <fmt/format.h>
-
+#include <wallet/common/AbstractWallet.hpp>
+#include <wallet/pool/WalletPool.hpp>
 
 template <class WalletFactory>
 class WalletFixture : public BaseFixture {
-public:
-
+  public:
     void SetUp() override {
         BaseFixture::SetUp();
 
@@ -57,27 +55,27 @@ public:
 #else
         pool = newDefaultPool();
 #endif
-      //  walletStore = newWalletStore(services);
+        //  walletStore = newWalletStore(services);
     }
 
     void TearDown() override {
         BaseFixture::TearDown();
         uv::wait(pool->freshResetAll());
         pool.reset();
-     //   walletStore.reset();
+        //   walletStore.reset();
     }
 
     void registerCurrency(api::Currency const &currency) {
         //auto walletFactory = std::make_shared<WalletFactory>(currency, pool);
 
-       // wait(pool->addCurrency(currency));
-       // walletStore->registerFactory(currency, walletFactory);
+        // wait(pool->addCurrency(currency));
+        // walletStore->registerFactory(currency, walletFactory);
     }
 
     std::shared_ptr<WalletPool> pool;
-  //  std::shared_ptr<WalletStore> walletStore;
+    //  std::shared_ptr<WalletStore> walletStore;
 
-private:
+  private:
     std::string randomDBName() {
         static const char alphanum[] =
             "0123456789"

@@ -31,20 +31,19 @@
 #ifndef LEDGER_CORE_HASH160_HPP
 #define LEDGER_CORE_HASH160_HPP
 
+#include "HashAlgorithm.h"
 #include "RIPEMD160.hpp"
 #include "SHA256.hpp"
-#include "HashAlgorithm.h"
 
 namespace ledger {
     namespace core {
         class HASH160 {
-        public:
+          public:
             HASH160() = delete;
             ~HASH160() = delete;
-            static std::vector<uint8_t> hash(const std::vector<uint8_t>& data, const HashAlgorithm &hashAlgorithm);
+            static std::vector<uint8_t> hash(const std::vector<uint8_t> &data, const HashAlgorithm &hashAlgorithm);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_HASH160_HPP

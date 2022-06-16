@@ -31,15 +31,16 @@
 #ifndef LEDGER_CORE_TRANSACTIONSPARSER_HPP
 #define LEDGER_CORE_TRANSACTIONSPARSER_HPP
 
-#include <wallet/common/explorers/api/AbstractTransactionsParser.h>
-#include "TransactionParser.hpp"
 #include "../BitcoinLikeBlockchainExplorer.hpp"
+#include "TransactionParser.hpp"
+
+#include <wallet/common/explorers/api/AbstractTransactionsParser.h>
 
 namespace ledger {
     namespace core {
-        class TransactionsParser : public AbstractTransactionsParser<BitcoinLikeBlockchainExplorerTransaction, TransactionParser>{
-        public:
-            TransactionsParser(std::string& lastKey) : _transactionParser(lastKey) {
+        class TransactionsParser : public AbstractTransactionsParser<BitcoinLikeBlockchainExplorerTransaction, TransactionParser> {
+          public:
+            TransactionsParser(std::string &lastKey) : _transactionParser(lastKey) {
                 _arrayDepth = 0;
                 _objectDepth = 0;
             }
@@ -57,15 +58,15 @@ namespace ledger {
                 PROXY_PARSE_TX(StartObject)
             };
 
-        protected:
+          protected:
             TransactionParser &getTransactionParser() override {
                 return _transactionParser;
             }
 
-        private:
+          private:
             TransactionParser _transactionParser;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_TRANSACTIONSPARSER_HPP

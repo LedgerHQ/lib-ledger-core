@@ -37,17 +37,16 @@
 namespace ledger {
     namespace core {
         class BitcoinLikeBlockApi : public api::BitcoinLikeBlock {
-        public:
-            BitcoinLikeBlockApi(const Block& block);
+          public:
+            BitcoinLikeBlockApi(const Block &block);
             std::string getHash() override;
             int64_t getHeight() override;
             std::chrono::system_clock::time_point getTime() override;
 
-        private:
+          private:
             Block _block;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_BITCOINLIKEBLOCKAPI_H

@@ -54,13 +54,14 @@ TEST(Option, None) {
 
 TEST(Option, Map) {
     Option<int> someInt(42);
-    auto someString = someInt.map<std::string>([&] (const int& i) {
+    auto someString = someInt.map<std::string>([&](const int &i) {
         return std::to_string(i);
     });
     EXPECT_TRUE(someString == "42");
-    EXPECT_TRUE(Option<int>().map<std::string>([] (const int& i) {
-        return std::to_string(i);
-    }).isEmpty());
+    EXPECT_TRUE(Option<int>().map<std::string>([](const int &i) {
+                                 return std::to_string(i);
+                             })
+                    .isEmpty());
 }
 
 TEST(Option, FlatMap) {
@@ -87,7 +88,7 @@ TEST(Option, FlatMap) {
 }
 
 TEST(Option, OrElse) {
-    EXPECT_TRUE(Option<std::string>::NONE.orElse<int>([] ()  {
+    EXPECT_TRUE(Option<std::string>::NONE.orElse<int>([]() {
         return 12;
     }) == 12);
 }

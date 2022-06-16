@@ -28,17 +28,17 @@
  *
  */
 
-
 #include "TezosLikeTransactionDatabaseHelper.h"
+
+#include <api/TezosOperationTag.hpp>
 #include <api/enum_from_string.hpp>
-#include <database/soci-option.h>
+#include <crypto/SHA256.hpp>
 #include <database/soci-date.h>
 #include <database/soci-number.h>
-#include <crypto/SHA256.hpp>
+#include <database/soci-option.h>
+#include <utils/Option.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/common/database/OperationDatabaseHelper.h>
-#include <utils/Option.hpp>
-#include <api/TezosOperationTag.hpp>
 using namespace soci;
 
 namespace ledger {
@@ -50,12 +50,13 @@ namespace ledger {
                                                                       TezosLikeBlockchainExplorerTransaction &tx) {
 
             rowset<row> rows = (sql.prepare << "SELECT tx.hash, tx.value, tx.time, "
-                    " tx.sender, tx.receiver, tx.fees, tx.gas_limit, tx.storage_limit, tx.confirmations, tx.type, tx.public_key, tx.originated_account, tx.status, "
-                    "block.height, block.hash, block.time, block.currency_name "
-                    "FROM tezos_transactions AS tx "
-                    "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
-                    "LEFT JOIN tezos_operations AS xtz_ops ON xtz_ops.transaction_uid = tx.transaction_uid "
-                    "WHERE tx.hash = :hash AND xtz_ops.uid = :uid", use(hash), use(operationUid));
+                                               " tx.sender, tx.receiver, tx.fees, tx.gas_limit, tx.storage_limit, tx.confirmations, tx.type, tx.public_key, tx.originated_account, tx.status, "
+                                               "block.height, block.hash, block.time, block.currency_name "
+                                               "FROM tezos_transactions AS tx "
+                                               "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
+                                               "LEFT JOIN tezos_operations AS xtz_ops ON xtz_ops.transaction_uid = tx.transaction_uid "
+                                               "WHERE tx.hash = :hash AND xtz_ops.uid = :uid",
+                                use(hash), use(operationUid));
 
             for (auto &row : rows) {
                 inflateTransaction(sql, row, tx);
@@ -103,8 +104,7 @@ namespace ledger {
         bool TezosLikeTransactionDatabaseHelper::transactionExists(soci::session &sql,
                                                                    const std::string &tezosTxUid) {
             int32_t count = 0;
-            sql << "SELECT COUNT(*) FROM tezos_transactions WHERE transaction_uid = :tezosTxUid", use(tezosTxUid), into(
-                    count);
+            sql << "SELECT COUNT(*) FROM tezos_transactions WHERE transaction_uid = :tezosTxUid", use(tezosTxUid), into(count);
             return count == 1;
         }
 
@@ -129,7 +129,7 @@ namespace ledger {
                 if (tx.block.nonEmpty()) {
                     auto type = api::to_string(tx.type);
                     sql << "UPDATE tezos_transactions SET block_uid = :uid, status = :code WHERE hash = :tx_hash AND type = :type AND confirmations = :confirmations",
-                            use(blockUid), use(tx.status), use(tx.hash), use(type), use(tx.confirmations);
+                        use(blockUid), use(tx.status), use(tx.hash), use(type), use(tx.confirmations);
                 }
                 return tezosTxUid;
             } else {
@@ -152,33 +152,33 @@ namespace ledger {
                     sOrigAccount = origAccount.str();
                 }
                 sql << "INSERT INTO tezos_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :gas_limit, :storage_limit, :confirmations, :type, :public_key, :originated_account, :status)",
-                        use(tezosTxUid),
-                        use(tx.hash),
-                        use(hexValue),
-                        use(blockUid),
-                        use(tx.receivedAt),
-                        use(tx.sender),
-                        use(tx.receiver),
-                        use(hexFees),
-                        use(hexGasLimit),
-                        use(hexStorageLimit),
-                        use(tx.confirmations),
-                        use(type),
-                        use(pubKey),
-                        use(sOrigAccount),
-                        use(tx.status);
+                    use(tezosTxUid),
+                    use(tx.hash),
+                    use(hexValue),
+                    use(blockUid),
+                    use(tx.receivedAt),
+                    use(tx.sender),
+                    use(tx.receiver),
+                    use(hexFees),
+                    use(hexGasLimit),
+                    use(hexStorageLimit),
+                    use(tx.confirmations),
+                    use(type),
+                    use(pubKey),
+                    use(sOrigAccount),
+                    use(tx.status);
 
                 return tezosTxUid;
             }
         }
 
         void TezosLikeTransactionDatabaseHelper::eraseDataSince(
-                    soci::session &sql,
-                    const std::string &accountUid,
-                    const std::chrono::system_clock::time_point & date) {
-                        
-            OperationDatabaseHelper::eraseDataSince(sql, accountUid, date, 
-                "tezos_operations", "tezos_transactions");
+            soci::session &sql,
+            const std::string &accountUid,
+            const std::chrono::system_clock::time_point &date) {
+
+            OperationDatabaseHelper::eraseDataSince(sql, accountUid, date,
+                                                    "tezos_operations", "tezos_transactions");
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_P2WPKHBITCOINLIKEKEYCHAIN_H
 #define LEDGER_CORE_P2WPKHBITCOINLIKEKEYCHAIN_H
 
@@ -36,13 +35,14 @@
 namespace ledger {
     namespace core {
         class P2WPKHBitcoinLikeKeychain : public CommonBitcoinLikeKeychains {
-        public:
+          public:
             P2WPKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                      const api::Currency &params, int account,
+                                      const api::Currency &params,
+                                      int account,
                                       const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                       const std::shared_ptr<Preferences> &preferences);
-            int32_t getOutputSizeAsSignedTxInput() const override ;
+            int32_t getOutputSizeAsSignedTxInput() const override;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_P2WPKHBITCOINLIKEKEYCHAIN_H

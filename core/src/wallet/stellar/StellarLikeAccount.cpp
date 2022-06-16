@@ -30,44 +30,44 @@
  */
 
 #include "StellarLikeAccount.hpp"
-#include <wallet/stellar/StellarLikeWallet.hpp>
-#include <utils/DateUtils.hpp>
-#include <events/Event.hpp>
+
 #include "database/StellarLikeAccountDatabaseHelper.hpp"
-#include <wallet/common/database/AccountDatabaseHelper.h>
 #include "database/StellarLikeLedgerDatabaseHelper.hpp"
-#include "database/StellarLikeTransactionDatabaseHelper.hpp"
 #include "database/StellarLikeOperationDatabaseHelper.hpp"
-#include <wallet/common/database/OperationDatabaseHelper.h>
-#include <set>
-#include <wallet/common/BalanceHistory.hpp>
-#include <api/BoolCallback.hpp>
-#include <api/AmountCallback.hpp>
-#include <events/LambdaEventReceiver.hpp>
+#include "database/StellarLikeTransactionDatabaseHelper.hpp"
 #include "transaction_builders/StellarLikeTransactionBuilder.hpp"
+
+#include <api/AmountCallback.hpp>
 #include <api/BigIntCallback.hpp>
-#include <database/soci-date.h>
-#include <api/StringCallback.hpp>
+#include <api/BoolCallback.hpp>
 #include <api/StellarLikeOperationType.hpp>
+#include <api/StringCallback.hpp>
+#include <database/soci-date.h>
+#include <events/Event.hpp>
+#include <events/LambdaEventReceiver.hpp>
+#include <set>
+#include <utils/DateUtils.hpp>
+#include <wallet/common/BalanceHistory.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
+#include <wallet/common/database/OperationDatabaseHelper.h>
+#include <wallet/stellar/StellarLikeWallet.hpp>
 #include <wallet/stellar/xdr/StellarModelUtils.hpp>
 
 using namespace ledger::core;
 
 namespace {
     const std::set<stellar::OperationType> ACCEPTED_PAYMENT_TYPES{
-            stellar::OperationType::PAYMENT, stellar::OperationType::CREATE_ACCOUNT
-    };
+        stellar::OperationType::PAYMENT, stellar::OperationType::CREATE_ACCOUNT};
 
     static const auto INVALID_SYNCHRONIZATION_DELAY_MS = 60 * 60 * 1000;
-}
+} // namespace
 
 namespace ledger {
     namespace core {
 
         StellarLikeAccount::StellarLikeAccount(const std::shared_ptr<StellarLikeWallet> &wallet,
                                                const StellarLikeAccountParams &params)
-                                               : AbstractAccount(wallet, params.index), _params(params) {
-
+            : AbstractAccount(wallet, params.index), _params(params) {
         }
 
         bool StellarLikeAccount::isSynchronizing() {
@@ -86,46 +86,45 @@ namespace ledger {
             auto self = std::dynamic_pointer_cast<StellarLikeAccount>(shared_from_this());
             auto synchronizer = _params.synchronizer;
 
-
             //Update current block height (needed to compute trust level)
             _params.explorer->getLastLedger().onComplete(getContext(),
-            [self, eventPublisher, synchronizer](const TryPtr<stellar::Ledger> &l) mutable {
-                if (l.isSuccess()) {
-                    soci::session sql(self->getWallet()->getDatabase()->getPool());
-                    self->putLedger(sql, *l.getValue());
-                    self->_currentLedgerHeight = l.getValue()->height;
-                }
-                auto future = synchronizer->synchronize(self)->getFuture();
-                auto startTime = DateUtils::now();
-                eventPublisher->postSticky(
-                        std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
-                        0);
-                future.onComplete(self->getContext(), [eventPublisher, self, startTime](const auto &result) {
-                    api::EventCode code;
-                    auto payload = std::make_shared<DynamicObject>();
-                    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-                            DateUtils::now() - startTime).count();
-                    payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
-                    if (result.isSuccess()) {
-                        code = api::EventCode::SYNCHRONIZATION_SUCCEED;
-                        self->getWallet()->invalidateBalanceCache(self->getIndex());
-                        auto const state = result.getValue();
+                                                         [self, eventPublisher, synchronizer](const TryPtr<stellar::Ledger> &l) mutable {
+                                                             if (l.isSuccess()) {
+                                                                 soci::session sql(self->getWallet()->getDatabase()->getPool());
+                                                                 self->putLedger(sql, *l.getValue());
+                                                                 self->_currentLedgerHeight = l.getValue()->height;
+                                                             }
+                                                             auto future = synchronizer->synchronize(self)->getFuture();
+                                                             auto startTime = DateUtils::now();
+                                                             eventPublisher->postSticky(
+                                                                 std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
+                                                                 0);
+                                                             future.onComplete(self->getContext(), [eventPublisher, self, startTime](const auto &result) {
+                                                                 api::EventCode code;
+                                                                 auto payload = std::make_shared<DynamicObject>();
+                                                                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                                                                     DateUtils::now() - startTime)
+                                                                                     .count();
+                                                                 payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
+                                                                 if (result.isSuccess()) {
+                                                                     code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+                                                                     self->getWallet()->invalidateBalanceCache(self->getIndex());
+                                                                     auto const state = result.getValue();
 
-                        payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(state.lastBlockHeight));
-                        payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(state.newOperations));
-                    } else {
-                        code = api::EventCode::SYNCHRONIZATION_FAILED;
-                        payload->putString(api::Account::EV_SYNC_ERROR_CODE,
-                                           api::to_string(result.getFailure().getErrorCode()));
-                        payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t) result.getFailure().getErrorCode());
-                        payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
-                    }
-                    eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
-                    std::lock_guard<std::mutex> lock(self->_synchronizationLock);
-                    self->_currentSyncEventBus = nullptr;
-
-                });
-            });
+                                                                     payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(state.lastBlockHeight));
+                                                                     payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(state.newOperations));
+                                                                 } else {
+                                                                     code = api::EventCode::SYNCHRONIZATION_FAILED;
+                                                                     payload->putString(api::Account::EV_SYNC_ERROR_CODE,
+                                                                                        api::to_string(result.getFailure().getErrorCode()));
+                                                                     payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t)result.getFailure().getErrorCode());
+                                                                     payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
+                                                                 }
+                                                                 eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
+                                                                 std::lock_guard<std::mutex> lock(self->_synchronizationLock);
+                                                                 self->_currentSyncEventBus = nullptr;
+                                                             });
+                                                         });
 
             return eventPublisher->getEventBus();
         }
@@ -136,19 +135,19 @@ namespace ledger {
 
         FuturePtr<ledger::core::Amount> StellarLikeAccount::getBalance() {
             auto self = getSelf();
-            return async<std::shared_ptr<Amount>>([=] () {
-                const auto& currency = self->getWallet()->getCurrency();
+            return async<std::shared_ptr<Amount>>([=]() {
+                const auto &currency = self->getWallet()->getCurrency();
                 soci::session sql(self->_params.database->getReadonlyPool());
-                stellar::Account account {};
+                stellar::Account account{};
 
                 auto accountId = AccountDatabaseHelper::createAccountUid(self->getWallet()->getWalletUid(), self->_params.index);
                 StellarLikeAccountDatabaseHelper::getAccount(sql, accountId, account);
                 StellarLikeAccountDatabaseHelper::getAccountBalances(sql, accountId, account);
 
                 auto balanceIt = std::find_if(account.balances.begin(), account.balances.end(),
-                        [] (const stellar::Balance& balance) {
-                    return balance.assetType == "native";
-                });
+                                              [](const stellar::Balance &balance) {
+                                                  return balance.assetType == "native";
+                                              });
 
                 BigInt amount = (balanceIt != account.balances.end()) ? balanceIt->value : BigInt::ZERO;
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, amount);
@@ -157,17 +156,15 @@ namespace ledger {
 
         Future<AbstractAccount::AddressList> StellarLikeAccount::getFreshPublicAddresses() {
             auto self = getSelf();
-            return async<AbstractAccount::AddressList>([=] () {
+            return async<AbstractAccount::AddressList>([=]() {
                 return AbstractAccount::AddressList({self->_params.keychain->getAddress()});
             });
         }
 
         Future<std::vector<std::shared_ptr<api::Amount>>>
-        StellarLikeAccount::getBalanceHistory(const std::string &start, const std::string &end,
-                                              api::TimePeriod precision) {
+        StellarLikeAccount::getBalanceHistory(const std::string &start, const std::string &end, api::TimePeriod precision) {
             auto self = getSelf();
             return async<std::vector<std::shared_ptr<api::Amount>>>([=]() -> std::vector<std::shared_ptr<api::Amount>> {
-
                 auto startDate = DateUtils::fromJSON(start);
                 auto endDate = DateUtils::fromJSON(end);
                 if (startDate >= endDate) {
@@ -200,21 +197,21 @@ namespace ledger {
                         lowerDate = DateUtils::incrementDate(lowerDate, precision);
                         upperDate = DateUtils::incrementDate(upperDate, precision);
                         amounts.emplace_back(
-                                std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                            std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
                     }
 
                     if (operation.date <= upperDate) {
                         switch (operation.type) {
-                            case api::OperationType::RECEIVE: {
-                                sum = sum + operation.amount;
-                                break;
-                            }
-                            case api::OperationType::SEND: {
-                                sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
-                                break;
-                            }
-                            default:
-                                break;
+                        case api::OperationType::RECEIVE: {
+                            sum = sum + operation.amount;
+                            break;
+                        }
+                        case api::OperationType::SEND: {
+                            sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
+                            break;
+                        }
+                        default:
+                            break;
                         }
                     }
                     operationsCount += 1;
@@ -223,7 +220,7 @@ namespace ledger {
                 while (lowerDate < endDate) {
                     lowerDate = DateUtils::incrementDate(lowerDate, precision);
                     amounts.emplace_back(
-                            std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                        std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
                 }
 
                 return amounts;
@@ -234,10 +231,10 @@ namespace ledger {
             auto log = logger();
             auto accountUid = getAccountUid();
             auto self = getSelf();
-            return async<api::ErrorCode>([=] () {
+            return async<api::ErrorCode>([=]() {
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 StellarLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
-                
+
                 self->_params.synchronizer->reset(self, date);
                 log->debug(" Finish erasing data of account : {}", accountUid);
                 return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;
@@ -256,9 +253,9 @@ namespace ledger {
             auto log = logger();
             if (tx.envelope.isEmpty()) {
                 log->warn("Failed to decode transaction {}, skipping transaction!", tx.hash);
-                return ;
+                return;
             }
-            auto& envelope = tx.envelope.getValue();
+            auto &envelope = tx.envelope.getValue();
             if (envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX_V0 &&
                 envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX) {
                 // Ignore transaction with unhandled envelope types.
@@ -266,8 +263,8 @@ namespace ledger {
                 return;
             }
             // Ignore transaction if at least one operation has an unsupported type
-            const auto& operations = stellar::xdr::getOperations(envelope);
-            for (const auto& op : operations) {
+            const auto &operations = stellar::xdr::getOperations(envelope);
+            for (const auto &op : operations) {
                 if (!(op.type < stellar::OperationType::num_types)) {
                     log->warn("Unsupported operation type {}, skipping transaction!", static_cast<int>(op.type));
                     return;
@@ -295,14 +292,14 @@ namespace ledger {
 
             auto accountAddress = getKeychain()->getAddress()->toString();
             auto networkParams = getWallet()->getCurrency().stellarLikeNetworkParameters.value();
-            auto muxedAccountToAddr = [&] (const stellar::xdr::MuxedAccount& acc) {
+            auto muxedAccountToAddr = [&](const stellar::xdr::MuxedAccount &acc) {
                 return StellarLikeAddress::convertMuxedAccountToAddress(acc, networkParams);
             };
-            auto accountIdToAddr = [&] (const stellar::xdr::AccountID& acc) {
+            auto accountIdToAddr = [&](const stellar::xdr::AccountID &acc) {
                 return StellarLikeAddress::convertXdrAccountToAddress(acc, networkParams);
             };
 
-            auto putOp = [&] (api::OperationType type, stellar::Operation stellarOperation) {
+            auto putOp = [&](api::OperationType type, stellar::Operation stellarOperation) {
                 operation.type = type;
                 stellarOperation.from = operation.senders[0];
                 if (!operation.recipients.empty())
@@ -316,7 +313,7 @@ namespace ledger {
             };
 
             auto opIndex = 0;
-            for (const auto& op : operations) {
+            for (const auto &op : operations) {
                 stellar::Operation stellarOperation;
                 stellarOperation.createdAt = tx.createdAt;
                 stellarOperation.transactionFee = tx.feePaid;
@@ -330,75 +327,73 @@ namespace ledger {
                 }
 
                 switch (op.type) {
-                    case stellar::OperationType::CREATE_ACCOUNT: {
-                        auto& sop = boost::get<stellar::xdr::CreateAccountOp>(op.content);
-                        operation.recipients.emplace_back(accountIdToAddr(sop.destination));
-                        operation.amount.assignI64(sop.startingBalance);
-                        stellarOperation.asset.type = "native";
+                case stellar::OperationType::CREATE_ACCOUNT: {
+                    auto &sop = boost::get<stellar::xdr::CreateAccountOp>(op.content);
+                    operation.recipients.emplace_back(accountIdToAddr(sop.destination));
+                    operation.amount.assignI64(sop.startingBalance);
+                    stellarOperation.asset.type = "native";
+                    if (operation.senders[0] == accountAddress) {
+                        putOp(api::OperationType::SEND, stellarOperation);
+                    }
+                    if (operation.recipients[0] == accountAddress) {
+                        putOp(api::OperationType::RECEIVE, stellarOperation);
+                    }
+                    break;
+                }
+                case stellar::OperationType::PAYMENT: {
+                    auto &sop = boost::get<stellar::xdr::PaymentOp>(op.content);
+                    if (sop.asset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
+                        operation.amount.assignI64(sop.amount);
+                        operation.recipients.emplace_back(muxedAccountToAddr(sop.destination));
+                        stellar::xdrAssetToAsset(sop.asset, networkParams, stellarOperation.asset);
                         if (operation.senders[0] == accountAddress) {
                             putOp(api::OperationType::SEND, stellarOperation);
                         }
                         if (operation.recipients[0] == accountAddress) {
                             putOp(api::OperationType::RECEIVE, stellarOperation);
                         }
-                        break;
                     }
-                    case stellar::OperationType::PAYMENT: {
-                        auto &sop = boost::get<stellar::xdr::PaymentOp>(op.content);
-                        if (sop.asset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
-                            operation.amount.assignI64(sop.amount);
-                            operation.recipients.emplace_back(muxedAccountToAddr(sop.destination));
-                            stellar::xdrAssetToAsset(sop.asset, networkParams, stellarOperation.asset);
-                            if (operation.senders[0] == accountAddress) {
-                                putOp(api::OperationType::SEND, stellarOperation);
-                            }
-                            if (operation.recipients[0] == accountAddress) {
-                                putOp(api::OperationType::RECEIVE, stellarOperation);
-                            }
-                        }
-                        if (operation.senders[0] == accountAddress && opIndex >= operations.size() - 1
-                            && createdOperations == 0) {
-                            operation.amount = BigInt::ZERO;
-                            putOp(api::OperationType::SEND, stellarOperation);
-                        }
-                        break;
+                    if (operation.senders[0] == accountAddress && opIndex >= operations.size() - 1 && createdOperations == 0) {
+                        operation.amount = BigInt::ZERO;
+                        putOp(api::OperationType::SEND, stellarOperation);
                     }
-                    case stellar::OperationType::PATH_PAYMENT: {
-                        // Create op if sending or receiving native token, otherwise if source account is self
-                        // create fees op
-                        auto& sop = boost::get<stellar::xdr::PathPaymentStrictReceiveOp>(op.content);
-                        operation.recipients.emplace_back(muxedAccountToAddr(sop.destination));
-                        stellar::xdrAssetToAsset(sop.destAsset, networkParams, stellarOperation.asset);
-                        stellar::Asset sourceAsset;
-                        stellar::xdrAssetToAsset(sop.sendAsset, networkParams, sourceAsset);
-                        stellarOperation.sourceAsset = sourceAsset;
-                        stellarOperation.sourceAmount = BigInt(sop.sendMax);
-                        stellarOperation.amount = BigInt(sop.destAmount);
-                        if (operation.senders[0] == accountAddress &&
-                            sop.sendAsset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
-                            operation.amount = BigInt(sop.sendMax);
-                            putOp(api::OperationType::SEND, stellarOperation);
-                        }
-                        if (operation.recipients[0] == accountAddress &&
-                            sop.destAsset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
-                            putOp(api::OperationType::RECEIVE, stellarOperation);
-                        }
-                        if (operation.senders[0] == accountAddress && opIndex >= operations.size() - 1
-                            && createdOperations == 0) {
-                            operation.amount = BigInt::ZERO;
-                            putOp(api::OperationType::SEND, stellarOperation);
-                        }
-                        break;
+                    break;
+                }
+                case stellar::OperationType::PATH_PAYMENT: {
+                    // Create op if sending or receiving native token, otherwise if source account is self
+                    // create fees op
+                    auto &sop = boost::get<stellar::xdr::PathPaymentStrictReceiveOp>(op.content);
+                    operation.recipients.emplace_back(muxedAccountToAddr(sop.destination));
+                    stellar::xdrAssetToAsset(sop.destAsset, networkParams, stellarOperation.asset);
+                    stellar::Asset sourceAsset;
+                    stellar::xdrAssetToAsset(sop.sendAsset, networkParams, sourceAsset);
+                    stellarOperation.sourceAsset = sourceAsset;
+                    stellarOperation.sourceAmount = BigInt(sop.sendMax);
+                    stellarOperation.amount = BigInt(sop.destAmount);
+                    if (operation.senders[0] == accountAddress &&
+                        sop.sendAsset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
+                        operation.amount = BigInt(sop.sendMax);
+                        putOp(api::OperationType::SEND, stellarOperation);
                     }
-                    default:
-                        // Create fees operation if source Account is accountAdddress
-                        if (operation.senders[0] == accountAddress &&
-                            opIndex >= operations.size() - 1 &&
-                            createdOperations == 0) {
-                            operation.amount = BigInt::ZERO;
-                            putOp(api::OperationType::SEND, stellarOperation);
-                        }
-                        break;
+                    if (operation.recipients[0] == accountAddress &&
+                        sop.destAsset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
+                        putOp(api::OperationType::RECEIVE, stellarOperation);
+                    }
+                    if (operation.senders[0] == accountAddress && opIndex >= operations.size() - 1 && createdOperations == 0) {
+                        operation.amount = BigInt::ZERO;
+                        putOp(api::OperationType::SEND, stellarOperation);
+                    }
+                    break;
+                }
+                default:
+                    // Create fees operation if source Account is accountAdddress
+                    if (operation.senders[0] == accountAddress &&
+                        opIndex >= operations.size() - 1 &&
+                        createdOperations == 0) {
+                        operation.amount = BigInt::ZERO;
+                        putOp(api::OperationType::SEND, stellarOperation);
+                    }
+                    break;
                 }
                 if (op.sourceAccount.nonEmpty()) {
                     operation.senders[0] = tx.sourceAccount;
@@ -409,13 +404,13 @@ namespace ledger {
         }
 
         Try<int> StellarLikeAccount::bulkInsert(const std::vector<Operation> &operations) {
-            return Try<int>::from([&] () {
+            return Try<int>::from([&]() {
                 soci::session sql(getWallet()->getDatabase()->getPool());
                 soci::transaction tr(sql);
                 StellarLikeOperationDatabaseHelper::bulkInsert(sql, operations);
                 tr.commit();
                 // Emit
-                for (const auto& op : operations) {
+                for (const auto &op : operations) {
                     emitNewOperationEvent(op);
                 }
                 return operations.size();
@@ -432,17 +427,16 @@ namespace ledger {
 
         std::shared_ptr<api::OperationQuery> StellarLikeAccount::queryOperations() {
             auto query = std::make_shared<OperationQuery>(
-                    api::QueryFilter::accountEq(getAccountUid()),
-                    getWallet()->getDatabase(),
-                    getWallet()->getContext(),
-                    getWallet()->getMainExecutionContext()
-            );
+                api::QueryFilter::accountEq(getAccountUid()),
+                getWallet()->getDatabase(),
+                getWallet()->getContext(),
+                getWallet()->getMainExecutionContext());
             query->registerAccount(shared_from_this());
             return query;
         }
 
         void StellarLikeAccount::exists(const std::shared_ptr<api::BoolCallback> &callback) {
-            exists().onComplete(getContext(), [=] (const Try<bool>& result) {
+            exists().onComplete(getContext(), [=](const Try<bool> &result) {
                 if (result.isFailure()) {
                     callback->onCallback(optional<bool>(), optional<api::Error>(api::Error(result.getFailure().getErrorCode(), result.getFailure().getMessage())));
                 } else {
@@ -465,7 +459,7 @@ namespace ledger {
         }
 
         void StellarLikeAccount::broadcastTransaction(const std::shared_ptr<api::StellarLikeTransaction> &tx,
-                                                         const std::shared_ptr<api::StringCallback> &callback) {
+                                                      const std::shared_ptr<api::StringCallback> &callback) {
             broadcastTransaction(tx).callback(getMainExecutionContext(), callback);
         }
 
@@ -474,7 +468,7 @@ namespace ledger {
         }
 
         Future<bool> StellarLikeAccount::exists() {
-            return  std::dynamic_pointer_cast<StellarLikeWallet>(getWallet())->exists(_params.keychain->getAddress()->toString());
+            return std::dynamic_pointer_cast<StellarLikeWallet>(getWallet())->exists(_params.keychain->getAddress()->toString());
         }
 
         void StellarLikeAccount::getBaseReserve(const std::shared_ptr<api::AmountCallback> &callback) {
@@ -483,27 +477,28 @@ namespace ledger {
 
         FuturePtr<Amount> StellarLikeAccount::getBaseReserve() {
             auto self = getSelf();
-            auto queryLastLedgerAndGetReserve = [=] () -> std::shared_ptr<Amount> {
+            auto queryLastLedgerAndGetReserve = [=]() -> std::shared_ptr<Amount> {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 stellar::Ledger lgr;
                 auto now = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now().time_since_epoch()).count();
                 if (!StellarLikeLedgerDatabaseHelper::getLastLedger(sql, self->getWallet()->getCurrency(), lgr) ||
-                      now - std::chrono::duration_cast<std::chrono::milliseconds>(lgr.time.time_since_epoch()).count() > INVALID_SYNCHRONIZATION_DELAY_MS) {
+                    now - std::chrono::duration_cast<std::chrono::milliseconds>(lgr.time.time_since_epoch()).count() > INVALID_SYNCHRONIZATION_DELAY_MS) {
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Last ledger is out dated");
                 }
                 stellar::Account acc;
                 StellarLikeAccountDatabaseHelper::getAccount(sql, self->getAccountUid(), acc);
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, (BigInt(2) + BigInt(acc.subentryCount)) * lgr.baseReserve);
             };
-            return async<std::shared_ptr<Amount>>([=] () {
-                return queryLastLedgerAndGetReserve();
-            }).recoverWith(getContext(), [=] (const Exception& ex) {
-                Promise<Unit> promise;
-                self->synchronize()->subscribe(self->getContext(), make_promise_receiver(promise,
-                        {api::EventCode::SYNCHRONIZATION_SUCCEED, api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT},
-                                                                                         {api::EventCode::SYNCHRONIZATION_FAILED}));
-                return promise.getFuture().mapPtr<Amount>(getContext(), [=] (const Unit&) { return queryLastLedgerAndGetReserve(); });
-            });
+            return async<std::shared_ptr<Amount>>([=]() {
+                       return queryLastLedgerAndGetReserve();
+                   })
+                .recoverWith(getContext(), [=](const Exception &ex) {
+                    Promise<Unit> promise;
+                    self->synchronize()->subscribe(self->getContext(), make_promise_receiver(promise,
+                                                                                             {api::EventCode::SYNCHRONIZATION_SUCCEED, api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT},
+                                                                                             {api::EventCode::SYNCHRONIZATION_FAILED}));
+                    return promise.getFuture().mapPtr<Amount>(getContext(), [=](const Unit &) { return queryLastLedgerAndGetReserve(); });
+                });
         }
 
         void StellarLikeAccount::getFeeStats(const std::shared_ptr<api::StellarLikeFeeStatsCallback> &callback) {
@@ -511,25 +506,25 @@ namespace ledger {
         }
 
         Future<api::StellarLikeFeeStats> StellarLikeAccount::getFeeStats() {
-            return _params.explorer->getRecommendedFees().map<api::StellarLikeFeeStats>(getContext(), [] (const std::shared_ptr<stellar::FeeStats>& stats) {
+            return _params.explorer->getRecommendedFees().map<api::StellarLikeFeeStats>(getContext(), [](const std::shared_ptr<stellar::FeeStats> &stats) {
                 return api::StellarLikeFeeStats(
-                        stats->lastBaseFee.toInt64(),
-                        stats->modeAcceptedFee.toInt64(),
-                        stats->minAccepted.toInt64(),
-                        stats->maxFee.toInt64()
-                        );
+                    stats->lastBaseFee.toInt64(),
+                    stats->modeAcceptedFee.toInt64(),
+                    stats->minAccepted.toInt64(),
+                    stats->maxFee.toInt64());
             });
         }
 
         void StellarLikeAccount::getSequence(const std::shared_ptr<api::BigIntCallback> &callback) {
-            getSequence().mapPtr<api::BigInt>(getContext(), [=] (const BigInt& i) -> std::shared_ptr<api::BigInt> {
-                return std::make_shared<api::BigIntImpl>(i);
-            }).callback(getMainExecutionContext(), callback);
+            getSequence().mapPtr<api::BigInt>(getContext(), [=](const BigInt &i) -> std::shared_ptr<api::BigInt> {
+                             return std::make_shared<api::BigIntImpl>(i);
+                         })
+                .callback(getMainExecutionContext(), callback);
         }
 
         Future<BigInt> StellarLikeAccount::getSequence() {
             return _params.explorer->getAccount(_params.keychain->getAddress()->toString())
-                .map<BigInt>(getContext(), [=] (const std::shared_ptr<stellar::Account>& account) {
+                .map<BigInt>(getContext(), [=](const std::shared_ptr<stellar::Account> &account) {
                     return BigInt::fromString(account->sequence);
                 });
         }
@@ -540,7 +535,7 @@ namespace ledger {
 
         Future<std::vector<stellar::AccountSigner>> StellarLikeAccount::getSigners() {
             auto self = getSelf();
-            return async<std::vector<stellar::AccountSigner>>([=] () {
+            return async<std::vector<stellar::AccountSigner>>([=]() {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 stellar::Account acc;
                 StellarLikeAccountDatabaseHelper::getAccount(sql, self->getAccountUid(), acc);
@@ -551,5 +546,5 @@ namespace ledger {
         std::shared_ptr<api::Keychain> StellarLikeAccount::getAccountKeychain() {
             return _params.keychain;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

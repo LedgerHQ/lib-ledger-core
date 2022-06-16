@@ -31,34 +31,34 @@
 #ifndef LEDGER_CORE_LAZY_HPP
 #define LEDGER_CORE_LAZY_HPP
 
-#include <functional>
-#include "Option.hpp"
 #include "Exception.hpp"
+#include "Option.hpp"
+
+#include <functional>
 
 namespace ledger {
     namespace core {
         template <typename T>
         class Lazy {
-        public:
-
+          public:
             Lazy() {
                 _value = nullptr;
-                _creator = [] () -> std::shared_ptr<T> {
+                _creator = []() -> std::shared_ptr<T> {
                     throw Exception(api::ErrorCode::RUNTIME_ERROR, "Empty lazy");
                 };
             }
 
-            Lazy(std::function<std::shared_ptr<T> ()> creator) {
+            Lazy(std::function<std::shared_ptr<T>()> creator) {
                 _creator = creator;
                 _value = nullptr;
             };
 
-            Lazy(const Lazy<T>& value) {
+            Lazy(const Lazy<T> &value) {
                 _creator = value._creator;
                 _value = value._value;
             };
 
-            Lazy& operator=(const Lazy<T>& value) {
+            Lazy &operator=(const Lazy<T> &value) {
                 _creator = value._creator;
                 _value = value._value;
             };
@@ -66,14 +66,14 @@ namespace ledger {
             operator T() {
                 return get();
             }
-            T* operator->() {
+            T *operator->() {
                 return &get();
             }
-            T&operator*() {
+            T &operator*() {
                 return get();
             }
 
-            T& get() {
+            T &get() {
                 if (_value != nullptr)
                     return *_value.get();
                 else {
@@ -85,17 +85,16 @@ namespace ledger {
             template <typename... Args>
             static Lazy<T> make_lazy(Args... args) {
                 return Lazy<T>(
-                [=] () {
-                    return std::make_shared<T>(args...);
-                });
+                    [=]() {
+                        return std::make_shared<T>(args...);
+                    });
             }
 
-        private:
-            std::function<std::shared_ptr<T> ()> _creator;
+          private:
+            std::function<std::shared_ptr<T>()> _creator;
             std::shared_ptr<T> _value;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_LAZY_HPP

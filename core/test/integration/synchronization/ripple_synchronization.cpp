@@ -28,22 +28,22 @@
  *
  */
 
-#include <gtest/gtest.h>
 #include "../BaseFixture.h"
-#include <set>
+
+#include <api/BlockchainExplorerEngines.hpp>
 #include <api/KeychainEngines.hpp>
+#include <api/RippleLikeOperation.hpp>
+#include <api/RippleLikeTransaction.hpp>
+#include <gtest/gtest.h>
+#include <iostream>
+#include <set>
 #include <utils/DateUtils.hpp>
 #include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
 #include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
-#include <iostream>
-#include <api/BlockchainExplorerEngines.hpp>
-#include <api/RippleLikeOperation.hpp>
-#include <api/RippleLikeTransaction.hpp>
 
 using namespace std;
 
 class RippleLikeWalletSynchronization : public BaseFixture {
-
 };
 
 TEST_F(RippleLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
@@ -85,8 +85,7 @@ TEST_F(RippleLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
             getTestExecutionContext()->waitUntilStopped();
 
             auto ops = uv::wait(
-                    std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete()
-                    ->addOrder(api::OperationOrderKey::DATE,false))->execute());
+                std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete()->addOrder(api::OperationOrderKey::DATE, false))->execute());
             std::cout << "Ops: " << ops.size() << std::endl;
 
             auto firstOp = ops.front();
@@ -101,7 +100,7 @@ TEST_F(RippleLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
             EXPECT_EQ(firstXrpOp->getTransaction()->getLedgerSequence()->intValue(), 48602088);
             EXPECT_EQ(firstXrpOp->getTransaction()->getDate(), DateUtils::fromJSON("2019-07-12T11:05:20Z"));
 
-            for (auto const& op : ops) {
+            for (auto const &op : ops) {
                 auto xrpOp = op->asRippleLikeOperation();
                 EXPECT_FALSE(xrpOp == nullptr);
                 EXPECT_FALSE(xrpOp->getTransaction()->getSequence() == nullptr);
@@ -153,7 +152,7 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
             bus->subscribe(getTestExecutionContext(), receiver);
 
             getTestExecutionContext()->waitUntilStopped();
-            
+
             auto now = std::time(nullptr);
             char now_str[256];
             std::strftime(now_str, sizeof(now_str), "%Y-%m-%dT%H:%M:%SZ", std::localtime(&now));
@@ -161,13 +160,12 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
             auto history = uv::wait(account->getBalanceHistory(
                 "2019-09-20T00:00:00Z",
                 now_str,
-                api::TimePeriod::DAY
-            ));
+                api::TimePeriod::DAY));
 
             EXPECT_EQ(history.back()->toString(), balance->toString());
 
             auto zero = std::make_shared<api::BigIntImpl>(BigInt::ZERO);
-            for (auto const& balance : history) {
+            for (auto const &balance : history) {
                 EXPECT_TRUE(balance->toBigInt()->compare(zero) > 0);
             }
         }
@@ -198,16 +196,16 @@ TEST_F(RippleLikeWalletSynchronization, VaultAccountSynchronization) {
     dispatcher->waitUntilStopped();
 
     auto ops = uv::wait(
-            std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+        std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
     std::cout << "Ops: " << ops.size() << std::endl;
 
     int64_t destinationTag = 0;
-    for (auto const& op : ops) {
+    for (auto const &op : ops) {
         auto xrpOp = op->asRippleLikeOperation();
 
-        if (xrpOp->getTransaction()->getHash() == "EE38840B83CAB39216611D2F6E4F9828818514C3EA47504AE2521D8957331D3C" ) {
-          destinationTag = xrpOp->getTransaction()->getDestinationTag().value_or(0);
-          break;
+        if (xrpOp->getTransaction()->getHash() == "EE38840B83CAB39216611D2F6E4F9828818514C3EA47504AE2521D8957331D3C") {
+            destinationTag = xrpOp->getTransaction()->getDestinationTag().value_or(0);
+            break;
         }
     }
 

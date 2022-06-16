@@ -31,28 +31,29 @@
 #ifndef LEDGER_CORE_DERIVATIONPATH_HPP
 #define LEDGER_CORE_DERIVATIONPATH_HPP
 
+#include "Exception.hpp"
+
 #include <string>
 #include <vector>
-#include "Exception.hpp"
 
 namespace ledger {
     namespace core {
         class DerivationPath {
-        public:
-            explicit DerivationPath(const std::string& path);
-            explicit DerivationPath(const std::vector<uint32_t>& path);
-            DerivationPath(const DerivationPath& path);
-            DerivationPath(DerivationPath&& path);
-            DerivationPath& operator=(DerivationPath&& path);
-            DerivationPath& operator=(const DerivationPath& path);
+          public:
+            explicit DerivationPath(const std::string &path);
+            explicit DerivationPath(const std::vector<uint32_t> &path);
+            DerivationPath(const DerivationPath &path);
+            DerivationPath(DerivationPath &&path);
+            DerivationPath &operator=(DerivationPath &&path);
+            DerivationPath &operator=(const DerivationPath &path);
             uint32_t getDepth() const;
             uint32_t getLastChildNum() const;
             uint32_t getNonHardenedChildNum(int index) const;
             uint32_t getNonHardenedLastChildNum() const;
             uint32_t operator[](int index) const;
-            DerivationPath operator+(const DerivationPath& derivationPath) const;
-            bool operator==(const DerivationPath& path) const;
-            bool operator!=(const DerivationPath& path) const;
+            DerivationPath operator+(const DerivationPath &derivationPath) const;
+            bool operator==(const DerivationPath &path) const;
+            bool operator!=(const DerivationPath &path) const;
             DerivationPath getParent() const;
             bool isRoot() const;
             std::string toString(bool addLeadingM = false) const;
@@ -60,25 +61,23 @@ namespace ledger {
             bool isHardened(int index) const;
             bool isLastChildHardened() const;
 
-        public:
-            static std::vector<uint32_t> parse(const std::string& path);
+          public:
+            static std::vector<uint32_t> parse(const std::string &path);
             static DerivationPath fromScheme(
-                const std::string& scheme,
+                const std::string &scheme,
                 int coinType,
                 int account,
                 int node,
                 int addressIndex,
-                Option<std::string> stopAt = Option<std::string>()
-            );
+                Option<std::string> stopAt = Option<std::string>());
 
-        private:
-            inline void assertIndexIsValid(int index, const std::string& method) const;
+          private:
+            inline void assertIndexIsValid(int index, const std::string &method) const;
 
-        private:
+          private:
             std::vector<uint32_t> _path;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_DERIVATIONPATH_HPP

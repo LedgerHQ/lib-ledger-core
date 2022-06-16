@@ -31,24 +31,24 @@
 #ifndef LEDGER_CORE_TRUSTINDICATOR_H
 #define LEDGER_CORE_TRUSTINDICATOR_H
 
-#include <string>
-#include <rapidjson/document.h>
 #include <api/TrustIndicator.hpp>
 #include <api/TrustLevel.hpp>
-#include <cereal/cereal.hpp>
 #include <api/enum_from_string.hpp>
+#include <cereal/cereal.hpp>
 #include <cereal/types/string.hpp>
 #include <cereal/types/vector.hpp>
+#include <rapidjson/document.h>
+#include <string>
 
 namespace ledger {
     namespace core {
         class TrustIndicator : public api::TrustIndicator {
-        public:
+          public:
             TrustIndicator();
-            TrustIndicator(const TrustIndicator& ind) = delete;
+            TrustIndicator(const TrustIndicator &ind) = delete;
 
             template <class Archive>
-            void serialize(Archive& ar, std::uint32_t const version) {
+            void serialize(Archive &ar, std::uint32_t const version) {
                 std::string level = api::to_string(_level);
                 ar(CEREAL_NVP(level), CEREAL_NVP(_origin), CEREAL_NVP(_weight), CEREAL_NVP(_conflicts));
                 _level = api::from_string<api::TrustLevel>(level);
@@ -59,20 +59,20 @@ namespace ledger {
             std::vector<std::string> getConflictingOperationUids() override;
             std::string getOrigin() override;
 
-            TrustIndicator& setTrustWeight(int32_t weight);
-            TrustIndicator& setTrustLevel(api::TrustLevel level);
-            TrustIndicator& setOrigin(const std::string& origin);
-            TrustIndicator& addConflictingOperationUid(const std::string& uid);
-            TrustIndicator& removeConflictingOperationUid(const std::string& uid);
+            TrustIndicator &setTrustWeight(int32_t weight);
+            TrustIndicator &setTrustLevel(api::TrustLevel level);
+            TrustIndicator &setOrigin(const std::string &origin);
+            TrustIndicator &addConflictingOperationUid(const std::string &uid);
+            TrustIndicator &removeConflictingOperationUid(const std::string &uid);
 
-        private:
+          private:
             int32_t _weight;
             api::TrustLevel _level;
             std::vector<std::string> _conflicts;
             std::string _origin;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 CEREAL_CLASS_VERSION(ledger::core::TrustIndicator, 0);
 

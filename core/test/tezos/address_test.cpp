@@ -28,24 +28,24 @@
  *
  */
 
-#include <gtest/gtest.h>
-#include <ledger/core/utils/hex.h>
-#include <ledger/core/api/TezosLikeExtendedPublicKey.hpp>
-#include <ledger/core/tezos/TezosLikeAddress.h>
-#include <ledger/core/utils/optional.hpp>
-#include <ledger/core/collections/DynamicObject.hpp>
-#include <ledger/core/api/DynamicObject.hpp>
-#include <ledger/core/api/Networks.hpp>
-#include <wallet/currencies.hpp>
+#include "Fixtures.hpp"
+
 #include <api/Address.hpp>
-#include <tezos/TezosLikeExtendedPublicKey.h>
-#include <utils/hex.h>
+#include <api/BlockchainExplorerEngines.hpp>
 #include <api/Configuration.hpp>
 #include <crypto/HASH160.hpp>
+#include <gtest/gtest.h>
+#include <ledger/core/api/DynamicObject.hpp>
+#include <ledger/core/api/Networks.hpp>
+#include <ledger/core/api/TezosLikeExtendedPublicKey.hpp>
+#include <ledger/core/collections/DynamicObject.hpp>
 #include <ledger/core/crypto/BLAKE.h>
-#include <api/BlockchainExplorerEngines.hpp>
-
-#include "Fixtures.hpp"
+#include <ledger/core/tezos/TezosLikeAddress.h>
+#include <ledger/core/utils/hex.h>
+#include <ledger/core/utils/optional.hpp>
+#include <tezos/TezosLikeExtendedPublicKey.h>
+#include <utils/hex.h>
+#include <wallet/currencies.hpp>
 
 using namespace ledger::core;
 using namespace ledger::testing::tezos;
@@ -67,7 +67,7 @@ TEST_P(AddressTest, FromPubKey) {
     std::vector<uint8_t> pubKey = hex::toByteArray(data.key.hexkey);
     std::vector<uint8_t> chainCode = hex::toByteArray("");
     auto zPub = ledger::core::TezosLikeExtendedPublicKey::fromRaw(currencies::TEZOS,
-                                                                  optional<std::vector<uint8_t >>(),
+                                                                  optional<std::vector<uint8_t>>(),
                                                                   pubKey,
                                                                   chainCode,
                                                                   "44'/1729'/0'/0'",
@@ -122,11 +122,10 @@ TEST_F(AddressFeaturesTest, DISABLED_isDelegate) {
     EXPECT_EQ(uv::wait(wallet->isDelegate("tz3bnhbn7uYfL43zfXtBvCYoq6DW743mRWvc")), false);
     EXPECT_EQ(uv::wait(wallet->isDelegate("tz1PWCDnz783NNGGQjEFFsHtrcK5yBW4E2rm")), true);
     EXPECT_ANY_THROW(uv::wait(wallet->isDelegate("tz2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")));
-}    
+}
 
 INSTANTIATE_TEST_CASE_P(
     Tezos,
     AddressTest,
     TezosParams(),
-    TezosParamsNames
-);
+    TezosParamsNames);

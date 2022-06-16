@@ -28,10 +28,8 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKEOPERATION_H
 #define LEDGER_CORE_RIPPLELIKEOPERATION_H
-
 
 #include <api/RippleLikeOperation.hpp>
 #include <api/RippleLikeTransaction.hpp>
@@ -40,15 +38,15 @@
 namespace ledger {
     namespace core {
         class RippleLikeOperation : public api::RippleLikeOperation {
-        public:
-            RippleLikeOperation(const std::shared_ptr<OperationApi>& baseOp);
+          public:
+            RippleLikeOperation(const std::shared_ptr<OperationApi> &baseOp);
             std::shared_ptr<api::RippleLikeTransaction> getTransaction();
 
-        private:
+          private:
             std::shared_ptr<api::RippleLikeTransaction> _transaction;
         };
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_RIPPLELIKEOPERATION_H

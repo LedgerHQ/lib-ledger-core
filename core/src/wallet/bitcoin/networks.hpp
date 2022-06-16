@@ -32,11 +32,11 @@
 #define LEDGER_CORE_NETWORKS_HPP
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER)
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 #include "../../api/BitcoinLikeNetworkParameters.hpp"
@@ -53,7 +53,7 @@ namespace ledger {
                 SIGHASH_FORKID = 0x40,
                 SIGHASH_ANYONECANPAY = 0x80
             };
-            
+
             // Since version for networks are starting at 1
             static const int HIGHTEST_PARAMETERS_VERSION = 2;
 
@@ -75,7 +75,7 @@ namespace ledger {
                 if (targetVersion < 2 || currentVersion < 1) {
                     return false;
                 }
-                auto previous = migrateParameters(params, currentVersion,  targetVersion - 1);
+                auto previous = migrateParameters(params, currentVersion, targetVersion - 1);
                 if (currentVersion < targetVersion) {
                     migrateParameters(params, targetVersion);
                     return true;
@@ -101,10 +101,9 @@ namespace ledger {
             };
             extern LIBCORE_EXPORT const ZIPParameters ZIP143_PARAMETERS;
             extern LIBCORE_EXPORT const ZIPParameters ZIP_SAPLING_PARAMETERS;
-            template<class Archive>
-            void serialize(Archive & archive,
-                           api::BitcoinLikeNetworkParameters & p)
-            {
+            template <class Archive>
+            void serialize(Archive &archive,
+                           api::BitcoinLikeNetworkParameters &p) {
                 archive(
                     p.Identifier,
                     p.P2PKHVersion,
@@ -117,13 +116,11 @@ namespace ledger {
                     p.UsesTimestampedTransaction,
                     p.TimestampDelay,
                     p.SigHash,
-                    p.AdditionalBIPs
-                );
+                    p.AdditionalBIPs);
             }
 
-        }
-    }
-}
-
+        } // namespace networks
+    }     // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_NETWORKS_HPP

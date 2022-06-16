@@ -36,8 +36,8 @@
 #define LEDGER_CORE_ENDIAN_H
 
 #include <cstddef>
-#include <cstdlib>
 #include <cstdint>
+#include <cstdlib>
 
 /**
  * Ledger global namespace
@@ -102,12 +102,12 @@ namespace ledger {
              */
             void *swapToEndianness(void *ptr, size_t size, Endianness current, Endianness final);
 
-            const void* int_to_array(int i, Endianness endianness);
-            const void* unsigned_long_long_to_array(unsigned long long i, Endianness endianness);
+            const void *int_to_array(int i, Endianness endianness);
+            const void *unsigned_long_long_to_array(unsigned long long i, Endianness endianness);
 
             template <typename T>
-            void* scalar_type_to_array(T i, Endianness endianness) {
-                uint8_t *data = (uint8_t *) std::malloc(sizeof(i));
+            void *scalar_type_to_array(T i, Endianness endianness) {
+                uint8_t *data = (uint8_t *)std::malloc(sizeof(i));
                 auto ptr = (const uint8_t *)(&i);
                 for (auto index = 0; index < sizeof(i); index++) {
                     data[index] = ptr[index];
@@ -115,8 +115,8 @@ namespace ledger {
                 swapToEndianness(data, sizeof(i), getSystemEndianness(), endianness);
                 return (void *)data;
             }
-        }
-    }
-}
+        } // namespace endianness
+    }     // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ENDIAN_H

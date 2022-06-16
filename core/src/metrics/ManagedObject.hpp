@@ -32,36 +32,35 @@
 #ifndef LEDGER_CORE_MANAGEDOBJECT_HPP
 #define LEDGER_CORE_MANAGEDOBJECT_HPP
 
-#include <unordered_map>
+#include <memory>
 #include <mutex>
 #include <typeindex>
-#include <memory>
-
+#include <unordered_map>
 
 namespace ledger {
     namespace core {
 
         class AllocationMap {
-        public:
+          public:
             void increment(std::type_index idx);
             void decrement(std::type_index idx);
             std::unordered_map<std::type_index, int> getAllocations();
 
             static std::shared_ptr<AllocationMap> getInstance();
 
-        private:
+          private:
             std::mutex _mutex;
             std::unordered_map<std::type_index, int> _allocations;
         };
 
         template <typename Type>
         class ManagedObject {
-        public:
+          public:
             ManagedObject() {
                 AllocationMap::getInstance()->increment(typeid(Type));
             }
 
-            ManagedObject(const ManagedObject& cpy) {
+            ManagedObject(const ManagedObject &cpy) {
                 AllocationMap::getInstance()->increment(typeid(Type));
             }
 
@@ -70,8 +69,7 @@ namespace ledger {
             }
         };
 
-
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_MANAGEDOBJECT_HPP

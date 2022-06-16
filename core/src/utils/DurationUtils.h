@@ -31,19 +31,20 @@
 #ifndef LEDGER_CORE_DURATIONUTILS_H
 #define LEDGER_CORE_DURATIONUTILS_H
 
-#include <cstdint>
 #include "DateUtils.hpp"
-#include <ctime>
+
 #include <chrono>
-#include <sstream>
+#include <cstdint>
+#include <ctime>
 #include <fmt/format.h>
+#include <sstream>
 
 namespace ledger {
     namespace core {
         class DurationUtils {
-        public:
+          public:
             template <typename D>
-            static std::string formatDuration(const D& duration) {
+            static std::string formatDuration(const D &duration) {
                 std::stringstream ss;
                 auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
                 auto hours = ms / (60 * 60 * 1000);
@@ -55,8 +56,7 @@ namespace ledger {
                 return fmt::format("{}:{}:{}.{}", hours, minutes, seconds, ms);
             }
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_DURATIONUTILS_H

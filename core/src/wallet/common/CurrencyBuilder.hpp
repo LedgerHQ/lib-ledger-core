@@ -31,34 +31,34 @@
 #ifndef LEDGER_CORE_CURRENCYBUILDER_HPP
 #define LEDGER_CORE_CURRENCYBUILDER_HPP
 
+#include <api/AlgorandNetworkParameters.hpp>
 #include <api/Currency.hpp>
-#include <utils/Option.hpp>
 #include <api/EthereumLikeNetworkParameters.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
-#include <api/TezosLikeNetworkParameters.hpp>
 #include <api/StellarLikeNetworkParameters.hpp>
-#include <api/AlgorandNetworkParameters.hpp>
+#include <api/TezosLikeNetworkParameters.hpp>
+#include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {
         class CurrencyBuilder {
-        public:
+          public:
             CurrencyBuilder(const std::string name);
-            CurrencyBuilder& units(std::vector<api::CurrencyUnit> units);
-            CurrencyBuilder& bip44(int32_t coinType);
-            CurrencyBuilder& paymentUri(const std::string& scheme);
-            CurrencyBuilder& forkOfBitcoin(api::BitcoinLikeNetworkParameters params);
-            CurrencyBuilder& forkOfCosmos(api::CosmosLikeNetworkParameters params);
-            CurrencyBuilder& forkOfEthereum(api::EthereumLikeNetworkParameters params);
-            CurrencyBuilder& forkOfRipple(api::RippleLikeNetworkParameters params);
-            CurrencyBuilder& forkOfTezos(api::TezosLikeNetworkParameters params);
-            CurrencyBuilder& forkOfStellar(const api::StellarLikeNetworkParameters& params);
-            CurrencyBuilder& forkOfAlgorand(const api::AlgorandNetworkParameters& params);
-            CurrencyBuilder& unit(const std::string& name, int magnitude, const std::string& symbol, const std::string& code);
-            CurrencyBuilder& unit(const std::string& name, int magnitude, const std::string& code);
+            CurrencyBuilder &units(std::vector<api::CurrencyUnit> units);
+            CurrencyBuilder &bip44(int32_t coinType);
+            CurrencyBuilder &paymentUri(const std::string &scheme);
+            CurrencyBuilder &forkOfBitcoin(api::BitcoinLikeNetworkParameters params);
+            CurrencyBuilder &forkOfCosmos(api::CosmosLikeNetworkParameters params);
+            CurrencyBuilder &forkOfEthereum(api::EthereumLikeNetworkParameters params);
+            CurrencyBuilder &forkOfRipple(api::RippleLikeNetworkParameters params);
+            CurrencyBuilder &forkOfTezos(api::TezosLikeNetworkParameters params);
+            CurrencyBuilder &forkOfStellar(const api::StellarLikeNetworkParameters &params);
+            CurrencyBuilder &forkOfAlgorand(const api::AlgorandNetworkParameters &params);
+            CurrencyBuilder &unit(const std::string &name, int magnitude, const std::string &symbol, const std::string &code);
+            CurrencyBuilder &unit(const std::string &name, int magnitude, const std::string &code);
             operator api::Currency() const;
 
-        private:
+          private:
             std::vector<api::CurrencyUnit> _units;
             std::string _name;
             Option<api::BitcoinLikeNetworkParameters> _bitcoin;
@@ -72,9 +72,8 @@ namespace ledger {
             std::string _paymentUriScheme;
             int32_t _coinType;
         };
-        CurrencyBuilder Currency(const std::string& name);
-    }
-}
-
+        CurrencyBuilder Currency(const std::string &name);
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_CURRENCYBUILDER_HPP

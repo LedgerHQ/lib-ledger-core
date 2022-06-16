@@ -31,19 +31,19 @@
 #ifndef LEDGER_CORE_COLLECTIONS_HPP
 #define LEDGER_CORE_COLLECTIONS_HPP
 
-#include "strings.hpp"
-#include "vector.hpp"
-#include "../utils/Option.hpp"
 #include "../utils/Either.hpp"
+#include "../utils/Option.hpp"
+#include "Bytes.hpp"
 #include "MapLike.hpp"
 #include "Sequence.hpp"
 #include "String.hpp"
-#include "Bytes.hpp"
 #include "functional.hpp"
+#include "strings.hpp"
+#include "vector.hpp"
 
 namespace ledger {
     namespace core {
 
     }
-}
+} // namespace ledger
 #endif //LEDGER_CORE_COLLECTIONS_HPP

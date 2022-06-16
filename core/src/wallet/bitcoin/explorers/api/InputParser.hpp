@@ -31,18 +31,19 @@
 #ifndef LEDGER_CORE_INPUTPARSER_HPP
 #define LEDGER_CORE_INPUTPARSER_HPP
 
-#include <rapidjson/reader.h>
-#include "../BitcoinLikeBlockchainExplorer.hpp"
 #include "../../../../net/HttpClient.hpp"
+#include "../BitcoinLikeBlockchainExplorer.hpp"
+
+#include <rapidjson/reader.h>
 
 namespace ledger {
     namespace core {
         class InputParser {
-        public:
+          public:
             typedef BitcoinLikeBlockchainExplorerInput Result;
 
-            InputParser(std::string& lastKey) : _lastKey(lastKey) {};
-            void init(BitcoinLikeBlockchainExplorerInput* input);
+            InputParser(std::string &lastKey) : _lastKey(lastKey){};
+            void init(BitcoinLikeBlockchainExplorerInput *input);
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -50,21 +51,19 @@ namespace ledger {
             bool Int64(int64_t i);
             bool Uint64(uint64_t i);
             bool Double(double d);
-            bool RawNumber(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool String(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
+            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
             bool StartObject();
-            bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
             bool EndObject(rapidjson::SizeType memberCount);
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
 
-        private:
-            std::string& _lastKey;
-            BitcoinLikeBlockchainExplorerInput* _input;
-
+          private:
+            std::string &_lastKey;
+            BitcoinLikeBlockchainExplorerInput *_input;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_INPUTPARSER_HPP

@@ -28,19 +28,18 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ERC20TOKENS_H
 #define LEDGER_CORE_ERC20TOKENS_H
 
-#include <map>
 #include <api/ERC20Token.hpp>
+#include <map>
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER)
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 namespace ledger {
@@ -49,11 +48,8 @@ namespace ledger {
             extern LIBCORE_EXPORT const std::map<std::string, std::string> ERC20MethodsID;
             extern LIBCORE_EXPORT const std::map<std::string, api::ERC20Token> ALL_ERC20;
             extern LIBCORE_EXPORT const api::ERC20Token LEDGER_COIN;
-        };
-    }
-}
-
-
-
+        }; // namespace erc20Tokens
+    }      // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ERC20TOKENS_H

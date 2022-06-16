@@ -33,6 +33,7 @@
 #define LEDGER_CORE_BITCOINLIKESTRATEGYUTXOPICKER_H
 
 #include "BitcoinLikeUtxoPicker.h"
+
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxo.hpp>
 
 namespace ledger {
@@ -43,49 +44,51 @@ namespace ledger {
         };
 
         class BitcoinLikeStrategyUtxoPicker : public BitcoinLikeUtxoPicker {
-        public:
+          public:
             BitcoinLikeStrategyUtxoPicker(const std::shared_ptr<api::ExecutionContext> &context,
                                           const api::Currency &currency);
-        public:
-            static std::vector<BitcoinLikeUtxo> filterWithKnapsackSolver(const std::shared_ptr<Buddy>& buddy,
-                const std::vector<BitcoinLikeUtxo>& utxos,
-                const BigInt& aggregatedAmount,
-                const api::Currency& currrency);
 
-            static std::vector<BitcoinLikeUtxo> filterWithOptimizeSize(const std::shared_ptr<Buddy>& buddy,
-                const std::vector<BitcoinLikeUtxo>& utxos,
-                const BigInt& aggregatedAmount,
-                const api::Currency& currrency);
+          public:
+            static std::vector<BitcoinLikeUtxo> filterWithKnapsackSolver(const std::shared_ptr<Buddy> &buddy,
+                                                                         const std::vector<BitcoinLikeUtxo> &utxos,
+                                                                         const BigInt &aggregatedAmount,
+                                                                         const api::Currency &currrency);
 
-            static std::vector<BitcoinLikeUtxo> filterWithMergeOutputs(const std::shared_ptr<Buddy>& buddy,
-                const std::vector<BitcoinLikeUtxo>& utxos,
-                const BigInt& aggregatedAmount,
-                const api::Currency& currrency);
-            static std::vector<BitcoinLikeUtxo> filterWithDeepFirst(const std::shared_ptr<Buddy>& buddy,
-                const std::vector<BitcoinLikeUtxo>& utxo,
-                const BigInt& aggregatedAmount,
-                const api::Currency& currrency);
+            static std::vector<BitcoinLikeUtxo> filterWithOptimizeSize(const std::shared_ptr<Buddy> &buddy,
+                                                                       const std::vector<BitcoinLikeUtxo> &utxos,
+                                                                       const BigInt &aggregatedAmount,
+                                                                       const api::Currency &currrency);
+
+            static std::vector<BitcoinLikeUtxo> filterWithMergeOutputs(const std::shared_ptr<Buddy> &buddy,
+                                                                       const std::vector<BitcoinLikeUtxo> &utxos,
+                                                                       const BigInt &aggregatedAmount,
+                                                                       const api::Currency &currrency);
+            static std::vector<BitcoinLikeUtxo> filterWithDeepFirst(const std::shared_ptr<Buddy> &buddy,
+                                                                    const std::vector<BitcoinLikeUtxo> &utxo,
+                                                                    const BigInt &aggregatedAmount,
+                                                                    const api::Currency &currrency);
             static std::vector<BitcoinLikeUtxo> filterWithHighestFirstLimitUtxo(
                 const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                 std::vector<BitcoinLikeUtxo> utxos,
                 const BigInt &aggregatedAmount,
-                const api::Currency& currency,
-                const optional<int32_t>& maxUtxo);
+                const api::Currency &currency,
+                const optional<int32_t> &maxUtxo);
             static std::vector<BitcoinLikeUtxo> filterWithLimitUtxo(
                 const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                 std::vector<BitcoinLikeUtxo> utxos,
                 const BigInt &aggregatedAmount,
-                const api::Currency& currency,
-                const optional<int32_t>& maxUtxo);
-            static bool hasEnough(const std::shared_ptr<Buddy>& buddy,
-                const BigInt& aggregatedAmount,
-                int inputCount,
-                const api::Currency& currrency,
-                bool computeOutputAmount);
-        protected:
+                const api::Currency &currency,
+                const optional<int32_t> &maxUtxo);
+            static bool hasEnough(const std::shared_ptr<Buddy> &buddy,
+                                  const BigInt &aggregatedAmount,
+                                  int inputCount,
+                                  const api::Currency &currrency,
+                                  bool computeOutputAmount);
+
+          protected:
             Future<std::vector<BitcoinLikeUtxo>> filterInputs(const std::shared_ptr<Buddy> &buddy) override;
 
-            inline Future<BigInt> computeAggregatedAmount(const std::shared_ptr<Buddy>& buddy);
+            inline Future<BigInt> computeAggregatedAmount(const std::shared_ptr<Buddy> &buddy);
 
             //Usefull for filterWithLowFeesFirst
             static const int64_t DEFAULT_FALLBACK_FEE = 20;
@@ -94,18 +97,16 @@ namespace ledger {
             static const int64_t MAX_MONEY = 21000000 * COIN;
             static const uint32_t TOTAL_TRIES = 10000;
             static const int64_t CENT = 1000000;
-        private:
 
+          private:
             static std::vector<BitcoinLikeUtxo> filterWithSort(
                 const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                 std::vector<BitcoinLikeUtxo> utxos,
                 BigInt amount,
                 const api::Currency &currency,
-                std::function<bool(BitcoinLikeUtxo&, BitcoinLikeUtxo&)> const& functor
-            );
+                std::function<bool(BitcoinLikeUtxo &, BitcoinLikeUtxo &)> const &functor);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_BITCOINLIKESTRATEGYUTXOPICKER_H

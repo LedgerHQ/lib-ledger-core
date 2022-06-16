@@ -31,77 +31,64 @@
 #pragma once
 
 #include <algorithm>
-
 #include <api/CosmosLikeRedelegation.hpp>
 #include <api/CosmosLikeRedelegationEntry.hpp>
 #include <api_impl/BigIntImpl.hpp>
 #include <wallet/cosmos/cosmos.hpp>
 
 namespace ledger {
-namespace core {
-class CosmosLikeRedelegationEntry : public api::CosmosLikeRedelegationEntry {
-   public:
-    CosmosLikeRedelegationEntry(cosmos::RedelegationEntry entry) :
-        _redelegationEntryData(std::move(entry))
-    {
-    }
+    namespace core {
+        class CosmosLikeRedelegationEntry : public api::CosmosLikeRedelegationEntry {
+          public:
+            CosmosLikeRedelegationEntry(cosmos::RedelegationEntry entry) : _redelegationEntryData(std::move(entry)) {
+            }
 
-    std::shared_ptr<api::BigInt> getCreationHeight() override
-    {
-        return std::make_shared<api::BigIntImpl>(_redelegationEntryData.creationHeight);
-    }
-    std::shared_ptr<api::BigInt> getInitialBalance() override
-    {
-        return std::make_shared<api::BigIntImpl>(_redelegationEntryData.initialBalance);
-    }
-    std::shared_ptr<api::BigInt> getBalance() override
-    {
-        return std::make_shared<api::BigIntImpl>(_redelegationEntryData.balance);
-    }
-    std::chrono::system_clock::time_point getCompletionTime() override
-    {
-        return _redelegationEntryData.completionTime;
-    }
+            std::shared_ptr<api::BigInt> getCreationHeight() override {
+                return std::make_shared<api::BigIntImpl>(_redelegationEntryData.creationHeight);
+            }
+            std::shared_ptr<api::BigInt> getInitialBalance() override {
+                return std::make_shared<api::BigIntImpl>(_redelegationEntryData.initialBalance);
+            }
+            std::shared_ptr<api::BigInt> getBalance() override {
+                return std::make_shared<api::BigIntImpl>(_redelegationEntryData.balance);
+            }
+            std::chrono::system_clock::time_point getCompletionTime() override {
+                return _redelegationEntryData.completionTime;
+            }
 
-   private:
-    cosmos::RedelegationEntry _redelegationEntryData;
-};
+          private:
+            cosmos::RedelegationEntry _redelegationEntryData;
+        };
 
-class CosmosLikeRedelegation : public api::CosmosLikeRedelegation {
-   public:
-    CosmosLikeRedelegation(cosmos::Redelegation redelegation) :
-        _redelegationData(std::move(redelegation))
-    {
-    }
+        class CosmosLikeRedelegation : public api::CosmosLikeRedelegation {
+          public:
+            CosmosLikeRedelegation(cosmos::Redelegation redelegation) : _redelegationData(std::move(redelegation)) {
+            }
 
-    std::string getDelegatorAddress() override
-    {
-        return _redelegationData.delegatorAddress;
-    }
-    std::string getSrcValidatorAddress() override
-    {
-        return _redelegationData.srcValidatorAddress;
-    }
-    std::string getDstValidatorAddress() override
-    {
-        return _redelegationData.dstValidatorAddress;
-    }
-    std::vector<std::shared_ptr<api::CosmosLikeRedelegationEntry>> getEntries() override
-    {
-        auto result = std::vector<std::shared_ptr<api::CosmosLikeRedelegationEntry>>();
-        std::transform(
-            _redelegationData.entries.cbegin(),
-            _redelegationData.entries.cend(),
-            std::back_inserter(result),
-            [](const cosmos::RedelegationEntry &entry)
-                -> std::shared_ptr<api::CosmosLikeRedelegationEntry> {
-                return std::make_shared<CosmosLikeRedelegationEntry>(entry);
-            });
-        return result;
-    }
+            std::string getDelegatorAddress() override {
+                return _redelegationData.delegatorAddress;
+            }
+            std::string getSrcValidatorAddress() override {
+                return _redelegationData.srcValidatorAddress;
+            }
+            std::string getDstValidatorAddress() override {
+                return _redelegationData.dstValidatorAddress;
+            }
+            std::vector<std::shared_ptr<api::CosmosLikeRedelegationEntry>> getEntries() override {
+                auto result = std::vector<std::shared_ptr<api::CosmosLikeRedelegationEntry>>();
+                std::transform(
+                    _redelegationData.entries.cbegin(),
+                    _redelegationData.entries.cend(),
+                    std::back_inserter(result),
+                    [](const cosmos::RedelegationEntry &entry)
+                        -> std::shared_ptr<api::CosmosLikeRedelegationEntry> {
+                        return std::make_shared<CosmosLikeRedelegationEntry>(entry);
+                    });
+                return result;
+            }
 
-   private:
-    cosmos::Redelegation _redelegationData;
-};
-}  // namespace core
-}  // namespace ledger
+          private:
+            cosmos::Redelegation _redelegationData;
+        };
+    } // namespace core
+} // namespace ledger

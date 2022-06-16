@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEBLOCKAPI_H
 #define LEDGER_CORE_TEZOSLIKEBLOCKAPI_H
 
@@ -38,7 +37,7 @@
 namespace ledger {
     namespace core {
         class TezosLikeBlockApi : public api::TezosLikeBlock {
-        public:
+          public:
             TezosLikeBlockApi(const Block &block);
 
             std::string getHash() override;
@@ -52,9 +51,9 @@ namespace ledger {
                 return *this;
             };
 
-        private:
+          private:
             Block _block;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_TEZOSLIKEBLOCKAPI_H

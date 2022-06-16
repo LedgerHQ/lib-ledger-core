@@ -31,33 +31,33 @@
 #ifndef LEDGER_CORE_DETERMINISTICPUBLICKEY_HPP
 #define LEDGER_CORE_DETERMINISTICPUBLICKEY_HPP
 
+#include <cstdint>
 #include <vector>
+#include <string>
 
 namespace ledger {
     namespace core {
         class DeterministicPublicKey {
-        public:
-            DeterministicPublicKey( const std::vector<uint8_t>& publicKey,
-                                    const std::vector<uint8_t>& chainCode,
-                                    uint32_t childNum,
-                                    uint32_t depth,
-                                    uint32_t parentFingerprint,
-                                    const std::string &networkIdentifier
-                                    );
-            DeterministicPublicKey(const DeterministicPublicKey& key);
+          public:
+            DeterministicPublicKey(const std::vector<uint8_t> &publicKey,
+                                   const std::vector<uint8_t> &chainCode,
+                                   uint32_t childNum,
+                                   uint32_t depth,
+                                   uint32_t parentFingerprint,
+                                   const std::string &networkIdentifier);
+            DeterministicPublicKey(const DeterministicPublicKey &key);
             uint32_t getFingerprint() const;
             DeterministicPublicKey derive(uint32_t childIndex) const;
 
-            const std::vector<uint8_t>& getPublicKey() const;
+            const std::vector<uint8_t> &getPublicKey() const;
             std::vector<uint8_t> getUncompressedPublicKey() const;
             std::vector<uint8_t> getPublicKeyHash160() const;
             std::vector<uint8_t> getPublicKeyKeccak256() const;
             std::vector<uint8_t> getPublicKeyBlake2b(bool isED25519 = false) const;
-            std::vector<uint8_t> toByteArray(const std::vector<uint8_t>& version = {}) const;
-        public:
+            std::vector<uint8_t> toByteArray(const std::vector<uint8_t> &version = {}) const;
 
-
-        private:
+          public:
+          private:
             const std::vector<uint8_t> _key;
             const std::vector<uint8_t> _chainCode;
             const uint32_t _childNum;
@@ -65,8 +65,7 @@ namespace ledger {
             const uint32_t _parentFingerprint;
             const std::string _networkIdentifier;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_DETERMINISTICPUBLICKEY_HPP

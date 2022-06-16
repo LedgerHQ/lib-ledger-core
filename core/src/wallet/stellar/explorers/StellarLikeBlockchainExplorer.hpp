@@ -32,38 +32,37 @@
 #define LEDGER_CORE_STELLARLIKEBLOCKCHAIN_EXPLORER_HPP
 
 #include "../stellar.hpp"
-#include <string>
-#include <async/Future.hpp>
-#include <math/BigInt.h>
-#include <utils/Option.hpp>
-#include <net/HttpClient.hpp>
-#include <api/DynamicObject.hpp>
-#include <collections/DynamicObject.hpp>
-#include <async/DedicatedContext.hpp>
 
+#include <api/DynamicObject.hpp>
+#include <async/DedicatedContext.hpp>
+#include <async/Future.hpp>
+#include <collections/DynamicObject.hpp>
+#include <math/BigInt.h>
+#include <net/HttpClient.hpp>
+#include <string>
+#include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {
 
         class StellarLikeBlockchainExplorer : public DedicatedContext {
-        public:
-            StellarLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
-                                          const std::shared_ptr<HttpClient>& httpClient
-                                          ) : DedicatedContext(context), http(httpClient) {};
-            virtual Future<Option<std::shared_ptr<stellar::Asset>>> getAsset(const std::string& assetCode, const std::string& assetIssuer) = 0;
+          public:
+            StellarLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
+                                          const std::shared_ptr<HttpClient> &httpClient) : DedicatedContext(context), http(httpClient){};
+            virtual Future<Option<std::shared_ptr<stellar::Asset>>> getAsset(const std::string &assetCode, const std::string &assetIssuer) = 0;
             virtual Future<std::shared_ptr<stellar::Ledger>> getLastLedger() = 0;
             virtual FuturePtr<stellar::FeeStats> getRecommendedFees() = 0;
-            virtual Future<std::vector<std::shared_ptr<stellar::Operation>>> getOperations(const std::string& address, const Option<std::string>& cursor) = 0;
+            virtual Future<std::vector<std::shared_ptr<stellar::Operation>>> getOperations(const std::string &address, const Option<std::string> &cursor) = 0;
             virtual Future<std::vector<std::shared_ptr<stellar::Transaction>>> getTransactions(
-                                                                                               const std::string& address,
-                                                                                               const std::string& cursor) = 0;
-            virtual Future<std::shared_ptr<stellar::Account>> getAccount(const std::string& accountId) const = 0;
-            virtual Future<std::string> postTransaction(const std::vector<uint8_t>& tx, const std::string& correlationId) = 0;
+                const std::string &address,
+                const std::string &cursor) = 0;
+            virtual Future<std::shared_ptr<stellar::Account>> getAccount(const std::string &accountId) const = 0;
+            virtual Future<std::string> postTransaction(const std::vector<uint8_t> &tx, const std::string &correlationId) = 0;
 
-        protected:
+          protected:
             std::shared_ptr<HttpClient> http;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_STELLARLIKEBLOCKCHAIN_EXPLORER_HPP

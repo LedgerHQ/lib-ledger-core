@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMLIKEACCOUNTDATABASEENTRY_H
 #define LEDGER_CORE_ETHEREUMLIKEACCOUNTDATABASEENTRY_H
 
@@ -46,7 +45,7 @@ namespace ledger {
             std::string address;
             std::vector<ERC20LikeAccountDatabaseEntry> erc20Accounts;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMLIKEACCOUNTDATABASEENTRY_H

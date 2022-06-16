@@ -29,11 +29,12 @@
  *
  */
 #include "AccountDatabaseHelper.h"
+
 #include <crypto/SHA256.hpp>
-#include <fmt/format.h>
-#include <list>
 #include <database/soci-date.h>
 #include <database/soci-number.h>
+#include <fmt/format.h>
+#include <list>
 #include <utils/DateUtils.hpp>
 
 using namespace soci;
@@ -53,7 +54,7 @@ namespace ledger {
             auto uid = createAccountUid(walletUid, index);
             auto now = DateUtils::now();
             sql << "INSERT INTO accounts VALUES(:uid, :idx, :wallet_uid, :now)", use(uid), use(index), use(walletUid),
-                    use(now);
+                use(now);
         }
 
         void AccountDatabaseHelper::removeAccount(soci::session &sql, const std::string &walletUid, int32_t index) {
@@ -74,13 +75,11 @@ namespace ledger {
             return count;
         }
 
-
-
         int32_t AccountDatabaseHelper::computeNextAccountIndex(soci::session &sql, const std::string &walletUid) {
             //TODO: Enhance performance for huge wallets by reducing the select range.
             int32_t currentIndex = 0;
             rowset<int32_t> rows = (sql.prepare << "SELECT idx FROM accounts WHERE wallet_uid = :uid ORDER BY idx", use(walletUid));
-            for (auto& idx : rows) {
+            for (auto &idx : rows) {
                 if (idx > currentIndex) {
                     return currentIndex;
                 } else if (idx == currentIndex) {
@@ -90,14 +89,12 @@ namespace ledger {
             return currentIndex;
         }
 
-        std::list<int32_t>&
-        AccountDatabaseHelper::getAccountsIndexes(soci::session &sql, const std::string &walletUid, int32_t from,
-                                                  int32_t count, std::list<int32_t>& out) {
-            rowset<int32_t> rows = (sql.prepare <<
-                    "SELECT idx FROM accounts WHERE wallet_uid = :uid ORDER BY created_at LIMIT :count OFFSET :off"
-                    "",
-                    use(walletUid), use(count), use(from));
-            for (auto& idx : rows) {
+        std::list<int32_t> &
+        AccountDatabaseHelper::getAccountsIndexes(soci::session &sql, const std::string &walletUid, int32_t from, int32_t count, std::list<int32_t> &out) {
+            rowset<int32_t> rows = (sql.prepare << "SELECT idx FROM accounts WHERE wallet_uid = :uid ORDER BY created_at LIMIT :count OFFSET :off"
+                                                   "",
+                                    use(walletUid), use(count), use(from));
+            for (auto &idx : rows) {
                 out.push_back(idx);
             }
             return out;
@@ -106,26 +103,23 @@ namespace ledger {
         Option<api::Block> AccountDatabaseHelper::getLastBlockWithOperations(soci::session &sql, const std::string &accountUid) {
             //Get block_uid of most recent operation from DB
             rowset<row> rows = (sql.prepare << "SELECT op.block_uid, b.hash, b.height, b.time, b.currency_name "
-                                                    "FROM operations AS op "
-                                                    "JOIN blocks AS b ON op.block_uid = b.uid "
-                                                    "WHERE op.account_uid = :uid ORDER BY op.date DESC LIMIT 1",
-                                                    use(accountUid));
-            for (auto& row : rows) {
+                                               "FROM operations AS op "
+                                               "JOIN blocks AS b ON op.block_uid = b.uid "
+                                               "WHERE op.account_uid = :uid ORDER BY op.date DESC LIMIT 1",
+                                use(accountUid));
+            for (auto &row : rows) {
                 auto block_uid = row.get<std::string>(0);
                 auto hash = row.get<std::string>(1);
                 auto height = get_number<int64_t>(row, 2);
                 auto time = row.get<std::chrono::system_clock::time_point>(3);
                 return Option<api::Block>(
-                        api::Block(hash, block_uid, time, row.get<std::string>(4), height)
-                );
+                    api::Block(hash, block_uid, time, row.get<std::string>(4), height));
             }
             return Option<api::Block>();
         }
 
-        void AccountDatabaseHelper::removeBlockOperation(soci::session& sql, const std::string& accountUid,  const std::vector<std::string> blocks)
-        {
-            if (!blocks.empty())
-            {
+        void AccountDatabaseHelper::removeBlockOperation(soci::session &sql, const std::string &accountUid, const std::vector<std::string> blocks) {
+            if (!blocks.empty()) {
                 sql << "DELETE FROM blocks where uid IN (:uids)",
                     soci::use(blocks);
 
@@ -135,8 +129,7 @@ namespace ledger {
                                                      soci::use(accountUid), soci::use(blocks));
 
                 std::vector<std::string> txToDelete(rows_tx.begin(), rows_tx.end());
-                if (!txToDelete.empty())
-                {
+                if (!txToDelete.empty()) {
                     sql << "DELETE FROM bitcoin_inputs WHERE uid IN ("
                            "SELECT input_uid FROM bitcoin_transaction_inputs "
                            "WHERE transaction_uid IN(:uids)"
@@ -151,5 +144,5 @@ namespace ledger {
             }
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

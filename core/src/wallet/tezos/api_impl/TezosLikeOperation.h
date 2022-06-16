@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEOPERATION_H
 #define LEDGER_CORE_TEZOSLIKEOPERATION_H
 
@@ -39,14 +38,14 @@
 namespace ledger {
     namespace core {
         class TezosLikeOperation : public api::TezosLikeOperation {
-        public:
-            TezosLikeOperation(const std::shared_ptr<OperationApi>& baseOp);
+          public:
+            TezosLikeOperation(const std::shared_ptr<OperationApi> &baseOp);
             std::shared_ptr<api::TezosLikeTransaction> getTransaction();
 
-        private:
+          private:
             std::shared_ptr<api::TezosLikeTransaction> _transaction;
         };
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_TEZOSLIKEOPERATION_H

@@ -28,19 +28,21 @@
  * SOFTWARE.
  *
  */
-#include <collections/DynamicObject.hpp>
 #include "EventPublisher.hpp"
-#include "EventBus.hpp"
+
 #include "Event.hpp"
+#include "EventBus.hpp"
+
+#include <collections/DynamicObject.hpp>
 
 namespace ledger {
     namespace core {
 
         class EventReceiver : public api::EventReceiver {
-        public:
-            EventReceiver(const std::shared_ptr<EventPublisher>& publisher) : _publisher(publisher) {
+          public:
+            EventReceiver(const std::shared_ptr<EventPublisher> &publisher) : _publisher(publisher){
 
-            };
+                                                                              };
 
             void onEvent(const std::shared_ptr<api::Event> &event) override {
                 auto publisher = _publisher.lock();
@@ -53,13 +55,13 @@ namespace ledger {
                 }
             }
 
-        private:
+          private:
             std::weak_ptr<EventPublisher> _publisher;
         };
 
         EventPublisher::EventPublisher(std::shared_ptr<api::ExecutionContext> context) : DedicatedContext(context) {
             _bus = std::make_shared<EventBus>(context);
-            _filter = [] (const std::shared_ptr<api::Event>& event) {return true;};
+            _filter = [](const std::shared_ptr<api::Event> &event) { return true; };
         }
 
         std::shared_ptr<api::EventBus> EventPublisher::getEventBus() {
@@ -67,7 +69,8 @@ namespace ledger {
         }
 
         void EventPublisher::post(const std::shared_ptr<api::Event> &event) {
-            if (!_filter(event)) return;
+            if (!_filter(event))
+                return;
             auto ev = std::static_pointer_cast<Event>(event);
             if (ev->getPayload() != nullptr) {
                 std::static_pointer_cast<DynamicObject>(ev->getPayload())->setReadOnly(true);
@@ -76,7 +79,8 @@ namespace ledger {
         }
 
         void EventPublisher::postSticky(const std::shared_ptr<api::Event> &event, int32_t tag) {
-            if (!_filter(event)) return;
+            if (!_filter(event))
+                return;
             auto ev = std::static_pointer_cast<Event>(event);
             if (ev->getPayload() != nullptr) {
                 std::static_pointer_cast<DynamicObject>(ev->getPayload())->setReadOnly(true);
@@ -89,7 +93,7 @@ namespace ledger {
 
         void EventPublisher::relay(const std::shared_ptr<api::EventBus> &bus) {
             auto self = shared_from_this();
-            run([=] () {
+            run([=]() {
                 if (!self->_receiver) {
                     self->_receiver = std::make_shared<EventReceiver>(self);
                 }
@@ -105,6 +109,6 @@ namespace ledger {
             std::shared_ptr<EventPublisher> EventPublisher::newInstance(const std::shared_ptr<ExecutionContext> &context) {
                 return std::make_shared<ledger::core::EventPublisher>(context);
             }
-        }
-    }
-}
+        } // namespace api
+    }     // namespace core
+} // namespace ledger

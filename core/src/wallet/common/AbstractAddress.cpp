@@ -30,21 +30,21 @@
  */
 
 #include "AbstractAddress.h"
-#include <utils/Exception.hpp>
+
 #include <bitcoin/BitcoinLikeAddress.hpp>
 #include <cosmos/CosmosLikeAddress.hpp>
 #include <ethereum/EthereumLikeAddress.h>
 #include <ripple/RippleLikeAddress.h>
 #include <tezos/TezosLikeAddress.h>
-#include <wallet/stellar/StellarLikeAddress.hpp>
+#include <utils/Exception.hpp>
 #include <wallet/algorand/AlgorandAddress.hpp>
+#include <wallet/stellar/StellarLikeAddress.hpp>
 
 namespace ledger {
     namespace core {
 
-        AbstractAddress::AbstractAddress(const api::Currency &currency, const Option<std::string>& path)
-                : _currency(currency), _path(path) {
-
+        AbstractAddress::AbstractAddress(const api::Currency &currency, const Option<std::string> &path)
+            : _currency(currency), _path(path) {
         }
 
         api::Currency AbstractAddress::getCurrency() {
@@ -75,27 +75,26 @@ namespace ledger {
             return _currency;
         }
 
-
         std::shared_ptr<api::Address> api::Address::parse(const std::string &address, const Currency &currency) {
             switch (currency.walletType) {
-                case WalletType::BITCOIN:
-                    return ledger::core::BitcoinLikeAddress::parse(address, currency);
-                case WalletType::COSMOS:
-                    return ledger::core::CosmosLikeAddress::parse(address, currency);
-                case WalletType::ETHEREUM:
-                    return ledger::core::EthereumLikeAddress::parse(address, currency);
-                case WalletType::STELLAR:
-                    return ledger::core::StellarLikeAddress::parse(address, currency);
-                case WalletType::RIPPLE:
-                    return ledger::core::RippleLikeAddress::parse(address, currency);
-                case WalletType::TEZOS:
-                    return ledger::core::TezosLikeAddress::parse(address, currency);
-                case WalletType::ALGORAND:
-                    return ledger::core::algorand::Address::parse(address, currency);
-                case WalletType::MONERO:
-                    throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "MONERO address parser is not implemented yet");
-                default:
-                    throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Unknown wallet type address parser is needed here.");
+            case WalletType::BITCOIN:
+                return ledger::core::BitcoinLikeAddress::parse(address, currency);
+            case WalletType::COSMOS:
+                return ledger::core::CosmosLikeAddress::parse(address, currency);
+            case WalletType::ETHEREUM:
+                return ledger::core::EthereumLikeAddress::parse(address, currency);
+            case WalletType::STELLAR:
+                return ledger::core::StellarLikeAddress::parse(address, currency);
+            case WalletType::RIPPLE:
+                return ledger::core::RippleLikeAddress::parse(address, currency);
+            case WalletType::TEZOS:
+                return ledger::core::TezosLikeAddress::parse(address, currency);
+            case WalletType::ALGORAND:
+                return ledger::core::algorand::Address::parse(address, currency);
+            case WalletType::MONERO:
+                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "MONERO address parser is not implemented yet");
+            default:
+                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Unknown wallet type address parser is needed here.");
             }
         }
 
@@ -103,5 +102,5 @@ namespace ledger {
             return parse(address, currency) != nullptr;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

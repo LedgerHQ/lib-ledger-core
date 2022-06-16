@@ -28,24 +28,19 @@
  *
  */
 
-
 #include "RippleLikeWallet.h"
 
 #include "RippleLikeAccount.h"
 
 #include <algorithm>
-
-#include <async/wait.h>
-#include <api/ErrorCode.hpp>
 #include <api/AccountCallback.hpp>
 #include <api/ConfigurationDefaults.hpp>
+#include <api/ErrorCode.hpp>
 #include <api/KeychainEngines.hpp>
-
+#include <async/wait.h>
 #include <ripple/RippleLikeExtendedPublicKey.h>
-
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
-
 
 namespace ledger {
     namespace core {
@@ -56,11 +51,11 @@ namespace ledger {
                                            const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
                                            const std::shared_ptr<RippleLikeKeychainFactory> &keychainFactory,
                                            const RippleLikeAccountSynchronizerFactory &synchronizer,
-                                           const std::shared_ptr<WalletPool> &pool, const api::Currency &network,
+                                           const std::shared_ptr<WalletPool> &pool,
+                                           const api::Currency &network,
                                            const std::shared_ptr<DynamicObject> &configuration,
-                                           const DerivationScheme &scheme
-        )
-                : AbstractWallet(name, network, pool, configuration, scheme) {
+                                           const DerivationScheme &scheme)
+            : AbstractWallet(name, network, pool, configuration, scheme) {
             _explorer = explorer;
             _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
@@ -81,34 +76,34 @@ namespace ledger {
                                      "Account creation info are inconsistent (only one public key is needed)");
             auto self = getSelf();
             return async<api::ExtendedKeyAccountCreationInfo>([self, info]() -> api::ExtendedKeyAccountCreationInfo {
-                if (info.owners.size() != info.derivations.size() || info.owners.size() != info.chainCodes.size() ||
-                    info.publicKeys.size() != info.owners.size())
-                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
-                                         "Account creation info are inconsistent (size of arrays differs)");
-                api::ExtendedKeyAccountCreationInfo result;
+                       if (info.owners.size() != info.derivations.size() || info.owners.size() != info.chainCodes.size() ||
+                           info.publicKeys.size() != info.owners.size())
+                           throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
+                                                "Account creation info are inconsistent (size of arrays differs)");
+                       api::ExtendedKeyAccountCreationInfo result;
 
-                if (info.chainCodes[0].size() != 32 || info.publicKeys[0].size() != 33)
-                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
-                                         "Account creation info are inconsistent (contains invalid public key(s))");
-                DerivationPath occurencePath(info.derivations[0]);
+                       if (info.chainCodes[0].size() != 32 || info.publicKeys[0].size() != 33)
+                           throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
+                                                "Account creation info are inconsistent (contains invalid public key(s))");
+                       DerivationPath occurencePath(info.derivations[0]);
 
-                auto xpub = RippleLikeExtendedPublicKey::fromRaw(
-                        self->getCurrency(),
-                        Option<std::vector<uint8_t>>(),
-                        info.publicKeys[0],
-                        info.chainCodes[0],
-                        info.derivations[0]
-                );
-                result.owners.push_back(info.owners[0]);
-                result.derivations.push_back(info.derivations[0]);
-                result.extendedKeys.push_back(xpub->toBase58());
-                result.index = info.index;
-                return result;
-            }).flatMap<std::shared_ptr<ledger::core::api::Account>>(getContext(),
-                                                                    [self](const api::ExtendedKeyAccountCreationInfo &info) -> Future<std::shared_ptr<ledger::core::api::Account>> {
-                                                                        return self->newAccountWithExtendedKeyInfo(
-                                                                                info);
-                                                                    });
+                       auto xpub = RippleLikeExtendedPublicKey::fromRaw(
+                           self->getCurrency(),
+                           Option<std::vector<uint8_t>>(),
+                           info.publicKeys[0],
+                           info.chainCodes[0],
+                           info.derivations[0]);
+                       result.owners.push_back(info.owners[0]);
+                       result.derivations.push_back(info.derivations[0]);
+                       result.extendedKeys.push_back(xpub->toBase58());
+                       result.index = info.index;
+                       return result;
+                   })
+                .flatMap<std::shared_ptr<ledger::core::api::Account>>(getContext(),
+                                                                      [self](const api::ExtendedKeyAccountCreationInfo &info) -> Future<std::shared_ptr<ledger::core::api::Account>> {
+                                                                          return self->newAccountWithExtendedKeyInfo(
+                                                                              info);
+                                                                      });
         }
 
         static int32_t getAccountIndex(const DerivationScheme &dPath, int32_t index) {
@@ -131,15 +126,14 @@ namespace ledger {
             auto accountIndex = info.index;
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-            return async<std::shared_ptr<api::Account> >([=]() -> std::shared_ptr<api::Account> {
+            return async<std::shared_ptr<api::Account>>([=]() -> std::shared_ptr<api::Account> {
                 auto keychain = self->_keychainFactory->build(
-                        accountIndex,
-                        xpubPath,
-                        getConfig(),
-                        info,
-                        getAccountInternalPreferences(accountIndex),
-                        getCurrency()
-                );
+                    accountIndex,
+                    xpubPath,
+                    getConfig(),
+                    info,
+                    getAccountInternalPreferences(accountIndex),
+                    getCurrency());
                 soci::session sql(self->getDatabase()->getPool());
                 soci::transaction tr(sql);
                 auto accountUid = AccountDatabaseHelper::createAccountUid(self->getWalletUid(), accountIndex);
@@ -151,12 +145,11 @@ namespace ledger {
                                                                info.extendedKeys[info.extendedKeys.size() - 1]);
                 tr.commit();
                 auto account = std::static_pointer_cast<api::Account>(std::make_shared<RippleLikeAccount>(
-                        self->shared_from_this(),
-                        accountIndex,
-                        self->_explorer,
-                        self->_synchronizerFactory(),
-                        keychain
-                ));
+                    self->shared_from_this(),
+                    accountIndex,
+                    self->_explorer,
+                    self->_synchronizerFactory(),
+                    keychain));
                 self->addAccountInstanceToInstanceCache(std::dynamic_pointer_cast<AbstractAccount>(account));
                 return account;
             });
@@ -182,25 +175,26 @@ namespace ledger {
         RippleLikeWallet::getExtendedKeyAccountCreationInfo(int32_t accountIndex) {
             auto self = std::dynamic_pointer_cast<RippleLikeWallet>(shared_from_this());
             return async<api::ExtendedKeyAccountCreationInfo>(
-                    [self, accountIndex]() -> api::ExtendedKeyAccountCreationInfo {
-                        api::ExtendedKeyAccountCreationInfo info;
-                        auto scheme = self->getDerivationScheme();
-                        info.index = getAccountIndex(scheme, accountIndex);
-                        scheme.setCoinType(self->getCurrency().bip44CoinType).setAccountIndex(info.index);
-                        auto keychainEngine = self->getConfiguration()->getString(
-                                api::Configuration::KEYCHAIN_ENGINE).value_or(
-                                api::ConfigurationDefaults::DEFAULT_KEYCHAIN);
-                        if (keychainEngine == api::KeychainEngines::BIP32_P2PKH ||
-                            keychainEngine == api::KeychainEngines::BIP49_P2SH) {
-                            info.derivations.push_back(getAccountScheme(scheme).getPath().toString());
-                            info.owners.push_back(std::string("main"));
-                        } else {
-                            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING,
-                                                 "No implementation found found for keychain {}", keychainEngine);
-                        }
+                [self, accountIndex]() -> api::ExtendedKeyAccountCreationInfo {
+                    api::ExtendedKeyAccountCreationInfo info;
+                    auto scheme = self->getDerivationScheme();
+                    info.index = getAccountIndex(scheme, accountIndex);
+                    scheme.setCoinType(self->getCurrency().bip44CoinType).setAccountIndex(info.index);
+                    auto keychainEngine = self->getConfiguration()->getString(
+                                                                      api::Configuration::KEYCHAIN_ENGINE)
+                                              .value_or(
+                                                  api::ConfigurationDefaults::DEFAULT_KEYCHAIN);
+                    if (keychainEngine == api::KeychainEngines::BIP32_P2PKH ||
+                        keychainEngine == api::KeychainEngines::BIP49_P2SH) {
+                        info.derivations.push_back(getAccountScheme(scheme).getPath().toString());
+                        info.owners.push_back(std::string("main"));
+                    } else {
+                        throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING,
+                                             "No implementation found found for keychain {}", keychainEngine);
+                    }
 
-                        return info;
-                    });
+                    return info;
+                });
         }
 
         Future<api::AccountCreationInfo> RippleLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
@@ -214,8 +208,8 @@ namespace ledger {
                     auto owner = info.owners[i];
                     result.derivations.push_back(path.toString());
                     result.owners.push_back(owner);
-                 }
-                 return result;
+                }
+                return result;
             });
         }
 
@@ -243,5 +237,5 @@ namespace ledger {
             return _explorer;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

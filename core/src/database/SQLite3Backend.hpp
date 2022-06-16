@@ -32,35 +32,35 @@
 #define LEDGER_CORE_SQLITE3BACKEND_HPP
 
 #include "DatabaseBackend.hpp"
+
 #include <memory>
 #include <soci-sqlite3.h>
 
 namespace ledger {
- namespace core {
-     class SQLite3Backend : public DatabaseBackend {
-     public:
-         SQLite3Backend();
-         int32_t getConnectionPoolSize() override;
-         int32_t getReadonlyConnectionPoolSize() override;
+    namespace core {
+        class SQLite3Backend : public DatabaseBackend {
+          public:
+            SQLite3Backend();
+            int32_t getConnectionPoolSize() override;
+            int32_t getReadonlyConnectionPoolSize() override;
 
-         void init(const std::shared_ptr<api::PathResolver> &resolver,
-                   const std::string &dbName,
-                   const std::string &password,
-                   soci::session &session) override;
+            void init(const std::shared_ptr<api::PathResolver> &resolver,
+                      const std::string &dbName,
+                      const std::string &password,
+                      soci::session &session) override;
 
-         void setPassword(const std::string &password,
-                          soci::session &session) override;
-
-         void changePassword(const std::string & oldPassword,
-                             const std::string & newPassword,
+            void setPassword(const std::string &password,
                              soci::session &session) override;
 
-     private:
-         // Resolved path to db
-         std::string _dbResolvedPath;
-     };
- }
-}
+            void changePassword(const std::string &oldPassword,
+                                const std::string &newPassword,
+                                soci::session &session) override;
 
+          private:
+            // Resolved path to db
+            std::string _dbResolvedPath;
+        };
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_SQLITE3BACKEND_HPP

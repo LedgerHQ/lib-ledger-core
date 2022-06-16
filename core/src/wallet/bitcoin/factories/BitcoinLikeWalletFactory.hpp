@@ -31,33 +31,32 @@
 #ifndef LEDGER_CORE_BITCOINLIKEWALLETFACTORY_HPP
 #define LEDGER_CORE_BITCOINLIKEWALLETFACTORY_HPP
 
-#include <wallet/common/AbstractWalletFactory.hpp>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
-#include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
 #include "BitcoinLikeKeychainFactory.h"
 
-
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
+#include <wallet/common/AbstractWalletFactory.hpp>
 
 namespace ledger {
     namespace core {
         class WalletPool;
 
         class BitcoinLikeWalletFactory : public AbstractWalletFactory {
-        public:
+          public:
             BitcoinLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
             std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
-        private:
-            std::shared_ptr<BitcoinLikeBlockchainExplorer> getExplorer(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
-        private:
+          private:
+            std::shared_ptr<BitcoinLikeBlockchainExplorer> getExplorer(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
+
+          private:
             // Explorers
             std::list<std::weak_ptr<BitcoinLikeBlockchainExplorer>> _runningExplorers;
 
             // Keychain factories
             std::unordered_map<std::string, std::shared_ptr<BitcoinLikeKeychainFactory>> _keychainFactories;
-
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_BITCOINLIKEWALLETFACTORY_HPP

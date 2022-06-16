@@ -28,35 +28,33 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_BITCOINLIKECOMMONKEYCHAINFACTORY_H
 #define LEDGER_CORE_BITCOINLIKECOMMONKEYCHAINFACTORY_H
 namespace ledger {
     namespace core {
         template <class Keychain>
         class BitcoinLikeCommonKeychainFactory : public BitcoinLikeKeychainFactory {
-        public:
+          public:
             std::shared_ptr<ledger::core::BitcoinLikeKeychain>
             build(int32_t index,
                   const DerivationPath &path,
                   const std::shared_ptr<DynamicObject> &configuration,
-                  const api::ExtendedKeyAccountCreationInfo& info,
-                  const std::shared_ptr<Preferences> &accountPreferences, const api::Currency &currency) override {
+                  const api::ExtendedKeyAccountCreationInfo &info,
+                  const std::shared_ptr<Preferences> &accountPreferences,
+                  const api::Currency &currency) override {
                 if (!info.extendedKeys.empty()) {
-                    auto xpub = make_try<std::shared_ptr<BitcoinLikeExtendedPublicKey>>([&] () -> std::shared_ptr<BitcoinLikeExtendedPublicKey> {
+                    auto xpub = make_try<std::shared_ptr<BitcoinLikeExtendedPublicKey>>([&]() -> std::shared_ptr<BitcoinLikeExtendedPublicKey> {
                         return BitcoinLikeExtendedPublicKey::fromBase58(
-                                currency,
-                                info.extendedKeys[0],
-                                Option<std::string>(path.toString()),
-                                configuration
-                        );
+                            currency,
+                            info.extendedKeys[0],
+                            Option<std::string>(path.toString()),
+                            configuration);
                     });
                     if (xpub.isFailure()) {
                         throw xpub.getFailure();
                     } else {
                         auto keychain = std::make_shared<Keychain>(
-                                configuration, currency, index, xpub.getValue(), accountPreferences
-                        );
+                            configuration, currency, index, xpub.getValue(), accountPreferences);
                         return keychain;
                     }
                 } else {
@@ -67,8 +65,10 @@ namespace ledger {
             std::shared_ptr<ledger::core::BitcoinLikeKeychain>
             restore(int32_t index,
                     const DerivationPath &path,
-                    const std::shared_ptr<DynamicObject> &configuration, const std::string &databaseXpubEntry,
-                    const std::shared_ptr<Preferences> &accountPreferences, const api::Currency &currency) override {
+                    const std::shared_ptr<DynamicObject> &configuration,
+                    const std::string &databaseXpubEntry,
+                    const std::shared_ptr<Preferences> &accountPreferences,
+                    const api::Currency &currency) override {
                 auto keychain = std::make_shared<Keychain>(configuration,
                                                            currency,
                                                            index,
@@ -80,6 +80,6 @@ namespace ledger {
                 return keychain;
             };
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_BITCOINLIKECOMMONKEYCHAINFACTORY_H

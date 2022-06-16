@@ -29,19 +29,19 @@
  *
  */
 
+#include <CoutLogPrinter.hpp>
 #include <EventLooper.hpp>
 #include <EventThread.hpp>
-#include <NativeThreadDispatcher.hpp>
 #include <NativePathResolver.hpp>
-#include <CoutLogPrinter.hpp>
+#include <NativeThreadDispatcher.hpp>
+#include <fstream>
+#include <gtest/gtest.h>
+#include <iostream>
 #include <ledger/core/debug/logger.hpp>
 #include <ledger/core/utils/optional.hpp>
 #include <spdlog/details/os.h>
-#include <gtest/gtest.h>
-#include <iostream>
-#include <string>
-#include <fstream>
 #include <streambuf>
+#include <string>
 
 TEST(LoggerTest, LogAndOverflow) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
@@ -49,19 +49,19 @@ TEST(LoggerTest, LogAndOverflow) {
     auto resolver = std::make_shared<NativePathResolver>();
     auto logLineExample = std::string("2017-03-02T10:07:06Z+01:00 D: This is a log XXX") + spdlog::details::os::default_eol;
     std::shared_ptr<spdlog::logger> logger = ledger::core::logger::create("test_logs",
-                                               dispatcher->getSerialExecutionContext("logger"),
-                                               resolver,
-                                               logPrinter,
-                                               logLineExample.size() * 199
-    );
-    dispatcher->getMainExecutionContext()->execute(make_runnable([=] () {
+                                                                          dispatcher->getSerialExecutionContext("logger"),
+                                                                          resolver,
+                                                                          logPrinter,
+                                                                          logLineExample.size() * 199);
+    dispatcher->getMainExecutionContext()->execute(make_runnable([=]() {
         for (auto i = 0; i < 200; i++) {
             logger->debug("This is a log {0:03d}", i);
         }
 
-        dispatcher->getSerialExecutionContext("logger")->delay(make_runnable([=] () {
-            dispatcher->stop();
-        }), 0);
+        dispatcher->getSerialExecutionContext("logger")->delay(make_runnable([=]() {
+                                                                   dispatcher->stop();
+                                                               }),
+                                                               0);
     }));
     dispatcher->waitUntilStopped();
     std::ifstream t(resolver->resolveLogFilePath("test_logs.log"));
@@ -83,16 +83,16 @@ TEST(LoggerTest, LogNoOverflow) {
                                                                           dispatcher->getSerialExecutionContext("logger"),
                                                                           resolver,
                                                                           logPrinter,
-                                                                          logLineExample.size() * 200
-    );
-    dispatcher->getMainExecutionContext()->execute(make_runnable([=] () {
+                                                                          logLineExample.size() * 200);
+    dispatcher->getMainExecutionContext()->execute(make_runnable([=]() {
         for (auto i = 0; i < 200; i++) {
             logger->debug("This is a log {0:03d}", i);
         }
 
-        dispatcher->getSerialExecutionContext("logger")->delay(make_runnable([=] () {
-            dispatcher->stop();
-        }), 0);
+        dispatcher->getSerialExecutionContext("logger")->delay(make_runnable([=]() {
+                                                                   dispatcher->stop();
+                                                               }),
+                                                               0);
     }));
     dispatcher->waitUntilStopped();
     std::ifstream t(resolver->resolveLogFilePath("test_logs_1.log"));

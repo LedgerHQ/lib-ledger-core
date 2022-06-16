@@ -28,32 +28,30 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKEWALLET_H
 #define LEDGER_CORE_RIPPLELIKEWALLET_H
 
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.hpp>
-#include <wallet/ripple/factories/RippleLikeWalletFactory.h>
 #include <wallet/ripple/factories/RippleLikeKeychainFactory.h>
+#include <wallet/ripple/factories/RippleLikeWalletFactory.h>
+#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.hpp>
 
 namespace ledger {
     namespace core {
         class RippleLikeWallet : public AbstractWallet {
-        public:
+          public:
             static const api::WalletType type;
 
             RippleLikeWallet(
-                    const std::string &name,
-                    const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
-                    const std::shared_ptr<RippleLikeKeychainFactory> &keychainFactory,
-                    const RippleLikeAccountSynchronizerFactory &synchronizerFactory,
-                    const std::shared_ptr<WalletPool> &pool,
-                    const api::Currency &network,
-                    const std::shared_ptr<DynamicObject> &configuration,
-                    const DerivationScheme &scheme
-            );
+                const std::string &name,
+                const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
+                const std::shared_ptr<RippleLikeKeychainFactory> &keychainFactory,
+                const RippleLikeAccountSynchronizerFactory &synchronizerFactory,
+                const std::shared_ptr<WalletPool> &pool,
+                const api::Currency &network,
+                const std::shared_ptr<DynamicObject> &configuration,
+                const DerivationScheme &scheme);
 
             // API methods
             bool isSynchronizing() override;
@@ -72,11 +70,11 @@ namespace ledger {
 
             std::shared_ptr<RippleLikeBlockchainExplorer> getBlockchainExplorer();
 
-        protected:
+          protected:
             std::shared_ptr<AbstractAccount>
             createAccountInstance(soci::session &sql, const std::string &accountUid) override;
 
-        private:
+          private:
             std::shared_ptr<RippleLikeWallet> getSelf();
 
             std::shared_ptr<RippleLikeBlockchainExplorer> _explorer;
@@ -84,8 +82,7 @@ namespace ledger {
             RippleLikeAccountSynchronizerFactory _synchronizerFactory;
             api::RippleLikeNetworkParameters _network;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_RIPPLELIKEWALLET_H

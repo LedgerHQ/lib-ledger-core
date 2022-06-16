@@ -37,13 +37,13 @@
 namespace ledger {
     namespace core {
         class Fibonacci {
-        public:
+          public:
             static int32_t compute(int n);
-        private:
+
+          private:
             static int32_t _compute(int prevI, int i, int n);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_FIBONACCI_H

@@ -28,32 +28,32 @@
  *
  */
 
-
 #include "LedgerApiEthereumLikeBlockchainExplorer.h"
+
 #include <api_impl/BigIntImpl.hpp>
 namespace ledger {
     namespace core {
 
-        LedgerApiEthereumLikeBlockchainExplorer::LedgerApiEthereumLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
-                                                                                         const std::shared_ptr<HttpClient>& http,
-                                                                                         const api::EthereumLikeNetworkParameters& parameters,
-                                                                                         const std::shared_ptr<api::DynamicObject>& configuration) :
-                                        DedicatedContext(context), EthereumLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
-            _http = http;
-            _parameters = parameters;
+        LedgerApiEthereumLikeBlockchainExplorer::LedgerApiEthereumLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
+                                                                                         const std::shared_ptr<HttpClient> &http,
+                                                                                         const api::EthereumLikeNetworkParameters &parameters,
+                                                                                         const std::shared_ptr<api::DynamicObject> &configuration) : DedicatedContext(context), EthereumLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
+            _http            = http;
+            _parameters      = parameters;
             _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v3");
         }
 
         Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getNonce(const std::string &address) {
-            return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/nonce",_explorerVersion, _parameters.Identifier, address))
-                    .json().mapPtr<BigInt>(getContext(), [address] (const HttpRequest::JsonResult& result) {
-                        auto& json = *std::get<1>(result);
-                        if (!json.IsArray() || json.Size() != 1 || !json[0].HasMember("nonce") || !json[0]["nonce"].IsUint64()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get nonce for {}", address);
-                        }
-                        auto nonce = json[0]["nonce"].GetUint64();
-                        return std::make_shared<BigInt>((int64_t)nonce);
-                    });
+            return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/nonce", _explorerVersion, _parameters.Identifier, address))
+                .json()
+                .mapPtr<BigInt>(getContext(), [address](const HttpRequest::JsonResult &result) {
+                    auto &json = *std::get<1>(result);
+                    if (!json.IsArray() || json.Size() != 1 || !json[0].HasMember("nonce") || !json[0]["nonce"].IsUint64()) {
+                        throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get nonce for {}", address);
+                    }
+                    auto nonce = json[0]["nonce"].GetUint64();
+                    return std::make_shared<BigInt>((int64_t)nonce);
+                });
         }
 
         Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) {
@@ -69,34 +69,35 @@ namespace ledger {
             }
             bool parseNumbersAsString = true;
             return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/balance", _explorerVersion, _parameters.Identifier, addressesStr))
-                    .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [addressesStr, size] (const HttpRequest::JsonResult& result) {
-                        auto& json = *std::get<1>(result);
-                        if (!json.IsArray() || json.Size() != size || !json[0].HasMember("balance") || !json[0]["balance"].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}", addressesStr);
-                        }
+                .json(parseNumbersAsString)
+                .mapPtr<BigInt>(getContext(), [addressesStr, size](const HttpRequest::JsonResult &result) {
+                    auto &json = *std::get<1>(result);
+                    if (!json.IsArray() || json.Size() != size || !json[0].HasMember("balance") || !json[0]["balance"].IsString()) {
+                        throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}", addressesStr);
+                    }
 
-                        BigInt balance(json[0]["balance"].GetString());
-                        for (auto i = 1; i < size; i++) {
-                            if (json[i].HasMember("balance") || json[i]["balance"].IsString()) {
-                                balance = balance + BigInt(json[i]["balance"].GetString());
-                            }
+                    BigInt balance(json[0]["balance"].GetString());
+                    for (auto i = 1; i < size; i++) {
+                        if (json[i].HasMember("balance") || json[i]["balance"].IsString()) {
+                            balance = balance + BigInt(json[i]["balance"].GetString());
                         }
+                    }
 
-                        return std::make_shared<BigInt>(balance);
-                    });
+                    return std::make_shared<BigInt>(balance);
+                });
         }
 
         Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getHelper(const std::string &url,
                                                                                            const std::string &field) {
             bool parseNumbersAsString = true;
-            auto networkId = getNetworkParameters().Identifier;
-            return _http->GET(url, std::unordered_map<std::string, std::string>()).json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [field, networkId] (const HttpRequest::JsonResult& result) {
-                        auto& json = *std::get<1>(result);
-                        if (!json.IsObject() || !json.GetObject().HasMember(field.c_str()) || !json.GetObject()[field.c_str()].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, fmt::format("Failed to get {} for {}", field, networkId));
-                        }
-                        return std::make_shared<BigInt>(json.GetObject()[field.c_str()].GetString());
-                    });
+            auto networkId            = getNetworkParameters().Identifier;
+            return _http->GET(url, std::unordered_map<std::string, std::string>()).json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [field, networkId](const HttpRequest::JsonResult &result) {
+                auto &json = *std::get<1>(result);
+                if (!json.IsObject() || !json.GetObject().HasMember(field.c_str()) || !json.GetObject()[field.c_str()].IsString()) {
+                    throw make_exception(api::ErrorCode::HTTP_ERROR, fmt::format("Failed to get {} for {}", field, networkId));
+                }
+                return std::make_shared<BigInt>(json.GetObject()[field.c_str()].GetString());
+            });
         }
 
         Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getGasPrice() {
@@ -107,123 +108,121 @@ namespace ledger {
         LedgerApiEthereumLikeBlockchainExplorer::getDryRunGasLimit(
             const std::string &address,
             const api::EthereumGasLimitRequest &request) {
-          const auto explorerVersion = getExplorerVersion();
+            const auto explorerVersion = getExplorerVersion();
 
-          const auto endpoint =
-              fmt::format("/blockchain/{}/{}/addresses/{}/estimate-gas-limit",
-                          explorerVersion, getNetworkParameters().Identifier, address);
-          std::unordered_map<std::string, std::string> headers{
-              {"Content-Type", "application/json"}};
-          const bool jsonParseNumbersAsString = true;
+            const auto endpoint =
+                fmt::format("/blockchain/{}/{}/addresses/{}/estimate-gas-limit",
+                            explorerVersion, getNetworkParameters().Identifier, address);
+            std::unordered_map<std::string, std::string> headers{
+                {"Content-Type", "application/json"}};
+            const bool jsonParseNumbersAsString = true;
 
-          const auto* const interestingField = "estimated_gas_limit";
-          rapidjson::Document body;
-          body.SetObject();
-          auto &allocator = body.GetAllocator();
+            const auto *const interestingField  = "estimated_gas_limit";
+            rapidjson::Document body;
+            body.SetObject();
+            auto &allocator = body.GetAllocator();
 
-          if (request.from) {
-            body.AddMember(
-                "from",
-                rapidjson::Value(request.from.value().c_str(), allocator).Move(),
-                allocator);
-          }
-          if (request.data) {
-            body.AddMember(
-                "data",
-                rapidjson::Value(request.data.value().c_str(), allocator).Move(),
-                allocator);
-          }
-          if (request.value) {
-            body.AddMember(
-                "value",
-                rapidjson::Value(request.value.value().c_str(), allocator).Move(),
-                allocator);
-          }
-          if (request.amplifier) {
-            body.AddMember(
-                "amplifier",
-                rapidjson::Value(request.amplifier.value().c_str(), allocator).Move(),
-                allocator);
-          }
-          if (request.gas) {
-            body.AddMember(
-                "gas",
-                rapidjson::Value(request.gas.value().c_str(), allocator).Move(),
-                allocator);
-          }
-          if (request.gasPrice) {
-            body.AddMember(
-                "gasPrice",
-                rapidjson::Value(request.gasPrice.value().c_str(), allocator).Move(),
-                allocator);
-          }
+            if (request.from) {
+                body.AddMember(
+                    "from",
+                    rapidjson::Value(request.from.value().c_str(), allocator).Move(),
+                    allocator);
+            }
+            if (request.data) {
+                body.AddMember(
+                    "data",
+                    rapidjson::Value(request.data.value().c_str(), allocator).Move(),
+                    allocator);
+            }
+            if (request.value) {
+                body.AddMember(
+                    "value",
+                    rapidjson::Value(request.value.value().c_str(), allocator).Move(),
+                    allocator);
+            }
+            if (request.amplifier) {
+                body.AddMember(
+                    "amplifier",
+                    rapidjson::Value(request.amplifier.value().c_str(), allocator).Move(),
+                    allocator);
+            }
+            if (request.gas) {
+                body.AddMember(
+                    "gas",
+                    rapidjson::Value(request.gas.value().c_str(), allocator).Move(),
+                    allocator);
+            }
+            if (request.gasPrice) {
+                body.AddMember(
+                    "gasPrice",
+                    rapidjson::Value(request.gasPrice.value().c_str(), allocator).Move(),
+                    allocator);
+            }
 
-          rapidjson::StringBuffer buffer;
-          rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-          body.Accept(writer);
-          std::string requestBody(buffer.GetString());
+            rapidjson::StringBuffer buffer;
+            rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+            body.Accept(writer);
+            std::string requestBody(buffer.GetString());
 
-          return _http
-              ->POST(
-                  endpoint,
-                  std::vector<uint8_t>(requestBody.begin(), requestBody.end()),
-                  headers)
-              .json(jsonParseNumbersAsString)
-              // Catching the 5** internal server error the explorer gives when
-              // the given arguments aren't good enough to produce a gas limit
-              // estimate
-              .recover(
-                  getContext(),
-                  [](const Exception &exc)
-                      -> HttpRequest::JsonResult { // doesn't return
-                    throw make_exception(
-                        api::ErrorCode::INVALID_ARGUMENT,
-                        "The argument is not valid for gas limit computation");
-                  })
-              .mapPtr<BigInt>(
-                  getContext(),
-                  [endpoint,
-                   interestingField](const HttpRequest::JsonResult &result)
-                      -> std::shared_ptr<BigInt> {
-                    auto &json = *std::get<1>(result);
+            return _http
+                ->POST(
+                    endpoint,
+                    std::vector<uint8_t>(requestBody.begin(), requestBody.end()),
+                    headers)
+                .json(jsonParseNumbersAsString)
+                // Catching the 5** internal server error the explorer gives when
+                // the given arguments aren't good enough to produce a gas limit
+                // estimate
+                .recover(
+                    getContext(),
+                    [](const Exception &exc)
+                        -> HttpRequest::JsonResult { // doesn't return
+                        throw make_exception(
+                            api::ErrorCode::INVALID_ARGUMENT,
+                            "The argument is not valid for gas limit computation");
+                    })
+                .mapPtr<BigInt>(
+                    getContext(),
+                    [endpoint,
+                     interestingField](const HttpRequest::JsonResult &result)
+                        -> std::shared_ptr<BigInt> {
+                        auto &json = *std::get<1>(result);
 
-                    if (!json.IsObject() ||
-                        !json.GetObject().HasMember(interestingField) ||
-                        !json.GetObject()[interestingField].IsString()) {
-                      throw make_exception(
-                          api::ErrorCode::HTTP_ERROR,
-                          fmt::format("Failed to get {} for {}",
-                                      interestingField, endpoint));
-                    }
+                        if (!json.IsObject() ||
+                            !json.GetObject().HasMember(interestingField) ||
+                            !json.GetObject()[interestingField].IsString()) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR,
+                                fmt::format("Failed to get {} for {}",
+                                            interestingField, endpoint));
+                        }
 
-                    return std::make_shared<BigInt>(
-                        json.GetObject()[interestingField].GetString());
-                  });
+                        return std::make_shared<BigInt>(
+                            json.GetObject()[interestingField].GetString());
+                    });
         }
 
         Future<std::shared_ptr<BigInt>>
         LedgerApiEthereumLikeBlockchainExplorer::getEstimatedGasLimit(
             const std::string &address) {
-          return getHelper(
-              fmt::format("/blockchain/{}/{}/addresses/{}/estimate-gas-limit",
-                          getExplorerVersion(), getNetworkParameters().Identifier,
-                          address),
-              "estimated_gas_limit");
+            return getHelper(
+                fmt::format("/blockchain/{}/{}/addresses/{}/estimate-gas-limit",
+                            getExplorerVersion(), getNetworkParameters().Identifier,
+                            address),
+                "estimated_gas_limit");
         }
 
         Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getERC20Balance(const std::string &address,
                                                                                                  const std::string &erc20Address) {
             return getERC20Balances(address, std::vector<std::string>{erc20Address})
-                    .mapPtr<BigInt>(getContext(),
-                                    [erc20Address](const std::vector<BigInt> &balances) {
-                                        if (balances.empty()) {
-                                            throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                                 fmt::format("Failed to get balance for token {}", erc20Address)
-                                            );
-                                        }
-                                        return std::make_shared<BigInt>(balances[0]);
+                .mapPtr<BigInt>(getContext(),
+                                [erc20Address](const std::vector<BigInt> &balances) {
+                                    if (balances.empty()) {
+                                        throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                             fmt::format("Failed to get balance for token {}", erc20Address));
                                     }
-                    );
+                                    return std::make_shared<BigInt>(balances[0]);
+                                });
         }
 
         Future<std::vector<BigInt>>
@@ -250,54 +249,56 @@ namespace ledger {
                 rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
                 docContainer.Accept(writer);
 
-                const auto * const strBuffer = buffer.GetString();
-                requestBody = std::vector<uint8_t>(strBuffer, strBuffer + buffer.GetSize());
+                const auto *const strBuffer = buffer.GetString();
+                requestBody                 = std::vector<uint8_t>(strBuffer, strBuffer + buffer.GetSize());
             }
 
             const std::size_t numAddresses = erc20Addresses.size();
 
-            bool parseNumbersAsString = true;
+            bool parseNumbersAsString      = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return _http->POST(fmt::format("/blockchain/{}/{}/erc20/balances",
                                            getExplorerVersion(),
                                            getNetworkParameters().Identifier),
                                requestBody,
                                headers)
-                    .json(parseNumbersAsString)
-                    .map<std::vector<BigInt>>(getContext(), [numAddresses] (const HttpRequest::JsonResult& result) {
-                        const auto& json = *std::get<1>(result);
+                .json(parseNumbersAsString)
+                .map<std::vector<BigInt>>(getContext(), [numAddresses](const HttpRequest::JsonResult &result) {
+                    const auto &json = *std::get<1>(result);
 
-                        if (!json.IsArray() || json.Size() != numAddresses) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balances for erc20 addresses.");
-                        }
+                    if (!json.IsArray() || json.Size() != numAddresses) {
+                        throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balances for erc20 addresses.");
+                    }
 
-                        std::vector<BigInt> balances;
-                        for (const auto &b : json.GetArray()) {
-                            if (!b.IsObject() || !b.GetObject().HasMember("balance")) {
-                                throw make_exception(api::ErrorCode::HTTP_ERROR, "ERC20 balance: Malformed balance fields.");
-                            }
-                            balances.emplace_back(BigInt(b.GetObject()["balance"].GetString()));
+                    std::vector<BigInt> balances;
+                    for (const auto &b : json.GetArray()) {
+                        if (!b.IsObject() || !b.GetObject().HasMember("balance")) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "ERC20 balance: Malformed balance fields.");
                         }
-                        return balances;
-                    });
+                        balances.emplace_back(BigInt(b.GetObject()["balance"].GetString()));
+                    }
+                    return balances;
+                });
         }
 
-        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
+        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) {
             std::stringstream body;
             auto hexTx = "0x" + hex::toString(transaction);
-            body << "{" << "\"tx\":" << '"' << hexTx << '"' << "}";
+            body << "{"
+                 << "\"tx\":" << '"' << hexTx << '"' << "}";
             auto bodyString = body.str();
             std::unordered_map<std::string, std::string> headers;
-            if(!correlationId.empty()) {
+            if (!correlationId.empty()) {
                 headers["X-Correlation-ID"] = correlationId;
             }
             return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send", getExplorerVersion(), getNetworkParameters().Identifier),
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
-                               headers
-            ).json().template map<String>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) -> String {
-                auto& json = *std::get<1>(result);
-                return json["result"].GetString();
-            });
+                               headers)
+                .json()
+                .template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
+                    auto &json = *std::get<1>(result);
+                    return json["result"].GetString();
+                });
         }
 
         Future<void *> LedgerApiEthereumLikeBlockchainExplorer::startSession() {
@@ -308,18 +309,18 @@ namespace ledger {
             return killLedgerApiSession(session);
         }
 
-        Future<Bytes> LedgerApiEthereumLikeBlockchainExplorer::getRawTransaction(const String& transactionHash) {
+        Future<Bytes> LedgerApiEthereumLikeBlockchainExplorer::getRawTransaction(const String &transactionHash) {
             return getLedgerApiRawTransaction(transactionHash);
         }
 
-        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t>& transaction, const std::string& correlationId) {
+        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) {
             return pushLedgerApiTransaction(transaction, correlationId);
         }
 
         FuturePtr<EthereumLikeBlockchainExplorer::TransactionsBulk>
         LedgerApiEthereumLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
-                                                        Option<std::string> fromBlockHash,
-                                                        Option<void *> session) {
+                                                                 Option<std::string> fromBlockHash,
+                                                                 Option<void *> session) {
             bool isSnakeCase = true;
             return getLedgerApiTransactions(addresses, fromBlockHash, session, isSnakeCase);
         }
@@ -333,7 +334,7 @@ namespace ledger {
             return getLedgerApiTransactionByHash(transactionHash);
         }
 
-        Future<int64_t > LedgerApiEthereumLikeBlockchainExplorer::getTimestamp() const {
+        Future<int64_t> LedgerApiEthereumLikeBlockchainExplorer::getTimestamp() const {
             return getLedgerApiTimestamp();
         }
 
@@ -348,5 +349,5 @@ namespace ledger {
         std::string LedgerApiEthereumLikeBlockchainExplorer::getExplorerVersion() const {
             return _explorerVersion;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

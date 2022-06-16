@@ -106,5 +106,5 @@ namespace ledger {
         void HorizonFlagsParser::setPathView(const JsonParserPathView &path) {
             _path = path;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

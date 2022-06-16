@@ -28,29 +28,28 @@
  *
  */
 
+#include <api/Address.hpp>
 #include <gtest/gtest.h>
-#include <ledger/core/utils/hex.h>
+#include <ledger/core/api/Networks.hpp>
 #include <ledger/core/api/RippleLikeExtendedPublicKey.hpp>
 #include <ledger/core/ripple/RippleLikeAddress.h>
+#include <ledger/core/utils/hex.h>
 #include <ledger/core/utils/optional.hpp>
-#include <ledger/core/api/Networks.hpp>
-#include <wallet/currencies.hpp>
-#include <api/Address.hpp>
 #include <ripple/RippleLikeExtendedPublicKey.h>
 #include <utils/hex.h>
+#include <wallet/currencies.hpp>
 
 using namespace ledger::core::api;
 using namespace ledger::core;
 
-
 TEST(RippleAddress, AddressFromPubKeyAndChainCodeAccountLevel) {
     auto currency = currencies::RIPPLE;
     std::vector<uint8_t> pubKey = hex::toByteArray(
-            "039ea82278f0057b8b041a146f810aa2d84b8ffdfaef3e625624706ad13e12b717");
+        "039ea82278f0057b8b041a146f810aa2d84b8ffdfaef3e625624706ad13e12b717");
     std::vector<uint8_t> chainCode = hex::toByteArray(
-            "abcc4933bec06eeca6628b9e44f8e71d5e3cf510c0450dd1e29d9aa0f1717da9");
+        "abcc4933bec06eeca6628b9e44f8e71d5e3cf510c0450dd1e29d9aa0f1717da9");
     auto xpub = ledger::core::RippleLikeExtendedPublicKey::fromRaw(currency,
-                                                                   optional<std::vector<uint8_t >>(),
+                                                                   optional<std::vector<uint8_t>>(),
                                                                    pubKey,
                                                                    chainCode,
                                                                    "44'/144'/0'/0'");
@@ -60,11 +59,11 @@ TEST(RippleAddress, AddressFromPubKeyAndChainCodeAccountLevel) {
 TEST(RippleAddress, AddressFromPubKeyAndChainCodeAddressLevel) {
     auto currency = currencies::RIPPLE;
     std::vector<uint8_t> pubKey = hex::toByteArray(
-            "03c5ee21cd4a30b5b8436a6b17047aceac5ed4e69ab5f96bde2af897ff80cefab1");
+        "03c5ee21cd4a30b5b8436a6b17047aceac5ed4e69ab5f96bde2af897ff80cefab1");
     std::vector<uint8_t> chainCode = hex::toByteArray(
-            "0f2f1ffcfb379ceaef995d176e362e5b33ec14ba86d50f0facf46c2308f86c98");
+        "0f2f1ffcfb379ceaef995d176e362e5b33ec14ba86d50f0facf46c2308f86c98");
     auto xpub = ledger::core::RippleLikeExtendedPublicKey::fromRaw(currency,
-                                                                   optional<std::vector<uint8_t >>(),
+                                                                   optional<std::vector<uint8_t>>(),
                                                                    pubKey,
                                                                    chainCode,
                                                                    "44'/144'/0'/0/0");
@@ -81,7 +80,6 @@ TEST(RippleAddress, XpubFromBase58String) {
     EXPECT_EQ(xpub->derive("0/2")->toBase58(), "rn6kdEQif5eo2DEikofRTXCtUJRoRGJYFN");
     EXPECT_EQ(xpub->derive("0/3")->toBase58(), "r3mAmnNeJBdEyWHSK8uDbNmJc1f5dMyJKx");
 }
-
 
 TEST(RippleAddress, ParseAddressFromString) {
     auto currency = currencies::RIPPLE;

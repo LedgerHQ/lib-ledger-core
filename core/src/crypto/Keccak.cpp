@@ -30,8 +30,9 @@
  */
 
 #include "Keccak.h"
-#include <libethash/sha3.h>
+
 #include <libethash/ethash.h>
+#include <libethash/sha3.h>
 namespace ledger {
     namespace core {
 
@@ -45,5 +46,5 @@ namespace ledger {
             return keccak256(std::vector<uint8_t>(input.begin(), input.end()));
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

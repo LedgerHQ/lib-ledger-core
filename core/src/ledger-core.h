@@ -93,11 +93,11 @@
  */
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER)
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 #include <string>
@@ -125,8 +125,8 @@ namespace ledger {
 
         }
 
-    }
+    } // namespace core
 
-}
+} // namespace ledger
 
 #endif //LEDGER_CORE_LEDGER_CORE_H

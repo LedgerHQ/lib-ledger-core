@@ -32,33 +32,33 @@
 #ifndef LEDGER_CORE_BASEFIXTURE_H
 #define LEDGER_CORE_BASEFIXTURE_H
 
-#include <gtest/gtest.h>
-#include <UvThreadDispatcher.hpp>
-#include <src/database/DatabaseSessionPool.hpp>
-#include <NativePathResolver.hpp>
-#include <unordered_set>
-#include <src/wallet/pool/WalletPool.hpp>
 #include <CoutLogPrinter.hpp>
+#include <CppHttpLibClient.hpp>
+#include <NativePathResolver.hpp>
+#include <UvThreadDispatcher.hpp>
+#include <api/Account.hpp>
+#include <api/BigInt.hpp>
+#include <api/BitcoinLikeAccount.hpp>
+#include <api/BitcoinLikeInput.hpp>
+#include <api/BitcoinLikeOperation.hpp>
+#include <api/BitcoinLikeOutput.hpp>
+#include <api/BitcoinLikeTransaction.hpp>
+#include <events/LambdaEventReceiver.hpp>
+#include <gtest/gtest.h>
+#include <soci.h>
 #include <src/api/DynamicObject.hpp>
-#include <wallet/common/CurrencyBuilder.hpp>
+#include <src/database/DatabaseSessionPool.hpp>
+#include <src/wallet/pool/WalletPool.hpp>
+#include <unordered_set>
+#include <utils/JSONUtils.h>
+#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <wallet/bitcoin/BitcoinLikeWallet.hpp>
-#include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
+#include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
+#include <wallet/common/CurrencyBuilder.hpp>
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
-#include <utils/JSONUtils.h>
-#include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
-#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
-#include <api/BitcoinLikeOperation.hpp>
-#include <api/BitcoinLikeTransaction.hpp>
-#include <api/BitcoinLikeInput.hpp>
-#include <api/BitcoinLikeOutput.hpp>
-#include <api/BigInt.hpp>
-#include <CppHttpLibClient.hpp>
-#include <events/LambdaEventReceiver.hpp>
-#include <soci.h>
-#include <api/Account.hpp>
-#include <api/BitcoinLikeAccount.hpp>
 
 using namespace ledger::core; // Only do that for testing
 using namespace ledger::core::test;
@@ -71,32 +71,29 @@ extern const std::string TX_2;
 extern const std::string TX_3;
 extern const std::string TX_4;
 
-
 class BaseFixture : public ::testing::Test {
-public:
+  public:
     void SetUp() override;
     void TearDown() override;
     std::shared_ptr<WalletPool> newDefaultPool(std::string poolName = "my_ppol");
-    void createWallet(const std::shared_ptr<WalletPool>& pool,
-                      const std::string& walletName,
-                      const std::string& currencyName,
+    void createWallet(const std::shared_ptr<WalletPool> &pool,
+                      const std::string &walletName,
+                      const std::string &currencyName,
                       const std::shared_ptr<api::DynamicObject> &configuration);
 
-    void createAccount(const std::shared_ptr<WalletPool>& pool, const std::string& walletName, int32_t index);
-    BitcoinLikeWalletDatabase newBitcoinAccount(const std::shared_ptr<WalletPool>& pool,
-                                                const std::string& walletName,
-                                                const std::string& currencyName,
+    void createAccount(const std::shared_ptr<WalletPool> &pool, const std::string &walletName, int32_t index);
+    BitcoinLikeWalletDatabase newBitcoinAccount(const std::shared_ptr<WalletPool> &pool,
+                                                const std::string &walletName,
+                                                const std::string &currencyName,
                                                 const std::shared_ptr<api::DynamicObject> &configuration,
                                                 int32_t index,
-                                                const std::string& xpub);
-    std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
-                                                                int32_t index,
-                                                                const api::AccountCreationInfo &info
-    );
-    std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+                                                const std::string &xpub);
+    std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                                                  int32_t index,
-                                                                 const api::ExtendedKeyAccountCreationInfo& info
-    );
+                                                                 const api::AccountCreationInfo &info);
+    std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
+                                                                 int32_t index,
+                                                                 const api::ExtendedKeyAccountCreationInfo &info);
 
     std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     std::shared_ptr<NativePathResolver> resolver;

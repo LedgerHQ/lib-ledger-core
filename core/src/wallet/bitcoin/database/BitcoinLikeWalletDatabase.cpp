@@ -29,10 +29,12 @@
  *
  */
 #include "BitcoinLikeWalletDatabase.h"
+
 #include "../../pool/database/WalletDatabaseEntry.hpp"
+
 #include <soci.h>
-#include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>
+#include <wallet/common/database/AccountDatabaseHelper.h>
 
 using namespace soci;
 
@@ -40,9 +42,9 @@ namespace ledger {
     namespace core {
 
         BitcoinLikeWalletDatabase::BitcoinLikeWalletDatabase(const std::shared_ptr<WalletPool> &pool,
-                                                     const std::string &walletName,
-                                                     const std::string& currencyName)
-                : _walletUid(WalletDatabaseEntry::createWalletUid(pool->getName(), walletName)) {
+                                                             const std::string &walletName,
+                                                             const std::string &currencyName)
+            : _walletUid(WalletDatabaseEntry::createWalletUid(pool->getName(), walletName)) {
             _database = pool->getDatabaseSessionPool();
         }
 
@@ -75,5 +77,5 @@ namespace ledger {
             return _walletUid;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -30,12 +30,13 @@
  */
 
 #include "DynamicObject.hpp"
-#include <cereal/cereal.hpp>
-#include <cereal/archives/portable_binary.hpp>
-#include <cereal/types/set.hpp>
-#include <cereal/types/memory.hpp>
+
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
+#include <cereal/archives/portable_binary.hpp>
+#include <cereal/cereal.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/set.hpp>
 
 namespace ledger {
     namespace core {
@@ -134,12 +135,12 @@ namespace ledger {
             ::cereal::PortableBinaryOutputArchive archive(is);
             archive(shared_from_this());
             auto savedState = is.str();
-            return std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data() + savedState.length());
+            return std::vector<uint8_t>((const uint8_t *)savedState.data(), (const uint8_t *)savedState.data() + savedState.length());
         }
 
         std::shared_ptr<api::DynamicObject> api::DynamicObject::load(const std::vector<uint8_t> &serialized) {
             std::shared_ptr<ledger::core::DynamicObject> object;
-            boost::iostreams::array_source my_vec_source(reinterpret_cast<const char*>(&serialized[0]), serialized.size());
+            boost::iostreams::array_source my_vec_source(reinterpret_cast<const char *>(&serialized[0]), serialized.size());
             boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
             ::cereal::PortableBinaryInputArchive archive(is);
             archive(object);
@@ -151,7 +152,7 @@ namespace ledger {
         }
 
         std::ostream &DynamicObject::dump(std::ostream &ss, int depth) const {
-            for (auto& item : _values.getContainer()) {
+            for (auto &item : _values.getContainer()) {
                 ss << (" "_S * depth).str() << '"' << item.first << "\" -> ";
                 item.second.dump(ss, depth);
                 ss << std::endl;
@@ -170,7 +171,7 @@ namespace ledger {
         void DynamicObject::setReadOnly(bool enable) {
             _readOnly = enable;
 
-            for (auto& v : _values.getContainer()) {
+            for (auto &v : _values.getContainer()) {
                 // try to set the read-only attribute on the contained value as an array, and if it
                 // fails, try to do the same as if it were an object
                 auto array = v.second.get<std::shared_ptr<DynamicArray>>();
@@ -189,43 +190,43 @@ namespace ledger {
             for (auto &key : configuration->getKeys()) {
                 auto type = configuration->getType(key).value_or(api::DynamicType::UNDEFINED);
                 switch (type) {
-                    case api::DynamicType::STRING:
-                        put(key, configuration->get<std::string>(key).value());
-                        break;
+                case api::DynamicType::STRING:
+                    put(key, configuration->get<std::string>(key).value());
+                    break;
 
-                    case api::DynamicType::DATA:
-                        put(key, configuration->get<std::vector<uint8_t>>(key).value());
-                        break;
+                case api::DynamicType::DATA:
+                    put(key, configuration->get<std::vector<uint8_t>>(key).value());
+                    break;
 
-                    case api::DynamicType::BOOLEAN:
-                        put(key, configuration->get<bool>(key).value());
-                        break;
+                case api::DynamicType::BOOLEAN:
+                    put(key, configuration->get<bool>(key).value());
+                    break;
 
-                    case api::DynamicType::INT32:
-                        put(key, configuration->get<int32_t>(key).value());
-                        break;
+                case api::DynamicType::INT32:
+                    put(key, configuration->get<int32_t>(key).value());
+                    break;
 
-                    case api::DynamicType::INT64:
-                        put(key, configuration->get<int64_t>(key).value());
-                        break;
+                case api::DynamicType::INT64:
+                    put(key, configuration->get<int64_t>(key).value());
+                    break;
 
-                    case api::DynamicType::DOUBLE:
-                        put(key, configuration->get<double>(key).value());
-                        break;
+                case api::DynamicType::DOUBLE:
+                    put(key, configuration->get<double>(key).value());
+                    break;
 
-                    case api::DynamicType::ARRAY:
-                        put(key, configuration->get<std::shared_ptr<DynamicArray>>(key).value());
-                        break;
+                case api::DynamicType::ARRAY:
+                    put(key, configuration->get<std::shared_ptr<DynamicArray>>(key).value());
+                    break;
 
-                    case api::DynamicType::OBJECT:
-                        put(key, configuration->get<std::shared_ptr<DynamicObject>>(key).value());
-                        break;
+                case api::DynamicType::OBJECT:
+                    put(key, configuration->get<std::shared_ptr<DynamicObject>>(key).value());
+                    break;
 
-                    case api::DynamicType::UNDEFINED:
-                        break;
+                case api::DynamicType::UNDEFINED:
+                    break;
                 }
             }
             return shared_from_this();
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

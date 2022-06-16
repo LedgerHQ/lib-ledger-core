@@ -49,28 +49,28 @@
 #include <wallet/cosmos/cosmos.hpp>
 
 namespace ledger {
-namespace core {
-class CosmosLikeMessage : public api::CosmosLikeMessage {
-    friend api::CosmosLikeMessage;
+    namespace core {
+        class CosmosLikeMessage : public api::CosmosLikeMessage {
+            friend api::CosmosLikeMessage;
 
-   public:
-    CosmosLikeMessage(const cosmos::Message &msgData);
-    CosmosLikeMessage(const std::shared_ptr<OperationApi> &baseOp);
+          public:
+            CosmosLikeMessage(const cosmos::Message &msgData);
+            CosmosLikeMessage(const std::shared_ptr<OperationApi> &baseOp);
 
-    api::CosmosLikeMsgType getMessageType() const override;
-    std::string getRawMessageType() const override;
-    bool getSuccess() const override;
-    std::string getLog() const override;
-    std::string getIndex() const override;
+            api::CosmosLikeMsgType getMessageType() const override;
+            std::string getRawMessageType() const override;
+            bool getSuccess() const override;
+            std::string getLog() const override;
+            std::string getIndex() const override;
 
-    rapidjson::Value toJson(rapidjson::Document::AllocatorType &allocator) const;
+            rapidjson::Value toJson(rapidjson::Document::AllocatorType &allocator) const;
 
-    void setRawData(const cosmos::Message &msgData);
-    const cosmos::Message &getRawData() const;
-    const std::string &getFromAddress() const;
+            void setRawData(const cosmos::Message &msgData);
+            const cosmos::Message &getRawData() const;
+            const std::string &getFromAddress() const;
 
-   private:
-    cosmos::Message _msgData;
-};
-}  // namespace core
-}  // namespace ledger
+          private:
+            cosmos::Message _msgData;
+        };
+    } // namespace core
+} // namespace ledger

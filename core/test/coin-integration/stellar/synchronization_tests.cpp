@@ -30,10 +30,11 @@
  */
 
 #include "StellarFixture.hpp"
-#include <wallet/common/OperationQuery.h>
-#include <math/BigInt.h>
+
 #include <api/StellarLikeMemo.hpp>
 #include <api/StellarLikeMemoType.hpp>
+#include <math/BigInt.h>
+#include <wallet/common/OperationQuery.h>
 
 TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccount) {
     auto pool = newPool();
@@ -60,15 +61,15 @@ TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccount) {
     EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) > 0);
     EXPECT_TRUE(operations.size() >= 5);
 
-    for (const auto& op : operations) {
+    for (const auto &op : operations) {
         auto record = op->asStellarLikeOperation()->getRecord();
-        fmt::print("{} {} {} {}\n",   api::to_string(op->getOperationType()), op->getAmount()->toString(), op->getFees()->toString(), api::to_string(record.operationType));
+        fmt::print("{} {} {} {}\n", api::to_string(op->getOperationType()), op->getAmount()->toString(), op->getFees()->toString(), api::to_string(record.operationType));
         if (op->getOperationType() == api::OperationType::SEND) {
             EXPECT_TRUE(op->getFees()->toLong() >= 100);
         }
     }
 
-    const auto& first = operations.front();
+    const auto &first = operations.front();
 
     EXPECT_EQ(first->getAmount()->toString(), "1800038671");
     EXPECT_EQ(first->getFees()->toString(), "100");
@@ -78,8 +79,7 @@ TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccount) {
     EXPECT_EQ(first->isComplete(), true);
     EXPECT_EQ(first->getOperationType(), api::OperationType::RECEIVE);
 
-
-    const auto& second = operations[1];
+    const auto &second = operations[1];
 
     EXPECT_EQ(second->getAmount()->toString(), "50000000");
     EXPECT_EQ(second->getFees()->toString(), "100");
@@ -93,7 +93,7 @@ TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccount) {
     EXPECT_TRUE(reserve->toLong() >= (2 * 5000000));
 
     auto txFound = false;
-    for (auto& op : operations) {
+    for (auto &op : operations) {
         if (op->asStellarLikeOperation()->getRecord().transactionHash == "6c084cdf56ff11b47baeab9a17fe8dc66d8009b7f4f86101758c9e99348af9a3") {
             auto memo = op->asStellarLikeOperation()->getTransaction()->getMemo();
             EXPECT_EQ(memo->getMemoType(), api::StellarLikeMemoType::MEMO_TEXT);
@@ -131,9 +131,9 @@ TEST_F(StellarFixture, DISABLED_SynchronizeEmptyStellarAccount) {
     EXPECT_TRUE(operations.size() == 0);
 
     // Fetch the first send operation
-    for (const auto& op: operations) {
+    for (const auto &op : operations) {
         if (op->getOperationType() == api::OperationType::SEND) {
-            const auto& sop = op->asStellarLikeOperation();
+            const auto &sop = op->asStellarLikeOperation();
             ASSERT_EQ(sop->getTransaction()->getSourceAccount()->toString(), address->toString());
             ASSERT_TRUE(sop->getTransaction()->getFee()->toLong() > 0);
             auto sequence = std::dynamic_pointer_cast<api::BigIntImpl>(sop->getTransaction()->getSourceAccountSequence())->backend();
@@ -176,15 +176,15 @@ TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithManageBuyOffer) {
     EXPECT_TRUE(exists);
     auto bus = account->synchronize();
     bus->subscribe(getTestExecutionContext(),
-            make_receiver([=](const std::shared_ptr<api::Event> &event) {
-        fmt::print("Received event {}\n", api::to_string(event->getCode()));
-        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
-            return;
-        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-        EXPECT_EQ(event->getCode(),
-                  api::EventCode::SYNCHRONIZATION_SUCCEED);
-        getTestExecutionContext()->stop();
-    }));
+                   make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                       fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                       if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                           return;
+                       EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                       EXPECT_EQ(event->getCode(),
+                                 api::EventCode::SYNCHRONIZATION_SUCCEED);
+                       getTestExecutionContext()->stop();
+                   }));
     EXPECT_EQ(bus, account->synchronize());
     getTestExecutionContext()->waitUntilStopped();
     auto balance = uv::wait(account->getBalance());
@@ -215,10 +215,10 @@ TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithMultisig) {
     getTestExecutionContext()->waitUntilStopped();
     auto signers = uv::wait(account->getSigners());
     EXPECT_EQ(signers.size(), 2);
-    const auto& signer_1 = std::find_if(signers.begin(), signers.end(), [] (const stellar::AccountSigner& s) {
+    const auto &signer_1 = std::find_if(signers.begin(), signers.end(), [](const stellar::AccountSigner &s) {
         return s.key == "GAJTWW4OGH5BWFTH24C7SGIDALKI2HUVC2LXHFD533A5FIMSXE5AB3TJ";
     });
-    const auto& signer_2 = std::find_if(signers.begin(), signers.end(), [] (const stellar::AccountSigner& s) {
+    const auto &signer_2 = std::find_if(signers.begin(), signers.end(), [](const stellar::AccountSigner &s) {
         return s.key == "GDDU4HHNCSZ2BI6ELSSFKPSOBL2TEB4A3ZJWOCT2DILQKVJTZBNSOZA2";
     });
     EXPECT_NE(signer_1, signers.end());
@@ -263,10 +263,10 @@ TEST_F(StellarFixture, DISABLED_SynchronizeProtocol13) {
     EXPECT_TRUE(operations.size() >= 11);
 
     // Fetch the first send operation
-    for (const auto& op: operations) {
+    for (const auto &op : operations) {
         fmt::print("{} {} {}\n", api::to_string(op->getOperationType()), op->getAmount()->toString(), op->asStellarLikeOperation()->getRecord().transactionHash);
         if (op->getOperationType() == api::OperationType::SEND) {
-            const auto& sop = op->asStellarLikeOperation();
+            const auto &sop = op->asStellarLikeOperation();
             ASSERT_EQ(sop->getTransaction()->getSourceAccount()->toString(), address->toString());
             ASSERT_TRUE(sop->getTransaction()->getFee()->toLong() > 0);
             auto sequence = std::dynamic_pointer_cast<api::BigIntImpl>(sop->getTransaction()->getSourceAccountSequence())->backend();

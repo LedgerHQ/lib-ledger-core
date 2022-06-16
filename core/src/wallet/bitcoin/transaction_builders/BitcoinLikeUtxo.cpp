@@ -34,8 +34,7 @@
 namespace ledger {
     namespace core {
         BitcoinLikeUtxo makeUtxo(
-            BitcoinLikeBlockchainExplorerOutput const &output, api::Currency const& currency)
-        {
+            BitcoinLikeBlockchainExplorerOutput const &output, api::Currency const &currency) {
             return {
                 output.index,
                 output.transactionHash,
@@ -43,12 +42,10 @@ namespace ledger {
                 output.address,
                 output.accountUid,
                 output.script,
-                output.blockHeight
-            };
+                output.blockHeight};
         }
 
-        BitcoinLikeBlockchainExplorerOutput toExplorerOutput(BitcoinLikeUtxo const& utxo)
-        {
+        BitcoinLikeBlockchainExplorerOutput toExplorerOutput(BitcoinLikeUtxo const &utxo) {
             return {
                 utxo.index,
                 utxo.transactionHash,
@@ -57,8 +54,7 @@ namespace ledger {
                 utxo.accountUid,
                 utxo.script,
                 "",
-                utxo.blockHeight
-            };
+                utxo.blockHeight};
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

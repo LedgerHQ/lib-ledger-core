@@ -11,19 +11,19 @@
 namespace ledger {
     namespace core {
         class Secp256k1Api : public api::Secp256k1 {
-        public:
+          public:
             Secp256k1Api();
             std::vector<uint8_t> computePubKey(const std::vector<uint8_t> &privKey, bool compress) override;
-            std::vector<uint8_t> computeUncompressedPubKey(const std::vector<uint8_t> & pubKey) override;
+            std::vector<uint8_t> computeUncompressedPubKey(const std::vector<uint8_t> &pubKey) override;
             std::vector<uint8_t> sign(const std::vector<uint8_t> &privKey, const std::vector<uint8_t> &data) override;
-            bool verify(const std::vector<uint8_t> &data, const std::vector<uint8_t>& signature, const std::vector<uint8_t> &pubKey) override;
+            bool verify(const std::vector<uint8_t> &data, const std::vector<uint8_t> &signature, const std::vector<uint8_t> &pubKey) override;
 
             ~Secp256k1Api();
-        private:
-            secp256k1_context* _context;
-        };
-    }
-}
 
+          private:
+            secp256k1_context *_context;
+        };
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_SECP256K1API_H

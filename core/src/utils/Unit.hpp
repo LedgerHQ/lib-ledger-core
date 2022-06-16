@@ -37,14 +37,14 @@ namespace ledger {
          * Analogous to the "void" type but allow us to have void values in container.
          */
         class Unit {
-        public:
-            Unit() {};
-            bool operator==(const Unit&) const {return true;};
-            bool operator!=(const Unit&) const {return false;};
+          public:
+            Unit(){};
+            bool operator==(const Unit &) const { return true; };
+            bool operator!=(const Unit &) const { return false; };
         };
 
-        const Unit unit {};
-    }
-}
+        const Unit unit{};
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_UNIT_HPP

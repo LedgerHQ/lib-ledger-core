@@ -30,7 +30,9 @@
  */
 #include "BigIntImpl.hpp"
 
-namespace ledger { namespace core { namespace api {
+namespace ledger {
+    namespace core {
+        namespace api {
 
             std::shared_ptr<ledger::core::api::BigInt>
             BigIntImpl::add(const std::shared_ptr<ledger::core::api::BigInt> &i) {
@@ -64,11 +66,10 @@ namespace ledger { namespace core { namespace api {
             }
 
             std::shared_ptr<ledger::core::api::BigInt> BigIntImpl::pow(int32_t exponent) {
-                return std::shared_ptr<BigIntImpl>(new BigIntImpl(_bigi.pow((unsigned short) exponent)));
+                return std::shared_ptr<BigIntImpl>(new BigIntImpl(_bigi.pow((unsigned short)exponent)));
             }
 
-            std::string BigIntImpl::toDecimalString(int32_t precision, const std::string &decimalSeparator,
-                                                    const std::string &thousandSeparator) {
+            std::string BigIntImpl::toDecimalString(int32_t precision, const std::string &decimalSeparator, const std::string &thousandSeparator) {
                 return "";
             }
 
@@ -87,8 +88,7 @@ namespace ledger { namespace core { namespace api {
                     return _bigi.toHexString();
             }
 
-            std::shared_ptr<BigInt> BigInt::fromDecimalString(const std::string &s, int32_t precision,
-                                                              const std::string &decimalSeparator) {
+            std::shared_ptr<BigInt> BigInt::fromDecimalString(const std::string &s, int32_t precision, const std::string &decimalSeparator) {
                 std::string writer;
                 std::string decimaleWriter;
                 auto hasReachedDecimalPart = false;
@@ -123,6 +123,6 @@ namespace ledger { namespace core { namespace api {
                 return std::make_shared<BigIntImpl>(ledger::core::BigInt::fromScalar(value));
             }
 
-        }
-    }
-}
+        } // namespace api
+    }     // namespace core
+} // namespace ledger

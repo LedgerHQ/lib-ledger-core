@@ -29,13 +29,15 @@
  *
  */
 #include "DerivationPath.hpp"
-#include <string>
-#include <cstdlib>
-#include "collections/vector.hpp"
-#include <sstream>
-#include "fmt/format.h"
+
 #include "collections/strings.hpp"
+#include "collections/vector.hpp"
+#include "fmt/format.h"
+
 #include <algorithm>
+#include <cstdlib>
+#include <sstream>
+#include <string>
 
 namespace ledger {
     namespace core {
@@ -43,11 +45,9 @@ namespace ledger {
         static const auto HARD_BIT = 0x80000000;
 
         DerivationPath::DerivationPath(const std::string &path) : DerivationPath(parse(path)) {
-
         }
 
         DerivationPath::DerivationPath(const std::vector<uint32_t> &path) : _path(path) {
-
         }
 
         std::vector<uint32_t> DerivationPath::parse(const std::string &path) {
@@ -59,7 +59,7 @@ namespace ledger {
             int sepCount = 0;
             int index = 0;
 
-            auto pushSegment = [&] () {
+            auto pushSegment = [&]() {
                 if (currentNode.size() == 0 && sepCount > 0) {
                     throw Exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Invalid path format (empty segment)");
                 }
@@ -67,9 +67,9 @@ namespace ledger {
                     uint32_t value;
 
                     if (nextIntIsInHex) {
-                        value = (uint32_t) std::stoul(currentNode, nullptr, 16);
+                        value = (uint32_t)std::stoul(currentNode, nullptr, 16);
                     } else {
-                        value = (uint32_t) std::stoul(currentNode, nullptr, 10);
+                        value = (uint32_t)std::stoul(currentNode, nullptr, 10);
                     }
                     if (hardened) {
                         value = HARD_BIT | value;
@@ -84,7 +84,7 @@ namespace ledger {
 
             for (auto c : path) {
                 if (c == '/') {
-                   pushSegment();
+                    pushSegment();
                 } else if (c == '\'') {
                     hardened = true;
                 } else if (lastCharWasZero && (c == 'x' || c == 'X')) {
@@ -109,10 +109,8 @@ namespace ledger {
             return result;
         }
 
-
-
         uint32_t DerivationPath::getDepth() const {
-            return (uint32_t) _path.size();
+            return (uint32_t)_path.size();
         }
 
         uint32_t DerivationPath::getLastChildNum() const {
@@ -120,7 +118,7 @@ namespace ledger {
             return _path.back();
         }
 
-        uint32_t DerivationPath::getNonHardenedChildNum(int index) const  {
+        uint32_t DerivationPath::getNonHardenedChildNum(int index) const {
             assertIndexIsValid(index, "ledger::core::DerivationPath::getNonHardenedChildNum");
             if (isHardened(index)) {
                 return (*this)[index] & ~HARD_BIT;
@@ -169,7 +167,7 @@ namespace ledger {
             }
             auto index = 0;
             auto depth = getDepth();
-            for (const auto& childNum : _path) {
+            for (const auto &childNum : _path) {
                 auto v = ~HARD_BIT & childNum;
                 ss << v;
                 if ((HARD_BIT & childNum) == HARD_BIT)
@@ -195,7 +193,7 @@ namespace ledger {
             return isHardened(getDepth() - 1);
         }
 
-        void DerivationPath::assertIndexIsValid(int index, const std::string& method) const {
+        void DerivationPath::assertIndexIsValid(int index, const std::string &method) const {
             if (index >= getDepth()) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, fmt::format("{} - Index ({}) is out of bound. Path depth is {}", method, index, getDepth()));
             } else if (index < 0) {
@@ -204,23 +202,20 @@ namespace ledger {
         }
 
         DerivationPath::DerivationPath(const DerivationPath &path) : _path(path._path) {
-
         }
 
         DerivationPath::DerivationPath(DerivationPath &&path) : _path(path._path) {
-
         }
 
-        DerivationPath& DerivationPath::operator=(DerivationPath &&path) {
+        DerivationPath &DerivationPath::operator=(DerivationPath &&path) {
             this->_path = path._path;
             return *this;
         }
 
-        DerivationPath& DerivationPath::operator=(const DerivationPath &path) {
+        DerivationPath &DerivationPath::operator=(const DerivationPath &path) {
             this->_path = path._path;
             return *this;
         }
 
-
-    }
-}
+    } // namespace core
+} // namespace ledger

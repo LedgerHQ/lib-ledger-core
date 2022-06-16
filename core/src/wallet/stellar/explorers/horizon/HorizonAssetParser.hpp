@@ -31,17 +31,18 @@
 #ifndef LEDGER_CORE_HORIZONASSETPARSER_HPP
 #define LEDGER_CORE_HORIZONASSETPARSER_HPP
 
-#include <rapidjson/reader.h>
-#include <wallet/stellar/stellar.hpp>
-#include <utils/JsonParserPath.hpp>
-#include "HorizonFlagsParser.hpp"
 #include "HorizonArrayParser.hpp"
+#include "HorizonFlagsParser.hpp"
+
+#include <rapidjson/reader.h>
+#include <utils/JsonParserPath.hpp>
+#include <wallet/stellar/stellar.hpp>
 
 namespace ledger {
     namespace core {
 
         class HorizonAssetParser {
-        public:
+          public:
             typedef stellar::Asset Result;
             bool Null();
             bool Bool(bool b);
@@ -58,17 +59,17 @@ namespace ledger {
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
             void init(stellar::Asset *asset);
-            void setPathView(const JsonParserPathView& view);
+            void setPathView(const JsonParserPathView &view);
 
-        private:
+          private:
             JsonParserPathView _path;
-            stellar::Asset* _asset;
+            stellar::Asset *_asset;
             HorizonFlagsParser _flagsParser;
         };
 
         using HorizonAssetsParser = HorizonArrayParser<HorizonAssetParser, stellar::Asset>;
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_HORIZONASSETPARSER_HPP

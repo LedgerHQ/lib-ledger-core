@@ -29,9 +29,10 @@
  *
  */
 #include "LogPrinterSink.hpp"
-#include "utils/LambdaRunnable.hpp"
-#include "api/LogPrinter.hpp"
+
 #include "api/ExecutionContext.hpp"
+#include "api/LogPrinter.hpp"
+#include "utils/LambdaRunnable.hpp"
 
 namespace ledger {
     namespace core {
@@ -46,42 +47,41 @@ namespace ledger {
             if (!printer)
                 return;
             auto level = msg.level;
-            
+
             fmt::memory_buffer buffer;
             formatter_->format(msg, buffer);
             std::string message(buffer.data(), buffer.size());
             printer->getContext()->execute(make_runnable([printer, level, message]() {
                 switch (level) {
-                    case spd::level::trace:
-                        printer->printApdu(message);
-                        break;
-                    case spdlog::level::debug:
-                        printer->printDebug(message);
-                        break;
-                    case spdlog::level::info:
-                        printer->printInfo(message);
-                        break;
-                    case spdlog::level::warn:
-                        printer->printWarning(message);
-                        break;
-                    case spdlog::level::err:
-                        printer->printError(message);
-                        break;
-                    case spdlog::level::critical:
-                        printer->printCriticalError(message);
-                        break;
-                    case spdlog::level::off:
-                        break;
+                case spd::level::trace:
+                    printer->printApdu(message);
+                    break;
+                case spdlog::level::debug:
+                    printer->printDebug(message);
+                    break;
+                case spdlog::level::info:
+                    printer->printInfo(message);
+                    break;
+                case spdlog::level::warn:
+                    printer->printWarning(message);
+                    break;
+                case spdlog::level::err:
+                    printer->printError(message);
+                    break;
+                case spdlog::level::critical:
+                    printer->printCriticalError(message);
+                    break;
+                case spdlog::level::off:
+                    break;
                 }
             }));
         }
 
         void LogPrinterSink::flush_() {
-
         }
 
         const std::weak_ptr<api::LogPrinter> &LogPrinterSink::getPrinter() const {
             return _printer;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

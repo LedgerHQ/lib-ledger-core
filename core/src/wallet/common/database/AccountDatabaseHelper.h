@@ -31,29 +31,28 @@
 #ifndef LEDGER_CORE_ACCOUNTDATABASEHELPER_H
 #define LEDGER_CORE_ACCOUNTDATABASEHELPER_H
 
-#include <string>
-#include <soci.h>
-#include <list>
 #include <api/Block.hpp>
+#include <list>
+#include <soci.h>
+#include <string>
 #include <utils/Option.hpp>
 namespace ledger {
     namespace core {
 
         class AccountDatabaseHelper {
-        public:
-            static bool accountExists(soci::session& sql, const std::string& walletUid, int32_t index);
-            static int32_t getAccountsCount(soci::session& sql, const std::string& walletUid);
-            static void createAccount(soci::session& sql, const std::string& walletUid, int32_t index);
-            static void removeAccount(soci::session& sql, const std::string& walletUid, int32_t index);
-            static void removeBlockOperation(soci::session& sql, const std::string& accountUid,  const std::vector<std::string> blocks);
-            static std::string createAccountUid(const std::string& walletUid, int32_t accountIndex);
+          public:
+            static bool accountExists(soci::session &sql, const std::string &walletUid, int32_t index);
+            static int32_t getAccountsCount(soci::session &sql, const std::string &walletUid);
+            static void createAccount(soci::session &sql, const std::string &walletUid, int32_t index);
+            static void removeAccount(soci::session &sql, const std::string &walletUid, int32_t index);
+            static void removeBlockOperation(soci::session &sql, const std::string &accountUid, const std::vector<std::string> blocks);
+            static std::string createAccountUid(const std::string &walletUid, int32_t accountIndex);
             static std::string createERC20AccountUid(const std::string &ethAccountUid, const std::string &contractAddress);
-            static int32_t computeNextAccountIndex(soci::session& sql, const std::string& walletUid);
-            static std::list<int32_t>& getAccountsIndexes(soci::session& sql, const std::string& walletUid, int32_t from, int32_t count, std::list<int32_t>& out);
+            static int32_t computeNextAccountIndex(soci::session &sql, const std::string &walletUid);
+            static std::list<int32_t> &getAccountsIndexes(soci::session &sql, const std::string &walletUid, int32_t from, int32_t count, std::list<int32_t> &out);
             static Option<api::Block> getLastBlockWithOperations(soci::session &sql, const std::string &accountUid);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ACCOUNTDATABASEHELPER_H

@@ -34,11 +34,11 @@
 using namespace ledger::core;
 
 TEST(Hex, toByteArray) {
-    EXPECT_EQ(hex::toByteArray("DEADBEEF"), std::vector<uint8_t >({0xDE, 0xAD, 0xBE, 0xEF}));
-    EXPECT_EQ(hex::toByteArray("EADBEEF"), std::vector<uint8_t >({0xE, 0xAD, 0xBE, 0xEF}));
-    EXPECT_EQ(hex::toByteArray(""), std::vector<uint8_t >({}));
-    EXPECT_EQ(hex::toByteArray("deadbeef"), std::vector<uint8_t >({0xDE, 0xAD, 0xBE, 0xEF}));
-    EXPECT_EQ(hex::toByteArray("eAdBeEf"), std::vector<uint8_t >({0xE, 0xAD, 0xBE, 0xEF}));
+    EXPECT_EQ(hex::toByteArray("DEADBEEF"), std::vector<uint8_t>({0xDE, 0xAD, 0xBE, 0xEF}));
+    EXPECT_EQ(hex::toByteArray("EADBEEF"), std::vector<uint8_t>({0xE, 0xAD, 0xBE, 0xEF}));
+    EXPECT_EQ(hex::toByteArray(""), std::vector<uint8_t>({}));
+    EXPECT_EQ(hex::toByteArray("deadbeef"), std::vector<uint8_t>({0xDE, 0xAD, 0xBE, 0xEF}));
+    EXPECT_EQ(hex::toByteArray("eAdBeEf"), std::vector<uint8_t>({0xE, 0xAD, 0xBE, 0xEF}));
 }
 
 TEST(Hex, toString) {

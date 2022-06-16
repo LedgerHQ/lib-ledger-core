@@ -32,24 +32,24 @@
 #ifndef LEDGER_CORE_DATABASESESSIONPOOL_HPP
 #define LEDGER_CORE_DATABASESESSIONPOOL_HPP
 
-#include <soci.h>
+#include <api/DatabaseBackendType.hpp>
 #include <api/ExecutionContext.hpp>
 #include <async/Future.hpp>
 #include <database/DatabaseBackend.hpp>
 #include <debug/LoggerStreamBuffer.h>
-#include <api/DatabaseBackendType.hpp>
+#include <soci.h>
 
 namespace ledger {
     namespace core {
         class DatabaseSessionPool {
-        public:
+          public:
             DatabaseSessionPool(const std::shared_ptr<DatabaseBackend> &backend,
                                 const std::shared_ptr<api::PathResolver> &resolver,
                                 const std::shared_ptr<spdlog::logger> &logger,
                                 const std::string &dbName,
                                 const std::string &password);
-            soci::connection_pool& getPool();
-            soci::connection_pool& getReadonlyPool();
+            soci::connection_pool &getPool();
+            soci::connection_pool &getReadonlyPool();
             ~DatabaseSessionPool();
 
             static FuturePtr<DatabaseSessionPool> getSessionPool(
@@ -58,8 +58,7 @@ namespace ledger {
                 const std::shared_ptr<api::PathResolver> &resolver,
                 const std::shared_ptr<spdlog::logger> &logger,
                 const std::string &dbName,
-                const std::string &password = ""
-            );
+                const std::string &password = "");
 
             static const int CURRENT_DATABASE_SCHEME_VERSION = 29;
 
@@ -70,15 +69,15 @@ namespace ledger {
             bool isSqlite() const;
             bool isPostgres() const;
 
-        private:
+          private:
             std::shared_ptr<DatabaseBackend> _backend;
             soci::connection_pool _pool;
             soci::connection_pool _readonlyPool;
-            std::ostream* _logger;
+            std::ostream *_logger;
             LoggerStreamBuffer _buffer;
             api::DatabaseBackendType _type;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_DATABASESESSIONPOOL_HPP

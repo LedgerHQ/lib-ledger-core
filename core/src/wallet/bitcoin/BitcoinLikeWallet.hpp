@@ -31,32 +31,32 @@
 #ifndef LEDGER_CORE_BITCOINLIKEWALLET_HPP
 #define LEDGER_CORE_BITCOINLIKEWALLET_HPP
 
+#include "api/BitcoinLikeNetworkParameters.hpp"
 #include "api/BitcoinLikeWallet.hpp"
-#include <memory>
 #include "explorers/BitcoinLikeBlockchainExplorer.hpp"
 #include "keychains/BitcoinLikeKeychain.hpp"
 #include "synchronizers/BitcoinLikeAccountSynchronizer.hpp"
-#include "wallet/common/AbstractWallet.hpp"
-#include "api/BitcoinLikeNetworkParameters.hpp"
-#include "wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp"
 #include "wallet/bitcoin/database/BitcoinLikeWalletDatabase.h"
+#include "wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp"
+#include "wallet/common/AbstractWallet.hpp"
+
+#include <memory>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeWallet : public virtual api::BitcoinLikeWallet, public virtual AbstractWallet {
-        public:
+          public:
             static const api::WalletType type;
-            using BitcoinLikeAccountSynchronizerFactory = std::function<std::shared_ptr<BitcoinLikeAccountSynchronizer> ()>;
+            using BitcoinLikeAccountSynchronizerFactory = std::function<std::shared_ptr<BitcoinLikeAccountSynchronizer>()>;
             BitcoinLikeWallet(
-                const std::string& name,
-                const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
-                const std::shared_ptr<BitcoinLikeKeychainFactory>& keychainFactory,
-                const BitcoinLikeAccountSynchronizerFactory& synchronizerFactory,
-                const std::shared_ptr<WalletPool>& pool,
-                const api::Currency& network,
-                const std::shared_ptr<DynamicObject>& configuration,
-                const DerivationScheme& scheme
-            );
+                const std::string &name,
+                const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer,
+                const std::shared_ptr<BitcoinLikeKeychainFactory> &keychainFactory,
+                const BitcoinLikeAccountSynchronizerFactory &synchronizerFactory,
+                const std::shared_ptr<WalletPool> &pool,
+                const api::Currency &network,
+                const std::shared_ptr<DynamicObject> &configuration,
+                const DerivationScheme &scheme);
 
             // API methods
             bool isSynchronizing() override;
@@ -76,21 +76,20 @@ namespace ledger {
 
             std::chrono::seconds getMempoolGracePeriod() const override { return _mempoolGracePeriod; }
 
-        protected:
+          protected:
             std::shared_ptr<AbstractAccount>
             createAccountInstance(soci::session &sql, const std::string &accountUid) override;
 
-        private:
+          private:
             std::shared_ptr<BitcoinLikeWallet> getSelf();
 
-        private:
+          private:
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<BitcoinLikeKeychainFactory> _keychainFactory;
             BitcoinLikeAccountSynchronizerFactory _synchronizerFactory;
             std::chrono::seconds _mempoolGracePeriod;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_BITCOINLIKEWALLET_HPP

@@ -29,25 +29,24 @@
  *
  */
 
-#include "../BaseFixture.h"
-#include "../../fixtures/testnet_xpub_fixtures.h"
 #include "../../fixtures/btg_xpub_fixtures.h"
-#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
-#include <api/KeychainEngines.hpp>
+#include "../../fixtures/testnet_xpub_fixtures.h"
+#include "../BaseFixture.h"
 #include "transaction_test_helper.h"
 
-#include <utils/hex.h>
-#include <utils/DateUtils.hpp>
+#include <api/KeychainEngines.hpp>
 #include <crypto/HASH160.hpp>
-
 #include <iostream>
+#include <utils/DateUtils.hpp>
+#include <utils/hex.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 using namespace std;
 struct BitcoinMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
         testData.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
-        testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
-        testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
+        testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
+        testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "49'/<coin_type>'/<account>'/<node>/<address>");
         testData.walletName = randomWalletName();
         testData.currencyName = "bitcoin_testnet";
         testData.inflate_btc = ledger::testing::testnet_xpub::inflate;
@@ -82,8 +81,8 @@ TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithWipeToAddress) {
     auto txSerialized = tx->serialize();
     auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), txSerialized, 0);
     auto parsedTxSerialized = parsedTx->serialize();
-    cout<<"tx->serialize(): "<<hex::toString(txSerialized)<<endl;
-    cout<<"parsedTx->serialize(): "<<hex::toString(parsedTxSerialized)<<endl;
+    cout << "tx->serialize(): " << hex::toString(txSerialized) << endl;
+    cout << "parsedTx->serialize(): " << hex::toString(parsedTxSerialized) << endl;
     EXPECT_EQ(txSerialized, parsedTxSerialized);
 }
 
@@ -101,12 +100,11 @@ TEST_F(BitcoinMakeP2SHTransaction, ParseSignedRawTransaction) {
     EXPECT_EQ(tx->getOutputs()[1]->getAddress().value_or(""), "2MsMvWTbPMg4eiSudDa5i7y8XNC8fLCok3c");
 }
 
-
 struct BTGMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
-        testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
-        testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
+        testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
+        testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "49'/<coin_type>'/<account>'/<node>/<address>");
         testData.walletName = randomWalletName();
         testData.currencyName = "bitcoin_gold";
         testData.inflate_btc = ledger::testing::btg_xpub::inflate;

@@ -32,11 +32,11 @@
 #include "soci-backend-utils.h"
 
 namespace soci {
-    bool is_sqlite_backend(soci::session& sql) {
+    bool is_sqlite_backend(soci::session &sql) {
         return sql.get_backend_name() == "sqlite3";
     }
 
-    bool is_postgres_backend(soci::session& sql) {
+    bool is_postgres_backend(soci::session &sql) {
         return sql.get_backend_name() == "postgresql";
     }
-}
+} // namespace soci

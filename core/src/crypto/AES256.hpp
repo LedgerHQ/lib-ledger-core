@@ -32,26 +32,26 @@
 #define LEDGER_CORE_AES256_HPP
 
 #include "../api/RandomNumberGenerator.hpp"
+
 #include <vector>
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER)
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 namespace ledger {
     namespace core {
         class AES256 {
-        public:
-            static std::vector<uint8_t> encrypt(const std::vector<uint8_t>& IV, const std::vector<uint8_t>& key, const std::vector<uint8_t>& data);
-            static std::vector<uint8_t> decrypt(const std::vector<uint8_t>& IV, const std::vector<uint8_t>& key, const std::vector<uint8_t>& data);
+          public:
+            static std::vector<uint8_t> encrypt(const std::vector<uint8_t> &IV, const std::vector<uint8_t> &key, const std::vector<uint8_t> &data);
+            static std::vector<uint8_t> decrypt(const std::vector<uint8_t> &IV, const std::vector<uint8_t> &key, const std::vector<uint8_t> &data);
             static LIBCORE_EXPORT const uint32_t BLOCK_SIZE;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_AES256_HPP

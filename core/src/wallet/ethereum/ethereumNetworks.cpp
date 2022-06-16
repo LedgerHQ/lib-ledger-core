@@ -29,6 +29,7 @@
  *
  */
 #include "ethereumNetworks.hpp"
+
 #include <utils/Exception.hpp>
 namespace ledger {
     namespace core {
@@ -39,45 +40,41 @@ namespace ledger {
             const api::EthereumLikeNetworkParameters getEthLikeNetworkParameters(const std::string &networkName) {
                 if (networkName == "ethereum") {
                     static const api::EthereumLikeNetworkParameters ETHEREUM(
-                            "eth",
-                            "Ethereum signed message:\n",
-                            "1",
-                            {0x04, 0x88, 0xB2, 0x1E},
-                            {},
-                            0
-                    );
+                        "eth",
+                        "Ethereum signed message:\n",
+                        "1",
+                        {0x04, 0x88, 0xB2, 0x1E},
+                        {},
+                        0);
                     return ETHEREUM;
                 } else if (networkName == "ethereum_ropsten") {
                     static const api::EthereumLikeNetworkParameters ETHEREUM_ROPSTEN(
-                            "eth_ropsten",
-                            "Ethereum signed message:\n",
-                            "3",
-                            {0x04, 0x35, 0x87, 0xCF},
-                            {},
-                            0
-                    );
+                        "eth_ropsten",
+                        "Ethereum signed message:\n",
+                        "3",
+                        {0x04, 0x35, 0x87, 0xCF},
+                        {},
+                        0);
                     return ETHEREUM_ROPSTEN;
                 } else if (networkName == "ethereum_classic") {
                     static const api::EthereumLikeNetworkParameters ETHEREUM_CLASSIC(
-                            "etc",
-                            "Ethereum signed message:\n",
-                            "61",
-                            {0x04, 0x88, 0xB2, 0x1E},
-                            {},
-                            0
-                    );
+                        "etc",
+                        "Ethereum signed message:\n",
+                        "61",
+                        {0x04, 0x88, 0xB2, 0x1E},
+                        {},
+                        0);
                     return ETHEREUM_CLASSIC;
                 }
 
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
             }
 
-            const std::vector<api::EthereumLikeNetworkParameters> ALL_ETH
-            ({
-                     getEthLikeNetworkParameters("ethereum"),
-                     getEthLikeNetworkParameters("ethereum_ropsten"),
-                     getEthLikeNetworkParameters("ethereum_classic"),
+            const std::vector<api::EthereumLikeNetworkParameters> ALL_ETH({
+                getEthLikeNetworkParameters("ethereum"),
+                getEthLikeNetworkParameters("ethereum_ropsten"),
+                getEthLikeNetworkParameters("ethereum_classic"),
             });
-        }
-    }
-}
+        } // namespace networks
+    }     // namespace core
+} // namespace ledger

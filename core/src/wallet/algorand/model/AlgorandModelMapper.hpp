@@ -34,41 +34,40 @@
 #include "transactions/AlgorandPayment.hpp"
 
 #include <api/AlgorandAssetAmount.hpp>
-#include <api/AlgorandAssetParams.hpp>
 #include <api/AlgorandAssetConfigurationInfo.hpp>
 #include <api/AlgorandAssetFreezeInfo.hpp>
+#include <api/AlgorandAssetParams.hpp>
 #include <api/AlgorandAssetTransferInfo.hpp>
 #include <api/AlgorandParticipationInfo.hpp>
 #include <api/AlgorandPaymentInfo.hpp>
 
 namespace ledger {
-namespace core {
-namespace algorand {
-namespace model {
+    namespace core {
+        namespace algorand {
+            namespace model {
 
-    api::AlgorandAssetAmount toAPI(const AssetAmount& amount);
-    AssetAmount fromAPI(const api::AlgorandAssetAmount& amount);
+                api::AlgorandAssetAmount toAPI(const AssetAmount &amount);
+                AssetAmount fromAPI(const api::AlgorandAssetAmount &amount);
 
-    api::AlgorandAssetParams toAPI(const AssetParams& params);
-    AssetParams fromAPI(const api::AlgorandAssetParams& params);
+                api::AlgorandAssetParams toAPI(const AssetParams &params);
+                AssetParams fromAPI(const api::AlgorandAssetParams &params);
 
-    api::AlgorandAssetConfigurationInfo toAPI(const AssetConfigTxnFields& fields);
-    AssetConfigTxnFields fromAPI(const api::AlgorandAssetConfigurationInfo& info);
+                api::AlgorandAssetConfigurationInfo toAPI(const AssetConfigTxnFields &fields);
+                AssetConfigTxnFields fromAPI(const api::AlgorandAssetConfigurationInfo &info);
 
-    api::AlgorandAssetFreezeInfo toAPI(const AssetFreezeTxnFields& fields);
-    AssetFreezeTxnFields fromAPI(const api::AlgorandAssetFreezeInfo& info);
+                api::AlgorandAssetFreezeInfo toAPI(const AssetFreezeTxnFields &fields);
+                AssetFreezeTxnFields fromAPI(const api::AlgorandAssetFreezeInfo &info);
 
-    api::AlgorandAssetTransferInfo toAPI(const AssetTransferTxnFields& fields);
-    AssetTransferTxnFields fromAPI(const api::AlgorandAssetTransferInfo& info);
+                api::AlgorandAssetTransferInfo toAPI(const AssetTransferTxnFields &fields);
+                AssetTransferTxnFields fromAPI(const api::AlgorandAssetTransferInfo &info);
 
-    api::AlgorandParticipationInfo toAPI(const KeyRegTxnFields& fields);
-    KeyRegTxnFields fromAPI(const api::AlgorandParticipationInfo& info);
+                api::AlgorandParticipationInfo toAPI(const KeyRegTxnFields &fields);
+                KeyRegTxnFields fromAPI(const api::AlgorandParticipationInfo &info);
 
-    api::AlgorandPaymentInfo toAPI(const PaymentTxnFields& fields);
-    PaymentTxnFields fromAPI(const api::AlgorandPaymentInfo& info);
+                api::AlgorandPaymentInfo toAPI(const PaymentTxnFields &fields);
+                PaymentTxnFields fromAPI(const api::AlgorandPaymentInfo &info);
 
-} // namespace model
-} // namespace algorand
-} // namespace core
+            } // namespace model
+        }     // namespace algorand
+    }         // namespace core
 } // namespace ledger
-

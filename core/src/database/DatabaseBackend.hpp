@@ -33,40 +33,39 @@
 #define LEDGER_CORE_DATABASEBACKEND_HPP
 
 #include "../api/DatabaseBackend.hpp"
-#include <soci.h>
-#include <memory>
 #include "../api/PathResolver.hpp"
+
+#include <memory>
+#include <soci.h>
 
 namespace ledger {
     namespace core {
         class DatabaseBackend : public api::DatabaseBackend, public std::enable_shared_from_this<DatabaseBackend> {
-        public:
+          public:
             DatabaseBackend() : _enableLogging(false) {}
 
             virtual void init(
-                    const std::shared_ptr<api::PathResolver> &resolver,
-                    const std::string &dbName,
-                    const std::string &password,
-                    soci::session &session
-            ) = 0;
+                const std::shared_ptr<api::PathResolver> &resolver,
+                const std::string &dbName,
+                const std::string &password,
+                soci::session &session) = 0;
 
             virtual void setPassword(const std::string &password,
                                      soci::session &session) = 0;
 
             virtual void changePassword(
-                    const std::string &oldPassword,
-                    const std::string &newPassword,
-                    soci::session &session
-            ) = 0;
+                const std::string &oldPassword,
+                const std::string &newPassword,
+                soci::session &session) = 0;
 
             std::shared_ptr<api::DatabaseBackend> enableQueryLogging(bool enable) override;
 
             bool isLoggingEnabled() override;
 
-        private:
+          private:
             bool _enableLogging;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_DATABASEBACKEND_HPP

@@ -29,6 +29,7 @@
  *
  */
 #include "LedgerCoreImpl.hpp"
+
 #include "api/LedgerCore.hpp"
 #include "ledger-core.h"
 

@@ -30,13 +30,15 @@
  */
 
 #include "logger.hpp"
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/null_sink.h>
+
 #include "LogPrinterSink.hpp"
 #include "RotatingEncryptableSink.hpp"
-#include "api/PathResolver.hpp"
-#include <memory>
 #include "api/ExecutionContext.hpp"
+#include "api/PathResolver.hpp"
+
+#include <memory>
+#include <spdlog/sinks/null_sink.h>
+#include <spdlog/spdlog.h>
 
 namespace ledger {
     namespace core {
@@ -46,8 +48,7 @@ namespace ledger {
             const std::shared_ptr<api::PathResolver> &resolver,
             const std::shared_ptr<api::LogPrinter> &printer,
             size_t maxSize,
-            bool enabled
-        ) {
+            bool enabled) {
             if (enabled) {
                 std::vector<spdlog::sink_ptr> sinks;
                 sinks.push_back(std::make_shared<LogPrinterSink>(printer));
@@ -69,10 +70,10 @@ namespace ledger {
         }
 
         std::shared_ptr<spdlog::logger>
-        logger::trace(const std::string& purpose, const std::string &tracePrefix, const std::shared_ptr<spdlog::logger> &logger) {
+        logger::trace(const std::string &purpose, const std::string &tracePrefix, const std::shared_ptr<spdlog::logger> &logger) {
             auto name = fmt::format("{}_{}", logger->name(), purpose);
             std::vector<spdlog::sink_ptr> sinks;
-            for (const auto& sink : logger->sinks()) {
+            for (const auto &sink : logger->sinks()) {
                 auto printer = std::dynamic_pointer_cast<LogPrinterSink>(sink);
                 if (printer) {
                     auto apiPrinter = printer->getPrinter().lock();
@@ -80,7 +81,6 @@ namespace ledger {
                         sinks.push_back(std::make_shared<LogPrinterSink>(apiPrinter));
                     }
                 }
-
             }
             auto traceLogger = std::make_shared<spdlog::logger>(name, begin(sinks), end(sinks));
             spdlog::drop(name);
@@ -89,5 +89,5 @@ namespace ledger {
             traceLogger->set_pattern(fmt::format("%Y-%m-%dT%XZ%z %L: [{}] %v", tracePrefix));
             return traceLogger;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

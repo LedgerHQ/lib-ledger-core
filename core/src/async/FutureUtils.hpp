@@ -31,34 +31,35 @@
 
 #pragma once
 
-#include <exception>
-#include <memory>
-#include <functional>
-#include "Deffered.hpp"
-#include "../api/ExecutionContext.hpp"
-#include "../utils/Exception.hpp"
-#include "../traits/callback_traits.hpp"
 #include "../api/Error.hpp"
+#include "../api/ExecutionContext.hpp"
+#include "../traits/callback_traits.hpp"
+#include "../utils/Exception.hpp"
+#include "Deffered.hpp"
 #include "Future.hpp"
+
+#include <exception>
+#include <functional>
+#include <memory>
 
 namespace ledger {
     namespace core {
 
-        template<typename T>
+        template <typename T>
         struct Container {
             std::vector<T> result;
             std::mutex lock;
             uint32_t count;
         };
-        
-        template<typename T>
-        Future<std::vector<T>> executeAll(const std::shared_ptr<api::ExecutionContext>& context, std::vector<Future<T>>& futures) {
+
+        template <typename T>
+        Future<std::vector<T>> executeAll(const std::shared_ptr<api::ExecutionContext> &context, std::vector<Future<T>> &futures) {
             auto container = std::make_shared<Container<T>>();
             container->count = 0;
             container->result.resize(futures.size());
             auto deffered = std::make_shared<Deffered<std::vector<T>>>();
             for (int i = 0; i < futures.size(); ++i) {
-                futures[i].onComplete(context, [container, deffered, i](const Try<T>& result) {
+                futures[i].onComplete(context, [container, deffered, i](const Try<T> &result) {
                     std::lock_guard<std::mutex> lock(container->lock);
                     if (deffered->hasValue())
                         return;
@@ -67,13 +68,12 @@ namespace ledger {
                         container->count++;
                         if (container->count == container->result.size())
                             deffered->setValue(container->result);
-                    }
-                    else {
+                    } else {
                         deffered->setError(result.getFailure());
                     }
                 });
             }
             return Future<std::vector<T>>(deffered);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

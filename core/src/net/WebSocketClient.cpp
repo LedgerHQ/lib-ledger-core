@@ -30,8 +30,10 @@
  */
 
 #include "WebSocketClient.h"
-#include <async/Promise.hpp>
+
 #include "WebSocketConnection.h"
+
+#include <async/Promise.hpp>
 
 namespace ledger {
     namespace core {
@@ -43,9 +45,9 @@ namespace ledger {
         FuturePtr<WebSocketConnection>
         WebSocketClient::connect(const std::string &url, const WebSocketEventHandler &handler) {
             Promise<std::shared_ptr<WebSocketConnection>> p;
-            auto conn = std::make_shared<WebSocketConnection>(_client,  [handler, p] (WebSocketEventType type,
-                                                                                  const std::shared_ptr<WebSocketConnection>& connection,
-                                                                                  const Option<std::string>& message, Option<api::ErrorCode> error) mutable {
+            auto conn = std::make_shared<WebSocketConnection>(_client, [handler, p](WebSocketEventType type,
+                                                                                    const std::shared_ptr<WebSocketConnection> &connection,
+                                                                                    const Option<std::string> &message, Option<api::ErrorCode> error) mutable {
                 handler(type, connection, message, error);
                 if (!p.isCompleted() && type == WebSocketEventType::CONNECT) {
                     p.success(connection);
@@ -56,5 +58,5 @@ namespace ledger {
             _client->connect(url, conn->getApiConnection());
             return p.getFuture();
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

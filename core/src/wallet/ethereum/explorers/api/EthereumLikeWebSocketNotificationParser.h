@@ -28,44 +28,39 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMLIKEWEBSOCKETNOTIFICATIONPARSER_H
 #define LEDGER_CORE_ETHEREUMLIKEWEBSOCKETNOTIFICATIONPARSER_H
 
-
-#include <cstdio>
-#include <cstdint>
-#include <rapidjson/reader.h>
-#include <stack>
-#include <net/HttpClient.hpp>
-#include <collections/collections.hpp>
 #include "../EthereumLikeBlockchainExplorer.h"
 #include "EthereumLikeBlockParser.hpp"
 #include "EthereumLikeTransactionParser.hpp"
+
+#include <collections/collections.hpp>
+#include <cstdint>
+#include <cstdio>
+#include <net/HttpClient.hpp>
+#include <rapidjson/reader.h>
+#include <stack>
 #include <wallet/common/explorers/api/AbstractWebSocketNotificationParser.h>
 
 namespace ledger {
     namespace core {
         class EthereumLikeWebSocketNotificationParser : public AbstractWebSocketNotificationParser<EthereumLikeBlockchainExplorerTransaction, EthereumLikeBlockchainExplorer::Block, EthereumLikeTransactionParser, EthereumLikeBlockParser> {
-        public:
-
-
-            explicit EthereumLikeWebSocketNotificationParser(std::string& lastKey) : _lastKey(lastKey),
-                                                                                    _blockParser(lastKey),
-                                                                                    _transactionParser(lastKey) {
-
+          public:
+            explicit EthereumLikeWebSocketNotificationParser(std::string &lastKey) : _lastKey(lastKey),
+                                                                                     _blockParser(lastKey),
+                                                                                     _transactionParser(lastKey) {
             }
 
-            bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy) override {
+            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) override {
                 _lastKey = std::string(str, length);
                 return AbstractWebSocketNotificationParser<EthereumLikeBlockchainExplorerTransaction,
-                        EthereumLikeBlockchainExplorer::Block,
-                        EthereumLikeTransactionParser,
-                        EthereumLikeBlockParser>::Key(str, length, copy);
+                                                           EthereumLikeBlockchainExplorer::Block,
+                                                           EthereumLikeTransactionParser,
+                                                           EthereumLikeBlockParser>::Key(str, length, copy);
             }
 
-        protected:
-
+          protected:
             EthereumLikeTransactionParser &getTransactionParser() override {
                 return _transactionParser;
             };
@@ -76,13 +71,12 @@ namespace ledger {
                 return _lastKey;
             };
 
-        private:
-            std::string& _lastKey;
+          private:
+            std::string &_lastKey;
             EthereumLikeBlockParser _blockParser;
             EthereumLikeTransactionParser _transactionParser;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMLIKEWEBSOCKETNOTIFICATIONPARSER_H

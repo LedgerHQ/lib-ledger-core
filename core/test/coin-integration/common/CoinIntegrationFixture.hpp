@@ -32,49 +32,51 @@
 #ifndef LEDGER_CORE_COININTEGRATIONFIXTURE_HPP
 #define LEDGER_CORE_COININTEGRATIONFIXTURE_HPP
 
-#include <gtest/gtest.h>
-#include <UvThreadDispatcher.hpp>
-#include <src/database/DatabaseSessionPool.hpp>
-#include <NativePathResolver.hpp>
-#include <unordered_set>
-#include <src/wallet/pool/WalletPool.hpp>
-#include <CoutLogPrinter.hpp>
-#include <src/api/DynamicObject.hpp>
-#include <wallet/common/CurrencyBuilder.hpp>
-#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
-#include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
-#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
-#include <wallet/common/database/AccountDatabaseHelper.h>
-#include <wallet/pool/database/PoolDatabaseHelper.hpp>
-#include <utils/JSONUtils.h>
-#include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
-#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
-#include <wallet/ethereum/EthereumLikeAccount.h>
-#include <api/BitcoinLikeOperation.hpp>
-#include <api/BitcoinLikeTransaction.hpp>
-#include <api/BitcoinLikeInput.hpp>
-#include <api/BitcoinLikeOutput.hpp>
-#include <api/BigInt.hpp>
-#include <CppHttpLibClient.hpp>
-#include <events/LambdaEventReceiver.hpp>
-#include <soci.h>
-#include <api/Account.hpp>
-#include <api/BitcoinLikeAccount.hpp>
-#include <FakeWebSocketClient.h>
-#include <OpenSSLRandomNumberGenerator.hpp>
-#include <FilesystemUtils.hpp>
-#include <utils/hex.h>
 #include "../integration/IntegrationEnvironment.h"
 #include "MemPreferencesBackend.hpp"
+
+#include <CoutLogPrinter.hpp>
+#include <CppHttpLibClient.hpp>
+#include <FakeWebSocketClient.h>
+#include <FilesystemUtils.hpp>
+#include <NativePathResolver.hpp>
+#include <OpenSSLRandomNumberGenerator.hpp>
+#include <UvThreadDispatcher.hpp>
+#include <api/Account.hpp>
+#include <api/BigInt.hpp>
+#include <api/BitcoinLikeAccount.hpp>
+#include <api/BitcoinLikeInput.hpp>
+#include <api/BitcoinLikeOperation.hpp>
+#include <api/BitcoinLikeOutput.hpp>
+#include <api/BitcoinLikeTransaction.hpp>
+#include <events/LambdaEventReceiver.hpp>
+#include <gtest/gtest.h>
+#include <soci.h>
+#include <src/api/DynamicObject.hpp>
+#include <src/database/DatabaseSessionPool.hpp>
+#include <src/wallet/pool/WalletPool.hpp>
+#include <unordered_set>
+#include <utils/JSONUtils.h>
+#include <utils/hex.h>
+#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
+#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
+#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
+#include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
+#include <wallet/common/CurrencyBuilder.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
+#include <wallet/ethereum/EthereumLikeAccount.h>
+#include <wallet/pool/database/PoolDatabaseHelper.hpp>
 
 using namespace ledger::core; // don't do this at home. Only for testing contexts
 using namespace ledger::core::test;
 
-enum SynchronizationResult {OLD_ACCOUNT, NEW_ACCOUNT};
+enum SynchronizationResult { OLD_ACCOUNT,
+                             NEW_ACCOUNT };
 
 template <typename Wallet, typename Account>
 class CoinIntegrationFixture : public ::testing::Test {
-public:
+  public:
     void SetUp() override {
         ::testing::Test::SetUp();
         FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
@@ -94,56 +96,52 @@ public:
 
     virtual std::shared_ptr<WalletPool> newPool(std::string poolName = "my_pool") {
         return WalletPool::newInstance(
-                poolName,
-                "",
-                http,
-                ws,
-                resolver,
-                printer,
-                dispatcher,
-                rng,
-                backend,
-                api::DynamicObject::newInstance(),
-                std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-                std::make_shared<ledger::core::test::MemPreferencesBackend>()
-        );
+            poolName,
+            "",
+            http,
+            ws,
+            resolver,
+            printer,
+            dispatcher,
+            rng,
+            backend,
+            api::DynamicObject::newInstance(),
+            std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+            std::make_shared<ledger::core::test::MemPreferencesBackend>());
     }
 
-    std::shared_ptr<uv::SequentialExecutionContext> getTestExecutionContext()
-    {
+    std::shared_ptr<uv::SequentialExecutionContext> getTestExecutionContext() {
         return std::dynamic_pointer_cast<uv::SequentialExecutionContext>(dispatcher->getSerialExecutionContext("__test__"));
     }
 
-    void injectCurrency(const std::shared_ptr<WalletPool>& pool, const api::Currency& currency) {
+    void injectCurrency(const std::shared_ptr<WalletPool> &pool, const api::Currency &currency) {
         uv::wait(pool->addCurrency(currency));
     }
 
-    std::shared_ptr<Wallet> newWallet(  const std::shared_ptr<WalletPool>& pool,
-                                        const std::string& walletName,
-                                        const std::string& currencyName,
-                                        const std::shared_ptr<api::DynamicObject> &configuration
-                                     ) {
+    std::shared_ptr<Wallet> newWallet(const std::shared_ptr<WalletPool> &pool,
+                                      const std::string &walletName,
+                                      const std::string &currencyName,
+                                      const std::shared_ptr<api::DynamicObject> &configuration) {
         return std::dynamic_pointer_cast<Wallet>(uv::wait(pool->createWallet(walletName, currencyName, configuration)));
     }
 
-    std::shared_ptr<Account> newAccount(const std::shared_ptr<AbstractWallet>& wallet,
-                                                                 int32_t index,
-                                                                 const api::AccountCreationInfo &info) {
+    std::shared_ptr<Account> newAccount(const std::shared_ptr<AbstractWallet> &wallet,
+                                        int32_t index,
+                                        const api::AccountCreationInfo &info) {
         auto i = info;
         i.index = index;
         return std::dynamic_pointer_cast<Account>(uv::wait(wallet->newAccountWithInfo(i)));
     }
 
-    std::shared_ptr<Account> newAccount(const std::shared_ptr<AbstractWallet>& wallet,
-                                                                 int32_t index,
-                                                                 const api::ExtendedKeyAccountCreationInfo& info) {
+    std::shared_ptr<Account> newAccount(const std::shared_ptr<AbstractWallet> &wallet,
+                                        int32_t index,
+                                        const api::ExtendedKeyAccountCreationInfo &info) {
         auto i = info;
         i.index = index;
         return std::dynamic_pointer_cast<Account>(uv::wait(wallet->newAccountWithExtendedKeyInfo(i)));
     }
 
-
-    Try<SynchronizationResult> synchronizeAccount(const std::shared_ptr<AbstractAccount>& account) {
+    Try<SynchronizationResult> synchronizeAccount(const std::shared_ptr<AbstractAccount> &account) {
         Promise<SynchronizationResult> p;
         auto bus = account->synchronize();
         bus->subscribe(dispatcher->getSerialExecutionContext("callback"),
@@ -175,7 +173,6 @@ public:
     std::shared_ptr<CppHttpLibClient> http;
     std::shared_ptr<FakeWebSocketClient> ws;
     std::shared_ptr<OpenSSLRandomNumberGenerator> rng;
-
 };
 
 #endif //LEDGER_CORE_COININTEGRATIONFIXTURE_HPP

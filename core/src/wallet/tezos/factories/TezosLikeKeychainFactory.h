@@ -28,23 +28,19 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEKEYCHAINFACTORY_H
 #define LEDGER_CORE_TEZOSLIKEKEYCHAINFACTORY_H
 
-
-#include <collections/DynamicObject.hpp>
-
-#include <api/ExtendedKeyAccountCreationInfo.hpp>
 #include <api/Currency.hpp>
-
-#include <wallet/tezos/keychains/TezosLikeKeychain.h>
+#include <api/ExtendedKeyAccountCreationInfo.hpp>
+#include <collections/DynamicObject.hpp>
 #include <preferences/Preferences.hpp>
+#include <wallet/tezos/keychains/TezosLikeKeychain.h>
 
 namespace ledger {
     namespace core {
         class TezosLikeKeychainFactory {
-        public:
+          public:
             std::shared_ptr<TezosLikeKeychain> build(const DerivationPath &path,
                                                      const std::shared_ptr<DynamicObject> &configuration,
                                                      const api::AccountCreationInfo &info,
@@ -57,6 +53,6 @@ namespace ledger {
                                                        const std::shared_ptr<Preferences> &accountPreferences,
                                                        const api::Currency &currency);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_TEZOSLIKEKEYCHAINFACTORY_H

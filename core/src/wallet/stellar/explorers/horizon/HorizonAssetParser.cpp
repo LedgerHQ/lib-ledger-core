@@ -117,5 +117,5 @@ namespace ledger {
             _flagsParser.setPathView(_path.view(2));
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -31,33 +31,32 @@
 #ifndef LEDGER_CORE_ETHEREUMLIKEKEYCHAIN_HPP
 #define LEDGER_CORE_ETHEREUMLIKEKEYCHAIN_HPP
 
-#include <string>
-#include <vector>
-#include <utils/DerivationScheme.hpp>
-#include <utils/Option.hpp>
-#include <preferences/Preferences.hpp>
-#include <api/Configuration.hpp>
-#include <api/DynamicObject.hpp>
-#include <api/Currency.hpp>
 #include <api/AccountCreationInfo.hpp>
-#include <api/ExtendedKeyAccountCreationInfo.hpp>
+#include <api/Configuration.hpp>
+#include <api/Currency.hpp>
+#include <api/DynamicObject.hpp>
 #include <api/EthereumLikeExtendedPublicKey.hpp>
+#include <api/ExtendedKeyAccountCreationInfo.hpp>
 #include <api/Keychain.hpp>
 #include <ethereum/EthereumLikeAddress.h>
+#include <preferences/Preferences.hpp>
+#include <string>
+#include <utils/DerivationScheme.hpp>
+#include <utils/Option.hpp>
+#include <vector>
 
 namespace ledger {
     namespace core {
 
-        class EthereumLikeKeychain: public api::Keychain {
+        class EthereumLikeKeychain : public api::Keychain {
 
-        public:
+          public:
             using Address = std::shared_ptr<EthereumLikeAddress>;
 
-            EthereumLikeKeychain(const std::shared_ptr<api::DynamicObject>& configuration,
-                                 const api::Currency& params,
+            EthereumLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
+                                 const api::Currency &params,
                                  int account,
-                                 const std::shared_ptr<Preferences>& preferences);
-
+                                 const std::shared_ptr<Preferences> &preferences);
 
             EthereumLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
                                  const api::Currency &params,
@@ -69,32 +68,31 @@ namespace ledger {
                                  const api::Currency &params,
                                  int account,
                                  const std::string &accountAddress,
-                                 const std::shared_ptr<Preferences>& preferences);
+                                 const std::shared_ptr<Preferences> &preferences);
             std::vector<Address> getAllObservableAddresses(uint32_t from, uint32_t to);
             Address getAddress() const;
-            Option<std::string> getAddressDerivationPath(const std::string &address) const ;
+            Option<std::string> getAddressDerivationPath(const std::string &address) const;
             std::shared_ptr<api::EthereumLikeExtendedPublicKey> getExtendedPublicKey() const;
 
             int getAccountIndex() const;
-            const api::EthereumLikeNetworkParameters& getNetworkParameters() const;
-            const api::Currency& getCurrency() const;
+            const api::EthereumLikeNetworkParameters &getNetworkParameters() const;
+            const api::Currency &getCurrency() const;
 
-            Option<std::vector<uint8_t>> getPublicKey(const std::string& address) const ;
-
+            Option<std::vector<uint8_t>> getPublicKey(const std::string &address) const;
 
             std::shared_ptr<api::DynamicObject> getConfiguration() const;
-            const DerivationScheme& getDerivationScheme() const;
-            const DerivationScheme& getFullDerivationScheme() const;
+            const DerivationScheme &getDerivationScheme() const;
+            const DerivationScheme &getFullDerivationScheme() const;
 
-            std::string getRestoreKey() const ;
-            bool contains(const std::string& address) const ;
-            int32_t getOutputSizeAsSignedTxInput() const ;
+            std::string getRestoreKey() const;
+            bool contains(const std::string &address) const;
+            int32_t getOutputSizeAsSignedTxInput() const;
             std::shared_ptr<Preferences> getPreferences() const;
 
-        protected:
-            DerivationScheme& getDerivationScheme();
+          protected:
+            DerivationScheme &getDerivationScheme();
 
-        private:
+          private:
             EthereumLikeKeychain::Address derive();
             const api::Currency _currency;
             DerivationScheme _scheme;
@@ -106,7 +104,7 @@ namespace ledger {
             std::string _localPath;
             std::string _address;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMLIKEKEYCHAIN_HPP

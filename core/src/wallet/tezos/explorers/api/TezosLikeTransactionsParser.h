@@ -28,31 +28,31 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKETRANSACTIONSPARSER_H
 #define LEDGER_CORE_TEZOSLIKETRANSACTIONSPARSER_H
 
 #include "TezosLikeTransactionParser.h"
+
 #include <wallet/common/explorers/api/AbstractTransactionsParser.h>
 
 namespace ledger {
     namespace core {
         class TezosLikeTransactionsParser
-                : public AbstractTransactionsParser<TezosLikeBlockchainExplorerTransaction, TezosLikeTransactionParser> {
-        public:
+            : public AbstractTransactionsParser<TezosLikeBlockchainExplorerTransaction, TezosLikeTransactionParser> {
+          public:
             TezosLikeTransactionsParser(std::string &lastKey) : _transactionParser(lastKey) {
                 _arrayDepth = 0;
                 _objectDepth = 0;
             }
 
-        protected:
+          protected:
             TezosLikeTransactionParser &getTransactionParser() override {
                 return _transactionParser;
             }
 
-        private:
+          private:
             TezosLikeTransactionParser _transactionParser;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_TEZOSLIKETRANSACTIONSPARSER_H

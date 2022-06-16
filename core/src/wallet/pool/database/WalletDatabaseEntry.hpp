@@ -31,8 +31,8 @@
 #ifndef LEDGER_CORE_WALLETDATABASEENTRY_HPP
 #define LEDGER_CORE_WALLETDATABASEENTRY_HPP
 
-#include <string>
 #include <collections/DynamicObject.hpp>
+#include <string>
 
 namespace ledger {
     namespace core {
@@ -47,8 +47,7 @@ namespace ledger {
 
             static std::string createWalletUid(const std::string &poolName, const std::string &walletName);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_WALLETDATABASEENTRY_HPP

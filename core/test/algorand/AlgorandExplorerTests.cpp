@@ -26,17 +26,17 @@
  * SOFTWARE.
  *
  */
-#include "AlgorandTestFixtures.hpp"
-#include <wallet/algorand/AlgorandBlockchainExplorer.hpp>
-#include <api/Configuration.hpp>
-
 #include "../integration/BaseFixture.h"
+#include "AlgorandTestFixtures.hpp"
+
+#include <api/Configuration.hpp>
+#include <wallet/algorand/AlgorandBlockchainExplorer.hpp>
 
 using namespace ledger::testing::algorand;
 using namespace ledger::core::algorand;
 
 class AlgorandExplorerTest : public BaseFixture {
-public:
+  public:
     void SetUp() override {
         BaseFixture::SetUp();
 
@@ -48,12 +48,12 @@ public:
         // NOTE: we run the tests on the staging environment which is on the TestNet
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
-        
+
         explorer = std::make_shared<BlockchainExplorer>(
-                        worker,
-                        client,
-                        networks::getAlgorandNetworkParameters("algorand-testnet"),
-                        configuration);
+            worker,
+            client,
+            networks::getAlgorandNetworkParameters("algorand-testnet"),
+            configuration);
     }
 
     void TearDown() override {
@@ -130,7 +130,7 @@ TEST_F(AlgorandExplorerTest, DISABLED_GetAccountTransactions) {
     auto address = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM"; // Obelix
     model::TransactionsBulk txs = uv::wait(explorer->getTransactionsForAddress(address, 0));
 
-    for (const auto& tx : txs.transactions) {
+    for (const auto &tx : txs.transactions) {
         if (*tx.header.id == PAYMENT_TX_ID) {
             assertSameTransaction(paymentTransaction(), tx);
         } else if (*tx.header.id == ASSET_CONFIG_TX_ID) {
@@ -140,5 +140,6 @@ TEST_F(AlgorandExplorerTest, DISABLED_GetAccountTransactions) {
         }
     }
 
-    if (txs.hasNext == true) EXPECT_EQ(txs.transactions.size(), 100);
+    if (txs.hasNext == true)
+        EXPECT_EQ(txs.transactions.size(), 100);
 }

@@ -34,8 +34,8 @@
 
 #include <api/StellarLikeWallet.hpp>
 #include <wallet/common/AbstractWallet.hpp>
-#include <wallet/stellar/factories/StellarLikeKeychainFactory.hpp>
 #include <wallet/stellar/explorers/StellarLikeBlockchainExplorer.hpp>
+#include <wallet/stellar/factories/StellarLikeKeychainFactory.hpp>
 #include <wallet/stellar/synchronizers/StellarLikeAccountSynchronizer.h>
 
 namespace ledger {
@@ -48,15 +48,15 @@ namespace ledger {
         };
 
         class StellarLikeWallet : public virtual api::StellarLikeWallet, public virtual AbstractWallet {
-        public:
+          public:
             static const api::WalletType type;
 
-            StellarLikeWallet(  const std::string& walletName,
-                                const api::Currency& currency,
-                                const std::shared_ptr<WalletPool>& pool,
-                                const std::shared_ptr<DynamicObject>& configuration,
-                                const DerivationScheme& derivationScheme,
-                                const StellarLikeWalletParams& params);
+            StellarLikeWallet(const std::string &walletName,
+                              const api::Currency &currency,
+                              const std::shared_ptr<WalletPool> &pool,
+                              const std::shared_ptr<DynamicObject> &configuration,
+                              const DerivationScheme &derivationScheme,
+                              const StellarLikeWalletParams &params);
 
             bool isSynchronizing() override;
 
@@ -77,19 +77,19 @@ namespace ledger {
             Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
 
             void exists(const std::string &address, const std::shared_ptr<api::BoolCallback> &callback) override;
-            Future<bool> exists(const std::string& address);
+            Future<bool> exists(const std::string &address);
 
-        protected:
+          protected:
             std::shared_ptr<AbstractAccount>
             createAccountInstance(soci::session &sql, const std::string &accountUid) override;
 
             std::shared_ptr<StellarLikeWallet> getSelf();
 
-        private:
+          private:
             const StellarLikeWalletParams _params;
         };
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_STELLARLIKEWALLET_HPP

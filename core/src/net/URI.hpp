@@ -33,20 +33,19 @@
 
 #include "../collections/collections.hpp"
 
-
 namespace ledger {
     namespace core {
         class URI {
-        public:
-            URI(const String& uri);
-            const String& getScheme() const;
-            const String& getDomain() const;
+          public:
+            URI(const String &uri);
+            const String &getScheme() const;
+            const String &getDomain() const;
             short getPort() const;
-            const String& getPath() const;
-            const String& getQuery() const;
-            const String& getFragment() const;
+            const String &getPath() const;
+            const String &getQuery() const;
+            const String &getFragment() const;
 
-        private:
+          private:
             String _scheme;
             String _domain;
             String _port;
@@ -54,7 +53,7 @@ namespace ledger {
             String _query;
             String _fragment;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_URI_HPP

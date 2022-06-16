@@ -8,8 +8,7 @@
 
 using namespace ledger::testing::cosmos;
 
-TEST(CosmosGaiaParser, Unbonding)
-{
+TEST(CosmosGaiaParser, Unbonding) {
     // Input data
     // Output (somewhat modified to add another entry) of
     // /staking/delegators/cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl/unbonding_delegations
@@ -80,8 +79,7 @@ TEST(CosmosGaiaParser, Unbonding)
                 EXPECT_EQ(entry.initialBalance.toString(), "20000");
                 EXPECT_EQ(entry.balance.toString(), "20000");
             }
-        }
-        else if (unbonding->validatorAddress == validator_b) {
+        } else if (unbonding->validatorAddress == validator_b) {
             EXPECT_EQ(unbonding->delegatorAddress, delegator);
             EXPECT_EQ(unbonding->entries.size(), 2);
             for (const auto &entry : unbonding->entries) {
@@ -89,29 +87,25 @@ TEST(CosmosGaiaParser, Unbonding)
                     EXPECT_EQ(DateUtils::toJSON(entry.completionTime), "2020-04-07T10:39:59Z");
                     EXPECT_EQ(entry.initialBalance.toString(), "500");
                     EXPECT_EQ(entry.balance.toString(), "500");
-                }
-                else if (entry.creationHeight.toString() == val_b_height_b) {
+                } else if (entry.creationHeight.toString() == val_b_height_b) {
                     EXPECT_EQ(DateUtils::toJSON(entry.completionTime), "2020-04-21T12:28:37Z");
                     EXPECT_EQ(entry.initialBalance.toString(), "7000");
                     EXPECT_EQ(entry.balance.toString(), "6500");
-                }
-                else {
+                } else {
                     FAIL() << fmt::format(
                         R"esc(Creation height "{}" for validator "{}" is not expected)esc",
                         entry.creationHeight.toString(),
                         validator_b);
                 }
             }
-        }
-        else {
+        } else {
             FAIL() << fmt::format(
                 R"esc(validator "{}" is not expected)esc", unbonding->validatorAddress);
         }
     }
 }
 
-TEST(CosmosGaiaParser, Redelegation)
-{
+TEST(CosmosGaiaParser, Redelegation) {
     // Input data
     // Output (somewhat modified) of
     // /staking/redelegations?delegator=cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl
@@ -186,8 +180,7 @@ TEST(CosmosGaiaParser, Redelegation)
                 EXPECT_EQ(entry.initialBalance.toString(), "1850");
                 EXPECT_EQ(entry.balance.toString(), "1850");
             }
-        }
-        else if (
+        } else if (
             redelegation->srcValidatorAddress == redelegation_b_src &&
             redelegation->dstValidatorAddress == redelegation_b_dst) {
             EXPECT_EQ(redelegation->delegatorAddress, delegator);
@@ -198,8 +191,7 @@ TEST(CosmosGaiaParser, Redelegation)
                 EXPECT_EQ(entry.initialBalance.toString(), "1000000");
                 EXPECT_EQ(entry.balance.toString(), "1000000");
             }
-        }
-        else {
+        } else {
             FAIL() << fmt::format(
                 R"esc(Redelegation from validator "{}" to validator "{}"is not expected)esc",
                 redelegation->srcValidatorAddress,

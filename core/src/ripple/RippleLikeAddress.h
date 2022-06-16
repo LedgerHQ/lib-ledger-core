@@ -28,45 +28,43 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKEADDRESS_H
 #define LEDGER_CORE_RIPPLELIKEADDRESS_H
 
+#include "../utils/optional.hpp"
 
 #include <api/RippleLikeAddress.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
-#include "../utils/optional.hpp"
 #include <wallet/common/AbstractAddress.h>
 
 namespace ledger {
     namespace core {
         class RippleLikeAddress : public api::RippleLikeAddress, public AbstractAddress {
-        public:
+          public:
             RippleLikeAddress(const ledger::core::api::Currency &currency,
-                              const std::vector<uint8_t>& hash160,
-                              const std::vector<uint8_t>& version,
-                              const Option<std::string>& derivationPath = Option<std::string>());
-            std::vector<uint8_t> getVersion() override ;
-            std::vector<uint8_t> getHash160() override ;
-            api::RippleLikeNetworkParameters getNetworkParameters() override ;
-            std::string toBase58() override ;
+                              const std::vector<uint8_t> &hash160,
+                              const std::vector<uint8_t> &version,
+                              const Option<std::string> &derivationPath = Option<std::string>());
+            std::vector<uint8_t> getVersion() override;
+            std::vector<uint8_t> getHash160() override;
+            api::RippleLikeNetworkParameters getNetworkParameters() override;
+            std::string toBase58() override;
 
-            optional<std::string> getDerivationPath() override ;
-            std::string toString() override ;
+            optional<std::string> getDerivationPath() override;
+            std::string toString() override;
 
-            static std::shared_ptr<AbstractAddress> parse(const std::string& address, const api::Currency& currency,
-                                                          const Option<std::string>& derivationPath = Option<std::string>());
-            static std::shared_ptr<RippleLikeAddress> fromBase58(const std::string& address,
-                                                                 const api::Currency& currency,
-                                                                 const Option<std::string>& derivationPath = Option<std::string>());
-        private:
+            static std::shared_ptr<AbstractAddress> parse(const std::string &address, const api::Currency &currency, const Option<std::string> &derivationPath = Option<std::string>());
+            static std::shared_ptr<RippleLikeAddress> fromBase58(const std::string &address,
+                                                                 const api::Currency &currency,
+                                                                 const Option<std::string> &derivationPath = Option<std::string>());
+
+          private:
             const std::vector<uint8_t> _version;
             const std::vector<uint8_t> _hash160;
             const api::RippleLikeNetworkParameters _params;
             const Option<std::string> _derivationPath;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_RIPPLELIKEADDRESS_H

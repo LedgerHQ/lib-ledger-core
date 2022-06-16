@@ -28,19 +28,18 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ZARITH_H
 #define LEDGER_CORE_ZARITH_H
 
 #include <algorithm>
-#include <vector>
 #include <bytes/BytesReader.h>
 #include <utils/hex.h>
+#include <vector>
 
 namespace ledger {
     namespace core {
         class zarith {
-        public:
+          public:
             /*
              * Most significant bit of each byte is replaced with 1 to let
              * us know there is still something to read, else 0
@@ -82,20 +81,19 @@ namespace ledger {
 
                     // Update index if not a period or first iteration
                     if (offset != 0) {
-                        id --;
+                        id--;
                     }
                 }
 
                 if (needAdditionalByte) {
                     if (offset != 0) {
-                        id ++;
+                        id++;
                     }
                     offset = (offset - 1) % 8;
                     result.push_back(inputData[id] >> (7 - offset));
                 } else {
                     result[result.size() - 1] &= 0x7F;
                 }
-
 
                 return result;
             };
@@ -108,7 +106,7 @@ namespace ledger {
 
             // The mode where we force parser to continue parsing even when finding
             // a null bit was made just for testing purpose
-            static  std::vector<uint8_t> zParse(BytesReader &reader) {
+            static std::vector<uint8_t> zParse(BytesReader &reader) {
                 // We get bytes to parse without altering
                 // bytes reader's state
                 auto cursor = reader.getCursor();
@@ -161,6 +159,6 @@ namespace ledger {
                 return result;
             };
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_ZARITH_H

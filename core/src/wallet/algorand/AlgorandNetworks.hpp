@@ -32,37 +32,34 @@
 #define LEDGER_CORE_ALGORANDNETWORKS_H
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER) && _MSC_VER <= 1900
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 #include <api/AlgorandNetworkParameters.hpp>
-
 #include <string>
 #include <unordered_map>
 
 namespace ledger {
-namespace core {
-namespace networks {
+    namespace core {
+        namespace networks {
 
-    extern LIBCORE_EXPORT const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName);
-    extern LIBCORE_EXPORT const std::unordered_map<std::string, api::AlgorandNetworkParameters> ALGORAND_NETWORKS();
-    extern LIBCORE_EXPORT const bool isAlgorandCurrency(const std::string &networkName);
+            extern LIBCORE_EXPORT const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName);
+            extern LIBCORE_EXPORT const std::unordered_map<std::string, api::AlgorandNetworkParameters> ALGORAND_NETWORKS();
+            extern LIBCORE_EXPORT const bool isAlgorandCurrency(const std::string &networkName);
 
-    template<class Archive>
-    void serialize(Archive & archive, api::AlgorandNetworkParameters & p)
-    {
-        archive(
-            p.genesisID,
-            p.genesisHash
-        );
-    }
+            template <class Archive>
+            void serialize(Archive &archive, api::AlgorandNetworkParameters &p) {
+                archive(
+                    p.genesisID,
+                    p.genesisHash);
+            }
 
-} // namespace networks
-} // namespace core
+        } // namespace networks
+    }     // namespace core
 } // namespace ledger
 
 #endif // LEDGER_CORE_ALGORANDNETWORKS_H

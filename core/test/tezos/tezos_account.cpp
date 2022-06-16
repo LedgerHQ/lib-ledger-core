@@ -29,10 +29,10 @@
  */
 
 #include "Fixtures.hpp"
-#include "transaction_test.hpp"
 #include "api/BlockchainExplorerEngines.hpp"
-#include "wallet/tezos/explorers/api/TezosLikeTransactionParser.h"
+#include "transaction_test.hpp"
 #include "wallet/currencies.hpp"
+#include "wallet/tezos/explorers/api/TezosLikeTransactionParser.h"
 
 /*
 
@@ -120,52 +120,52 @@ const auto tx2 = R"({
 TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWhenOriginatedAccount) {
     std::vector<ledger::core::Operation> operations;
 
-    const std::string& accAddress = account->getAccountAddress();
+    const std::string &accAddress = account->getAccountAddress();
 
     // Test when sent from originated account
     {
-      auto parsedTx = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx1);
-      parsedTx->sender = accAddress;
-      parsedTx->originatedAccountUid = "someUid";
-      parsedTx->originatedAccountAddress = accAddress;
-      account->interpretTransaction(*parsedTx, operations);
-      EXPECT_EQ(operations.size(), 1);
-      EXPECT_EQ(operations[0].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263644+OPERATION_TAG_REVEAL+someUid", api::OperationType::SEND));
+        auto parsedTx = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx1);
+        parsedTx->sender = accAddress;
+        parsedTx->originatedAccountUid = "someUid";
+        parsedTx->originatedAccountAddress = accAddress;
+        account->interpretTransaction(*parsedTx, operations);
+        EXPECT_EQ(operations.size(), 1);
+        EXPECT_EQ(operations[0].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263644+OPERATION_TAG_REVEAL+someUid", api::OperationType::SEND));
     }
 
     // Test when received in originated account
     {
-      auto parsedTx = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx2);
-      parsedTx->receiver = accAddress;
-      parsedTx->originatedAccountUid = "someUid";
-      parsedTx->originatedAccountAddress = accAddress;
-      account->interpretTransaction(*parsedTx, operations);
-      EXPECT_EQ(operations.size(), 2);
-      EXPECT_EQ(operations[1].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263645+OPERATION_TAG_TRANSACTION+someUid", api::OperationType::RECEIVE));
+        auto parsedTx = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx2);
+        parsedTx->receiver = accAddress;
+        parsedTx->originatedAccountUid = "someUid";
+        parsedTx->originatedAccountAddress = accAddress;
+        account->interpretTransaction(*parsedTx, operations);
+        EXPECT_EQ(operations.size(), 2);
+        EXPECT_EQ(operations[1].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263645+OPERATION_TAG_TRANSACTION+someUid", api::OperationType::RECEIVE));
     }
 }
 
 TEST_F(TezosAccount, InterpetTransactionWithCorrectUidWithoutOriginatedAccount) {
     std::vector<ledger::core::Operation> operations;
 
-    const std::string& accAddress = account->getAccountAddress();
+    const std::string &accAddress = account->getAccountAddress();
 
     // Test when sent from account
     {
-      auto parsedTx = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx1);
-      parsedTx->sender = accAddress;
-      account->interpretTransaction(*parsedTx, operations);
-      EXPECT_EQ(operations.size(), 1);
-      EXPECT_EQ(operations[0].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263644+OPERATION_TAG_REVEAL", api::OperationType::SEND));
+        auto parsedTx = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx1);
+        parsedTx->sender = accAddress;
+        account->interpretTransaction(*parsedTx, operations);
+        EXPECT_EQ(operations.size(), 1);
+        EXPECT_EQ(operations[0].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263644+OPERATION_TAG_REVEAL", api::OperationType::SEND));
     }
 
     // Test when received in account
     {
-      auto parsedTx = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx2);
-      parsedTx->receiver = accAddress;
-      account->interpretTransaction(*parsedTx, operations);
-      EXPECT_EQ(operations.size(), 2);
-      EXPECT_EQ(operations[1].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263645+OPERATION_TAG_TRANSACTION", api::OperationType::RECEIVE));
+        auto parsedTx = ledger::core::JSONUtils::parse<ledger::core::TezosLikeTransactionParser>(tx2);
+        parsedTx->receiver = accAddress;
+        account->interpretTransaction(*parsedTx, operations);
+        EXPECT_EQ(operations.size(), 2);
+        EXPECT_EQ(operations[1].uid, OperationDatabaseHelper::createUid(account->getAccountUid(), "2263645+OPERATION_TAG_TRANSACTION", api::OperationType::RECEIVE));
     }
 }
 
@@ -189,20 +189,18 @@ TEST_F(TezosAccountWithFixedPoolName, ComputeOperationUidWithValidTransaction) {
 
     // when sender
     {
-      auto txTest = std::make_shared<TezosLikeTransactionApi>(*tx);
-      txTest->setSender(accAddress);
-      EXPECT_EQ(account->computeOperationUid(txTest), "5bd2461f4fb753689ad05bce533808d72cbf11403d3e1b8d3fd7a7589205ff1f");
+        auto txTest = std::make_shared<TezosLikeTransactionApi>(*tx);
+        txTest->setSender(accAddress);
+        EXPECT_EQ(account->computeOperationUid(txTest), "5bd2461f4fb753689ad05bce533808d72cbf11403d3e1b8d3fd7a7589205ff1f");
     }
 
     // when receiver
     {
-      auto txTest = std::make_shared<TezosLikeTransactionApi>(*tx);
-      txTest->setReceiver(accAddress);
-      EXPECT_EQ(account->computeOperationUid(txTest), "931b61f6786f39430c105372352d47c487ed4f4ba58d1cd7f11627bb6ae68ca9");
+        auto txTest = std::make_shared<TezosLikeTransactionApi>(*tx);
+        txTest->setReceiver(accAddress);
+        EXPECT_EQ(account->computeOperationUid(txTest), "931b61f6786f39430c105372352d47c487ed4f4ba58d1cd7f11627bb6ae68ca9");
     }
-
 }
-
 
 TEST_F(TezosAccountWithFixedPoolName, ComputeOperationUidWithInvalidTransaction) {
     auto strTx = "036e766ee0733ef0fb6385f2034cfbd437247afad4b301ebce1b929a67ce4a0b8d6c00902c5d86590a2452f0ccf9c1fa55ae679de27d398e0aee94cb03a75100882700011ebab3538f6ca4223ee98b565846e47d273d112900";

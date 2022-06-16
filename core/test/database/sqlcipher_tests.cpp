@@ -28,20 +28,20 @@
  *
  */
 
-#include <gtest/gtest.h>
 #include "BaseFixture.h"
-#include <FilesystemUtils.hpp>
-#include <soci.h>
-#include <soci-sqlite3.h>
-#include <chrono>
-using namespace ledger::core;
 
+#include <FilesystemUtils.hpp>
+#include <chrono>
+#include <gtest/gtest.h>
+#include <soci-sqlite3.h>
+#include <soci.h>
+using namespace ledger::core;
 
 class SQLCipherTest : public BaseFixture {
 };
 
 TEST_F(SQLCipherTest, SanityCheck) {
-    auto dbName = fmt::format( "test_db_{}", std::chrono::system_clock::now().time_since_epoch().count());
+    auto dbName = fmt::format("test_db_{}", std::chrono::system_clock::now().time_since_epoch().count());
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {
@@ -51,14 +51,14 @@ TEST_F(SQLCipherTest, SanityCheck) {
         std::cout << "opening database " << dbName << std::endl;
         session.open(*soci::factory_sqlite3(), parameters);
         session << "CREATE TABLE test_table ("
-                "    id INTEGER,"
-                "    name VARCHAR(255)"
-                ")";
+                   "    id INTEGER,"
+                   "    name VARCHAR(255)"
+                   ")";
 
         int value_0 = 123;
         std::string value_1 = "test_name";
         session << "INSERT INTO test_table(id, name) VALUES(:field_0, :field_1)",
-                soci::use(value_0), soci::use(value_1);
+            soci::use(value_0), soci::use(value_1);
         session.close();
     }
     {
@@ -100,7 +100,7 @@ TEST_F(SQLCipherTest, SanityCheck) {
 // https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
 #if __cplusplus >= 201103L
 TEST_F(SQLCipherTest, ThrowIfWrongPassword) {
-    auto dbName = fmt::format( "test_db2_{}", std::chrono::system_clock::now().time_since_epoch().count());
+    auto dbName = fmt::format("test_db2_{}", std::chrono::system_clock::now().time_since_epoch().count());
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {
@@ -110,9 +110,9 @@ TEST_F(SQLCipherTest, ThrowIfWrongPassword) {
         std::cout << "opening database " << dbName << std::endl;
         session.open(*soci::factory_sqlite3(), parameters);
         session << "CREATE TABLE test_table ("
-            "    id INTEGER,"
-            "    name VARCHAR(255)"
-            ")";
+                   "    id INTEGER,"
+                   "    name VARCHAR(255)"
+                   ")";
 
         int value_0 = 123;
         std::string value_1 = "test_name";
@@ -137,7 +137,7 @@ TEST_F(SQLCipherTest, DISABLED_DisableEncryption) { //The "Remove encryption" do
 #else
 TEST_F(SQLCipherTest, DisableEncryption) {
 #endif
-    auto dbName = fmt::format( "test_db_{}", std::chrono::system_clock::now().time_since_epoch().count());
+    auto dbName = fmt::format("test_db_{}", std::chrono::system_clock::now().time_since_epoch().count());
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {
@@ -147,14 +147,14 @@ TEST_F(SQLCipherTest, DisableEncryption) {
         std::cout << "opening database " << dbName << std::endl;
         session.open(*soci::factory_sqlite3(), parameters);
         session << "CREATE TABLE test_table ("
-                "    id INTEGER,"
-                "    name VARCHAR(255)"
-                ")";
+                   "    id INTEGER,"
+                   "    name VARCHAR(255)"
+                   ")";
 
         int value_0 = 123;
         std::string value_1 = "test_name";
         session << "INSERT INTO test_table(id, name) VALUES(:field_0, :field_1)",
-                soci::use(value_0), soci::use(value_1);
+            soci::use(value_0), soci::use(value_1);
         session.close();
     }
 

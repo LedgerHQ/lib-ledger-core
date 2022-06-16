@@ -175,7 +175,6 @@ namespace ledger {
                 OP_NOP9 = 0xb8,
                 OP_NOP10 = 0xb9,
 
-
                 // template matching params
                 OP_SMALLINTEGER = 0xfa,
                 OP_PUBKEYS = 0xfb,
@@ -185,10 +184,10 @@ namespace ledger {
                 OP_INVALIDOPCODE = 0xff,
             };
 
-            const char* GetOpName(opcodetype opcode);
+            const char *GetOpName(opcodetype opcode);
 
-        }
-    }
-}
+        } // namespace btccore
+    }     // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_OPERATORS_H

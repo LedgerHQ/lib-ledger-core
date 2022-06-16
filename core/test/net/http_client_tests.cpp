@@ -28,31 +28,31 @@
  * SOFTWARE.
  *
  */
-#include <gtest/gtest.h>
 #include <EventLooper.hpp>
 #include <EventThread.hpp>
-#include <NativeThreadDispatcher.hpp>
-#include <NativePathResolver.hpp>
-#include <fstream>
-#include <mongoose.h>
 #include <MongooseHttpClient.hpp>
 #include <MongooseSimpleRestServer.hpp>
+#include <NativePathResolver.hpp>
+#include <NativeThreadDispatcher.hpp>
+#include <boost/lexical_cast.hpp>
+#include <fstream>
+#include <gtest/gtest.h>
 #include <ledger/core/net/HttpClient.hpp>
 #include <ledger/core/net/HttpJsonHandler.hpp>
-#include <boost/lexical_cast.hpp>
+#include <mongoose.h>
 
 static std::string BIG_TEXT =
-        "Hi guys, I own a Nano S and I am a big fan, however there is a big slice of information that is missing from your website, that is how reliable the Nano S is, how much testing it's been through (and it goes through any time a new software release is distributed) etc. \n"
-        "\n"
-        "Think about it, before I put a few thousands Euros in a wallet that depends on the Nano, I want to be sure it won't die on me, say, three months from now, or if someone spills water on it. Think for example how Corsair describes the \"Survivor\" line of USB keys here http://www.corsair.com/en-gb/usb-drives/flash-survivor . Can you offer anything like this? \n"
-        "\n"
-        "\n"
-        "If not, you should recommend your users not to use the Nano S for nothing more than petty cash.\n"
-        "\n"
-        "What do you reckon?\n"
-        "\n"
-        "\n"
-        "G. ";
+    "Hi guys, I own a Nano S and I am a big fan, however there is a big slice of information that is missing from your website, that is how reliable the Nano S is, how much testing it's been through (and it goes through any time a new software release is distributed) etc. \n"
+    "\n"
+    "Think about it, before I put a few thousands Euros in a wallet that depends on the Nano, I want to be sure it won't die on me, say, three months from now, or if someone spills water on it. Think for example how Corsair describes the \"Survivor\" line of USB keys here http://www.corsair.com/en-gb/usb-drives/flash-survivor . Can you offer anything like this? \n"
+    "\n"
+    "\n"
+    "If not, you should recommend your users not to use the Nano S for nothing more than petty cash.\n"
+    "\n"
+    "What do you reckon?\n"
+    "\n"
+    "\n"
+    "G. ";
 
 using namespace ledger::core;
 
@@ -73,19 +73,20 @@ TEST(HttpClient, GET) {
         server->start(8000);
         server->wait_for_started();
 
-        worker->execute(::make_runnable([&http, dispatcher, &server] () {
-            http.GET("/say/hello/toto/please")().foreach(dispatcher->getMainExecutionContext(),
-                                                            [dispatcher, &server] (const std::shared_ptr<api::HttpUrlConnection> connection) {
-                auto body = connection->readBody();
-                auto res = std::string((char *)(body.data->data()), body.data->size());
-                EXPECT_EQ(200, connection->getStatusCode());
-                EXPECT_EQ("Hello toto", res);
-                std::cout << res << std::endl;
-                server->stop();
-                dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
-                    dispatcher->stop();
-                }), 0);
-            });
+        worker->execute(::make_runnable([&http, dispatcher, &server]() {
+            http.GET("/say/hello/toto/please")().foreach (dispatcher->getMainExecutionContext(),
+                                                          [dispatcher, &server](const std::shared_ptr<api::HttpUrlConnection> connection) {
+                                                              auto body = connection->readBody();
+                                                              auto res = std::string((char *)(body.data->data()), body.data->size());
+                                                              EXPECT_EQ(200, connection->getStatusCode());
+                                                              EXPECT_EQ("Hello toto", res);
+                                                              std::cout << res << std::endl;
+                                                              server->stop();
+                                                              dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
+                                                                                                               dispatcher->stop();
+                                                                                                           }),
+                                                                                                           0);
+                                                          });
         }));
         WAIT_AND_TIMEOUT(dispatcher, 10000)
     }
@@ -106,20 +107,21 @@ TEST(HttpClient, GETJson) {
         server->start(8000);
         server->wait_for_started();
 
-        worker->execute(::make_runnable([&http, dispatcher, &server] () {
-                http
-                    .GET("/talk/to/me/in/json")
-                    .json()
-                    .foreach(dispatcher->getMainExecutionContext(), [&server, dispatcher] (const HttpRequest::JsonResult& result) {
-                        auto& json = *std::get<1>(result);
-                        EXPECT_TRUE(json.HasMember("the_answer"));
-                        EXPECT_TRUE(json["the_answer"].IsInt());
-                        EXPECT_EQ(42, json["the_answer"].GetInt());
-                        server->stop();
-                        dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
-                            dispatcher->stop();
-                        }), 0);
-            });
+        worker->execute(::make_runnable([&http, dispatcher, &server]() {
+            http
+                .GET("/talk/to/me/in/json")
+                .json()
+                .foreach (dispatcher->getMainExecutionContext(), [&server, dispatcher](const HttpRequest::JsonResult &result) {
+                    auto &json = *std::get<1>(result);
+                    EXPECT_TRUE(json.HasMember("the_answer"));
+                    EXPECT_TRUE(json["the_answer"].IsInt());
+                    EXPECT_EQ(42, json["the_answer"].GetInt());
+                    server->stop();
+                    dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
+                                                                     dispatcher->stop();
+                                                                 }),
+                                                                 0);
+                });
         }));
         WAIT_AND_TIMEOUT(dispatcher, 10000);
     }
@@ -140,21 +142,22 @@ TEST(HttpClient, GETJsonError) {
         server->start(8000);
         server->wait_for_started();
 
-        worker->execute(::make_runnable([&http, dispatcher, &server] () {
+        worker->execute(::make_runnable([&http, dispatcher, &server]() {
             http
-                    .GET("/knock/knock/neo")
-                    .json()
-                    .onComplete(dispatcher->getMainExecutionContext(), [&server, dispatcher] (const Try<HttpRequest::JsonResult>& result) {
-                        EXPECT_TRUE(result.isFailure());
-                        auto& json = *std::get<1>(*result.getFailure().getTypeUserData<HttpRequest::JsonResult>().getValue());
-                        EXPECT_TRUE(json.HasMember("not_here"));
-                        EXPECT_TRUE(json["not_here"].IsBool());
-                        EXPECT_EQ(true, json["not_here"].GetBool());
-                        server->stop();
-                        dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
-                            dispatcher->stop();
-                        }), 0);
-                    });
+                .GET("/knock/knock/neo")
+                .json()
+                .onComplete(dispatcher->getMainExecutionContext(), [&server, dispatcher](const Try<HttpRequest::JsonResult> &result) {
+                    EXPECT_TRUE(result.isFailure());
+                    auto &json = *std::get<1>(*result.getFailure().getTypeUserData<HttpRequest::JsonResult>().getValue());
+                    EXPECT_TRUE(json.HasMember("not_here"));
+                    EXPECT_TRUE(json["not_here"].IsBool());
+                    EXPECT_EQ(true, json["not_here"].GetBool());
+                    server->stop();
+                    dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
+                                                                     dispatcher->stop();
+                                                                 }),
+                                                                 0);
+                });
         }));
         WAIT_AND_TIMEOUT(dispatcher, 10000)
     }
@@ -176,19 +179,20 @@ TEST(HttpClient, POST) {
         server->start(8000);
         server->wait_for_started();
 
-        worker->execute(::make_runnable([&http, dispatcher, &server] () {
+        worker->execute(::make_runnable([&http, dispatcher, &server]() {
             std::vector<uint8_t> body((uint8_t *)BIG_TEXT.c_str(), (uint8_t *)(BIG_TEXT.c_str() + BIG_TEXT.size()));
-            http.POST("/next/century/postal/service", body)().foreach(dispatcher->getMainExecutionContext(),
-                                                            [dispatcher, &server] (const std::shared_ptr<api::HttpUrlConnection> connection) {
-                auto body = connection->readBody();
-                auto res = std::string((char *)(body.data->data()), body.data->size());
-                EXPECT_EQ(200, connection->getStatusCode());
-                EXPECT_EQ(BIG_TEXT, res);
-                server->stop();
-                dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
-                    dispatcher->stop();
-                }), 0);
-            });
+            http.POST("/next/century/postal/service", body)().foreach (dispatcher->getMainExecutionContext(),
+                                                                       [dispatcher, &server](const std::shared_ptr<api::HttpUrlConnection> connection) {
+                                                                           auto body = connection->readBody();
+                                                                           auto res = std::string((char *)(body.data->data()), body.data->size());
+                                                                           EXPECT_EQ(200, connection->getStatusCode());
+                                                                           EXPECT_EQ(BIG_TEXT, res);
+                                                                           server->stop();
+                                                                           dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
+                                                                                                                            dispatcher->stop();
+                                                                                                                        }),
+                                                                                                                        0);
+                                                                       });
         }));
 
         WAIT_AND_TIMEOUT(dispatcher, 10000)
@@ -205,7 +209,7 @@ TEST(HttpClient, GETWithSax) {
     };
 
     struct Handler : public HttpJsonHandler<std::shared_ptr<Success>, Failure, Handler> {
-        Handler() {};
+        Handler(){};
 
         bool Bool(bool b) {
             return true;
@@ -231,10 +235,9 @@ TEST(HttpClient, GETWithSax) {
             return _result;
         }
 
-    private:
+      private:
         std::string _currentKey;
         Either<Failure, std::shared_ptr<Success>> _result;
-
     };
 
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
@@ -251,18 +254,19 @@ TEST(HttpClient, GETWithSax) {
         server->start(8000);
         server->wait_for_started();
 
-        worker->execute(::make_runnable([&http, dispatcher, &server] () {
+        worker->execute(::make_runnable([&http, dispatcher, &server]() {
             http
-                    .GET("/talk/to/me/in/json")
-                    .json<Success, Failure>(Handler())
-                    .foreach(dispatcher->getMainExecutionContext(), [&server, dispatcher] (const Either<Failure, std::shared_ptr<Success>>& result) {
-                        EXPECT_TRUE(result.isRight());
-                        EXPECT_EQ(result.getRight()->the_answer, 42);
-                        server->stop();
-                        dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
-                            dispatcher->stop();
-                        }), 0);
-                    });
+                .GET("/talk/to/me/in/json")
+                .json<Success, Failure>(Handler())
+                .foreach (dispatcher->getMainExecutionContext(), [&server, dispatcher](const Either<Failure, std::shared_ptr<Success>> &result) {
+                    EXPECT_TRUE(result.isRight());
+                    EXPECT_EQ(result.getRight()->the_answer, 42);
+                    server->stop();
+                    dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
+                                                                     dispatcher->stop();
+                                                                 }),
+                                                                 0);
+                });
         }));
         WAIT_AND_TIMEOUT(dispatcher, 10000);
     }
@@ -278,7 +282,7 @@ TEST(HttpClient, GETWithSaxError) {
     };
 
     struct Handler : public HttpJsonHandler<std::shared_ptr<Success>, Failure, Handler> {
-        Handler() {};
+        Handler(){};
 
         bool Bool(bool b) {
             if (_currentKey == std::string("not_here"))
@@ -313,7 +317,7 @@ TEST(HttpClient, GETWithSaxError) {
             return _result;
         }
 
-    private:
+      private:
         std::string _currentKey;
         Either<Failure, std::shared_ptr<Success>> _result;
     };
@@ -332,18 +336,19 @@ TEST(HttpClient, GETWithSaxError) {
         server->start(8000);
         server->wait_for_started();
 
-        worker->execute(::make_runnable([&http, dispatcher, &server] () {
+        worker->execute(::make_runnable([&http, dispatcher, &server]() {
             http
-                    .GET("/knock/knock/neo")
-                    .json<Success, Failure>(Handler())
-                    .foreach(dispatcher->getMainExecutionContext(), [&server, dispatcher] (const Either<Failure, std::shared_ptr<Success>>& result) {
-                        EXPECT_TRUE(result.isLeft());
-                        EXPECT_EQ(result.getLeft().not_here, true);
-                        server->stop();
-                        dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
-                            dispatcher->stop();
-                        }), 0);
-                    });
+                .GET("/knock/knock/neo")
+                .json<Success, Failure>(Handler())
+                .foreach (dispatcher->getMainExecutionContext(), [&server, dispatcher](const Either<Failure, std::shared_ptr<Success>> &result) {
+                    EXPECT_TRUE(result.isLeft());
+                    EXPECT_EQ(result.getLeft().not_here, true);
+                    server->stop();
+                    dispatcher->getMainExecutionContext()->delay(::make_runnable([dispatcher]() {
+                                                                     dispatcher->stop();
+                                                                 }),
+                                                                 0);
+                });
         }));
         WAIT_AND_TIMEOUT(dispatcher, 10000);
     }

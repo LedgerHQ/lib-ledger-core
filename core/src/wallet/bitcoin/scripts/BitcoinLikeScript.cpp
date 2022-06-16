@@ -30,14 +30,15 @@
  */
 
 #include "BitcoinLikeScript.h"
+
+#include <api/Currency.hpp>
+#include <api/KeychainEngines.hpp>
 #include <bytes/BytesReader.h>
 #include <bytes/BytesWriter.h>
-#include <utils/hex.h>
-#include <wallet/bitcoin/networks.hpp>
-#include <api/KeychainEngines.hpp>
 #include <crypto/HASH160.hpp>
 #include <math/bech32/Bech32Factory.h>
-#include <api/Currency.hpp>
+#include <utils/hex.h>
+#include <wallet/bitcoin/networks.hpp>
 
 namespace ledger {
     namespace core {
@@ -58,7 +59,7 @@ namespace ledger {
                     } else if (byte == btccore::OP_PUSHDATA4) {
                         s << reader.read(reader.readNextBeBigInt(4).toUnsignedInt());
                     } else {
-                        s << (btccore::opcodetype) byte;
+                        s << (btccore::opcodetype)byte;
                     }
                 }
                 return s;
@@ -101,13 +102,13 @@ namespace ledger {
                     auto &bytes = chunk.getBytes();
                     auto size = bytes.size();
                     if (size <= 0x75) {
-                        writer.writeByte((uint8_t) size).writeByteArray(bytes);
+                        writer.writeByte((uint8_t)size).writeByteArray(bytes);
                     } else if (size <= 0xFF) {
-                        writer.writeByte((uint8_t) size).writeByteArray(bytes);
+                        writer.writeByte((uint8_t)size).writeByteArray(bytes);
                     } else if (size <= 0xFFFF) {
-                        writer.writeLeValue<uint16_t>((uint16_t) size).writeByteArray(bytes);
+                        writer.writeLeValue<uint16_t>((uint16_t)size).writeByteArray(bytes);
                     } else {
-                        writer.writeLeValue<uint32_t>((uint32_t) size).writeByteArray(bytes);
+                        writer.writeLeValue<uint32_t>((uint32_t)size).writeByteArray(bytes);
                     }
                 } else {
                     writer.writeByte(chunk.getOpCode());
@@ -150,17 +151,14 @@ namespace ledger {
             if (_configuration.isSigned) {
                 return _configuration.keychainEngine == api::KeychainEngines::BIP32_P2PKH;
             }
-            return size() >= 5 && (*this)[0].isEqualTo(btccore::OP_DUP) && (*this)[1].isEqualTo(btccore::OP_HASH160)
-                   && (*this)[2].sizeEqualsTo(20) && (*this)[3].isEqualTo(btccore::OP_EQUALVERIFY)
-                   && (*this)[4].isEqualTo(btccore::OP_CHECKSIG);
+            return size() >= 5 && (*this)[0].isEqualTo(btccore::OP_DUP) && (*this)[1].isEqualTo(btccore::OP_HASH160) && (*this)[2].sizeEqualsTo(20) && (*this)[3].isEqualTo(btccore::OP_EQUALVERIFY) && (*this)[4].isEqualTo(btccore::OP_CHECKSIG);
         }
 
         bool BitcoinLikeScript::isP2SH() const {
             if (_configuration.isSigned) {
                 return _configuration.keychainEngine == api::KeychainEngines::BIP49_P2SH;
             }
-            return (size() >= 3 && (*this)[0].isEqualTo(btccore::OP_HASH160) && (*this)[1].sizeEqualsTo(20)
-                    && (*this)[22].isEqualTo(btccore::OP_EQUAL));
+            return (size() >= 3 && (*this)[0].isEqualTo(btccore::OP_HASH160) && (*this)[1].sizeEqualsTo(20) && (*this)[22].isEqualTo(btccore::OP_EQUAL));
         }
 
         bool BitcoinLikeScript::isP2WPKH() const {
@@ -201,38 +199,35 @@ namespace ledger {
                     auto publicKeyHash160 = HASH160::hash((*this)[1].getBytes(), hashAlgorithm);
                     script.insert(script.end(), publicKeyHash160.begin(), publicKeyHash160.end());
                     return Option<BitcoinLikeAddress>(
-                            BitcoinLikeAddress(currency,
-                                               HASH160::hash(script, hashAlgorithm),
-                                               api::KeychainEngines::BIP49_P2SH));
+                        BitcoinLikeAddress(currency,
+                                           HASH160::hash(script, hashAlgorithm),
+                                           api::KeychainEngines::BIP49_P2SH));
                 }
                 //Unsigned : OP_HASH160 <PubKeyHash> OP_EQUAL
                 return Option<BitcoinLikeAddress>(
-                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP49_P2SH));
+                    BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP49_P2SH));
             } else if (isP2PKH()) {
                 // Signed : <ScriptSig> <PubKey>
                 auto index = _configuration.isSigned ? 1 : 2;
                 // Unsigned : OP_DUP OP_HASH160 <PubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
                 return Option<BitcoinLikeAddress>(
-                        BitcoinLikeAddress(currency, (*this)[index].getBytes(), api::KeychainEngines::BIP32_P2PKH));
+                    BitcoinLikeAddress(currency, (*this)[index].getBytes(), api::KeychainEngines::BIP32_P2PKH));
             } else if (isP2WPKH()) {
                 // <OP_0> <PubKeyHash>
                 return Option<BitcoinLikeAddress>(
-                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP173_P2WPKH));
+                    BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP173_P2WPKH));
             } else if (isP2WSH()) {
                 // <OP_0> <WitnessScript>
                 return Option<BitcoinLikeAddress>(
-                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP173_P2WSH));
+                    BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP173_P2WSH));
             }
             return Option<BitcoinLikeAddress>();
         }
 
-
         BitcoinLikeScriptChunk::BitcoinLikeScriptChunk(BitcoinLikeScriptOpCode op) : _value(op) {
-
         }
 
         BitcoinLikeScriptChunk::BitcoinLikeScriptChunk(const std::vector<uint8_t> &bytes) : _value(bytes) {
-
         }
 
         const std::vector<uint8_t> &BitcoinLikeScriptChunk::getBytes() const {
@@ -258,5 +253,5 @@ namespace ledger {
         bool BitcoinLikeScriptChunk::sizeEqualsTo(std::size_t size) const {
             return isBytes() && getBytes().size() == size;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

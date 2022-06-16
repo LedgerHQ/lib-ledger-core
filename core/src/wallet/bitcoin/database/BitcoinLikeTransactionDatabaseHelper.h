@@ -37,22 +37,22 @@
 namespace ledger {
     namespace core {
         class BitcoinLikeTransactionDatabaseHelper {
-        public:
-            static bool transactionExists(soci::session& sql, const std::string& btcTxUid);
-            static std::string putTransaction(soci::session& sql,
+          public:
+            static bool transactionExists(soci::session &sql, const std::string &btcTxUid);
+            static std::string putTransaction(soci::session &sql,
                                               const std::string &accountUid,
-                                              const BitcoinLikeBlockchainExplorerTransaction& tx);
-            static std::string createInputUid(const std::string& accountUid, int32_t previousOutputIndex, const std::string& previousTxHash, const std::string& coinbase);
-            static std::string createBitcoinTransactionUid(const std::string& accountUid, const std::string& txHash);
+                                              const BitcoinLikeBlockchainExplorerTransaction &tx);
+            static std::string createInputUid(const std::string &accountUid, int32_t previousOutputIndex, const std::string &previousTxHash, const std::string &coinbase);
+            static std::string createBitcoinTransactionUid(const std::string &accountUid, const std::string &txHash);
             static bool getTransactionByHash(soci::session &sql,
                                              const std::string &hash,
                                              const std::string &accountUid,
                                              BitcoinLikeBlockchainExplorerTransaction &out);
 
-            static inline bool inflateTransaction(soci::session& sql,
-                                                  const soci::row& row,
+            static inline bool inflateTransaction(soci::session &sql,
+                                                  const soci::row &row,
                                                   const std::string &accountUid,
-                                                  BitcoinLikeBlockchainExplorerTransaction& out);
+                                                  BitcoinLikeBlockchainExplorerTransaction &out);
 
             /**
              * Get all mempool transactions for the given account from database.
@@ -60,16 +60,16 @@ namespace ledger {
              * @param accountUid
              * @param out This vector is used to store the result of the DB query.
              */
-            static void getMempoolTransactions(soci::session& sql,
-                                               const std::string& accountUid,
-                                               std::vector<BitcoinLikeBlockchainExplorerTransaction>& out);
+            static void getMempoolTransactions(soci::session &sql,
+                                               const std::string &accountUid,
+                                               std::vector<BitcoinLikeBlockchainExplorerTransaction> &out);
 
             /**
              * Remove all operations and transactions in mempool for the given account
              * @param sql
              * @param accountUid
              */
-            static void removeAllMempoolOperation(soci::session& sql, const std::string& accountUid);
+            static void removeAllMempoolOperation(soci::session &sql, const std::string &accountUid);
 
             /**
              * Remove all operations and transactions for the given account from the given date
@@ -80,10 +80,9 @@ namespace ledger {
             static void eraseDataSince(
                 soci::session &sql,
                 const std::string &accountUid,
-                const std::chrono::system_clock::time_point & date);
+                const std::chrono::system_clock::time_point &date);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_BITCOINLIKETRANSACTIONDATABASEHELPER_H

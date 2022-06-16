@@ -30,25 +30,25 @@
  */
 
 #include "BitcoinLikeTransactionBuilder.h"
+
 #include <api/BitcoinLikeAddress.hpp>
-#include <wallet/common/Amount.h>
 #include <api/BitcoinLikeTransactionCallback.hpp>
-#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
+#include <utils/hex.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 #include <wallet/bitcoin/networks.hpp>
-#include <utils/hex.h>
+#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
+#include <wallet/common/Amount.h>
 #include <wallet/currencies.hpp>
 
 namespace ledger {
     namespace core {
 
         static const std::shared_ptr<BigInt> DEFAULT_MAX_AMOUNT = std::make_shared<BigInt>(BigInt::fromHex(
-                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
-                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
-        )); // Max ui512
+            "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+            "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")); // Max ui512
 
         BitcoinLikeTransactionBuilder::BitcoinLikeTransactionBuilder(const BitcoinLikeTransactionBuilder &cpy)
-                : _request(std::make_shared<BigInt>(cpy._currency.bitcoinLikeNetworkParameters.value().Dust)) {
+            : _request(std::make_shared<BigInt>(cpy._currency.bitcoinLikeNetworkParameters.value().Dust)) {
             _currency = cpy._currency;
             _build = cpy._build;
             _request = cpy._request;
@@ -57,10 +57,7 @@ namespace ledger {
         }
 
         BitcoinLikeTransactionBuilder::BitcoinLikeTransactionBuilder(
-                const std::shared_ptr<api::ExecutionContext> &context, const api::Currency &currency,
-                const std::shared_ptr<spdlog::logger> &logger,
-                const BitcoinLikeTransactionBuildFunction &buildFunction) :
-                _request(std::make_shared<BigInt>(currency.bitcoinLikeNetworkParameters.value().Dust)) {
+            const std::shared_ptr<api::ExecutionContext> &context, const api::Currency &currency, const std::shared_ptr<spdlog::logger> &logger, const BitcoinLikeTransactionBuildFunction &buildFunction) : _request(std::make_shared<BigInt>(currency.bitcoinLikeNetworkParameters.value().Dust)) {
             _currency = currency;
             _build = buildFunction;
             _context = context;
@@ -136,8 +133,7 @@ namespace ledger {
             return shared_from_this();
         }
 
-        void
-        BitcoinLikeTransactionBuilder::build(const std::shared_ptr<api::BitcoinLikeTransactionCallback> &callback) {
+        void BitcoinLikeTransactionBuilder::build(const std::shared_ptr<api::BitcoinLikeTransactionCallback> &callback) {
             build().callback(_context, callback);
         }
 
@@ -159,8 +155,7 @@ namespace ledger {
 
         void BitcoinLikeTransactionBuilder::reset() {
             _request = BitcoinLikeTransactionBuildRequest(std::make_shared<BigInt>(
-            _currency.bitcoinLikeNetworkParameters.value().Dust)
-            );
+                _currency.bitcoinLikeNetworkParameters.value().Dust));
         }
 
         Future<std::shared_ptr<api::BitcoinLikeTransaction>> BitcoinLikeTransactionBuilder::build() {
@@ -199,20 +194,18 @@ namespace ledger {
         }
 
         BitcoinLikeTransactionBuildRequest::BitcoinLikeTransactionBuildRequest(
-                const std::shared_ptr<BigInt> &minChange) {
+            const std::shared_ptr<BigInt> &minChange) {
             this->minChange = minChange;
             this->maxChange = DEFAULT_MAX_AMOUNT;
         }
 
-        bool BitcoinLikeTransactionUtxoDescriptor::operator==(BitcoinLikeTransactionUtxoDescriptor const &other) const
-        {
+        bool BitcoinLikeTransactionUtxoDescriptor::operator==(BitcoinLikeTransactionUtxoDescriptor const &other) const {
             return transactionHash == other.transactionHash && outputIndex == other.outputIndex;
         }
 
-        size_t BitcoinLikeTransactionUtxoDescriptorHash::operator()(BitcoinLikeTransactionUtxoDescriptor const& utxo) const
-        {
+        size_t BitcoinLikeTransactionUtxoDescriptorHash::operator()(BitcoinLikeTransactionUtxoDescriptor const &utxo) const {
             return std::hash<std::string>()(utxo.transactionHash) ^ std::hash<uint32_t>()(utxo.outputIndex);
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

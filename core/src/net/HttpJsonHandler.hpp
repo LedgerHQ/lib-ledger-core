@@ -31,16 +31,17 @@
 #ifndef LEDGER_CORE_HTTPJSONHANDLER_HPP
 #define LEDGER_CORE_HTTPJSONHANDLER_HPP
 
-#include <rapidjson/reader.h>
-#include "HttpClient.hpp"
 #include "../utils/Either.hpp"
+#include "HttpClient.hpp"
+
+#include <rapidjson/reader.h>
 
 namespace ledger {
     namespace core {
         template <typename Success, typename Failure, class Handler>
         class HttpJsonHandler : public rapidjson::BaseReaderHandler<rapidjson::UTF8<>, Handler> {
-        public:
-            HttpJsonHandler() {
+          public:
+            HttpJsonHandler(){
 
             };
             Either<Failure, Success> build() {
@@ -56,15 +57,14 @@ namespace ledger {
             std::unordered_map<std::string, std::string> getHttpHeaders() const {
                 return _connection->getHeaders();
             };
-            void attach(const std::shared_ptr<api::HttpUrlConnection>& connection) const {
+            void attach(const std::shared_ptr<api::HttpUrlConnection> &connection) const {
                 _connection = connection;
             };
 
-        private:
+          private:
             mutable std::shared_ptr<api::HttpUrlConnection> _connection;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_HTTPJSONHANDLER_HPP

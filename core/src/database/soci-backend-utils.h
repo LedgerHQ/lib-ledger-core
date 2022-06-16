@@ -36,9 +36,9 @@
 
 namespace soci {
 
-    bool is_sqlite_backend(soci::session& sql);
-    bool is_postgres_backend(soci::session& sql);
+    bool is_sqlite_backend(soci::session &sql);
+    bool is_postgres_backend(soci::session &sql);
 
-}
+} // namespace soci
 
 #endif //LEDGER_CORE_SOCI_BACKEND_UTILS_H

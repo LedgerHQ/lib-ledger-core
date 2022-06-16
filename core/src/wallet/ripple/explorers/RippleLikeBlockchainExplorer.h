@@ -28,21 +28,18 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKEBLOCKCHAINEXPLORER_H
 #define LEDGER_CORE_RIPPLELIKEBLOCKCHAINEXPLORER_H
 
-
-#include <string>
-
 #include <api/DynamicObject.hpp>
 #include <api/ExecutionContext.hpp>
-#include <api/RippleLikeNetworkParameters.hpp>
 #include <api/RippleLikeMemo.hpp>
+#include <api/RippleLikeNetworkParameters.hpp>
 #include <async/DedicatedContext.hpp>
 #include <collections/DynamicObject.hpp>
 #include <math/BigInt.h>
 #include <net/HttpClient.hpp>
+#include <string>
 #include <utils/ConfigurationMatchable.h>
 #include <utils/Option.hpp>
 #include <wallet/common/Block.h>
@@ -66,17 +63,16 @@ namespace ledger {
             std::vector<api::RippleLikeMemo> memos;
             int32_t status;
 
-            RippleLikeBlockchainExplorerTransaction(): confirmations(0) {
+            RippleLikeBlockchainExplorerTransaction() : confirmations(0) {
             }
 
             RippleLikeBlockchainExplorerTransaction(
-                RippleLikeBlockchainExplorerTransaction const& cpy
-            ) = default;
+                RippleLikeBlockchainExplorerTransaction const &cpy) = default;
         };
 
         class RippleLikeBlockchainExplorer : public ConfigurationMatchable,
                                              public AbstractBlockchainExplorer<RippleLikeBlockchainExplorerTransaction> {
-        public:
+          public:
             typedef ledger::core::Block Block;
             using Transaction = RippleLikeBlockchainExplorerTransaction;
 
@@ -98,8 +94,7 @@ namespace ledger {
             virtual Future<std::shared_ptr<BigInt>>
             getLedgerSequence() = 0;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_RIPPLELIKEBLOCKCHAINEXPLORER_H

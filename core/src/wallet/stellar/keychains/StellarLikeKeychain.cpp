@@ -36,9 +36,7 @@ namespace ledger {
 
         StellarLikeKeychain::StellarLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
                                                  const api::Currency &params,
-                                                 const std::shared_ptr<Preferences> &preferences) :
-                                                 _configuration(configuration), _preferences(preferences), _currency(params) {
-
+                                                 const std::shared_ptr<Preferences> &preferences) : _configuration(configuration), _preferences(preferences), _currency(params) {
         }
 
         const api::StellarLikeNetworkParameters &StellarLikeKeychain::getNetworkParams() const {
@@ -56,5 +54,5 @@ namespace ledger {
         const std::shared_ptr<Preferences> &StellarLikeKeychain::getPreferences() const {
             return _preferences;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

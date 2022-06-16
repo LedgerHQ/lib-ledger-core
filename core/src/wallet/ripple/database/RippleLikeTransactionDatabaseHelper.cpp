@@ -28,12 +28,12 @@
  *
  */
 
-
 #include "RippleLikeTransactionDatabaseHelper.h"
-#include <database/soci-option.h>
+
+#include <crypto/SHA256.hpp>
 #include <database/soci-date.h>
 #include <database/soci-number.h>
-#include <crypto/SHA256.hpp>
+#include <database/soci-option.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/common/database/OperationDatabaseHelper.h>
 
@@ -47,14 +47,15 @@ namespace ledger {
                                                                        RippleLikeBlockchainExplorerTransaction &tx) {
 
             rowset<row> rows = (sql.prepare << "SELECT  tx.hash, tx.value, tx.time, "
-                    " tx.sender, tx.receiver, tx.fees, tx.confirmations, "
-                    "block.height, block.hash, block.time, block.currency_name, "
-                    "memo.data, memo.fmt, memo.ty, tx.sequence, tx.destination_tag, tx.status "
-                    "FROM ripple_transactions AS tx "
-                    "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
-                    "LEFT JOIN ripple_memos AS memo ON memo.transaction_uid = tx.transaction_uid "
-                    "WHERE tx.hash = :hash "
-                    "ORDER BY memo.array_index ASC", use(hash));
+                                               " tx.sender, tx.receiver, tx.fees, tx.confirmations, "
+                                               "block.height, block.hash, block.time, block.currency_name, "
+                                               "memo.data, memo.fmt, memo.ty, tx.sequence, tx.destination_tag, tx.status "
+                                               "FROM ripple_transactions AS tx "
+                                               "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
+                                               "LEFT JOIN ripple_memos AS memo ON memo.transaction_uid = tx.transaction_uid "
+                                               "WHERE tx.hash = :hash "
+                                               "ORDER BY memo.array_index ASC",
+                                use(hash));
 
             for (auto &row : rows) {
                 inflateTransaction(sql, row, tx);
@@ -84,13 +85,12 @@ namespace ledger {
             }
 
             if (row.get_indicator(11) != i_null &&
-                    row.get_indicator(12) != i_null &&
-                    row.get_indicator(13) != i_null) {
+                row.get_indicator(12) != i_null &&
+                row.get_indicator(13) != i_null) {
                 tx.memos.push_back(api::RippleLikeMemo(
-                        row.get<std::string>(11),
-                        row.get<std::string>(12),
-                        row.get<std::string>(13)
-                ));
+                    row.get<std::string>(11),
+                    row.get<std::string>(12),
+                    row.get<std::string>(13)));
             }
 
             tx.sequence = BigInt(static_cast<unsigned long long>(get_number<uint64_t>(row, 14)));
@@ -108,8 +108,7 @@ namespace ledger {
         bool RippleLikeTransactionDatabaseHelper::transactionExists(soci::session &sql,
                                                                     const std::string &rippleTxUid) {
             int32_t count = 0;
-            sql << "SELECT COUNT(*) FROM ripple_transactions WHERE transaction_uid = :rippleTxUid", use(rippleTxUid), into(
-                    count);
+            sql << "SELECT COUNT(*) FROM ripple_transactions WHERE transaction_uid = :rippleTxUid", use(rippleTxUid), into(count);
             return count == 1;
         }
 
@@ -132,7 +131,7 @@ namespace ledger {
                 // UPDATE (we only update block information)
                 if (tx.block.nonEmpty()) {
                     sql << "UPDATE ripple_transactions SET block_uid = :uid WHERE hash = :tx_hash",
-                            use(blockUid), use(tx.hash);
+                        use(blockUid), use(tx.hash);
                 }
                 return rippleTxUid;
             } else {
@@ -143,28 +142,28 @@ namespace ledger {
                 auto hexValue = tx.value.toHexString();
                 auto hexFees = tx.fees.toHexString();
                 sql
-                        << "INSERT INTO ripple_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :confirmations, :sequence, :destination_tag, :status)",
-                        use(rippleTxUid),
-                        use(tx.hash),
-                        use(hexValue),
-                        use(blockUid),
-                        use(tx.receivedAt),
-                        use(tx.sender),
-                        use(tx.receiver),
-                        use(hexFees),
-                        use(tx.confirmations),
-                        use(tx.sequence),
-                        use(tx.destinationTag),
-                        use(tx.status);
+                    << "INSERT INTO ripple_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :confirmations, :sequence, :destination_tag, :status)",
+                    use(rippleTxUid),
+                    use(tx.hash),
+                    use(hexValue),
+                    use(blockUid),
+                    use(tx.receivedAt),
+                    use(tx.sender),
+                    use(tx.receiver),
+                    use(hexFees),
+                    use(tx.confirmations),
+                    use(tx.sequence),
+                    use(tx.destinationTag),
+                    use(tx.status);
 
                 int fieldIndex = 0;
-                for (auto& memo : tx.memos) {
+                for (auto &memo : tx.memos) {
                     sql << "INSERT INTO ripple_memos VALUES (:tx_uid, :data, :fmt, :ty, :i)",
-                           use(rippleTxUid),
-                           use(memo.data),
-                           use(memo.fmt),
-                           use(memo.ty),
-                           use(fieldIndex);
+                        use(rippleTxUid),
+                        use(memo.data),
+                        use(memo.fmt),
+                        use(memo.ty),
+                        use(fieldIndex);
 
                     ++fieldIndex;
                 }
@@ -174,13 +173,13 @@ namespace ledger {
         }
 
         void RippleLikeTransactionDatabaseHelper::eraseDataSince(
-                    soci::session &sql,
-                    const std::string &accountUid,
-                    const std::chrono::system_clock::time_point & date) {
+            soci::session &sql,
+            const std::string &accountUid,
+            const std::chrono::system_clock::time_point &date) {
 
-            OperationDatabaseHelper::eraseDataSince(sql, accountUid, date, 
-                "ripple_operations", "ripple_transactions");
+            OperationDatabaseHelper::eraseDataSince(sql, accountUid, date,
+                                                    "ripple_operations", "ripple_transactions");
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

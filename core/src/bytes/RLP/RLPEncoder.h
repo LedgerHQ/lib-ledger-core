@@ -28,17 +28,17 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RLPENCODER_H
 #define LEDGER_CORE_RLPENCODER_H
 
-#include <vector>
 #include "../BytesWriter.h"
+
+#include <vector>
 
 namespace ledger {
     namespace core {
-        class RLPEncoder : public virtual std::enable_shared_from_this<RLPEncoder>{
-        public:
+        class RLPEncoder : public virtual std::enable_shared_from_this<RLPEncoder> {
+          public:
             //TODO: replace append by pushList or pushString
             virtual std::vector<uint8_t> encode() = 0;
             virtual void append(const std::string &str) = 0;
@@ -50,8 +50,7 @@ namespace ledger {
             static std::vector<uint8_t> encodeLength(uint32_t length, uint8_t offset, BytesWriter &out);
             static void toBinary(uint32_t length, std::vector<uint8_t> &out);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_RLPENCODER_H

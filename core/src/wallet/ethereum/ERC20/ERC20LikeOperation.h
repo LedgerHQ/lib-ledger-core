@@ -28,20 +28,19 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ERC20LIKETRANSACTION_H
 #define LEDGER_CORE_ERC20LIKETRANSACTION_H
 
 #include <api/ERC20LikeOperation.hpp>
 #include <api/ERC20Token.hpp>
 #include <api/OperationType.hpp>
-#include <wallet/common/Operation.h>
 #include <api_impl/BigIntImpl.hpp>
+#include <wallet/common/Operation.h>
 namespace ledger {
     namespace core {
 
         class ERC20LikeOperation : public api::ERC20LikeOperation {
-        public:
+          public:
             ERC20LikeOperation(const std::string &accountAddress,
                                const std::string &operationUid,
                                const Operation &operation,
@@ -49,7 +48,7 @@ namespace ledger {
                                const api::Currency &currency);
 
             ERC20LikeOperation() : _blockHeight(0){};
-            
+
             std::string getHash() override;
             std::shared_ptr<api::BigInt> getNonce() override;
             std::shared_ptr<api::BigInt> getGasPrice() override;
@@ -57,13 +56,13 @@ namespace ledger {
             std::shared_ptr<api::BigInt> getUsedGas() override;
             std::string getSender() override;
             std::string getReceiver() override;
-            std::shared_ptr<api::BigInt> getValue() override ;
-            std::vector<uint8_t> getData() override ;
+            std::shared_ptr<api::BigInt> getValue() override;
+            std::vector<uint8_t> getData() override;
             std::chrono::system_clock::time_point getTime() override;
             api::OperationType getOperationType() override;
             std::string getOperationUid() override;
             std::string getETHOperationUid() override;
-            int32_t getStatus() override ;
+            int32_t getStatus() override;
             std::experimental::optional<int64_t> getBlockHeight() override;
             ERC20LikeOperation &setHash(const std::string &hash) {
                 _hash = hash;
@@ -110,7 +109,7 @@ namespace ledger {
                 return *this;
             };
 
-            ERC20LikeOperation &setTime(const std::chrono::system_clock::time_point& time) {
+            ERC20LikeOperation &setTime(const std::chrono::system_clock::time_point &time) {
                 _time = time;
                 return *this;
             };
@@ -139,8 +138,8 @@ namespace ledger {
                 _blockHeight = blockHeight;
                 return *this;
             }
-            
-        private:
+
+          private:
             std::string _uid;
             std::string _ethUidOperation;
             std::string _hash;
@@ -158,8 +157,7 @@ namespace ledger {
             int64_t _blockHeight;
         };
 
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ERC20LIKETRANSACTION_H

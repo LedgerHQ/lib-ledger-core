@@ -32,41 +32,41 @@
 #ifndef LEDGER_CORE_BASEFIXTURE_H
 #define LEDGER_CORE_BASEFIXTURE_H
 
-#include <gtest/gtest.h>
-#include <UvThreadDispatcher.hpp>
-#include <src/database/DatabaseSessionPool.hpp>
-#include <NativePathResolver.hpp>
-#include <unordered_set>
-#include <src/wallet/pool/WalletPool.hpp>
 #include <CoutLogPrinter.hpp>
-#include <src/api/DynamicObject.hpp>
-#include <wallet/common/CurrencyBuilder.hpp>
-#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
-#include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
-#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
-#include <wallet/common/database/AccountDatabaseHelper.h>
-#include <wallet/pool/database/PoolDatabaseHelper.hpp>
-#include <utils/JSONUtils.h>
-#include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
-#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
-#include <wallet/ethereum/EthereumLikeAccount.h>
-#include <wallet/ripple/RippleLikeAccount.h>
-#include <wallet/algorand/AlgorandAccount.hpp>
-#include <wallet/tezos/TezosLikeAccount.h>
-#include <api/BitcoinLikeOperation.hpp>
-#include <api/BitcoinLikeTransaction.hpp>
-#include <api/BitcoinLikeInput.hpp>
-#include <api/BitcoinLikeOutput.hpp>
-#include <api/BigInt.hpp>
 #include <CppHttpLibClient.hpp>
-#include <proxy-http-client/ProxyHttpClient.hpp>
-#include <events/LambdaEventReceiver.hpp>
-#include <soci.h>
-#include <api/Account.hpp>
-#include <api/BitcoinLikeAccount.hpp>
 #include <FakeWebSocketClient.h>
-#include <OpenSSLRandomNumberGenerator.hpp>
 #include <FilesystemUtils.hpp>
+#include <NativePathResolver.hpp>
+#include <OpenSSLRandomNumberGenerator.hpp>
+#include <UvThreadDispatcher.hpp>
+#include <api/Account.hpp>
+#include <api/BigInt.hpp>
+#include <api/BitcoinLikeAccount.hpp>
+#include <api/BitcoinLikeInput.hpp>
+#include <api/BitcoinLikeOperation.hpp>
+#include <api/BitcoinLikeOutput.hpp>
+#include <api/BitcoinLikeTransaction.hpp>
+#include <events/LambdaEventReceiver.hpp>
+#include <gtest/gtest.h>
+#include <proxy-http-client/ProxyHttpClient.hpp>
+#include <soci.h>
+#include <src/api/DynamicObject.hpp>
+#include <src/database/DatabaseSessionPool.hpp>
+#include <src/wallet/pool/WalletPool.hpp>
+#include <unordered_set>
+#include <utils/JSONUtils.h>
+#include <wallet/algorand/AlgorandAccount.hpp>
+#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
+#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
+#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
+#include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
+#include <wallet/common/CurrencyBuilder.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
+#include <wallet/ethereum/EthereumLikeAccount.h>
+#include <wallet/pool/database/PoolDatabaseHelper.hpp>
+#include <wallet/ripple/RippleLikeAccount.h>
+#include <wallet/tezos/TezosLikeAccount.h>
 
 using namespace ledger::core; // Only do that for testing
 using namespace ledger::core::test;
@@ -95,51 +95,51 @@ extern const std::string TX_2;
 extern const std::string TX_3;
 extern const std::string TX_4;
 
-
 class BaseFixture : public ::testing::Test {
-public:
+  public:
     virtual void SetUp() override;
     virtual void TearDown() override;
     std::shared_ptr<WalletPool> newDefaultPool(const std::string &poolName = "",
                                                const std::string &password = "test",
                                                const std::shared_ptr<api::DynamicObject> &configuration = api::DynamicObject::newInstance(),
-                                               bool usePostgreSQL = false, bool httpclientMultiThread = false);
-    void createWallet(const std::shared_ptr<WalletPool>& pool,
-                      const std::string& walletName,
-                      const std::string& currencyName,
+                                               bool usePostgreSQL = false,
+                                               bool httpclientMultiThread = false);
+    void createWallet(const std::shared_ptr<WalletPool> &pool,
+                      const std::string &walletName,
+                      const std::string &currencyName,
                       const std::shared_ptr<api::DynamicObject> &configuration);
-    void createAccount(const std::shared_ptr<WalletPool>& pool, const std::string &walletName, int32_t index);
-    BitcoinLikeWalletDatabase newBitcoinAccount(const std::shared_ptr<WalletPool>& pool,
-                                                const std::string& walletName,
-                                                const std::string& currencyName,
+    void createAccount(const std::shared_ptr<WalletPool> &pool, const std::string &walletName, int32_t index);
+    BitcoinLikeWalletDatabase newBitcoinAccount(const std::shared_ptr<WalletPool> &pool,
+                                                const std::string &walletName,
+                                                const std::string &currencyName,
                                                 const std::shared_ptr<api::DynamicObject> &configuration,
                                                 int32_t index,
-                                                const std::string& xpub);
-    std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
-                                                                int32_t index,
-                                                                const api::AccountCreationInfo &info);
-    std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
-                                                                 int32_t index,
-                                                                 const api::ExtendedKeyAccountCreationInfo& info);
-
-    std::shared_ptr<EthereumLikeAccount> createEthereumLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+                                                const std::string &xpub);
+    std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                                                  int32_t index,
                                                                  const api::AccountCreationInfo &info);
-    std::shared_ptr<EthereumLikeAccount> createEthereumLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+    std::shared_ptr<BitcoinLikeAccount> createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
+                                                                 int32_t index,
+                                                                 const api::ExtendedKeyAccountCreationInfo &info);
+
+    std::shared_ptr<EthereumLikeAccount> createEthereumLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                                                    int32_t index,
-                                                                   const api::ExtendedKeyAccountCreationInfo& info);
+                                                                   const api::AccountCreationInfo &info);
+    std::shared_ptr<EthereumLikeAccount> createEthereumLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
+                                                                   int32_t index,
+                                                                   const api::ExtendedKeyAccountCreationInfo &info);
 
-    std::shared_ptr<RippleLikeAccount> createRippleLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+    std::shared_ptr<RippleLikeAccount> createRippleLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                                                int32_t index,
                                                                const api::AccountCreationInfo &info);
-    std::shared_ptr<RippleLikeAccount> createRippleLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+    std::shared_ptr<RippleLikeAccount> createRippleLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                                                int32_t index,
-                                                               const api::ExtendedKeyAccountCreationInfo& info);
+                                                               const api::ExtendedKeyAccountCreationInfo &info);
 
-    std::shared_ptr<algorand::Account> createAlgorandAccount(const std::shared_ptr<AbstractWallet>& wallet,
-                                                               int32_t index,
-                                                               const api::AccountCreationInfo &info);
-    std::shared_ptr<TezosLikeAccount> createTezosLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+    std::shared_ptr<algorand::Account> createAlgorandAccount(const std::shared_ptr<AbstractWallet> &wallet,
+                                                             int32_t index,
+                                                             const api::AccountCreationInfo &info);
+    std::shared_ptr<TezosLikeAccount> createTezosLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                                              int32_t index,
                                                              const api::AccountCreationInfo &info);
 
@@ -155,13 +155,13 @@ public:
     std::shared_ptr<FakeWebSocketClient> ws;
     std::shared_ptr<OpenSSLRandomNumberGenerator> rng;
 
-    protected:
+  protected:
     std::string randomWalletName() const;
     std::string randomDBName() const;
     std::string randomKeychainName() const;
 
-    private:
-    std::string randomName(const std::string& prefix, unsigned int suffix_length = 10) const;
+  private:
+    std::string randomName(const std::string &prefix, unsigned int suffix_length = 10) const;
 };
 
 #endif //LEDGER_CORE_BASEFIXTURE_H

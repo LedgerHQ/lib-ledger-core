@@ -31,277 +31,235 @@
 
 #include "../AlgorandAddress.hpp"
 
-#include <utils/Option.hpp>
-
 #include <cstdint>
 #include <string>
 #include <type_traits>
+#include <utils/Option.hpp>
 #include <vector>
 
 namespace ledger {
-namespace core {
+    namespace core {
 
-    template<typename T>
-    Option<T> makeOption(const std::experimental::optional<T>& t)
-    {
-        return Option<T>(t);
-    }
-
-namespace algorand {
-namespace model {
-
-    namespace {
-
-        Address addressFrom(const std::string& address)
-        {
-            return Address(address);
+        template <typename T>
+        Option<T> makeOption(const std::experimental::optional<T> &t) {
+            return Option<T>(t);
         }
 
-        const std::string& addressTo(const Address& address)
-        {
-            return address.toString();
-        }
+        namespace algorand {
+            namespace model {
 
-        uint32_t u32From(const std::string& i)
-        {
-            return std::stoul(i);
-        }
+                namespace {
 
-        std::string u32To(uint32_t i)
-        {
-            return std::to_string(i);
-        }
+                    Address addressFrom(const std::string &address) {
+                        return Address(address);
+                    }
 
-        uint64_t u64From(const std::string& i)
-        {
-            return std::stoull(i);
-        }
+                    const std::string &addressTo(const Address &address) {
+                        return address.toString();
+                    }
 
-        std::string u64To(uint64_t i)
-        {
-            return std::to_string(i);
-        }
+                    uint32_t u32From(const std::string &i) {
+                        return std::stoul(i);
+                    }
 
-        std::vector<uint8_t> toBinary(const std::string& binary)
-        {
-            return { std::begin(binary), std::end(binary) };
-        }
+                    std::string u32To(uint32_t i) {
+                        return std::to_string(i);
+                    }
 
-        std::string fromBinary(const std::vector<uint8_t>& binary)
-        {
-            return { std::begin(binary), std::end(binary) };
-        }
+                    uint64_t u64From(const std::string &i) {
+                        return std::stoull(i);
+                    }
 
-        template<typename T, typename UnaryOperation>
-        auto mapOption(const Option<T>& option, UnaryOperation uop)
-        {
-            // FIXME(remibarjon): use std::invoke_result_t (C++17)
-            // using U = std::invoke_result_t<UnaryOperation, T>;
-            using U = std::result_of_t<UnaryOperation(T)>;
+                    std::string u64To(uint64_t i) {
+                        return std::to_string(i);
+                    }
 
-            return option.template map<std::decay_t<U>>(uop);
-        }
+                    std::vector<uint8_t> toBinary(const std::string &binary) {
+                        return {std::begin(binary), std::end(binary)};
+                    }
 
-        template<typename TModel>
-        auto toOptionAPI(const Option<TModel>& model)
-        {
-            return mapOption(
-                    model,
-                    [](const TModel& model) {
-                        return toAPI(model);
-                    });
-        }
+                    std::string fromBinary(const std::vector<uint8_t> &binary) {
+                        return {std::begin(binary), std::end(binary)};
+                    }
 
-        template<typename TApi>
-        auto fromOptionAPI(const Option<TApi>& api)
-        {
-            return mapOption(
-                    api,
-                    [](const TApi& api) {
-                        return fromAPI(api);
-                    });
-        }
+                    template <typename T, typename UnaryOperation>
+                    auto mapOption(const Option<T> &option, UnaryOperation uop) {
+                        // FIXME(remibarjon): use std::invoke_result_t (C++17)
+                        // using U = std::invoke_result_t<UnaryOperation, T>;
+                        using U = std::result_of_t<UnaryOperation(T)>;
 
-    } // namespace
+                        return option.template map<std::decay_t<U>>(uop);
+                    }
 
-    api::AlgorandAssetAmount toAPI(const AssetAmount& amount)
-    {
-        return api::AlgorandAssetAmount(
-                addressTo(amount.creatorAddress),
-                u64To(amount.amount),
-                amount.frozen,
-                u64To(amount.assetId)
-        );
-    }
+                    template <typename TModel>
+                    auto toOptionAPI(const Option<TModel> &model) {
+                        return mapOption(
+                            model,
+                            [](const TModel &model) {
+                                return toAPI(model);
+                            });
+                    }
 
-    AssetAmount fromAPI(const api::AlgorandAssetAmount& amount)
-    {
-        return AssetAmount(
-                addressFrom(amount.creatorAddress),
-                u64From(amount.amount),
-                amount.frozen,
-                u64From(amount.assetId)
-        );
-    }
+                    template <typename TApi>
+                    auto fromOptionAPI(const Option<TApi> &api) {
+                        return mapOption(
+                            api,
+                            [](const TApi &api) {
+                                return fromAPI(api);
+                            });
+                    }
 
-    api::AlgorandAssetParams toAPI(const AssetParams& params)
-    {
-        return api::AlgorandAssetParams(
-                mapOption(params.creatorAddr, addressTo).toOptional(),
-                params.assetName.toOptional(),
-                params.unitName.toOptional(),
-                params.url.toOptional(),
-                params.defaultFrozen.getValueOr(false),
-                mapOption(params.total, u64To).toOptional(),
-                mapOption(params.decimals, u32To).toOptional(),
-                mapOption(params.creatorAddr, addressTo).toOptional(),
-                mapOption(params.managerAddr, addressTo).toOptional(),
-                mapOption(params.freezeAddr, addressTo).toOptional(),
-                mapOption(params.clawbackAddr, addressTo).toOptional(),
-                mapOption(params.reserveAddr, addressTo).toOptional(),
-                mapOption(params.metaDataHash, fromBinary).toOptional()
-        );
-    }
+                } // namespace
 
-    AssetParams fromAPI(const api::AlgorandAssetParams& params)
-    {
-        return [params]() {
-            auto assetParams = AssetParams(
-                    mapOption(makeOption(params.metadataHash), toBinary),
-                    makeOption(params.assetName),
-                    makeOption(params.url),
-                    mapOption(makeOption(params.clawbackAddress), addressFrom),
-                    mapOption(makeOption(params.decimals), u32From),
-                    params.defaultFrozen,
-                    mapOption(makeOption(params.freezeAddress), addressFrom),
-                    mapOption(makeOption(params.managerAddress), addressFrom),
-                    mapOption(makeOption(params.reserveAddress), addressFrom),
-                    mapOption(makeOption(params.total), u64From),
-                    makeOption(params.unitName)
-            );
+                api::AlgorandAssetAmount toAPI(const AssetAmount &amount) {
+                    return api::AlgorandAssetAmount(
+                        addressTo(amount.creatorAddress),
+                        u64To(amount.amount),
+                        amount.frozen,
+                        u64To(amount.assetId));
+                }
 
-            assetParams.creatorAddr =
-                    mapOption(makeOption(params.creatorAddress), addressFrom);
+                AssetAmount fromAPI(const api::AlgorandAssetAmount &amount) {
+                    return AssetAmount(
+                        addressFrom(amount.creatorAddress),
+                        u64From(amount.amount),
+                        amount.frozen,
+                        u64From(amount.assetId));
+                }
 
-            return assetParams;
-        }();
-    }
+                api::AlgorandAssetParams toAPI(const AssetParams &params) {
+                    return api::AlgorandAssetParams(
+                        mapOption(params.creatorAddr, addressTo).toOptional(),
+                        params.assetName.toOptional(),
+                        params.unitName.toOptional(),
+                        params.url.toOptional(),
+                        params.defaultFrozen.getValueOr(false),
+                        mapOption(params.total, u64To).toOptional(),
+                        mapOption(params.decimals, u32To).toOptional(),
+                        mapOption(params.creatorAddr, addressTo).toOptional(),
+                        mapOption(params.managerAddr, addressTo).toOptional(),
+                        mapOption(params.freezeAddr, addressTo).toOptional(),
+                        mapOption(params.clawbackAddr, addressTo).toOptional(),
+                        mapOption(params.reserveAddr, addressTo).toOptional(),
+                        mapOption(params.metaDataHash, fromBinary).toOptional());
+                }
 
-    api::AlgorandAssetConfigurationInfo toAPI(const AssetConfigTxnFields& fields)
-    {
-        return api::AlgorandAssetConfigurationInfo(
-                mapOption(fields.assetId, u64To).toOptional(),
-                toOptionAPI(fields.assetParams).toOptional()
-        );
-    }
+                AssetParams fromAPI(const api::AlgorandAssetParams &params) {
+                    return [params]() {
+                        auto assetParams = AssetParams(
+                            mapOption(makeOption(params.metadataHash), toBinary),
+                            makeOption(params.assetName),
+                            makeOption(params.url),
+                            mapOption(makeOption(params.clawbackAddress), addressFrom),
+                            mapOption(makeOption(params.decimals), u32From),
+                            params.defaultFrozen,
+                            mapOption(makeOption(params.freezeAddress), addressFrom),
+                            mapOption(makeOption(params.managerAddress), addressFrom),
+                            mapOption(makeOption(params.reserveAddress), addressFrom),
+                            mapOption(makeOption(params.total), u64From),
+                            makeOption(params.unitName));
 
-    AssetConfigTxnFields fromAPI(const api::AlgorandAssetConfigurationInfo& info)
-    {
-        return AssetConfigTxnFields(
-                fromOptionAPI(makeOption(info.assetParams)),
-                mapOption(makeOption(info.assetId), u64From)
-        );
-    }
+                        assetParams.creatorAddr =
+                            mapOption(makeOption(params.creatorAddress), addressFrom);
 
-    api::AlgorandAssetFreezeInfo toAPI(const AssetFreezeTxnFields& fields)
-    {
-        return api::AlgorandAssetFreezeInfo(
-                u64To(fields.assetId),
-                addressTo(fields.frozenAddress),
-                fields.assetFrozen
-        );
-    }
+                        return assetParams;
+                    }();
+                }
 
-    AssetFreezeTxnFields fromAPI(const api::AlgorandAssetFreezeInfo& info)
-    {
-        return AssetFreezeTxnFields(
-                info.frozen,
-                addressFrom(info.frozenAddress),
-                u64From(info.assetId)
-        );
-    }
+                api::AlgorandAssetConfigurationInfo toAPI(const AssetConfigTxnFields &fields) {
+                    return api::AlgorandAssetConfigurationInfo(
+                        mapOption(fields.assetId, u64To).toOptional(),
+                        toOptionAPI(fields.assetParams).toOptional());
+                }
 
-    api::AlgorandAssetTransferInfo toAPI(const AssetTransferTxnFields& fields)
-    {
-        return api::AlgorandAssetTransferInfo(
-                u64To(fields.assetId),
-                mapOption(fields.assetAmount, u64To).toOptional(),
-                addressTo(fields.assetReceiver),
-                mapOption(fields.assetCloseTo, addressTo).toOptional(),
-                mapOption(fields.assetSender, addressTo).toOptional(),
-                mapOption(fields.closeAmount, u64To).toOptional()
-        );
-    }
+                AssetConfigTxnFields fromAPI(const api::AlgorandAssetConfigurationInfo &info) {
+                    return AssetConfigTxnFields(
+                        fromOptionAPI(makeOption(info.assetParams)),
+                        mapOption(makeOption(info.assetId), u64From));
+                }
 
-    AssetTransferTxnFields fromAPI(const api::AlgorandAssetTransferInfo& info)
-    {
-        return [info]() {
-            auto fields = AssetTransferTxnFields(
-                    mapOption(makeOption(info.amount), u64From),
-                    mapOption(makeOption(info.closeAddress), addressFrom),
-                    addressFrom(info.recipientAddress),
-                    mapOption(makeOption(info.clawedBackAddress), addressFrom),
-                    u64From(info.assetId)
-            );
+                api::AlgorandAssetFreezeInfo toAPI(const AssetFreezeTxnFields &fields) {
+                    return api::AlgorandAssetFreezeInfo(
+                        u64To(fields.assetId),
+                        addressTo(fields.frozenAddress),
+                        fields.assetFrozen);
+                }
 
-            fields.closeAmount =
-                mapOption(makeOption(info.closeAmount), u64From);
+                AssetFreezeTxnFields fromAPI(const api::AlgorandAssetFreezeInfo &info) {
+                    return AssetFreezeTxnFields(
+                        info.frozen,
+                        addressFrom(info.frozenAddress),
+                        u64From(info.assetId));
+                }
 
-            return fields;
-        }();
-    }
+                api::AlgorandAssetTransferInfo toAPI(const AssetTransferTxnFields &fields) {
+                    return api::AlgorandAssetTransferInfo(
+                        u64To(fields.assetId),
+                        mapOption(fields.assetAmount, u64To).toOptional(),
+                        addressTo(fields.assetReceiver),
+                        mapOption(fields.assetCloseTo, addressTo).toOptional(),
+                        mapOption(fields.assetSender, addressTo).toOptional(),
+                        mapOption(fields.closeAmount, u64To).toOptional());
+                }
 
-    api::AlgorandParticipationInfo toAPI(const KeyRegTxnFields& fields)
-    {
-        return api::AlgorandParticipationInfo(
-                fields.votePk,
-                fields.selectionPk,
-                u64To(fields.voteKeyDilution),
-                u64To(fields.voteFirst),
-                u64To(fields.voteLast)
-        );
-    }
+                AssetTransferTxnFields fromAPI(const api::AlgorandAssetTransferInfo &info) {
+                    return [info]() {
+                        auto fields = AssetTransferTxnFields(
+                            mapOption(makeOption(info.amount), u64From),
+                            mapOption(makeOption(info.closeAddress), addressFrom),
+                            addressFrom(info.recipientAddress),
+                            mapOption(makeOption(info.clawedBackAddress), addressFrom),
+                            u64From(info.assetId));
 
-    KeyRegTxnFields fromAPI(const api::AlgorandParticipationInfo& info)
-    {
-        return KeyRegTxnFields(
-                {},
-                info.vrfPublicKey,
-                u64From(info.voteFirstRound),
-                u64From(info.voteKeyDilution),
-                info.rootPublicKey,
-                u64From(info.voteLastRound)
-        );
-    }
+                        fields.closeAmount =
+                            mapOption(makeOption(info.closeAmount), u64From);
 
-    api::AlgorandPaymentInfo toAPI(const PaymentTxnFields& fields)
-    {
-        return api::AlgorandPaymentInfo(
-                addressTo(fields.receiverAddr),
-                u64To(fields.amount),
-                mapOption(fields.closeAddr, addressTo).toOptional(),
-                mapOption(fields.closeAmount, u64To).toOptional()
-        );
-    }
+                        return fields;
+                    }();
+                }
 
-    PaymentTxnFields fromAPI(const api::AlgorandPaymentInfo& info)
-    {
-        return [info]() {
-            auto fields = PaymentTxnFields(
-                    u64From(info.amount),
-                    mapOption(makeOption(info.closeAddress), addressFrom),
-                    addressFrom(info.recipientAddress)
-            );
+                api::AlgorandParticipationInfo toAPI(const KeyRegTxnFields &fields) {
+                    return api::AlgorandParticipationInfo(
+                        fields.votePk,
+                        fields.selectionPk,
+                        u64To(fields.voteKeyDilution),
+                        u64To(fields.voteFirst),
+                        u64To(fields.voteLast));
+                }
 
-            fields.closeAmount =
-                mapOption(makeOption(info.closeAmount), u64From);
+                KeyRegTxnFields fromAPI(const api::AlgorandParticipationInfo &info) {
+                    return KeyRegTxnFields(
+                        {},
+                        info.vrfPublicKey,
+                        u64From(info.voteFirstRound),
+                        u64From(info.voteKeyDilution),
+                        info.rootPublicKey,
+                        u64From(info.voteLastRound));
+                }
 
-            return fields;
-        }();
-    }
+                api::AlgorandPaymentInfo toAPI(const PaymentTxnFields &fields) {
+                    return api::AlgorandPaymentInfo(
+                        addressTo(fields.receiverAddr),
+                        u64To(fields.amount),
+                        mapOption(fields.closeAddr, addressTo).toOptional(),
+                        mapOption(fields.closeAmount, u64To).toOptional());
+                }
 
-} // namespace model
-} // namespace algorand
-} // namespace core
+                PaymentTxnFields fromAPI(const api::AlgorandPaymentInfo &info) {
+                    return [info]() {
+                        auto fields = PaymentTxnFields(
+                            u64From(info.amount),
+                            mapOption(makeOption(info.closeAddress), addressFrom),
+                            addressFrom(info.recipientAddress));
+
+                        fields.closeAmount =
+                            mapOption(makeOption(info.closeAmount), u64From);
+
+                        return fields;
+                    }();
+                }
+
+            } // namespace model
+        }     // namespace algorand
+    }         // namespace core
 } // namespace ledger
-

@@ -29,64 +29,61 @@
 
 #pragma once
 
-#include "../../model/transactions/AlgorandTransaction.hpp"
 #include "../../model/transactions/AlgorandSignedTransaction.hpp"
+#include "../../model/transactions/AlgorandTransaction.hpp"
 
-#include <api/AlgorandTransaction.hpp>
-#include <api/AlgorandPaymentInfo.hpp>
-#include <api/AlgorandParticipationInfo.hpp>
 #include <api/AlgorandAssetConfigurationInfo.hpp>
-#include <api/AlgorandAssetTransferInfo.hpp>
 #include <api/AlgorandAssetFreezeInfo.hpp>
-
+#include <api/AlgorandAssetTransferInfo.hpp>
+#include <api/AlgorandParticipationInfo.hpp>
+#include <api/AlgorandPaymentInfo.hpp>
+#include <api/AlgorandTransaction.hpp>
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
 
-    class AlgorandTransactionImpl : public api::AlgorandTransaction
-    {
-    public:
-        explicit AlgorandTransactionImpl(model::SignedTransaction stxn);
-        explicit AlgorandTransactionImpl(model::Transaction txn);
-        std::string getId() const override;
-        std::string getType() const override;
-        std::string getSender() const override;
-        std::string getFee() const override;
-        std::string getNote() const override;
-        std::string getRound() const override;
-        std::string getSenderRewards() const override;
-        std::string getReceiverRewards() const override;
-        std::string getCloseRewards() const override;
-        std::string getCorrelationId() const override;
-        std::string setCorrelationId(const std::string& newId) override;
-        void setSender(const std::string& sender) override;
-        void setFee(const std::string& fee) override;
-        void setNote(const std::string& note) override;
-        void setPaymentInfo(const api::AlgorandPaymentInfo& info) override;
-        api::AlgorandPaymentInfo getPaymentInfo() const override;
-        void setParticipationInfo(const api::AlgorandParticipationInfo& info) override;
-        api::AlgorandParticipationInfo getParticipationInfo() const override;
-        void setAssetConfigurationInfo(const api::AlgorandAssetConfigurationInfo& info) override;
-        api::AlgorandAssetConfigurationInfo getAssetConfigurationInfo() const override;
-        void setAssetTransferInfo(const api::AlgorandAssetTransferInfo& info) override;
-        api::AlgorandAssetTransferInfo getAssetTransferInfo() const override;
-        void setAssetFreezeInfo(const api::AlgorandAssetFreezeInfo& info) override;
-        api::AlgorandAssetFreezeInfo getAssetFreezeInfo() const override;
-        std::vector<uint8_t> serialize() const override;
-        void setSignature(const std::vector<uint8_t>& signature) override;
+            class AlgorandTransactionImpl : public api::AlgorandTransaction {
+              public:
+                explicit AlgorandTransactionImpl(model::SignedTransaction stxn);
+                explicit AlgorandTransactionImpl(model::Transaction txn);
+                std::string getId() const override;
+                std::string getType() const override;
+                std::string getSender() const override;
+                std::string getFee() const override;
+                std::string getNote() const override;
+                std::string getRound() const override;
+                std::string getSenderRewards() const override;
+                std::string getReceiverRewards() const override;
+                std::string getCloseRewards() const override;
+                std::string getCorrelationId() const override;
+                std::string setCorrelationId(const std::string &newId) override;
+                void setSender(const std::string &sender) override;
+                void setFee(const std::string &fee) override;
+                void setNote(const std::string &note) override;
+                void setPaymentInfo(const api::AlgorandPaymentInfo &info) override;
+                api::AlgorandPaymentInfo getPaymentInfo() const override;
+                void setParticipationInfo(const api::AlgorandParticipationInfo &info) override;
+                api::AlgorandParticipationInfo getParticipationInfo() const override;
+                void setAssetConfigurationInfo(const api::AlgorandAssetConfigurationInfo &info) override;
+                api::AlgorandAssetConfigurationInfo getAssetConfigurationInfo() const override;
+                void setAssetTransferInfo(const api::AlgorandAssetTransferInfo &info) override;
+                api::AlgorandAssetTransferInfo getAssetTransferInfo() const override;
+                void setAssetFreezeInfo(const api::AlgorandAssetFreezeInfo &info) override;
+                api::AlgorandAssetFreezeInfo getAssetFreezeInfo() const override;
+                std::vector<uint8_t> serialize() const override;
+                void setSignature(const std::vector<uint8_t> &signature) override;
 
-        const model::Transaction& getTransactionData() const;
+                const model::Transaction &getTransactionData() const;
 
-    private:
-        model::SignedTransaction stxn;
-        std::string correlationId;
-    };
+              private:
+                model::SignedTransaction stxn;
+                std::string correlationId;
+            };
 
-} // namespace algorand
-} // namespace core
+        } // namespace algorand
+    }     // namespace core
 } // namespace ledger
-

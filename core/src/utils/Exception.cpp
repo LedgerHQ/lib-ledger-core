@@ -29,6 +29,7 @@
  *
  */
 #include "Exception.hpp"
+
 #include <sstream>
 
 const ledger::core::optional<ledger::core::api::Error> ledger::core::Exception::NO_CORE_ERROR;
@@ -40,7 +41,6 @@ ledger::core::Exception::Exception(api::ErrorCode code, const std::string &messa
 }
 
 ledger::core::Exception::~Exception() {
-
 }
 
 const char *ledger::core::Exception::what() const noexcept {

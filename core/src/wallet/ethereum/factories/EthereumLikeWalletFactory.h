@@ -28,43 +28,39 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMLIKEWALLETFACTORY_H
 #define LEDGER_CORE_ETHEREUMLIKEWALLETFACTORY_H
 
+#include <api/Currency.hpp>
 #include <functional>
-
 #include <wallet/common/AbstractWalletFactory.hpp>
-#include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/ethereum/factories/EthereumLikeKeychainFactory.h>
-
-#include <api/Currency.hpp>
+#include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
 
 namespace ledger {
     namespace core {
 
-        using EthereumLikeAccountSynchronizerFactory = std::function<std::shared_ptr<EthereumLikeAccountSynchronizer> ()>;
+        using EthereumLikeAccountSynchronizerFactory = std::function<std::shared_ptr<EthereumLikeAccountSynchronizer>()>;
         class WalletPool;
 
         class EthereumLikeWalletFactory : public AbstractWalletFactory {
-        public:
+          public:
             EthereumLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
             std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
-        private:
-            std::shared_ptr<EthereumLikeBlockchainExplorer> getExplorer(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
-        private:
+          private:
+            std::shared_ptr<EthereumLikeBlockchainExplorer> getExplorer(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
+
+          private:
             // Explorers
             std::list<std::weak_ptr<EthereumLikeBlockchainExplorer>> _runningExplorers;
 
             // Keychain factories
             std::unordered_map<std::string, std::shared_ptr<EthereumLikeKeychainFactory>> _keychainFactories;
-
         };
 
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMLIKEWALLETFACTORY_H

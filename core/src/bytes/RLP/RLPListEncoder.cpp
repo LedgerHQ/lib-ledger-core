@@ -28,8 +28,8 @@
  *
  */
 
-
 #include "RLPListEncoder.h"
+
 #include "RLPStringEncoder.h"
 
 /*
@@ -41,7 +41,7 @@ namespace ledger {
     namespace core {
 
         RLPListEncoder::RLPListEncoder(const std::shared_ptr<RLPListEncoder> &child) {
-            if(child) {
+            if (child) {
                 _children.push_back(child);
             }
         }
@@ -78,7 +78,7 @@ namespace ledger {
             _children.push_back(std::make_shared<RLPStringEncoder>(str));
         }
 
-        void RLPListEncoder::append(const std::vector<uint8_t > &data) {
+        void RLPListEncoder::append(const std::vector<uint8_t> &data) {
             _children.push_back(std::make_shared<RLPStringEncoder>(data));
         }
 
@@ -93,5 +93,5 @@ namespace ledger {
         std::vector<std::shared_ptr<RLPEncoder>> RLPListEncoder::getChildren() {
             return _children;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

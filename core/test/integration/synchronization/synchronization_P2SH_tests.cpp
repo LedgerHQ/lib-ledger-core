@@ -29,24 +29,24 @@
  *
  */
 
-#include <gtest/gtest.h>
 #include "../BaseFixture.h"
-#include <set>
+
 #include <api/KeychainEngines.hpp>
+#include <gtest/gtest.h>
+#include <set>
 #include <utils/DateUtils.hpp>
-#include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
+#include <wallet/bitcoin/database/BitcoinLikeAccountDatabaseHelper.h>
 
 class BitcoinLikeWalletP2SHSynchronization : public BaseFixture {
-
 };
 
 TEST_F(BitcoinLikeWalletP2SHSynchronization, MediumXpubSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
-        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
+        configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "49'/<coin_type>'/<account>'/<node>/<address>");
 
         auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin_testnet", configuration));
         {
@@ -66,7 +66,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, MediumXpubSynchronization) {
             });
 
             auto bus = account->synchronize();
-            bus->subscribe(getTestExecutionContext(),receiver);
+            bus->subscribe(getTestExecutionContext(), receiver);
 
             dispatcher->waitUntilStopped();
 
@@ -80,30 +80,30 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, SynchronizeOnceAtATime) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
-        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
+        configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "49'/<coin_type>'/<account>'/<node>/<address>");
 
-        auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin_testnet",configuration));
+        auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin_testnet", configuration));
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
             auto account = createBitcoinLikeAccount(wallet, nextIndex, P2SH_XPUB_INFO);
             auto eventBus = pool->getEventBus();
             eventBus->subscribe(getTestExecutionContext(),
-                                           make_receiver([](const std::shared_ptr<api::Event> &event) {
-                                               fmt::print("Received event {}\n", api::to_string(event->getCode()));
-                                           }));
+                                make_receiver([](const std::shared_ptr<api::Event> &event) {
+                                    fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                                }));
             auto bus = account->synchronize();
             bus->subscribe(getTestExecutionContext(),
-                                              make_receiver([=](const std::shared_ptr<api::Event> &event) {
-                                                  fmt::print("Received event {}\n", api::to_string(event->getCode()));
-                                                  if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
-                                                      return;
-                                                  EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-                                                  EXPECT_EQ(event->getCode(),
-                                                            api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT);
-                                                  dispatcher->stop();
-                                              }));
+                           make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                               fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                               if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                                   return;
+                               EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                               EXPECT_EQ(event->getCode(),
+                                         api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT);
+                               dispatcher->stop();
+                           }));
             EXPECT_EQ(bus, account->synchronize());
             dispatcher->waitUntilStopped();
         }
@@ -114,12 +114,12 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, DISABLED_SynchronizeFromLastBlock) 
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
-        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
+        configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "49'/<coin_type>'/<account>'/<node>/<address>");
         const auto walletName = randomWalletName();
-        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin_testnet",configuration));
+        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin_testnet", configuration));
         createBitcoinLikeAccount(wallet, 0, P2SH_XPUB_INFO);
-        auto synchronize = [wallet, pool, this] (std::shared_ptr<uv::SequentialExecutionContext> context, bool expectNewOp) {
+        auto synchronize = [wallet, pool, this](std::shared_ptr<uv::SequentialExecutionContext> context, bool expectNewOp) {
             auto account = uv::wait(wallet->getAccount(0));
             auto numberOfOp = 0;
 
@@ -149,9 +149,11 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, DISABLED_SynchronizeFromLastBlock) 
         };
 
         auto b1 = synchronize(std::dynamic_pointer_cast<uv::SequentialExecutionContext>(
-                                  dispatcher->getSerialExecutionContext("__sync1__")), true);
+                                  dispatcher->getSerialExecutionContext("__sync1__")),
+                              true);
         auto b2 = synchronize(std::dynamic_pointer_cast<uv::SequentialExecutionContext>(
-                                  dispatcher->getSerialExecutionContext("__sync2__")), false);
+                                  dispatcher->getSerialExecutionContext("__sync2__")),
+                              false);
         EXPECT_NE(b1, b2);
     }
 }
@@ -179,7 +181,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, EraseDataSinceAfterSynchronization)
             EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
             dispatcher->stop();
         });
-        bus->subscribe(getTestExecutionContext(),receiver);
+        bus->subscribe(getTestExecutionContext(), receiver);
         dispatcher->waitUntilStopped();
 
         auto accountCount = uv::wait(wallet->getAccountCount());
@@ -217,9 +219,9 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, TestNetSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
-        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
-        auto wallet = uv::wait(pool->createWallet("testnet_wallet", "bitcoin_testnet",configuration));
+        configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "49'/<coin_type>'/<account>'/<node>/<address>");
+        auto wallet = uv::wait(pool->createWallet("testnet_wallet", "bitcoin_testnet", configuration));
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             auto info = uv::wait(wallet->getNextExtendedKeyAccountCreationInfo());
@@ -235,7 +237,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, TestNetSynchronization) {
             });
 
             auto bus = account->synchronize();
-            bus->subscribe(getTestExecutionContext(),receiver);
+            bus->subscribe(getTestExecutionContext(), receiver);
             dispatcher->waitUntilStopped();
         }
     }
@@ -244,7 +246,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, TestNetSynchronization) {
 TEST_F(BitcoinLikeWalletP2SHSynchronization, DecredParsingAndSerialization) {
     auto pool = newDefaultPool();
     {
-        auto wallet = uv::wait(pool->createWallet("testnet_wallet", "decred",DynamicObject::newInstance()));
+        auto wallet = uv::wait(pool->createWallet("testnet_wallet", "decred", DynamicObject::newInstance()));
         auto strTx = "01000000016b9b4d4cdd2cf78907e62cddf31911ae4d4af1d89228ae4afc4459edee6a60c40100000000ffffff000240420f000000000000001976a9141d19445f397f6f0d3e2e6d741f61ba66b53886cf88acf0d31d000000000000001976a91415101bac61dca29add75996a0836a469dc8eee0788ac00000000ffffffff01000000000000000000000000ffffffff6a47304402200466bbc2aa8a742e85c3b68911502e73cdcb620ceaaa7a3cd199dbb4f8e9b969022063afeedd37d05e44b655a9de92eb36124acc045baf7b9e2941f81e41af91f1150121030ac79bab351084fdc82b4fa46eaa6a9cd2b5eb97ee93e367422bf47219b54a14";
         auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(strTx), 0);
         EXPECT_EQ(hex::toString(tx->serialize()), strTx);

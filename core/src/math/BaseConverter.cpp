@@ -34,11 +34,11 @@
 namespace ledger {
     namespace core {
 
-        static BaseConverter::CharNormalizer NO_OP_NORMALIZER = [] (char c) {
+        static BaseConverter::CharNormalizer NO_OP_NORMALIZER = [](char c) {
             return c;
         };
 
-        static BaseConverter::CharNormalizer BASE32_RFC4648_NORMALIZER = [] (char c) {
+        static BaseConverter::CharNormalizer BASE32_RFC4648_NORMALIZER = [](char c) {
             if (c == '0')
                 return 'O';
             else if (c == '1')
@@ -46,54 +46,50 @@ namespace ledger {
             return c;
         };
 
-        static BaseConverter::PaddingPolicy BASE32_RFC4648_PADDER = [] (int padding, std::stringstream& ss) {
+        static BaseConverter::PaddingPolicy BASE32_RFC4648_PADDER = [](int padding, std::stringstream &ss) {
             switch (padding) {
-                case 4: // 8bits
-                    ss << "======";
-                    break;
-                case 3: // 16bits
-                    ss << "====";
-                    break;
-                case 2: // 24bits
-                    ss << "===";
-                    break;
-                case 1: // 32bits
-                    ss << "=";
-                    break;
+            case 4: // 8bits
+                ss << "======";
+                break;
+            case 3: // 16bits
+                ss << "====";
+                break;
+            case 2: // 24bits
+                ss << "===";
+                break;
+            case 1: // 32bits
+                ss << "=";
+                break;
             }
         };
 
-        static BaseConverter::PaddingPolicy BASE64_RFC4648_PADDER = [] (int padding, std::stringstream& ss) {
+        static BaseConverter::PaddingPolicy BASE64_RFC4648_PADDER = [](int padding, std::stringstream &ss) {
             switch (padding) {
-                case 2: // 8bits
-                    ss << "==";
-                    break;
-                case 1: // 16bits
-                    ss << "=";
-                    break;
+            case 2: // 8bits
+                ss << "==";
+                break;
+            case 1: // 16bits
+                ss << "=";
+                break;
             }
         };
 
-        static BaseConverter::PaddingPolicy NO_PADDING = [] (int padding, std::stringstream& ss) {};
+        static BaseConverter::PaddingPolicy NO_PADDING = [](int padding, std::stringstream &ss) {};
 
-
-        BaseConverter::Base32Params BaseConverter::BASE32_RFC4648 {
+        BaseConverter::Base32Params BaseConverter::BASE32_RFC4648{
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567",
             BASE32_RFC4648_NORMALIZER,
-            BASE32_RFC4648_PADDER
-        };
+            BASE32_RFC4648_PADDER};
 
-        BaseConverter::Base32Params BaseConverter::BASE32_RFC4648_NO_PADDING {
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567",
-                BASE32_RFC4648_NORMALIZER,
-                NO_PADDING
-        };
+        BaseConverter::Base32Params BaseConverter::BASE32_RFC4648_NO_PADDING{
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567",
+            BASE32_RFC4648_NORMALIZER,
+            NO_PADDING};
 
-        BaseConverter::Base64Params BaseConverter::BASE64_RFC4648 {
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
-                NO_OP_NORMALIZER,
-                BASE64_RFC4648_PADDER
-        };
+        BaseConverter::Base64Params BaseConverter::BASE64_RFC4648{
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+            NO_OP_NORMALIZER,
+            BASE64_RFC4648_PADDER};
 
-    }
-}
+    } // namespace core
+} // namespace ledger

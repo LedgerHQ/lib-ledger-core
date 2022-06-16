@@ -29,44 +29,35 @@
 
 #pragma once
 
-#include <utils/Option.hpp>
-
 #include <cstdint>
 #include <string>
+#include <utils/Option.hpp>
 
 namespace ledger {
-namespace core {
-namespace algorand {
-namespace model {
+    namespace core {
+        namespace algorand {
+            namespace model {
 
-    class KeyRegTxnFields
-    {
-    public:
-        KeyRegTxnFields() = default;
-        KeyRegTxnFields(Option<bool> nonParticipation,
-                        std::string selectionPk,
-                        uint64_t voteFirst,
-                        uint64_t voteKeyDilution,
-                        std::string votePk,
-                        uint64_t voteLast)
-            : nonParticipation(std::move(nonParticipation))
-            , selectionPk(std::move(selectionPk))
-            , voteFirst(voteFirst)
-            , voteKeyDilution(voteKeyDilution)
-            , votePk(std::move(votePk))
-            , voteLast(voteLast)
-        {}
+                class KeyRegTxnFields {
+                  public:
+                    KeyRegTxnFields() = default;
+                    KeyRegTxnFields(Option<bool> nonParticipation,
+                                    std::string selectionPk,
+                                    uint64_t voteFirst,
+                                    uint64_t voteKeyDilution,
+                                    std::string votePk,
+                                    uint64_t voteLast)
+                        : nonParticipation(std::move(nonParticipation)), selectionPk(std::move(selectionPk)), voteFirst(voteFirst), voteKeyDilution(voteKeyDilution), votePk(std::move(votePk)), voteLast(voteLast) {}
 
-        Option<bool> nonParticipation;
-        std::string selectionPk;
-        uint64_t voteFirst;
-        uint64_t voteKeyDilution;
-        std::string votePk;
-        uint64_t voteLast;
-    };
+                    Option<bool> nonParticipation;
+                    std::string selectionPk;
+                    uint64_t voteFirst;
+                    uint64_t voteKeyDilution;
+                    std::string votePk;
+                    uint64_t voteLast;
+                };
 
-} // namespace model
+            } // namespace model
+        }     // namespace algorand
+    }         // namespace core
 } // namespace ledger
-} // namespace core
-} // namespace algorand
-

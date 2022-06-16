@@ -36,23 +36,23 @@
 namespace ledger {
     namespace core {
         class HorizonBlockchainExplorer : public StellarLikeBlockchainExplorer, public std::enable_shared_from_this<HorizonBlockchainExplorer> {
-        public:
-            HorizonBlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
-                                      const std::shared_ptr<HttpClient>& http,
-                                      const std::shared_ptr<api::DynamicObject>& configuration);
-            virtual Future<Option<std::shared_ptr<stellar::Asset>>> getAsset(const std::string& assetCode, const std::string& assetIssuer)  override;
-            virtual Future<std::shared_ptr<stellar::Ledger>> getLastLedger()  override;
-            virtual FuturePtr<stellar::FeeStats> getRecommendedFees()  override;
-            virtual Future<std::vector<std::shared_ptr<stellar::Operation>>> getOperations(const std::string& address, const Option<std::string>& cursor)  override;
+          public:
+            HorizonBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
+                                      const std::shared_ptr<HttpClient> &http,
+                                      const std::shared_ptr<api::DynamicObject> &configuration);
+            virtual Future<Option<std::shared_ptr<stellar::Asset>>> getAsset(const std::string &assetCode, const std::string &assetIssuer) override;
+            virtual Future<std::shared_ptr<stellar::Ledger>> getLastLedger() override;
+            virtual FuturePtr<stellar::FeeStats> getRecommendedFees() override;
+            virtual Future<std::vector<std::shared_ptr<stellar::Operation>>> getOperations(const std::string &address, const Option<std::string> &cursor) override;
             virtual Future<std::vector<std::shared_ptr<stellar::Transaction>>> getTransactions(
-                                                                                               const std::string& address,
-                                                                                               const std::string& cursor)  override;
+                const std::string &address,
+                const std::string &cursor) override;
 
             Future<std::shared_ptr<stellar::Account>> getAccount(const std::string &accountId) const override;
 
-            Future<std::string> postTransaction(const std::vector<uint8_t> &tx, const std::string& correlationId = "") override;
+            Future<std::string> postTransaction(const std::vector<uint8_t> &tx, const std::string &correlationId = "") override;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif // LEDGER_CORE_HORIZON_EXPLORER_HPP

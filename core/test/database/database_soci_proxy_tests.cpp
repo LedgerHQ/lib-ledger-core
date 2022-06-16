@@ -29,15 +29,16 @@
  *
  */
 
-#include <database/ProxyBackend.hpp>
-#include <gtest/gtest.h>
-#include <soci.h>
 #include "MemoryDatabaseProxy.h"
-#include <fmt/format.h>
-#include <list>
+
 #include <algorithm>
-#include <cmath>
 #include <array>
+#include <cmath>
+#include <database/ProxyBackend.hpp>
+#include <fmt/format.h>
+#include <gtest/gtest.h>
+#include <list>
+#include <soci.h>
 #include <utils/DateUtils.hpp>
 using namespace ledger::core;
 
@@ -46,8 +47,8 @@ struct Item {
     int64_t quantity;
     int owner;
 
-    Item() {};
-    Item(const std::string& n, int64_t q, int o) : name(n), quantity(q), owner(o) {};
+    Item(){};
+    Item(const std::string &n, int64_t q, int o) : name(n), quantity(q), owner(o){};
 };
 
 struct People {
@@ -58,10 +59,8 @@ struct People {
     std::vector<uint8_t> picture;
     std::list<Item> items;
 
-    People() {};
-    People(int i, const std::string& n, int64_t a, double g, const std::vector<uint8_t>& p) :
-        id(i), name(n), age(a), grade(g), picture(p)
-    {};
+    People(){};
+    People(int i, const std::string &n, int64_t a, double g, const std::vector<uint8_t> &p) : id(i), name(n), age(a), grade(g), picture(p){};
 };
 
 template <class T>
@@ -73,13 +72,13 @@ static T random(T seed) {
 static const std::string DB_KEY = "test_key";
 static const std::string DB_NEW_KEY = "test_new_key";
 class SociProxyBaseTest : public ::testing::Test {
-protected:
+  protected:
     void SetUp() override {
         Test::SetUp();
         auto engine = std::make_shared<MemoryDatabaseProxy>();
         _backend = std::make_shared<ProxyBackend>(engine);
         _backend->enableQueryLogging(true);
-        auto dbName = fmt::format( "test_db_{}", std::chrono::system_clock::now().time_since_epoch().count());
+        auto dbName = fmt::format("test_db_{}", std::chrono::system_clock::now().time_since_epoch().count());
         std::cout << "initializing database " << dbName << std::endl;
         _backend->init(nullptr, dbName, DB_KEY, sql);
     }
@@ -88,7 +87,7 @@ protected:
         Test::TearDown();
     }
 
-    void createTables(soci::session& sql) {
+    void createTables(soci::session &sql) {
         sql << "CREATE TABLE item ("
                "    name TEXT,"
                "    quantity BIGINT,"
@@ -104,38 +103,38 @@ protected:
                ")";
     }
 
-    void insertPeople(soci::session& sql, const std::vector<People>& people) {
-        for (const auto& p : people) {
+    void insertPeople(soci::session &sql, const std::vector<People> &people) {
+        for (const auto &p : people) {
             insertPeople(sql, p);
         }
     }
 
-    void insertPeople(soci::session& sql, const People& people) {
+    void insertPeople(soci::session &sql, const People &people) {
         if (!people.picture.empty()) {
             soci::blob blob(sql);
             blob.write(0, (const char *)people.picture.data(), people.picture.size());
             sql << "INSERT INTO people(id, name, age, grade, picture) VALUES(:id, :name, :age, :grade, :picture)",
-                    soci::use(people.id), soci::use(people.name), soci::use(people.age), soci::use(people.grade),
-                    soci::use(blob);
+                soci::use(people.id), soci::use(people.name), soci::use(people.age), soci::use(people.grade),
+                soci::use(blob);
         } else {
             sql << "INSERT INTO people(id, name, age, grade) VALUES(:id, :name, :age, :grade)",
-                    soci::use(people.id), soci::use(people.name), soci::use(people.age), soci::use(people.grade);
+                soci::use(people.id), soci::use(people.name), soci::use(people.age), soci::use(people.grade);
         }
-        for (const auto& i : people.items) {
+        for (const auto &i : people.items) {
             insertItem(sql, i);
         }
     }
 
-    void insertItem(soci::session& sql, const Item& item) {
+    void insertItem(soci::session &sql, const Item &item) {
         sql << "INSERT INTO item(name, quantity, owner_id) VALUES(:name, :quantity, :owner_id)", soci::use(item.name),
             soci::use(item.quantity), soci::use(item.owner);
     }
 
-    std::vector<uint8_t> blob_to_vector(soci::blob& blob) {
+    std::vector<uint8_t> blob_to_vector(soci::blob &blob) {
         std::vector<uint8_t> out;
         std::array<uint8_t, 2> buffer;
         std::size_t offset = 0;
-        begin:
+    begin:
         auto r = blob.read(offset, (char *)buffer.data(), buffer.size());
         if (r > 0) {
             out.insert(out.end(), buffer.begin(), buffer.begin() + r);
@@ -147,16 +146,16 @@ protected:
 
     std::vector<People> generateData(int count, bool withPicture = false) {
         int64_t Long = 0xDEADBEEFC0FFEL; // Random sentence
-        int Int = 1337; // Because 1337 is always random
+        int Int = 1337;                  // Because 1337 is always random
         uint8_t Byte = 0x0F;
         int id = 1;
         double Double = 55.67891;
         std::vector<People> people;
         while (count > 0) {
-            People p {id++, fmt::format("{}", RAND(Int)), RAND(Long), ::ceil((int)RAND(Double) % 3000000) / 100.00, {}};
-            auto itemsCount = ((unsigned int) RAND(Int)) % 21;
+            People p{id++, fmt::format("{}", RAND(Int)), RAND(Long), ::ceil((int)RAND(Double) % 3000000) / 100.00, {}};
+            auto itemsCount = ((unsigned int)RAND(Int)) % 21;
             for (auto i = 0; i < itemsCount; i++) {
-                Item item {fmt::format("{}", RAND(Double)), RAND(Long), p.id};
+                Item item{fmt::format("{}", RAND(Double)), RAND(Long), p.id};
                 p.items.emplace_back(item);
             }
             // Generate the picture
@@ -177,15 +176,16 @@ protected:
         _backend->changePassword(oldPassword, newPassword, sql);
     }
 
-public:
+  public:
     soci::session sql;
     std::string dbName;
-protected:
+
+  protected:
     std::shared_ptr<ProxyBackend> _backend;
 };
 
 class SociProxyTest : public SociProxyBaseTest {
-protected:
+  protected:
     void SetUp() override {
         Test::SetUp();
         auto engine = std::make_shared<MemoryDatabaseProxy>();
@@ -208,22 +208,20 @@ TEST_F(SociProxyTest, ProcedureShouldCallableMultipleTime) {
     createTables(sql);
     int i;
     std::string str;
-    soci::statement st = (sql.prepare <<
-                                "insert into item(name, quantity) values(:val, :val2)",
-            soci::use(i), soci::use(str));
-    for (i = 0; i != 3; ++i)
-    {
+    soci::statement st = (sql.prepare << "insert into item(name, quantity) values(:val, :val2)",
+                          soci::use(i), soci::use(str));
+    for (i = 0; i != 3; ++i) {
         st.execute(true);
     }
 }
 
 TEST_F(SociProxyTest, InsertAndSelectSimpleType) {
     createTables(sql);
-    const int expected_id {1};
-    const std::string expected_name {"John Doe"};
-    const int64_t expected_age {42};
-    const double expected_grade {0.5782910293847};
-    const std::vector<uint8_t> expected_picture {};
+    const int expected_id{1};
+    const std::string expected_name{"John Doe"};
+    const int64_t expected_age{42};
+    const double expected_grade{0.5782910293847};
+    const std::vector<uint8_t> expected_picture{};
 
     insertPeople(sql, {expected_id, expected_name, expected_age, expected_grade, expected_picture});
 
@@ -232,7 +230,7 @@ TEST_F(SociProxyTest, InsertAndSelectSimpleType) {
     double grade;
 
     sql << "SELECT name, age, grade FROM people WHERE id = :id", soci::use(expected_id), soci::into(name),
-                                                                 soci::into(age), soci::into(grade);
+        soci::into(age), soci::into(grade);
     EXPECT_EQ(age, expected_age);
     EXPECT_EQ(name, expected_name);
     EXPECT_EQ(grade, expected_grade);
@@ -243,7 +241,7 @@ TEST_F(SociProxyTest, SelectWithJoin) {
     auto people = generateData(1)[0];
     // Just ensure we only 1 item
     people.items.erase(++people.items.begin(), people.items.end());
-    const auto& item = people.items.front();
+    const auto &item = people.items.front();
 
     People p;
     Item i;
@@ -252,8 +250,9 @@ TEST_F(SociProxyTest, SelectWithJoin) {
 
     sql << "SELECT p.name, p.age, p.grade, i.name, i.quantity "
            "FROM people AS p JOIN item AS i ON i.owner_id = p.id "
-           "WHERE id = :id", soci::use(people.id), soci::into(p.name), soci::into(p.age), soci::into(p.grade),
-           soci::into(i.name), soci::into(i.quantity);
+           "WHERE id = :id",
+        soci::use(people.id), soci::into(p.name), soci::into(p.age), soci::into(p.grade),
+        soci::into(i.name), soci::into(i.quantity);
 
     EXPECT_EQ(people.name, p.name);
     EXPECT_EQ(people.grade, p.grade);
@@ -266,14 +265,14 @@ TEST_F(SociProxyTest, SelectWithRows) {
     createTables(sql);
     auto people = generateData(100);
     std::vector<People> from_db;
-    std::sort(people.begin(), people.end(), [] (const People& a, const People& b) -> bool {
+    std::sort(people.begin(), people.end(), [](const People &a, const People &b) -> bool {
         return a.id < b.id;
     });
     insertPeople(sql, people);
     soci::rowset<soci::row> rows = (sql.prepare << "SELECT id, name, age, grade FROM people ORDER by id");
     auto it = people.begin();
-    for (const auto& row : rows) {
-        const auto& expected = *it;
+    for (const auto &row : rows) {
+        const auto &expected = *it;
         People retrieved;
         retrieved.id = row.get<int>(0);
         retrieved.name = row.get<std::string>(1);
@@ -321,12 +320,12 @@ TEST_F(SociProxyTest, SelectAllFields) {
     createTables(sql);
     auto people = generateData(1, true);
     insertPeople(sql, people);
-    auto& witness = people[0];
+    auto &witness = people[0];
     witness.items.clear();
 
     soci::rowset<soci::row> rows = (sql.prepare << "SELECT * FROM people WHERE age = :age AND name = :name AND grade = :grade AND id = :id",
-            soci::use(witness.age), soci::use(witness.name), soci::use(witness.grade), soci::use(witness.id));
-    auto& row = *rows.begin();
+                                    soci::use(witness.age), soci::use(witness.name), soci::use(witness.grade), soci::use(witness.id));
+    auto &row = *rows.begin();
     People retrieved;
     bool hasPicture = false;
     for (size_t i = 0; i < row.size(); i++) {
@@ -391,9 +390,9 @@ TEST_F(SociProxyTest, SelectCount) {
 
 TEST_F(SociProxyTest, SelectRowsWhenEmpty) {
     createTables(sql);
-    soci::rowset<soci::row> rows (sql.prepare << "SELECT * FROM PEOPLE");
+    soci::rowset<soci::row> rows(sql.prepare << "SELECT * FROM PEOPLE");
     int count = 0;
-    for (auto& row : rows) {
+    for (auto &row : rows) {
         count += 1;
     }
     EXPECT_EQ(count, 0);

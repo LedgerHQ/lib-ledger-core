@@ -28,17 +28,16 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_NODETEZOSLIKEBLOCKCHAINEXPLORER_H
 #define LEDGER_CORE_NODETEZOSLIKEBLOCKCHAINEXPLORER_H
 
-#include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
-#include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
-#include <wallet/tezos/explorers/api/TezosLikeTransactionsParser.h>
-#include <wallet/tezos/explorers/api/TezosLikeTransactionsBulkParser.h>
-#include <wallet/tezos/explorers/api/TezosLikeBlockParser.h>
 #include <api/TezosLikeNetworkParameters.hpp>
+#include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
 #include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
+#include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
+#include <wallet/tezos/explorers/api/TezosLikeBlockParser.h>
+#include <wallet/tezos/explorers/api/TezosLikeTransactionsBulkParser.h>
+#include <wallet/tezos/explorers/api/TezosLikeTransactionsParser.h>
 
 namespace ledger {
     namespace core {
@@ -48,7 +47,7 @@ namespace ledger {
                                                 public LedgerApiBlockchainExplorer,
                                                 public DedicatedContext,
                                                 public std::enable_shared_from_this<NodeTezosLikeBlockchainExplorer> {
-        public:
+          public:
             NodeTezosLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
                                             const std::shared_ptr<HttpClient> &http,
                                             const api::TezosLikeNetworkParameters &parameters,
@@ -63,7 +62,7 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getGasPrice() override;
 
-            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId="") override;
+            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
 
             Future<void *> startSession() override;
 
@@ -71,7 +70,7 @@ namespace ledger {
 
             Future<Bytes> getRawTransaction(const String &transactionHash) override;
 
-            Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId="") override;
+            Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
 
             FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>
             getTransactions(const std::vector<std::string> &addresses,
@@ -102,7 +101,7 @@ namespace ledger {
 
             Future<std::shared_ptr<BigInt>> getCounter(const std::string &address) override;
 
-            Future<std::vector<uint8_t>> forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) override ;
+            Future<std::vector<uint8_t>> forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) override;
 
             Future<std::string> getManagerKey(const std::string &address) override;
 
@@ -113,11 +112,11 @@ namespace ledger {
             Future<bool> isFunded(const std::string &address) override;
 
             Future<std::shared_ptr<BigInt>>
-            getTokenBalance(const std::string& accountAddress, const std::string& tokenAddress) const override;
+            getTokenBalance(const std::string &accountAddress, const std::string &tokenAddress) const override;
 
             Future<bool> isDelegate(const std::string &address) override;
 
-        private:
+          private:
             /*
              * Helper to a get specific field's value from given url
              * WARNING: this is only useful for fields with an integer (decimal representation) value (with a string type)
@@ -135,6 +134,6 @@ namespace ledger {
             api::TezosLikeNetworkParameters _parameters;
             std::string _explorerVersion;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_NODETEZOSLIKEBLOCKCHAINEXPLORER_H

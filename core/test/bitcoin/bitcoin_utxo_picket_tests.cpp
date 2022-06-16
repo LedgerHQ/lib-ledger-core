@@ -1,24 +1,23 @@
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-#include <api/KeychainEngines.hpp>
 #include <api/BitcoinLikeScript.hpp>
+#include <api/KeychainEngines.hpp>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include <ledger/core/api/Networks.hpp>
-#include <wallet/currencies.hpp>
-#include <wallet/common/Amount.h>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <spdlog/sinks/null_sink.h>
-
+#include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
+#include <wallet/common/Amount.h>
+#include <wallet/currencies.hpp>
 
 using namespace ledger::core;
 
 class MockKeychain : public BitcoinLikeKeychain {
-public:
+  public:
     MockKeychain(
-        const std::shared_ptr<api::DynamicObject>& configuration,
-        const api::Currency& params,
+        const std::shared_ptr<api::DynamicObject> &configuration,
+        const api::Currency &params,
         int account,
-        const std::shared_ptr<Preferences>& preferences) :BitcoinLikeKeychain(configuration, params, account, preferences){};
-    MOCK_METHOD2(markPathAsUsed, bool(const DerivationPath& path, bool needExtendKeychain));
+        const std::shared_ptr<Preferences> &preferences) : BitcoinLikeKeychain(configuration, params, account, preferences){};
+    MOCK_METHOD2(markPathAsUsed, bool(const DerivationPath &path, bool needExtendKeychain));
     MOCK_METHOD2(getAllObservableAddresses, std::vector<Address>(uint32_t from, uint32_t to));
 
     MOCK_METHOD3(getAllObservableAddresses, std::vector<Address>(KeyPurpose purpose, uint32_t from, uint32_t to));
@@ -29,27 +28,27 @@ public:
 
     MOCK_METHOD0(getAllAddresses, std::vector<Address>());
 
-    MOCK_CONST_METHOD1(getAddressPurpose, Option<KeyPurpose>(const std::string& address));
-    MOCK_CONST_METHOD1(getAddressDerivationPath, Option<std::string>(const std::string& address));
+    MOCK_CONST_METHOD1(getAddressPurpose, Option<KeyPurpose>(const std::string &address));
+    MOCK_CONST_METHOD1(getAddressDerivationPath, Option<std::string>(const std::string &address));
     MOCK_CONST_METHOD0(isEmpty, bool());
 
-    MOCK_CONST_METHOD1(getPublicKey, Option<std::vector<uint8_t>>(const std::string& address));
+    MOCK_CONST_METHOD1(getPublicKey, Option<std::vector<uint8_t>>(const std::string &address));
 
     MOCK_CONST_METHOD0(getRestoreKey, std::string());
     MOCK_CONST_METHOD0(getObservableRangeSize, int32_t());
-    MOCK_CONST_METHOD1(contains, bool(const std::string& address));
+    MOCK_CONST_METHOD1(contains, bool(const std::string &address));
     MOCK_CONST_METHOD0(getOutputSizeAsSignedTxInput, int32_t());
 };
 
 class MockBitcoinLikeScript : public api::BitcoinLikeScript {
-public:
+  public:
     MOCK_METHOD0(head, std::shared_ptr<api::BitcoinLikeScriptChunk>());
     MOCK_METHOD0(toString, std::string());
 };
 
 class MockBitcoinLikeOutput : public api::BitcoinLikeOutput {
-public:
-    MockBitcoinLikeOutput(int64_t amount) : _amount(std::make_shared<Amount>(currencies::BITCOIN, 0, BigInt(amount))) {};
+  public:
+    MockBitcoinLikeOutput(int64_t amount) : _amount(std::make_shared<Amount>(currencies::BITCOIN, 0, BigInt(amount))){};
 
     std::string getTransactionHash() { return _amount->toString(); };
 
@@ -70,11 +69,12 @@ public:
     MOCK_METHOD0(getBlockHeight, std::experimental::optional<int64_t>());
 
     MOCK_CONST_METHOD0(isReplaceable, bool());
-private:
+
+  private:
     std::shared_ptr<Amount> _amount;
 };
 
-std::vector<BitcoinLikeUtxo> createUtxos(const std::vector<int64_t>& values) {
+std::vector<BitcoinLikeUtxo> createUtxos(const std::vector<int64_t> &values) {
     std::vector<BitcoinLikeUtxo> utxos;
 
     utxos.reserve(values.size());
@@ -89,14 +89,13 @@ std::vector<BitcoinLikeUtxo> createUtxos(const std::vector<int64_t>& values) {
             Option<std::string>{},
             Option<std::string>{},
             "",
-            Option<uint64_t>{}
-        };
+            Option<uint64_t>{}};
     });
 
     return utxos;
 }
 
-std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> createBuddy(int64_t feesPerByte, int64_t outputAmount, const api::Currency& currency) {
+std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> createBuddy(int64_t feesPerByte, int64_t outputAmount, const api::Currency &currency) {
     BitcoinLikeTransactionBuildRequest r(std::make_shared<BigInt>(0));
     r.wipe = false;
     r.feePerByte = std::make_shared<BigInt>(feesPerByte);
@@ -123,7 +122,7 @@ TEST(OptimizeSize, BacktrackingCalculateChangeCorrectly) {
     const int64_t emtyTransactionSizeInBytes = 10;
     int64_t outputAmount = 25000;
     std::vector<int64_t> inputAmounts{16500, 16500};
-    
+
     auto buddy = createBuddy(feesPerByte, outputAmount, currency);
 
     auto utxos = createUtxos(inputAmounts);
@@ -146,7 +145,7 @@ TEST(OptimizeSize, ChangeShouldBeBigEnoughToSpend) {
     const int64_t outputSizeInBytes = 34;
     const int64_t emtyTransactionSizeInBytes = 10;
     int64_t outputAmount = 25000;
-    std::vector<int64_t> inputAmounts{ 19090, 19090};
+    std::vector<int64_t> inputAmounts{19090, 19090};
 
     auto buddy = createBuddy(feesPerByte, outputAmount, currency);
 
@@ -170,7 +169,7 @@ TEST(OptimizeSize, ApproximationShouldTookEnough) {
     const int64_t outputSizeInBytes = 34;
     const int64_t emtyTransactionSizeInBytes = 10;
     int64_t outputAmount = 25000;
-    std::vector<int64_t> inputAmounts{ 15000, 15000, 15000 };
+    std::vector<int64_t> inputAmounts{15000, 15000, 15000};
 
     auto buddy = createBuddy(feesPerByte, outputAmount, currency);
 

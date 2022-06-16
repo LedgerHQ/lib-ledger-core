@@ -34,7 +34,7 @@
 #include <ledger/core/utils/Exception.hpp>
 #include <string>
 
-using  namespace ledger::core;
+using namespace ledger::core;
 
 TEST(Either, TestLeft) {
     Either<std::string, int> result = 12;
@@ -53,20 +53,12 @@ TEST(Either, TestRight) {
 TEST(Either, TestFold) {
     {
         Either<std::string, int> result = std::string("42");
-        auto folded = result.fold<int>([](const std::string &s) {
-            return std::atoi(s.c_str());
-        }, [](const int &i) {
-            return i;
-        });
+        auto folded = result.fold<int>([](const std::string &s) { return std::atoi(s.c_str()); }, [](const int &i) { return i; });
         EXPECT_EQ(folded, 42);
     }
     {
         Either<std::string, int> result = 42;
-        auto folded = result.fold<int>([](const std::string &s) {
-            return std::atoi(s.c_str());
-        }, [](const int &i) {
-            return i;
-        });
+        auto folded = result.fold<int>([](const std::string &s) { return std::atoi(s.c_str()); }, [](const int &i) { return i; });
         EXPECT_EQ(folded, 42);
     }
 }

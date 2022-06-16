@@ -31,16 +31,17 @@
 #ifndef LEDGER_CORE_TEZOSLIKEADDRESS_H
 #define LEDGER_CORE_TEZOSLIKEADDRESS_H
 
+#include "../utils/optional.hpp"
+
+#include <api/TezosCurve.hpp>
 #include <api/TezosLikeAddress.hpp>
 #include <api/TezosLikeNetworkParameters.hpp>
-#include "../utils/optional.hpp"
 #include <wallet/common/AbstractAddress.h>
-#include <api/TezosCurve.hpp>
 
 namespace ledger {
     namespace core {
         class TezosLikeAddress : public api::TezosLikeAddress, public AbstractAddress {
-        public:
+          public:
             TezosLikeAddress(const api::Currency &currency,
                              const std::vector<uint8_t> &hash160,
                              const std::vector<uint8_t> &version,
@@ -73,13 +74,14 @@ namespace ledger {
                                                                 const Option<std::string> &derivationPath = Option<std::string>());
 
             static std::vector<uint8_t> getPrefixFromImplicitVersion(const std::vector<uint8_t> &implicitVersion, api::TezosCurve curve);
-        private:
+
+          private:
             static std::vector<uint8_t> getPublicKeyHash160(const std::vector<uint8_t> &pubKey, api::TezosCurve curve);
             const std::vector<uint8_t> _hash160;
             const std::vector<uint8_t> _version;
             const api::TezosLikeNetworkParameters _params;
             const Option<std::string> _derivationPath;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_TEZOSLIKEADDRESS_H

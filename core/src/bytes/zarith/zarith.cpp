@@ -28,5 +28,4 @@
  *
  */
 
-
 #include "zarith.h"

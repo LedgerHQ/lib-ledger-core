@@ -31,25 +31,24 @@
 #ifndef LEDGER_CORE_HTTPCLIENT_HPP
 #define LEDGER_CORE_HTTPCLIENT_HPP
 
+#include "../api/ExecutionContext.hpp"
 #include "../api/HttpClient.hpp"
 #include "../api/HttpMethod.hpp"
+#include "../api/HttpReadBodyResult.hpp"
 #include "../api/HttpRequest.hpp"
 #include "../api/HttpUrlConnection.hpp"
-#include "../api/HttpReadBodyResult.hpp"
-#include "../api/ExecutionContext.hpp"
-#include "../utils/optional.hpp"
-#include <unordered_map>
-#include <memory>
 #include "../async/Future.hpp"
 #include "../async/Promise.hpp"
+#include "../debug/logger.hpp"
 #include "../utils/Either.hpp"
+#include "../utils/Option.hpp"
+#include "../utils/optional.hpp"
 #include "HttpUrlConnectionInputStream.hpp"
 
-#include "../debug/logger.hpp"
-#include "../utils/Option.hpp"
-
+#include <memory>
 #include <rapidjson/document.h>
 #include <rapidjson/reader.h>
+#include <unordered_map>
 
 namespace ledger {
     namespace core {
@@ -58,48 +57,48 @@ namespace ledger {
         class HttpJsonHandler;
 
         class HttpRequest : public std::enable_shared_from_this<HttpRequest> {
-        public:
+          public:
             using JsonResult = std::tuple<std::shared_ptr<api::HttpUrlConnection>, std::shared_ptr<rapidjson::Document>>;
 
             HttpRequest(api::HttpMethod method,
-                        const std::string& url,
-                        const std::unordered_map<std::string, std::string>& headers,
-                        const std::experimental::optional<std::vector<uint8_t>>& body,
+                        const std::string &url,
+                        const std::unordered_map<std::string, std::string> &headers,
+                        const std::experimental::optional<std::vector<uint8_t>> &body,
                         const std::shared_ptr<api::HttpClient> &client,
-                        const std::shared_ptr<api::ExecutionContext> & sequentialContext,
-                        const std::shared_ptr<api::ExecutionContext>& threadpoolContext,
-                        const Option<std::shared_ptr<spdlog::logger>>& logger);
+                        const std::shared_ptr<api::ExecutionContext> &sequentialContext,
+                        const std::shared_ptr<api::ExecutionContext> &threadpoolContext,
+                        const Option<std::shared_ptr<spdlog::logger>> &logger);
             Future<std::shared_ptr<api::HttpUrlConnection>> operator()() const;
 
             template <typename Success, typename Failure, typename Handler>
             Future<Either<Failure, std::shared_ptr<Success>>> json(Handler handler, bool multiThread = false) const {
                 _context = (multiThread ? _threadpoolContext : _sequentialContext);
-                return operator()().recover(_context, [] (const Exception& exception) {
-                    if (HttpRequest::isHttpError(exception.getErrorCode()) &&
-                        exception.getUserData().nonEmpty()) {
-                        return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
-                    }
-                    throw exception;
-                }).template map<Either<Failure, std::shared_ptr<Success>>>(_context, [handler] (const std::shared_ptr<api::HttpUrlConnection>& c) -> Either<Failure, std::shared_ptr<Success>> {
-                    Handler h = handler;
-                    std::shared_ptr<api::HttpUrlConnection> connection = c;
-                    h.attach(connection);
-                    HttpUrlConnectionInputStream is(connection);
-                    rapidjson::Reader reader;
-                    reader.Parse<rapidjson::ParseFlag::kParseNumbersAsStringsFlag>(is, h);
-                    return (Either<Failure, std::shared_ptr<Success>>) h.build();
-                });
+                return operator()().recover(_context, [](const Exception &exception) {
+                                       if (HttpRequest::isHttpError(exception.getErrorCode()) &&
+                                           exception.getUserData().nonEmpty()) {
+                                           return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
+                                       }
+                                       throw exception;
+                                   })
+                    .template map<Either<Failure, std::shared_ptr<Success>>>(_context, [handler](const std::shared_ptr<api::HttpUrlConnection> &c) -> Either<Failure, std::shared_ptr<Success>> {
+                        Handler h = handler;
+                        std::shared_ptr<api::HttpUrlConnection> connection = c;
+                        h.attach(connection);
+                        HttpUrlConnectionInputStream is(connection);
+                        rapidjson::Reader reader;
+                        reader.Parse<rapidjson::ParseFlag::kParseNumbersAsStringsFlag>(is, h);
+                        return (Either<Failure, std::shared_ptr<Success>>)h.build();
+                    });
             }
 
-            Future<JsonResult> json(bool parseNumbersAsString = false, bool ignoreStatusCode = false, bool multiThread=false) const;
+            Future<JsonResult> json(bool parseNumbersAsString = false, bool ignoreStatusCode = false, bool multiThread = false) const;
             std::shared_ptr<api::HttpRequest> toApiRequest() const;
 
-
-        private:
+          private:
             api::HttpMethod _method;
             std::string _url;
             std::unordered_map<std::string, std::string> _headers;
-            std::experimental::optional<std::vector<uint8_t >> _body;
+            std::experimental::optional<std::vector<uint8_t>> _body;
             std::shared_ptr<api::HttpClient> _client;
             std::shared_ptr<api::ExecutionContext> _sequentialContext;
             std::shared_ptr<api::ExecutionContext> _threadpoolContext;
@@ -107,22 +106,19 @@ namespace ledger {
             Option<std::shared_ptr<spdlog::logger>> _logger;
 
             static api::ErrorCode getErrorCode(int32_t statusCode) {
-                return statusCode >= 200 && statusCode < 300 ? api::ErrorCode::FUTURE_WAS_SUCCESSFULL :
-                statusCode >= 500 ? api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST :
-                statusCode >= 400 ? api::ErrorCode::HTTP_ERROR :
-                api::ErrorCode::TOO_MANY_REDIRECT;
+                return statusCode >= 200 && statusCode < 300 ? api::ErrorCode::FUTURE_WAS_SUCCESSFULL : statusCode >= 500 ? api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST : statusCode >= 400 ? api::ErrorCode::HTTP_ERROR : api::ErrorCode::TOO_MANY_REDIRECT;
             };
 
             static bool isHttpError(api::ErrorCode errorCode) {
                 return errorCode == api::ErrorCode::HTTP_ERROR ||
-                errorCode == api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST ||
-                errorCode == api::ErrorCode::TOO_MANY_REDIRECT;
+                       errorCode == api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST ||
+                       errorCode == api::ErrorCode::TOO_MANY_REDIRECT;
             };
 
-        public:
+          public:
             class ApiRequest : public api::HttpRequest {
-            public:
-                ApiRequest(const std::shared_ptr<const ledger::core::HttpRequest>& self);
+              public:
+                ApiRequest(const std::shared_ptr<const ledger::core::HttpRequest> &self);
                 virtual api::HttpMethod getMethod() override;
 
                 virtual std::unordered_map<std::string, std::string> getHeaders() override;
@@ -134,44 +130,43 @@ namespace ledger {
                 virtual ~ApiRequest();
 
                 virtual void complete(const std::shared_ptr<api::HttpUrlConnection> &response,
-                              const optional<api::Error> &error) override;
+                                      const optional<api::Error> &error) override;
 
                 Future<std::shared_ptr<api::HttpUrlConnection>> getFuture() const;
 
-            private:
+              private:
                 std::shared_ptr<const ledger::core::HttpRequest> _self;
                 Promise<std::shared_ptr<api::HttpUrlConnection>> _promise;
             };
         };
 
         class HttpClient {
-        public:
-            HttpClient(const std::string& baseUrl,
+          public:
+            HttpClient(const std::string &baseUrl,
                        const std::shared_ptr<api::HttpClient> &client,
-                       const std::shared_ptr<api::ExecutionContext>& sequentialContext,
-                       const std::shared_ptr<api::ExecutionContext>& threadpoolContext
-            );
-            HttpRequest GET(const std::string& path,
-                            const std::unordered_map<std::string, std::string>& headers = {},
+                       const std::shared_ptr<api::ExecutionContext> &sequentialContext,
+                       const std::shared_ptr<api::ExecutionContext> &threadpoolContext);
+            HttpRequest GET(const std::string &path,
+                            const std::unordered_map<std::string, std::string> &headers = {},
                             const std::string &baseUrl = "");
-            HttpRequest PUT(const std::string& path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string>& headers = {});
-            HttpRequest DEL(const std::string& path, const std::unordered_map<std::string, std::string>& headers = {});
-            HttpRequest POST(const std::string& path,
+            HttpRequest PUT(const std::string &path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string> &headers = {});
+            HttpRequest DEL(const std::string &path, const std::unordered_map<std::string, std::string> &headers = {});
+            HttpRequest POST(const std::string &path,
                              const std::vector<uint8_t> &body,
-                             const std::unordered_map<std::string, std::string>& headers = {},
+                             const std::unordered_map<std::string, std::string> &headers = {},
                              const std::string &baseUrl = "");
-            HttpClient& addHeader(const std::string& key, const std::string& value);
-            HttpClient& removeHeader(const std::string& key);
-            void setLogger(const std::shared_ptr<spdlog::logger>& logger);
+            HttpClient &addHeader(const std::string &key, const std::string &value);
+            HttpClient &removeHeader(const std::string &key);
+            void setLogger(const std::shared_ptr<spdlog::logger> &logger);
 
-        private:
+          private:
             HttpRequest createRequest(api::HttpMethod method,
-                                      const std::string& path,
-                                      const std::experimental::optional<std::vector<uint8_t >> body,
-                                      const std::unordered_map<std::string, std::string>& headers,
+                                      const std::string &path,
+                                      const std::experimental::optional<std::vector<uint8_t>> body,
+                                      const std::unordered_map<std::string, std::string> &headers,
                                       const std::string &baseUrl = "");
 
-        private:
+          private:
             std::string _baseUrl;
             std::shared_ptr<api::HttpClient> _client;
             std::shared_ptr<api::ExecutionContext> _sequentialContext;
@@ -179,8 +174,7 @@ namespace ledger {
             std::unordered_map<std::string, std::string> _headers;
             Option<std::shared_ptr<spdlog::logger>> _logger;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_HTTPCLIENT_HPP

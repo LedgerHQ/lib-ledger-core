@@ -29,19 +29,17 @@
  *
  */
 #include "Preferences.hpp"
+
 #include "../bytes/BytesReader.h"
 
 namespace ledger {
     namespace core {
 
         Preferences::Preferences(api::PreferencesBackend &backend, const std::vector<uint8_t> &keyPrefix)
-            : _backend(backend)
-            , _keyPrefix(keyPrefix)
-        {}
+            : _backend(backend), _keyPrefix(keyPrefix) {}
 
         Preferences::Preferences(api::PreferencesBackend &backend, const std::string &keyPrefix)
-            : Preferences(backend, std::vector<uint8_t>(std::begin(keyPrefix), std::end(keyPrefix)))
-        {}
+            : Preferences(backend, std::vector<uint8_t>(std::begin(keyPrefix), std::end(keyPrefix))) {}
 
         std::string Preferences::getString(const std::string &key, const std::string &fallbackValue) const {
             auto value = _backend.get(wrapKey(key));
@@ -135,5 +133,5 @@ namespace ledger {
         std::shared_ptr<PreferencesEditor> Preferences::editor() {
             return std::make_shared<PreferencesEditor>(*this);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

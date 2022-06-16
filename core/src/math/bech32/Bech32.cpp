@@ -28,34 +28,33 @@
  *
  */
 
-
 #include "Bech32.h"
+
 #include <collections/vector.hpp>
 namespace ledger {
     namespace core {
 
         // The Bech32 character set for encoding.
-        const char* charset = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+        const char *charset = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 
         // The Bech32 character set for decoding.
         const int8_t charsetRev[128] = {
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                15, -1, 10, 17, 21, 20, 26, 30,  7,  5, -1, -1, -1, -1, -1, -1,
-                -1, 29, -1, 24, 13, 25,  9,  8, 23, -1, 18, 22, 31, 27, 19, -1,
-                1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1,
-                -1, 29, -1, 24, 13, 25,  9,  8, 23, -1, 18, 22, 31, 27, 19, -1,
-                1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1
-        };
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            15, -1, 10, 17, 21, 20, 26, 30, 7, 5, -1, -1, -1, -1, -1, -1,
+            -1, 29, -1, 24, 13, 25, 9, 8, 23, -1, 18, 22, 31, 27, 19, -1,
+            1, 0, 3, 16, 11, 28, 12, 14, 6, 4, 2, -1, -1, -1, -1, -1,
+            -1, 29, -1, 24, 13, 25, 9, 8, 23, -1, 18, 22, 31, 27, 19, -1,
+            1, 0, 3, 16, 11, 28, 12, 14, 6, 4, 2, -1, -1, -1, -1, -1};
 
         // Verify a checksum.
-        bool Bech32::verifyChecksum(const std::vector<uint8_t>& values) const {
+        bool Bech32::verifyChecksum(const std::vector<uint8_t> &values) const {
             return polymod(vector::concat(expandHrp(_bech32Params.hrp), values)) == 1;
         }
 
         // Create a checksum.
-        std::vector<uint8_t> Bech32::createChecksum(const std::vector<uint8_t>& values) const {
+        std::vector<uint8_t> Bech32::createChecksum(const std::vector<uint8_t> &values) const {
             std::vector<uint8_t> enc = vector::concat(expandHrp(_bech32Params.hrp), values);
             enc.resize(enc.size() + _bech32Params.checksumSize);
             uint64_t mod = polymod(enc) ^ 1;
@@ -69,8 +68,8 @@ namespace ledger {
             }
             return ret;
         }
-        
-        std::string Bech32::encodeBech32(const std::vector<uint8_t>& values) const {
+
+        std::string Bech32::encodeBech32(const std::vector<uint8_t> &values) const {
             // Values here should be concatenation of version (base256) + hash (base32)
             std::vector<uint8_t> checksum = createChecksum(values);
             std::vector<uint8_t> combined = vector::concat(values, checksum);
@@ -86,23 +85,28 @@ namespace ledger {
         }
 
         std::pair<std::string, std::vector<uint8_t>>
-        Bech32::decodeBech32(const std::string& str) const {
+        Bech32::decodeBech32(const std::string &str) const {
             bool lower = false, upper = false;
             bool ok = true;
             for (size_t i = 0; ok && i < str.size(); ++i) {
                 unsigned char c = str[i];
-                if (c < 33 || c > 126) ok = false;
-                if (c >= 'a' && c <= 'z') lower = true;
-                if (c >= 'A' && c <= 'Z') upper = true;
+                if (c < 33 || c > 126)
+                    ok = false;
+                if (c >= 'a' && c <= 'z')
+                    lower = true;
+                if (c >= 'A' && c <= 'Z')
+                    upper = true;
             }
-            if (lower && upper) ok = false;
+            if (lower && upper)
+                ok = false;
             size_t pos = str.rfind(_bech32Params.separator);
             if (ok && str.size() <= 90 && pos != str.npos && pos >= 1 && pos + _bech32Params.checksumSize + 1 <= str.size()) {
                 std::vector<uint8_t> values;
                 values.resize(str.size() - 1 - pos);
                 for (size_t i = 0; i < str.size() - 1 - pos; ++i) {
                     unsigned char c = str[i + pos + 1];
-                    if (charsetRev[c] == -1) ok = false;
+                    if (charsetRev[c] == -1)
+                        ok = false;
                     values[i] = charsetRev[c];
                 }
                 if (ok) {
@@ -124,11 +128,11 @@ namespace ledger {
         }
 
         // Convert from one power-of-2 number base to another. */
-        bool Bech32::convertBits(const std::vector<uint8_t>& in,
+        bool Bech32::convertBits(const std::vector<uint8_t> &in,
                                  int fromBits,
                                  int toBits,
                                  bool pad,
-                                 std::vector<uint8_t>& out) {
+                                 std::vector<uint8_t> &out) {
             int acc = 0;
             int bits = 0;
             const int maxv = (1 << toBits) - 1;
@@ -143,12 +147,13 @@ namespace ledger {
                 }
             }
             if (pad) {
-                if (bits) out.push_back((acc << (toBits - bits)) & maxv);
+                if (bits)
+                    out.push_back((acc << (toBits - bits)) & maxv);
             } else if (bits >= fromBits || ((acc << (toBits - bits)) & maxv)) {
                 return false;
             }
             return true;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

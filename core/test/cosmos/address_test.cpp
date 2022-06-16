@@ -28,28 +28,25 @@
  *
  */
 
-#include <gtest/gtest.h>
-
 #include <api/Address.hpp>
-#include <utils/hex.h>
-#include <collections/vector.hpp>
-#include <crypto/HashAlgorithm.h>
-#include <crypto/HASH160.hpp>
-#include <crypto/BLAKE.h>
-#include <collections/DynamicObject.hpp>
-#include <math/Base58.hpp>
-
-#include <wallet/cosmos/CosmosLikeConstants.hpp>
-#include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
-#include <cosmos/bech32/CosmosBech32.hpp>
-#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
-#include <cosmos/CosmosLikeExtendedPublicKey.hpp>
-#include <cosmos/CosmosLikeAddress.hpp>
 #include <api/CosmosCurve.hpp>
+#include <collections/DynamicObject.hpp>
+#include <collections/vector.hpp>
+#include <cosmos/CosmosLikeAddress.hpp>
+#include <cosmos/CosmosLikeExtendedPublicKey.hpp>
+#include <cosmos/bech32/CosmosBech32.hpp>
+#include <crypto/BLAKE.h>
+#include <crypto/HASH160.hpp>
+#include <crypto/HashAlgorithm.h>
+#include <gtest/gtest.h>
+#include <math/Base58.hpp>
+#include <utils/hex.h>
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
 
 using namespace ledger::core::api;
 using namespace ledger::core;
-
 
 TEST(CosmosLikeBlockchainExplorer, FilterBuilder) {
     auto filter = GaiaCosmosLikeBlockchainExplorer::fuseFilters(
@@ -62,14 +59,12 @@ TEST(CosmosLikeBlockchainExplorer, FilterBuilder) {
              cosmos::constants::kAttributeKeySender,
              "cosmostestaddress")});
 
-    ASSERT_STREQ(filter.c_str(), "message.action=delegate&message.sender=cosmostestaddress" );
+    ASSERT_STREQ(filter.c_str(), "message.action=delegate&message.sender=cosmostestaddress");
 
-    filter = GaiaCosmosLikeBlockchainExplorer::fuseFilters({
-        GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
-            cosmos::constants::kEventTypeTransfer,
-            cosmos::constants::kAttributeKeyRecipient,
-            "cosmosvalopertestaddress")});
-
+    filter = GaiaCosmosLikeBlockchainExplorer::fuseFilters({GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
+        cosmos::constants::kEventTypeTransfer,
+        cosmos::constants::kAttributeKeyRecipient,
+        "cosmosvalopertestaddress")});
 
     ASSERT_STREQ(filter.c_str(), "transfer.recipient=cosmosvalopertestaddress");
 }
@@ -119,31 +114,29 @@ TEST(CosmosAddress, AddressFromPubKey) {
 
 // Reference: https://github.com/cosmos/cosmos-sdk/blob/master/crypto/ledger_test.go
 TEST(CosmosAddress, AddressFromPubKeys) {
-    std::vector<std::string> prefixedPubKeys {
-            "cosmospub1addwnpepqd87l8xhcnrrtzxnkql7k55ph8fr9jarf4hn6udwukfprlalu8lgw0urza0",
-            "cosmospub1addwnpepqfsdqjr68h7wjg5wacksmqaypasnra232fkgu5sxdlnlu8j22ztxvlqvd65",
-            "cosmospub1addwnpepqw3xwqun6q43vtgw6p4qspq7srvxhcmvq4jrx5j5ma6xy3r7k6dtxmrkh3d",
-            "cosmospub1addwnpepqvez9lrp09g8w7gkv42y4yr5p6826cu28ydrhrujv862yf4njmqyyjr4pjs",
-            "cosmospub1addwnpepq06hw3enfrtmq8n67teytcmtnrgcr0yntmyt25kdukfjkerdc7lqg32rcz7",
-            "cosmospub1addwnpepqg3trf2gd0s2940nckrxherwqhgmm6xd5h4pcnrh4x7y35h6yafmcpk5qns",
-            "cosmospub1addwnpepqdm6rjpx6wsref8wjn7ym6ntejet430j4szpngfgc20caz83lu545vuv8hp",
-            "cosmospub1addwnpepqvdhtjzy2wf44dm03jxsketxc07vzqwvt3vawqqtljgsr9s7jvydjmt66ew",
-            "cosmospub1addwnpepqwystfpyxwcava7v3t7ndps5xzu6s553wxcxzmmnxevlzvwrlqpzz695nw9",
-            "cosmospub1addwnpepqw970u6gjqkccg9u3rfj99857wupj2z9fqfzy2w7e5dd7xn7kzzgkgqch0r"
-    };
+    std::vector<std::string> prefixedPubKeys{
+        "cosmospub1addwnpepqd87l8xhcnrrtzxnkql7k55ph8fr9jarf4hn6udwukfprlalu8lgw0urza0",
+        "cosmospub1addwnpepqfsdqjr68h7wjg5wacksmqaypasnra232fkgu5sxdlnlu8j22ztxvlqvd65",
+        "cosmospub1addwnpepqw3xwqun6q43vtgw6p4qspq7srvxhcmvq4jrx5j5ma6xy3r7k6dtxmrkh3d",
+        "cosmospub1addwnpepqvez9lrp09g8w7gkv42y4yr5p6826cu28ydrhrujv862yf4njmqyyjr4pjs",
+        "cosmospub1addwnpepq06hw3enfrtmq8n67teytcmtnrgcr0yntmyt25kdukfjkerdc7lqg32rcz7",
+        "cosmospub1addwnpepqg3trf2gd0s2940nckrxherwqhgmm6xd5h4pcnrh4x7y35h6yafmcpk5qns",
+        "cosmospub1addwnpepqdm6rjpx6wsref8wjn7ym6ntejet430j4szpngfgc20caz83lu545vuv8hp",
+        "cosmospub1addwnpepqvdhtjzy2wf44dm03jxsketxc07vzqwvt3vawqqtljgsr9s7jvydjmt66ew",
+        "cosmospub1addwnpepqwystfpyxwcava7v3t7ndps5xzu6s553wxcxzmmnxevlzvwrlqpzz695nw9",
+        "cosmospub1addwnpepqw970u6gjqkccg9u3rfj99857wupj2z9fqfzy2w7e5dd7xn7kzzgkgqch0r"};
 
-    std::vector<std::string> bech32Addresses {
-            "cosmos1w34k53py5v5xyluazqpq65agyajavep2rflq6h",
-            "cosmos19ewxwemt6uahejvwf44u7dh6tq859tkyvarh2q",
-            "cosmos1a07dzdjgjsntxpp75zg7cgatgq0udh3pcdcxm3",
-            "cosmos1qvw52lmn9gpvem8welghrkc52m3zczyhlqjsl7",
-            "cosmos17m78ka80fqkkw2c4ww0v4xm5nsu2drgrlm8mn2",
-            "cosmos1ferh9ll9c452d2p8k2v7heq084guygkn43up9e",
-            "cosmos10vf3sxmjg96rqq36axcphzfsl74dsntuehjlw5",
-            "cosmos1cq83av8cmnar79h0rg7duh9gnr7wkh228a7fxg",
-            "cosmos1dszhfrt226jy5rsre7e48vw9tgwe90uerfyefa",
-            "cosmos1734d7qsylzrdt05muhqqtpd90j8mp4y6rzch8l"
-    };
+    std::vector<std::string> bech32Addresses{
+        "cosmos1w34k53py5v5xyluazqpq65agyajavep2rflq6h",
+        "cosmos19ewxwemt6uahejvwf44u7dh6tq859tkyvarh2q",
+        "cosmos1a07dzdjgjsntxpp75zg7cgatgq0udh3pcdcxm3",
+        "cosmos1qvw52lmn9gpvem8welghrkc52m3zczyhlqjsl7",
+        "cosmos17m78ka80fqkkw2c4ww0v4xm5nsu2drgrlm8mn2",
+        "cosmos1ferh9ll9c452d2p8k2v7heq084guygkn43up9e",
+        "cosmos10vf3sxmjg96rqq36axcphzfsl74dsntuehjlw5",
+        "cosmos1cq83av8cmnar79h0rg7duh9gnr7wkh228a7fxg",
+        "cosmos1dszhfrt226jy5rsre7e48vw9tgwe90uerfyefa",
+        "cosmos1734d7qsylzrdt05muhqqtpd90j8mp4y6rzch8l"};
 
     int index = 0;
     for (auto &prefixedPubKey : prefixedPubKeys) {
@@ -169,7 +162,6 @@ TEST(CosmosAddress, AddressFromPubKeys) {
     }
 }
 
-
 TEST(CosmosAddress, CosmosAddressFromBech32PubKey) {
     auto expectedResult = "cosmos16xkkyj97z7r83sx45xwk9uwq0mj0zszlf6c6mq";
     auto pubKey = "cosmospub1addwnpepqdtwj8njf68zedmfhzru54tg2475nnfjrrgtfd533prvs7sljk7nzxvtkpd";
@@ -193,7 +185,7 @@ TEST(CosmosAddress, SecpPubbKey) {
     std::vector<uint8_t> pubKey = hex::toByteArray("02c4becf6843868d9556ea43d46518b51a13cb1a48cd6c05a21c029ea4231fcde4");
     std::vector<uint8_t> chainCode = hex::toByteArray("");
     auto zPub = ledger::core::CosmosLikeExtendedPublicKey::fromRaw(currencies::ATOM,
-                                                                   optional<std::vector<uint8_t >>(),
+                                                                   optional<std::vector<uint8_t>>(),
                                                                    pubKey,
                                                                    chainCode,
                                                                    "44'/118'/0'/0'",

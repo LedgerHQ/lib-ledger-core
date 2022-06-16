@@ -28,21 +28,16 @@
  *
  */
 
-#include <wallet/cosmos/api_impl/CosmosLikeReward.hpp>
-#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
-#include <wallet/common/Amount.h>
-
 #include <cmath>
-
-
+#include <wallet/common/Amount.h>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeReward.hpp>
 
 namespace ledger {
     namespace core {
 
-        CosmosLikeReward::CosmosLikeReward(const cosmos::Reward& rewardData, const std::string& delegatorAddress) :
-            _rewardData(rewardData),
-            _delegatorAddress(delegatorAddress)
-        {}
+        CosmosLikeReward::CosmosLikeReward(const cosmos::Reward &rewardData, const std::string &delegatorAddress) : _rewardData(rewardData),
+                                                                                                                    _delegatorAddress(delegatorAddress) {}
 
         std::string CosmosLikeReward::getDelegatorAddress() const {
             return _delegatorAddress;
@@ -60,5 +55,5 @@ namespace ledger {
             reward.erase(reward.find('.'), std::string::npos);
             return std::make_shared<Amount>(currencies::ATOM, 0, BigInt::fromDecimal(reward));
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

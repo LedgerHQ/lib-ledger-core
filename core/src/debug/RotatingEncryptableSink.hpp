@@ -31,13 +31,14 @@
 #ifndef LEDGER_CORE_ROTATINGENCRYPTABLESINK_HPP
 #define LEDGER_CORE_ROTATINGENCRYPTABLESINK_HPP
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/sink.h"
-#include "spdlog/sinks/basic_file_sink.h"
 #include "api/ExecutionContext.hpp"
 #include "api/PathResolver.hpp"
-#include <memory>
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/sink.h"
+#include "spdlog/spdlog.h"
 #include "utils/optional.hpp"
+
+#include <memory>
 #include <mutex>
 
 namespace ledger {
@@ -46,25 +47,26 @@ namespace ledger {
          * Based on spdlog::sinks::rotating_file_sink
          */
         class RotatingEncryptableSink : public spdlog::sinks::base_sink<std::mutex>, public std::enable_shared_from_this<RotatingEncryptableSink> {
-        public:
+          public:
             RotatingEncryptableSink(
-                    const std::shared_ptr<api::ExecutionContext> &context,
-                    const std::shared_ptr<api::PathResolver> &resolver,
-                    const std::string &name,
-                    std::size_t maxSize,
-                    std::size_t maxFiles
-            );
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<api::PathResolver> &resolver,
+                const std::string &name,
+                std::size_t maxSize,
+                std::size_t maxFiles);
 
             virtual void sink_it_(const spdlog::details::log_msg &msg) override;
             virtual void flush_() override;
 
-        protected:
+          protected:
             void _sink_it(std::shared_ptr<fmt::memory_buffer> msg);
 
-        private:
+          private:
             static spdlog::filename_t calc_filename(
-                    std::shared_ptr<api::PathResolver> resolver,
-                    const spdlog::filename_t& filename, std::size_t index, const spdlog::filename_t& extension);
+                std::shared_ptr<api::PathResolver> resolver,
+                const spdlog::filename_t &filename,
+                std::size_t index,
+                const spdlog::filename_t &extension);
 
             void _rotate();
 
@@ -83,8 +85,7 @@ namespace ledger {
             std::size_t _current_size;
             spdlog::details::file_helper _file_helper;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ROTATINGENCRYPTABLESINK_HPP

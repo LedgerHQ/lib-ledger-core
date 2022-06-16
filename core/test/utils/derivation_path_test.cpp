@@ -42,10 +42,10 @@ TEST(DerivationPath, ParseDerivationHexPath) {
 }
 
 TEST(DerivationPath, ParseInvalidDerivationPath) {
-   EXPECT_THROW({
-                    DerivationPath("m/this/is/invalid");
-                }, Exception
-   );
+    EXPECT_THROW({
+        DerivationPath("m/this/is/invalid");
+    },
+                 Exception);
 }
 
 TEST(DerivationPath, ParseRoot) {

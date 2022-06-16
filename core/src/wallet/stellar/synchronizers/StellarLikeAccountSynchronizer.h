@@ -40,7 +40,7 @@ namespace ledger {
         class StellarLikeAccount;
         using StellarLikeAccountSynchronizer = AbstractAccountSynchronizer<StellarLikeAccount>;
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_STELLARLIKEACCOUNTSYNCHRONIZER_H

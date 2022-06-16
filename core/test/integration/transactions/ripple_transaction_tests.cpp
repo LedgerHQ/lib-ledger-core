@@ -28,16 +28,17 @@
  *
  */
 
-#include "../BaseFixture.h"
 #include "../../fixtures/xrp_fixtures.h"
-#include <api/KeychainEngines.hpp>
+#include "../BaseFixture.h"
 #include "transaction_test_helper.h"
-#include <utils/hex.h>
-#include <utils/DateUtils.hpp>
-#include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
-#include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
-#include <wallet/currencies.hpp>
+
+#include <api/KeychainEngines.hpp>
 #include <iostream>
+#include <utils/DateUtils.hpp>
+#include <utils/hex.h>
+#include <wallet/currencies.hpp>
+#include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
+#include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
 using namespace std;
 
 struct RippleMakeTransaction : public RippleMakeBaseTransaction {
@@ -118,7 +119,6 @@ TEST_F(RippleMakeTransaction, CreateTx) {
     //Check if wallet was successfully deleted
     auto walletCount = uv::wait(pool->getWalletCount());
     EXPECT_EQ(walletCount, 0);
-
 }
 
 TEST_F(RippleMakeTransaction, ParseSignedRawTransaction) {
@@ -164,7 +164,7 @@ TEST_F(RippleMakeTransaction, ParseSignedRawTransactionWithMemo) {
     auto memo = memos[0];
 
     EXPECT_EQ(memo.data, "rm-1.2.4");
-    EXPECT_EQ(memo.ty,  "client");
+    EXPECT_EQ(memo.ty, "client");
 }
 
 TEST_F(RippleMakeTransaction, ParseSignedRawTransactionWithDestinationTag) {

@@ -31,30 +31,26 @@
 #ifndef LEDGER_CORE_RIPPLELIKEACCOUNT_H
 #define LEDGER_CORE_RIPPLELIKEACCOUNT_H
 
-#include <time.h>
+#include <api/Address.hpp>
 #include <api/AddressListCallback.hpp>
 #include <api/AmountCallback.hpp>
-#include <api/Address.hpp>
+#include <api/BoolCallback.hpp>
+#include <api/Event.hpp>
 #include <api/RippleLikeAccount.hpp>
 #include <api/RippleLikeTransactionBuilder.hpp>
 #include <api/StringCallback.hpp>
-#include <api/Event.hpp>
-#include <api/BoolCallback.hpp>
-#include <wallet/common/AbstractWallet.hpp>
+#include <time.h>
 #include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/AbstractWallet.hpp>
 #include <wallet/common/Amount.h>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.hpp>
 #include <wallet/ripple/keychains/RippleLikeKeychain.h>
+#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.hpp>
 
-namespace ledger
-{
-    namespace core
-    {
-        class RippleLikeAccount : public api::RippleLikeAccount, public AbstractAccount
-        {
-        public:
-
+namespace ledger {
+    namespace core {
+        class RippleLikeAccount : public api::RippleLikeAccount, public AbstractAccount {
+          public:
             RippleLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                               int32_t index,
                               const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
@@ -68,8 +64,8 @@ namespace ledger
                                   const RippleLikeBlockchainExplorerTransaction &tx);
 
             void interpretTransaction(const RippleLikeBlockchainExplorerTransaction &transaction,
-                                      std::vector<Operation>& out);
-            Try<int> bulkInsert(const std::vector<Operation>& operations);
+                                      std::vector<Operation> &out);
+            Try<int> bulkInsert(const std::vector<Operation> &operations);
 
             // Set the operation amount based on the state of the transaction. If it’s failed, the amount is set
             // to zero (yet fees were still paid so they’re not altered).
@@ -104,7 +100,7 @@ namespace ledger
             void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                          const std::shared_ptr<api::StringCallback> &callback) override;
 
-            Future<std::string> broadcastRawTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId);
+            Future<std::string> broadcastRawTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId);
 
             void broadcastTransaction(const std::shared_ptr<api::RippleLikeTransaction> &transaction,
                                       const std::shared_ptr<api::StringCallback> &callback) override;
@@ -127,7 +123,7 @@ namespace ledger
 
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
-        private:
+          private:
             std::shared_ptr<RippleLikeAccount> getSelf();
 
             std::shared_ptr<RippleLikeKeychain> _keychain;

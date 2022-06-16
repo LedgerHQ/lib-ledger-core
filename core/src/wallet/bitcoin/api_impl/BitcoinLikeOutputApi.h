@@ -32,22 +32,21 @@
 #define LEDGER_CORE_BITCOINLIKEOUTPUTAPI_H
 
 #include <api/BitcoinLikeOutput.hpp>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
-#include <wallet/common/api_impl/OperationApi.h>
 #include <utils/Either.hpp>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/common/Amount.h>
+#include <wallet/common/api_impl/OperationApi.h>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeOutputApi : public api::BitcoinLikeOutput {
-        public:
-            BitcoinLikeOutputApi(const std::shared_ptr<OperationApi>& operation, int32_t outputIndex);
-            BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorerOutput& output, const api::Currency& currency);
+          public:
+            BitcoinLikeOutputApi(const std::shared_ptr<OperationApi> &operation, int32_t outputIndex);
+            BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorerOutput &output, const api::Currency &currency);
             BitcoinLikeOutputApi(
-                    const BitcoinLikeBlockchainExplorerOutput& output,
-                    const api::Currency& currency,
-                    const std::shared_ptr<api::DerivationPath>& path
-            );
+                const BitcoinLikeBlockchainExplorerOutput &output,
+                const api::Currency &currency,
+                const std::shared_ptr<api::DerivationPath> &path);
             std::string getTransactionHash() override;
             int32_t getOutputIndex() override;
             std::shared_ptr<api::Amount> getValue() override;
@@ -60,22 +59,21 @@ namespace ledger {
 
             std::experimental::optional<int64_t> getBlockHeight() override;
 
-            const BigInt& value();
+            const BigInt &value();
 
             bool isReplaceable() const override;
 
-        private:
-            BitcoinLikeBlockchainExplorerOutput& getOutput();
-            const BitcoinLikeBlockchainExplorerOutput& getOutput() const;
+          private:
+            BitcoinLikeBlockchainExplorerOutput &getOutput();
+            const BitcoinLikeBlockchainExplorerOutput &getOutput() const;
 
-        private:
-            Either<std::shared_ptr<OperationApi>, BitcoinLikeBlockchainExplorerOutput>  _backend;
+          private:
+            Either<std::shared_ptr<OperationApi>, BitcoinLikeBlockchainExplorerOutput> _backend;
             std::shared_ptr<api::DerivationPath> _path;
             int32_t _outputIndex;
             api::Currency _currency;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_BITCOINLIKEOUTPUTAPI_H

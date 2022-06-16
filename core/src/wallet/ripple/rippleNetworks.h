@@ -32,11 +32,11 @@
 #define LEDGER_CORE_RIPPLENETWORKS_H
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER) && _MSC_VER <= 1900
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 #include <api/RippleLikeNetworkParameters.hpp>
@@ -47,20 +47,18 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::RippleLikeNetworkParameters getRippleLikeNetworkParameters(const std::string &networkName);
             extern LIBCORE_EXPORT const std::vector<api::RippleLikeNetworkParameters> ALL_RIPPLE;
 
-            template<class Archive>
-            void serialize(Archive & archive,
-                           api::RippleLikeNetworkParameters & p)
-            {
+            template <class Archive>
+            void serialize(Archive &archive,
+                           api::RippleLikeNetworkParameters &p) {
                 archive(
-                        p.Identifier,
-                        p.MessagePrefix,
-                        p.XPUBVersion,
-                        p.AdditionalRIPs,
-                        p.TimestampDelay
-                );
+                    p.Identifier,
+                    p.MessagePrefix,
+                    p.XPUBVersion,
+                    p.AdditionalRIPs,
+                    p.TimestampDelay);
             }
 
-        }
-    }
-}
+        } // namespace networks
+    }     // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_RIPPLENETWORKS_H

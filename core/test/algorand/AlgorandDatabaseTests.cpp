@@ -27,37 +27,34 @@
  *
  */
 
+#include "../integration/WalletFixture.hpp" // No equivalent in v1 ?
 #include "AlgorandTestFixtures.hpp"
-#include <wallet/algorand/database/AlgorandTransactionDatabaseHelper.hpp>
-#include <wallet/algorand/database/AlgorandAccountDatabaseHelper.hpp>
-#include <wallet/algorand/operations/AlgorandOperation.hpp>
-#include <wallet/algorand/AlgorandWalletFactory.hpp>
-#include <wallet/algorand/AlgorandLikeCurrencies.hpp>
-#include <wallet/algorand/AlgorandWallet.hpp>
-#include <wallet/algorand/AlgorandAccount.hpp>
 
-#include <wallet/common/OperationQuery.h>
 #include <api/AccountCreationInfo.hpp>
 #include <api/Address.hpp>
-
-#include "../integration/WalletFixture.hpp" // No equivalent in v1 ?
-
 #include <utility>
+#include <wallet/algorand/AlgorandAccount.hpp>
+#include <wallet/algorand/AlgorandLikeCurrencies.hpp>
+#include <wallet/algorand/AlgorandWallet.hpp>
+#include <wallet/algorand/AlgorandWalletFactory.hpp>
+#include <wallet/algorand/database/AlgorandAccountDatabaseHelper.hpp>
+#include <wallet/algorand/database/AlgorandTransactionDatabaseHelper.hpp>
+#include <wallet/algorand/operations/AlgorandOperation.hpp>
+#include <wallet/common/OperationQuery.h>
 
 using namespace ledger::testing::algorand;
 using namespace ledger::core::algorand;
 
 class AlgorandDatabaseTest : public WalletFixture<WalletFactory> {
 
-    public:
-
+  public:
     void SetUp() override {
         WalletFixture::SetUp();
 
         auto const currency = currencies::ALGORAND;
         registerCurrency(currency);
 
-        accountInfo = api::AccountCreationInfo(1, {}, {}, { algorand::Address::toPublicKey(OBELIX_ADDRESS) }, {});
+        accountInfo = api::AccountCreationInfo(1, {}, {}, {algorand::Address::toPublicKey(OBELIX_ADDRESS)}, {});
 
         // NOTE: we run the tests on the staging environment which is on the TestNet
         auto configuration = DynamicObject::newInstance();
@@ -171,8 +168,7 @@ TEST_F(AlgorandDatabaseTest, DISABLED_OperationsDBTest) {
     }
 }
 
-TEST_F(AlgorandDatabaseTest, DISABLED_queryTransactions)
-{
+TEST_F(AlgorandDatabaseTest, DISABLED_queryTransactions) {
     soci::session sql(pool->getDatabaseSessionPool()->getPool());
     auto payment = paymentTransaction();
     auto assetTransfer = assetTransferTransaction();
@@ -187,7 +183,7 @@ TEST_F(AlgorandDatabaseTest, DISABLED_queryTransactions)
 
     auto txns = TransactionDatabaseHelper::queryTransactionsInvolving(sql, OBELIX_ADDRESS);
     ASSERT_EQ(txns.size(), 2);
-    for (const auto& txn : txns) {
+    for (const auto &txn : txns) {
         if (txn.header.type == model::constants::pay) {
             assertSameTransaction(payment, txn);
         } else if (txn.header.type == model::constants::axfer) {
@@ -197,7 +193,7 @@ TEST_F(AlgorandDatabaseTest, DISABLED_queryTransactions)
 
     txns = TransactionDatabaseHelper::queryAssetTransferTransactionsInvolving(sql, 342836, OBELIX_ADDRESS);
     ASSERT_EQ(txns.size(), 1);
-    for (const auto& txn : txns) {
+    for (const auto &txn : txns) {
         if (txn.header.type == model::constants::axfer) {
             assertSameTransaction(assetTransfer, txn);
         }

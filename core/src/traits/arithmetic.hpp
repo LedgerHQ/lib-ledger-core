@@ -43,7 +43,7 @@ namespace ledger {
         template <typename T>
         using isUnsigned = std::enable_if_t<std::is_unsigned<T>::value, bool>;
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ARITHMETIC_HPP

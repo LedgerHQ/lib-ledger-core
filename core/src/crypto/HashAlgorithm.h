@@ -37,18 +37,17 @@
 namespace ledger {
     namespace core {
         class HashAlgorithm {
-        public:
+          public:
             HashAlgorithm(const std::string &networkIdentifier = "");
-            std::string stringToHexHash(const std::string& input);
-            std::string bytesToHexHash(const std::vector<uint8_t>& bytes);
-            std::vector<uint8_t> stringToBytesHash(const std::string& input) const;
-            std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t>& bytes) const;
-        private:
+            std::string stringToHexHash(const std::string &input);
+            std::string bytesToHexHash(const std::vector<uint8_t> &bytes);
+            std::vector<uint8_t> stringToBytesHash(const std::string &input) const;
+            std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t> &bytes) const;
+
+          private:
             std::string _identifier;
         };
-    }
-}
-
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_HASHALGORITHM_H

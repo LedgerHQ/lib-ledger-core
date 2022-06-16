@@ -31,28 +31,24 @@
 #ifndef LEDGER_CORE_STRING_HPP
 #define LEDGER_CORE_STRING_HPP
 
-#include <string>
 #include <sstream>
+#include <string>
 
 namespace ledger {
     namespace core {
         template <typename C, class Backend>
         class CharSequence {
-        public:
+          public:
             CharSequence() {
-
             }
 
             CharSequence(const C *base) : _backend(base) {
-
             }
 
             CharSequence(const C *base, size_t size) : _backend(base, size) {
-
             }
 
             CharSequence(const Backend base) : _backend(base) {
-
             }
 
             CharSequence<C, Backend> operator*(int number) {
@@ -63,25 +59,25 @@ namespace ledger {
                 return CharSequence<C, Backend>(ss.str());
             }
 
-            CharSequence<C, Backend> operator+(const CharSequence<C, Backend>& str) {
+            CharSequence<C, Backend> operator+(const CharSequence<C, Backend> &str) {
                 std::stringstream ss;
                 ss << _backend << str._backend;
                 return CharSequence<C, Backend>(ss.str());
             }
 
-            std::stringstream& operator<<(std::stringstream& ss) {
+            std::stringstream &operator<<(std::stringstream &ss) {
                 return ss << _backend;
             }
 
-            std::string& str() {
+            std::string &str() {
                 return _backend;
             }
 
-            const std::string& str() const {
+            const std::string &str() const {
                 return _backend;
             }
 
-            const C* toCString() const {
+            const C *toCString() const {
                 return _backend.c_str();
             };
 
@@ -91,16 +87,16 @@ namespace ledger {
 
             //friend std::ostream &operator<<(std::ostream &os, const CharSequence<C, Backend> &d);
 
-        private:
+          private:
             Backend _backend;
         };
 
         using String = CharSequence<char, std::string>;
 
-        String operator "" _S(const char* str, size_t size);
-    }
-}
+        String operator"" _S(const char *str, size_t size);
+    } // namespace core
+} // namespace ledger
 
-std::ostream &operator<<(std::ostream & os, const ledger::core::String& str);
+std::ostream &operator<<(std::ostream &os, const ledger::core::String &str);
 
 #endif //LEDGER_CORE_STRING_HPP

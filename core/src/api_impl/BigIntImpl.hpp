@@ -34,46 +34,47 @@
 #include "api/BigInt.hpp"
 #include "math/BigInt.h"
 
-namespace ledger { namespace core { namespace api {
+namespace ledger {
+    namespace core {
+        namespace api {
 
-        class BigIntImpl : public ledger::core::api::BigInt {
+            class BigIntImpl : public ledger::core::api::BigInt {
 
-        public:
-            BigIntImpl(const ledger::core::BigInt &v) : _bigi(v) {}
+              public:
+                BigIntImpl(const ledger::core::BigInt &v) : _bigi(v) {}
 
-            virtual std::shared_ptr<ledger::core::api::BigInt>
-            add(const std::shared_ptr<ledger::core::api::BigInt> &i) override;
+                virtual std::shared_ptr<ledger::core::api::BigInt>
+                add(const std::shared_ptr<ledger::core::api::BigInt> &i) override;
 
-            virtual std::shared_ptr<ledger::core::api::BigInt>
-            subtract(const std::shared_ptr<ledger::core::api::BigInt> &i) override;
+                virtual std::shared_ptr<ledger::core::api::BigInt>
+                subtract(const std::shared_ptr<ledger::core::api::BigInt> &i) override;
 
-            virtual std::shared_ptr<ledger::core::api::BigInt>
-            multiply(const std::shared_ptr<ledger::core::api::BigInt> &i) override;
+                virtual std::shared_ptr<ledger::core::api::BigInt>
+                multiply(const std::shared_ptr<ledger::core::api::BigInt> &i) override;
 
-            virtual std::shared_ptr<ledger::core::api::BigInt>
-            divide(const std::shared_ptr<ledger::core::api::BigInt> &i) override;
+                virtual std::shared_ptr<ledger::core::api::BigInt>
+                divide(const std::shared_ptr<ledger::core::api::BigInt> &i) override;
 
-            virtual std::vector<std::shared_ptr<ledger::core::api::BigInt>>
-            divideAndRemainder(const std::shared_ptr<ledger::core::api::BigInt> &i) override;
+                virtual std::vector<std::shared_ptr<ledger::core::api::BigInt>>
+                divideAndRemainder(const std::shared_ptr<ledger::core::api::BigInt> &i) override;
 
-            virtual std::shared_ptr<ledger::core::api::BigInt> pow(int32_t exponent) override;
+                virtual std::shared_ptr<ledger::core::api::BigInt> pow(int32_t exponent) override;
 
-            virtual std::string toDecimalString(int32_t precision, const std::string &decimalSeparator,
-                                                const std::string &thousandSeparator) override;
+                virtual std::string toDecimalString(int32_t precision, const std::string &decimalSeparator, const std::string &thousandSeparator) override;
 
-            virtual int32_t intValue() override;
+                virtual int32_t intValue() override;
 
-            virtual int32_t compare(const std::shared_ptr<ledger::core::api::BigInt> &i) override;
+                virtual int32_t compare(const std::shared_ptr<ledger::core::api::BigInt> &i) override;
 
-            virtual std::string toString(int32_t radix) override;
+                virtual std::string toString(int32_t radix) override;
 
-            const ledger::core::BigInt& backend() const { return _bigi; };
+                const ledger::core::BigInt &backend() const { return _bigi; };
 
-        private:
-            const ledger::core::BigInt _bigi;
-        };
-    }
-}
-}
+              private:
+                const ledger::core::BigInt _bigi;
+            };
+        } // namespace api
+    }     // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_BIGINTIMPL_HPP

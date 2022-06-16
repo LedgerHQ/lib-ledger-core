@@ -33,7 +33,7 @@
 namespace ledger {
     namespace core {
 
-        static std::function<void ()> NOOP = [] () {};
+        static std::function<void()> NOOP = []() {};
 
         LambdaRunnable::LambdaRunnable(std::function<void()> func) {
             _func = func;
@@ -52,5 +52,5 @@ namespace ledger {
             return std::make_shared<LambdaRunnable>(func);
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -32,19 +32,18 @@
 #ifndef LEDGER_CORE_ALGORANDOPERATIONSDATABASEHELPER_HPP
 #define LEDGER_CORE_ALGORANDOPERATIONSDATABASEHELPER_HPP
 
-#include <wallet/algorand/operations/AlgorandOperation.hpp>
 #include <soci.h>
+#include <wallet/algorand/operations/AlgorandOperation.hpp>
 
 namespace ledger {
     namespace core {
         namespace algorand {
             class OperationsDatabaseHelper {
-            public:
-                static void bulkInsert(soci::session& sql, const std::vector<algorand::Operation>& operations);
+              public:
+                static void bulkInsert(soci::session &sql, const std::vector<algorand::Operation> &operations);
             };
-        }
-    }
-}
-
+        } // namespace algorand
+    }     // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ALGORANDOPERATIONSDATABASEHELPER_HPP

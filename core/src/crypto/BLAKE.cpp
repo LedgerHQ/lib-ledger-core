@@ -28,8 +28,8 @@
  *
  */
 
-
 #include "BLAKE.h"
+
 #include <blake256.h>
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
 #include <assert.h>
@@ -38,7 +38,7 @@
 
 namespace ledger {
     namespace core {
-        std::vector<uint8_t> BLAKE::blake256(const std::vector<uint8_t>& data) {
+        std::vector<uint8_t> BLAKE::blake256(const std::vector<uint8_t> &data) {
             auto len = 32;
             std::vector<uint8_t> hash(len);
             state blakeState;
@@ -48,7 +48,7 @@ namespace ledger {
             return hash;
         }
 
-        std::vector<uint8_t> BLAKE::blake224(const std::vector<uint8_t>& data) {
+        std::vector<uint8_t> BLAKE::blake224(const std::vector<uint8_t> &data) {
             auto len = 32;
             std::vector<uint8_t> hash(len);
             state blakeState;
@@ -58,7 +58,7 @@ namespace ledger {
             return hash;
         }
 
-        std::vector<uint8_t> BLAKE::blake2b(const std::vector<uint8_t>& data, size_t outLength, size_t offset) {
+        std::vector<uint8_t> BLAKE::blake2b(const std::vector<uint8_t> &data, size_t outLength, size_t offset) {
             std::vector<uint8_t> hash(outLength);
             hacky::BLAKE2B_CTX blakeState;
             hacky::BLAKE2b_Init_default(&blakeState, outLength);
@@ -76,5 +76,5 @@ namespace ledger {
             return blake256(bytes);
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

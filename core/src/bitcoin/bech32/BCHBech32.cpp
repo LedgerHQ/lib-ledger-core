@@ -29,16 +29,17 @@
  */
 
 #include "BCHBech32.h"
+
 #include <utils/Exception.hpp>
 namespace ledger {
     namespace core {
-        uint64_t BCHBech32::polymod(const std::vector<uint8_t>& values) const {
+        uint64_t BCHBech32::polymod(const std::vector<uint8_t> &values) const {
             uint64_t chk = 1;
             for (size_t i = 0; i < values.size(); ++i) {
                 uint64_t top = chk >> 35;
                 chk = (chk & 0x07ffffffff) << 5 ^ values[i];
                 size_t index = 0;
-                for (auto& gen : _bech32Params.generator) {
+                for (auto &gen : _bech32Params.generator) {
                     chk ^= (-((top >> index) & 1) & gen);
                     index++;
                 }
@@ -46,7 +47,7 @@ namespace ledger {
             return chk;
         }
 
-        std::vector<uint8_t> BCHBech32::expandHrp(const std::string& hrp) const {
+        std::vector<uint8_t> BCHBech32::expandHrp(const std::string &hrp) const {
             std::vector<uint8_t> ret;
             ret.resize(hrp.size() + 1);
             for (size_t i = 0; i < hrp.size(); ++i) {
@@ -57,8 +58,8 @@ namespace ledger {
             return ret;
         }
 
-        std::string BCHBech32::encode(const std::vector<uint8_t>& hash,
-                                      const std::vector<uint8_t>& version) const {
+        std::string BCHBech32::encode(const std::vector<uint8_t> &hash,
+                                      const std::vector<uint8_t> &version) const {
             std::vector<uint8_t> data(version);
             data.insert(data.end(), hash.begin(), hash.end());
             int fromBits = 8, toBits = 5;
@@ -69,7 +70,7 @@ namespace ledger {
         }
 
         std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
-        BCHBech32::decode(const std::string& str) const {
+        BCHBech32::decode(const std::string &str) const {
             auto decoded = decodeBech32(str);
             if (decoded.first != _bech32Params.hrp || decoded.second.size() < 1) {
                 throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid bech 32 format");
@@ -90,5 +91,5 @@ namespace ledger {
             std::vector<uint8_t> version{converted[0]};
             return std::make_pair(version, std::vector<uint8_t>(converted.begin() + 1, converted.end()));
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

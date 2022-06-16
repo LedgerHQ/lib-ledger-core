@@ -29,17 +29,18 @@
  */
 
 #include "RippleLikeTransactionBuilder.h"
-#include <math/BigInt.h>
+
 #include <api/RippleLikeTransactionCallback.hpp>
-#include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
 #include <bytes/BytesReader.h>
-#include <wallet/currencies.hpp>
 #include <crypto/SHA512.hpp>
+#include <math/BigInt.h>
+#include <wallet/currencies.hpp>
+#include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
 
 namespace ledger {
     namespace core {
         // a helper to read VLE fields
-        uint64_t readLengthPrefix(BytesReader& reader) {
+        uint64_t readLengthPrefix(BytesReader &reader) {
             // encoding here: https://developers.ripple.com/serialization.html#length-prefixing
             auto a = reader.readNextByte();
 
@@ -58,11 +59,11 @@ namespace ledger {
         }
 
         RippleLikeTransactionBuilder::RippleLikeTransactionBuilder(
-                const std::shared_ptr<api::ExecutionContext> &context,
-                const api::Currency &currency,
-                const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
-                const std::shared_ptr<spdlog::logger> &logger,
-                const RippleLikeTransactionBuildFunction &buildFunction) {
+            const std::shared_ptr<api::ExecutionContext> &context,
+            const api::Currency &currency,
+            const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
+            const std::shared_ptr<spdlog::logger> &logger,
+            const RippleLikeTransactionBuildFunction &buildFunction) {
             _context = context;
             _currency = currency;
             _explorer = explorer;
@@ -95,7 +96,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::RippleLikeTransactionBuilder>
-        RippleLikeTransactionBuilder::setFees(const std::shared_ptr<api::Amount> & fees) {
+        RippleLikeTransactionBuilder::setFees(const std::shared_ptr<api::Amount> &fees) {
             _request.fees = std::make_shared<BigInt>(fees->toString());
             return shared_from_this();
         }
@@ -107,7 +108,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::RippleLikeTransactionBuilder>
-        RippleLikeTransactionBuilder::addMemo(const api::RippleLikeMemo& memo) {
+        RippleLikeTransactionBuilder::addMemo(const api::RippleLikeMemo &memo) {
             _request.memos.push_back(memo);
             return shared_from_this();
         }
@@ -289,7 +290,7 @@ namespace ledger {
                             } else if (memoTypeFieldID == 0xE1) { // end of object
                                 break;
                             } else { // unknown situation
-                                // TODO
+                                     // TODO
                             }
                         }
 
@@ -302,5 +303,5 @@ namespace ledger {
 
             return tx;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

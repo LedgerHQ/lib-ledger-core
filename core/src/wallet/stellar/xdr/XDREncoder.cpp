@@ -30,31 +30,32 @@
  */
 
 #include "XDREncoder.hpp"
+
 #include <cmath>
 
 using namespace ledger::core::stellar::xdr;
 
-Encoder& Encoder::operator<<(int32_t i) {
+Encoder &Encoder::operator<<(int32_t i) {
     _writer.writeBeValue<int32_t>(i);
     return *this;
 }
 
-Encoder& Encoder::operator<<(uint32_t i) {
+Encoder &Encoder::operator<<(uint32_t i) {
     _writer.writeBeValue<uint32_t>(i);
     return *this;
 }
 
-Encoder& Encoder::operator<<(int64_t i) {
+Encoder &Encoder::operator<<(int64_t i) {
     _writer.writeBeValue<int64_t>(i);
     return *this;
 }
 
-Encoder& Encoder::operator<<(uint64_t i) {
+Encoder &Encoder::operator<<(uint64_t i) {
     _writer.writeBeValue<uint64_t>(i);
     return *this;
 }
 
-Encoder& Encoder::operator<<(const std::string &str) {
+Encoder &Encoder::operator<<(const std::string &str) {
     *this << ((uint32_t)str.size());
     _writer.writeString(str);
     for (auto mod = std::ceil(str.size() / 4.f) * 4 - str.size(); mod > 0; mod -= 1) {
@@ -63,18 +64,18 @@ Encoder& Encoder::operator<<(const std::string &str) {
     return *this;
 }
 
-Encoder& Encoder::operator<<(const std::vector<uint8_t> &bytes) {
+Encoder &Encoder::operator<<(const std::vector<uint8_t> &bytes) {
     *this << ((uint32_t)bytes.size());
     _writer.writeByteArray(bytes);
     return *this;
 }
 
-Encoder& Encoder::operator<<(const ObjectEncoder &w) {
+Encoder &Encoder::operator<<(const ObjectEncoder &w) {
     w(*this);
     return *this;
 }
 
-Encoder& Encoder::operator<<(bool b) {
+Encoder &Encoder::operator<<(bool b) {
     auto v = (int32_t)(b ? 1 : 0);
     return (*this << v);
 }
@@ -87,5 +88,3 @@ Encoder &Encoder::operator<<(uint8_t byte) {
     _writer.writeByte(byte);
     return *this;
 }
-
-

@@ -46,8 +46,8 @@ namespace ledger {
              * @return encoded parameter
              */
             std::string encodeUrlQuery(const std::string &urlQuery);
-        }
-    }
-}
+        } // namespace url
+    }     // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_URL_HPP

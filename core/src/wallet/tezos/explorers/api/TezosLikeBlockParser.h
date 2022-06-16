@@ -28,18 +28,18 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEBLOCKPARSER_H
 #define LEDGER_CORE_TEZOSLIKEBLOCKPARSER_H
 
-#include <wallet/common/explorers/api/AbstractBlockParser.h>
 #include "../TezosLikeBlockchainExplorer.h"
+
+#include <wallet/common/explorers/api/AbstractBlockParser.h>
 
 namespace ledger {
     namespace core {
         class TezosLikeBlockParser : public AbstractBlockParser<TezosLikeBlockchainExplorer::Block> {
-        public:
-            TezosLikeBlockParser(std::string &lastKey) : _lastKey(lastKey) {};
+          public:
+            TezosLikeBlockParser(std::string &lastKey) : _lastKey(lastKey){};
 
             bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
                 if (getLastKey() == "level" || getLastKey() == "height") {
@@ -60,13 +60,14 @@ namespace ledger {
                 return true;
             }
 
-        protected:
+          protected:
             std::string &getLastKey() override {
                 return _lastKey;
             };
-        private:
+
+          private:
             std::string &_lastKey;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_TEZOSLIKEBLOCKPARSER_H

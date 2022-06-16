@@ -28,7 +28,6 @@
  *
  */
 
-
 #include "EthereumLikeBlockchainExplorerAccountSynchronizer.h"
 
 #include <wallet/ethereum/EthereumLikeAccount.h>
@@ -36,21 +35,20 @@
 namespace ledger {
     namespace core {
         EthereumLikeBlockchainExplorerAccountSynchronizer::EthereumLikeBlockchainExplorerAccountSynchronizer(const std::shared_ptr<WalletPool> &pool,
-                                                                                                             const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer) :
-                DedicatedContext(pool->getDispatcher()->getThreadPoolExecutionContext("synchronizers")) {
+                                                                                                             const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer) : DedicatedContext(pool->getDispatcher()->getThreadPoolExecutionContext("synchronizers")) {
             _explorer = explorer;
         }
 
         void EthereumLikeBlockchainExplorerAccountSynchronizer::updateCurrentBlock(std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer::SynchronizationBuddy> &buddy,
                                                                                    const std::shared_ptr<api::ExecutionContext> &context) {
-            _explorer->getCurrentBlock().onComplete(context, [buddy] (const TryPtr<EthereumLikeBlockchainExplorer::Block>& block) {
+            _explorer->getCurrentBlock().onComplete(context, [buddy](const TryPtr<EthereumLikeBlockchainExplorer::Block> &block) {
                 if (block.isSuccess()) {
                     soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
                     soci::transaction tr(sql);
                     try {
                         buddy->account->putBlock(sql, *block.getValue());
                         tr.commit();
-                    } catch(...) {
+                    } catch (...) {
                         tr.rollback();
                     }
                 }
@@ -58,12 +56,13 @@ namespace ledger {
         }
 
         void EthereumLikeBlockchainExplorerAccountSynchronizer::updateTransactionsToDrop(soci::session &sql,
-                                                                       std::shared_ptr<SynchronizationBuddy> &buddy,
-                                                                       const std::string &accountUid) {
+                                                                                         std::shared_ptr<SynchronizationBuddy> &buddy,
+                                                                                         const std::string &accountUid) {
             //Get all transactions in DB that may be dropped (txs without block_uid)
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, eth_op.transaction_hash FROM operations AS op "
-                    "LEFT OUTER JOIN ethereum_operations AS eth_op ON eth_op.uid = op.uid "
-                    "WHERE op.block_uid IS NULL AND op.account_uid = :uid ", soci::use(accountUid));
+                                                           "LEFT OUTER JOIN ethereum_operations AS eth_op ON eth_op.uid = op.uid "
+                                                           "WHERE op.block_uid IS NULL AND op.account_uid = :uid ",
+                                            soci::use(accountUid));
 
             for (auto &row : rows) {
                 if (row.get_indicator(0) != soci::i_null && row.get_indicator(1) != soci::i_null) {
@@ -73,7 +72,7 @@ namespace ledger {
         }
 
         std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>>
-        EthereumLikeBlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<EthereumLikeAccount>& account) {
+        EthereumLikeBlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<EthereumLikeAccount> &account) {
             return synchronizeAccount(account);
         }
 
@@ -83,7 +82,6 @@ namespace ledger {
 
         void EthereumLikeBlockchainExplorerAccountSynchronizer::reset(const std::shared_ptr<EthereumLikeAccount> &account,
                                                                       const std::chrono::system_clock::time_point &toDate) {
-
         }
 
         std::shared_ptr<EthereumBlockchainAccountSynchronizer> EthereumLikeBlockchainExplorerAccountSynchronizer::getSharedFromThis() {
@@ -94,10 +92,10 @@ namespace ledger {
             return getContext();
         }
 
-        void EthereumLikeBlockchainExplorerAccountSynchronizer::interpretTransaction(const Transaction& transaction,
-                                                                                    const std::shared_ptr<SynchronizationBuddy>& buddy,
-                                                                                    std::vector<Operation>& out) {
+        void EthereumLikeBlockchainExplorerAccountSynchronizer::interpretTransaction(const Transaction &transaction,
+                                                                                     const std::shared_ptr<SynchronizationBuddy> &buddy,
+                                                                                     std::vector<Operation> &out) {
             return buddy->account->interpretTransaction(transaction, out);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

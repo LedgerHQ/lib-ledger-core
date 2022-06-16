@@ -28,14 +28,13 @@
  *
  */
 
-
 #include "InternalTransaction.h"
+
 #include <api_impl/BigIntImpl.hpp>
 
 namespace ledger {
     namespace core {
-        InternalTransaction::InternalTransaction(const InternalTx &internalTx) : _internalTx(internalTx)
-        {}
+        InternalTransaction::InternalTransaction(const InternalTx &internalTx) : _internalTx(internalTx) {}
 
         std::shared_ptr<api::BigInt> InternalTransaction::getGasLimit() {
             return std::make_shared<api::BigIntImpl>(_internalTx.gasLimit);
@@ -64,5 +63,5 @@ namespace ledger {
         api::OperationType InternalTransaction::getOperationType() {
             return _internalTx.type;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

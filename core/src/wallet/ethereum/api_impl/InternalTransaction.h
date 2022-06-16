@@ -28,20 +28,19 @@
  *
  */
 
-
 #pragma once
 
 #include "EthereumLikeTransactionApi.h"
 
-#include <api/InternalTransaction.hpp>
 #include <api/BigInt.hpp>
+#include <api/InternalTransaction.hpp>
 #include <api/OperationType.hpp>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 
 namespace ledger {
     namespace core {
         class InternalTransaction : public api::InternalTransaction {
-        public:
+          public:
             InternalTransaction(const InternalTx &internalTx);
             std::shared_ptr<api::BigInt> getGasLimit() override;
             std::shared_ptr<api::BigInt> getUsedGas() override;
@@ -50,8 +49,9 @@ namespace ledger {
             std::shared_ptr<api::BigInt> getValue() override;
             std::vector<uint8_t> getData() override;
             api::OperationType getOperationType() override;
-        private:
+
+          private:
             InternalTx _internalTx;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger

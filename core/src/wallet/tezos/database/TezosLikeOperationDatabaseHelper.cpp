@@ -30,16 +30,17 @@
  */
 
 #include "TezosLikeOperationDatabaseHelper.hpp"
+
+#include <api/BigInt.hpp>
+#include <crypto/SHA256.hpp>
 #include <database/PreparedStatement.hpp>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
-#include <api/BigInt.hpp>
-#include <crypto/SHA256.hpp>
-#include <unordered_set>
 #include <debug/Benchmarker.h>
-#include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
-#include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
+#include <unordered_set>
 #include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
+#include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
+#include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
 
 using namespace soci;
 
@@ -52,8 +53,7 @@ namespace {
         std::vector<std::string> txUid;
         std::vector<std::string> txHash;
 
-        void update(const std::string& opUid, const std::string& transactionUid,
-                const std::string& transactionHash) {
+        void update(const std::string &opUid, const std::string &transactionUid, const std::string &transactionHash) {
             uid.push_back(opUid);
             txUid.push_back(transactionUid);
             txHash.push_back(transactionHash);
@@ -67,11 +67,11 @@ namespace {
     };
 
     const auto UPSERT_TEZOS_OPERATION = db::stmt<TezosOperationBinding>(
-            "INSERT INTO tezos_operations VALUES(:uid, :tx_uid, :tx_hash) "
-            "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, use(b.uid), use(b.txUid), use(b.txHash);
-            });
+        "INSERT INTO tezos_operations VALUES(:uid, :tx_uid, :tx_hash) "
+        "ON CONFLICT DO NOTHING",
+        [](auto &s, auto &b) {
+            s, use(b.uid), use(b.txUid), use(b.txHash);
+        });
 
     // Tezos originated operations
     struct TezosOriginatedOperationBinding {
@@ -79,8 +79,7 @@ namespace {
         std::vector<std::string> txUid;
         std::vector<std::string> originatedAccountUid;
 
-        void update(const std::string& opUid, const std::string& transactionUid,
-                const std::string& origAccountUid) {
+        void update(const std::string &opUid, const std::string &transactionUid, const std::string &origAccountUid) {
             uid.push_back(opUid);
             txUid.push_back(transactionUid);
             originatedAccountUid.push_back(origAccountUid);
@@ -94,11 +93,11 @@ namespace {
     };
 
     const auto UPSERT_TEZOS_ORIGINATED_OPERATION = db::stmt<TezosOriginatedOperationBinding>(
-            "INSERT INTO tezos_originated_operations VALUES(:uid, :transaction_uid, :originated_account_uid)"
-            "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, use(b.uid), use(b.txUid), use(b.originatedAccountUid);
-            });
+        "INSERT INTO tezos_originated_operations VALUES(:uid, :transaction_uid, :originated_account_uid)"
+        "ON CONFLICT DO NOTHING",
+        [](auto &s, auto &b) {
+            s, use(b.uid), use(b.txUid), use(b.originatedAccountUid);
+        });
 
     //tezos originated account
     struct TezosOriginatedAccountBinding {
@@ -118,14 +117,13 @@ namespace {
                 address.push_back(origAccount.address);
                 spendable.push_back(static_cast<int>(origAccount.spendable));
                 delegatable.push_back(static_cast<int>(origAccount.delegatable));
-            }
-            else { //update: only pubkey will be updated
+            } else { //update: only pubkey will be updated
                 uid.push_back(transaction.originatedAccountUid);
                 address.push_back("");
                 spendable.push_back(false);
                 delegatable.push_back(false);
             }
-         
+
             accountUid.push_back(operation.accountUid);
             pubKey.push_back(transaction.publicKey.getValueOr(""));
         }
@@ -141,11 +139,11 @@ namespace {
     };
 
     const auto UPSERT_TEZOS_ORIGINATED_ACCOUNT = db::stmt<TezosOriginatedAccountBinding>(
-            "INSERT INTO tezos_originated_accounts VALUES("
-            ":uid, :tezos_account_uid, :address, :spendable, :delegatable, :public_key)"
-            "ON CONFLICT(uid) DO UPDATE SET public_key = :pub_key",
-            [] (auto& s, auto&  b) {
-                s, 
+        "INSERT INTO tezos_originated_accounts VALUES("
+        ":uid, :tezos_account_uid, :address, :spendable, :delegatable, :public_key)"
+        "ON CONFLICT(uid) DO UPDATE SET public_key = :pub_key",
+        [](auto &s, auto &b) {
+            s,
                 use(b.uid),
                 use(b.accountUid),
                 use(b.address),
@@ -153,7 +151,7 @@ namespace {
                 use(b.delegatable),
                 use(b.pubKey),
                 use(b.pubKey);
-            });
+        });
 
     // Transaction
     struct TransactionBinding {
@@ -172,8 +170,8 @@ namespace {
         std::vector<std::string> publicKey;
         std::vector<std::string> originatedAccount;
         std::vector<uint64_t> status;
-        
-        void update(const TezosLikeBlockchainExplorerTransaction& tx, const std::string& txUid) {
+
+        void update(const TezosLikeBlockchainExplorerTransaction &tx, const std::string &txUid) {
             uid.push_back(txUid);
             hash.push_back(tx.hash);
             value.push_back(tx.value.toHexString());
@@ -191,15 +189,14 @@ namespace {
             type.push_back(api::to_string(tx.type));
             publicKey.push_back(tx.publicKey.getValueOr(""));
             std::string sOrigAccount;
-                if (tx.originatedAccount.hasValue()) {
-                    std::stringstream origAccount;
-                    std::vector<std::string> vOrigAccount{tx.originatedAccount.getValue().address, std::to_string(tx.originatedAccount.getValue().spendable), std::to_string(tx.originatedAccount.getValue().delegatable)};
-                    strings::join(vOrigAccount, origAccount, ":");
-                    sOrigAccount = origAccount.str();
-                }
+            if (tx.originatedAccount.hasValue()) {
+                std::stringstream origAccount;
+                std::vector<std::string> vOrigAccount{tx.originatedAccount.getValue().address, std::to_string(tx.originatedAccount.getValue().spendable), std::to_string(tx.originatedAccount.getValue().delegatable)};
+                strings::join(vOrigAccount, origAccount, ":");
+                sOrigAccount = origAccount.str();
+            }
             originatedAccount.push_back(sOrigAccount);
             status.push_back(tx.status);
-            
         }
 
         void clear() {
@@ -222,36 +219,37 @@ namespace {
     };
 
     const auto UPSERT_TRANSACTION = db::stmt<TransactionBinding>(
-            "INSERT INTO tezos_transactions VALUES("
-            " :tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :gas_limit, "
-            " :storage_limit, :confirmations, :type, :public_key, :originated_account, :status)"
-            " ON CONFLICT(transaction_uid) DO UPDATE SET block_uid = :block, status = :code", [] (auto& s, auto&  b) {
-                s, 
-                use(b.uid), 
+        "INSERT INTO tezos_transactions VALUES("
+        " :tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :gas_limit, "
+        " :storage_limit, :confirmations, :type, :public_key, :originated_account, :status)"
+        " ON CONFLICT(transaction_uid) DO UPDATE SET block_uid = :block, status = :code",
+        [](auto &s, auto &b) {
+            s,
+                use(b.uid),
                 use(b.hash),
                 use(b.value),
-                use(b.blockUid), 
+                use(b.blockUid),
                 use(b.time),
                 use(b.sender),
                 use(b.receiver),
-                use(b.fees), 
+                use(b.fees),
                 use(b.gasLimit),
                 use(b.storageLimit),
                 use(b.confirmations),
-                use(b.type), 
+                use(b.type),
                 use(b.publicKey),
                 use(b.originatedAccount),
                 use(b.status),
-                use(b.blockUid), 
+                use(b.blockUid),
                 use(b.status);
-            });
-}
+        });
+} // namespace
 
 namespace ledger {
     namespace core {
 
         void TezosLikeOperationDatabaseHelper::bulkInsert(soci::session &sql,
-                const std::vector<Operation> &operations) {
+                                                          const std::vector<Operation> &operations) {
             if (operations.empty())
                 return;
             Benchmarker rawInsert("raw_db_insert_tezos", nullptr);
@@ -270,7 +268,7 @@ namespace ledger {
             UPSERT_TEZOS_ORIGINATED_ACCOUNT(sql, tezosOrigAccountStmt);
             UPSERT_TEZOS_ORIGINATED_OPERATION(sql, tezosOrigOpStmt);
 
-            for (const auto& op : operations) {
+            for (const auto &op : operations) {
                 // Upsert block
                 if (op.block.hasValue()) {
                     blockStmt.bindings.update(op.block.getValue());
@@ -278,19 +276,18 @@ namespace ledger {
                 // Upsert operation
                 operationStmt.bindings.update(op);
                 // Upsert transaction
-                auto& tx = op.tezosTransaction.getValue();
-                const auto txUid =  TezosLikeTransactionDatabaseHelper::createTezosTransactionUid(op.accountUid, tx.hash, tx.type);
+                auto &tx = op.tezosTransaction.getValue();
+                const auto txUid = TezosLikeTransactionDatabaseHelper::createTezosTransactionUid(op.accountUid, tx.hash, tx.type);
                 transactionStmt.bindings.update(tx, txUid);
                 // tezos operation
                 tezosOpStmt.bindings.update(op.uid, txUid, tx.hash);
 
-                if (!tx.originatedAccountUid.empty()) {               
+                if (!tx.originatedAccountUid.empty()) {
                     if (tx.type == api::TezosOperationTag::OPERATION_TAG_REVEAL && tx.publicKey.hasValue()) {
                         tezosOrigAccountStmt.bindings.update(op);
-                    } 
+                    }
                     tezosOrigOpStmt.bindings.update(op.uid, txUid, tx.originatedAccountUid);
-                }
-                else {
+                } else {
                     if (op.type == api::OperationType::SEND) {
                         if (tx.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && tx.status == 1) {
                             tezosOrigAccountStmt.bindings.update(op);
@@ -298,18 +295,18 @@ namespace ledger {
                     }
                 }
             }
-            
+
             // 1- Bulk insert block (dependency for operation and tezos transaction)
             if (!blockStmt.bindings.uid.empty()) {
                 blockStmt.execute();
             }
 
-            // 2- Bulk insert tezos_transaction 
+            // 2- Bulk insert tezos_transaction
             transactionStmt.execute();
 
             // 3- Bulk insert operations (dependency of  tezos_operations)
             operationStmt.execute();
-            
+
             // 4- Bulk insert tezos_operations
             tezosOpStmt.execute();
 
@@ -325,5 +322,5 @@ namespace ledger {
 
             rawInsert.stop();
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

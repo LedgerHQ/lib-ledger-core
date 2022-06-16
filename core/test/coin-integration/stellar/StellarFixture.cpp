@@ -31,14 +31,13 @@
 
 #include "StellarFixture.hpp"
 
-static std::vector<api::CurrencyUnit> UNITS {};
+static std::vector<api::CurrencyUnit> UNITS{};
 
-static api::StellarLikeNetworkParameters STELLAR_PARAMS {
-    "xlm", {6 << 3}, {12 << 3}, 5000000, 100, {}, "Public Global Stellar Network ; September 2015"
-};
+static api::StellarLikeNetworkParameters STELLAR_PARAMS{
+    "xlm", {6 << 3}, {12 << 3}, 5000000, 100, {}, "Public Global Stellar Network ; September 2015"};
 
 static api::Currency STELLAR =
-        Currency("stellar")
+    Currency("stellar")
         .forkOfStellar(STELLAR_PARAMS)
         .bip44(148)
         .paymentUri("web+stellar")
@@ -51,19 +50,17 @@ api::AccountCreationInfo StellarFixture::defaultAccount() const {
 
 api::AccountCreationInfo StellarFixture::emptyAccount() const {
     StellarLikeAddress addr(
-            "GCDCR6S7JAYWA3DCD2QOQX7MSHX5BZT2HUFYEMK4R76NXFQ7QQA4TF7W",
-            STELLAR,
-            Option<std::string>::NONE
-            );
+        "GCDCR6S7JAYWA3DCD2QOQX7MSHX5BZT2HUFYEMK4R76NXFQ7QQA4TF7W",
+        STELLAR,
+        Option<std::string>::NONE);
     return accountInfo(ledger::core::hex::toString(addr.toPublicKey()));
 }
 
-api::AccountCreationInfo StellarFixture::accountInfoFromAddress(const std::string& address) const {
+api::AccountCreationInfo StellarFixture::accountInfoFromAddress(const std::string &address) const {
     StellarLikeAddress addr(
-            address,
-            STELLAR,
-            Option<std::string>::NONE
-    );
+        address,
+        STELLAR,
+        Option<std::string>::NONE);
     return accountInfo(ledger::core::hex::toString(addr.toPublicKey()));
 }
 
@@ -76,6 +73,5 @@ api::Currency StellarFixture::getCurrency() const {
 }
 
 api::AccountCreationInfo StellarFixture::accountInfo(const std::string &pubKey) const {
-    return api::AccountCreationInfo(0, {"main"}, {"44'/148'/0'"}, { ledger::core::hex::toByteArray(pubKey)}, {});
+    return api::AccountCreationInfo(0, {"main"}, {"44'/148'/0'"}, {ledger::core::hex::toByteArray(pubKey)}, {});
 }
-

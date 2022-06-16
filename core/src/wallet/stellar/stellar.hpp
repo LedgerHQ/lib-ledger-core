@@ -31,14 +31,14 @@
 #ifndef LEDGER_CORE_STELLARLIKE_STELLAR_HPP
 #define LEDGER_CORE_STELLARLIKE_STELLAR_HPP
 
-#include <utils/Option.hpp>
-#include <cstdint>
-#include <unordered_map>
-#include <math/BigInt.h>
-#include <chrono>
-#include <wallet/stellar/xdr/models.hpp>
-#include <api/StellarLikeNetworkParameters.hpp>
 #include <api/StellarLikeAccountSigner.hpp>
+#include <api/StellarLikeNetworkParameters.hpp>
+#include <chrono>
+#include <cstdint>
+#include <math/BigInt.h>
+#include <unordered_map>
+#include <utils/Option.hpp>
+#include <wallet/stellar/xdr/models.hpp>
 
 namespace ledger {
     namespace core {
@@ -47,7 +47,7 @@ namespace ledger {
             using XDRData = std::vector<uint8_t>;
 
             struct Ledger {
-                std::string   hash;
+                std::string hash;
                 uint64_t height;
                 std::chrono::system_clock::time_point time;
                 BigInt baseFee;
@@ -76,7 +76,6 @@ namespace ledger {
                 bool authImmutable;
                 bool authRequired;
                 bool authRevocable;
-
             };
 
             using AccountSigner = api::StellarLikeAccountSigner;
@@ -90,7 +89,7 @@ namespace ledger {
                 std::unordered_map<std::string, std::string> data;
                 Flags flags;
                 std::vector<AccountSigner> signers;
-             };
+            };
 
             struct Asset {
                 std::string type;
@@ -142,9 +141,9 @@ namespace ledger {
             using OperationVector = std::vector<std::shared_ptr<Operation>>;
             using TransactionVector = std::vector<std::shared_ptr<Transaction>>;
 
-            void xdrAssetToAsset(const xdr::Asset& asset, const api::StellarLikeNetworkParameters& params, stellar::Asset& out);
-        }
-    }
-}
+            void xdrAssetToAsset(const xdr::Asset &asset, const api::StellarLikeNetworkParameters &params, stellar::Asset &out);
+        } // namespace stellar
+    }     // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_STELLARLIKE_STELLAR_HPP

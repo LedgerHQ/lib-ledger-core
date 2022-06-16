@@ -32,7 +32,6 @@
 #include "BaseFixture.h"
 
 class AccountInfoTests : public BaseFixture {
-
 };
 
 TEST_F(AccountInfoTests, FirstAccountInfo) {
@@ -124,7 +123,7 @@ TEST_F(AccountInfoTests, DISABLED_GetAddressFromRange) {
     auto addresses = uv::wait(account->getAddresses(from, to));
 
     EXPECT_EQ(addresses.size(), 2 * (to - from + 1));
-    
+
     // Observable range gives us 20 so it should be fine
     if (freshAddresses.size() > 12) {
         EXPECT_EQ(addresses[0]->toString(), freshAddresses[10]->toString());

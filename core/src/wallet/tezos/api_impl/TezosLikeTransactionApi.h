@@ -28,24 +28,22 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKETRANSACTIONAPI_H
 #define LEDGER_CORE_TEZOSLIKETRANSACTIONAPI_H
 
-#include <wallet/common/api_impl/OperationApi.h>
-#include <wallet/tezos/api_impl/TezosLikeBlockApi.h>
-#include <api/TezosLikeTransaction.hpp>
 #include <api/Amount.hpp>
 #include <api/Currency.hpp>
-#include <math/BigInt.h>
+#include <api/TezosLikeTransaction.hpp>
 #include <api/TezosOperationTag.hpp>
+#include <math/BigInt.h>
+#include <wallet/common/api_impl/OperationApi.h>
+#include <wallet/tezos/api_impl/TezosLikeBlockApi.h>
 namespace ledger {
     namespace core {
         // Reference: https://github.com/obsidiansystems/ledger-app-tezos/blob/9a0c8cc546677147b93935e0b0c96925244baf64/src/types.h
         class TezosLikeTransactionApi : public api::TezosLikeTransaction {
-        public:
+          public:
             static const std::size_t SIGNATURE_SIZE_BYTES = 64;
-
 
             explicit TezosLikeTransactionApi(const api::Currency &currency,
                                              const std::string &protocolUpdate);
@@ -73,16 +71,16 @@ namespace ledger {
             std::vector<uint8_t> serializeWithType(api::TezosOperationTag type);
 
             /// Serialize the transaction as binary for Tezos Node run_operation JSON RPC endpoint
-            std::vector<uint8_t> serializeForDryRun(const std::vector<uint8_t>& chainID);
+            std::vector<uint8_t> serializeForDryRun(const std::vector<uint8_t> &chainID);
 
             /// Serialize the transaction as json for Tezos Node run_operation JSON RPC endpoint
-            std::string serializeJsonForDryRun(const std::string& chainID);
+            std::string serializeJsonForDryRun(const std::string &chainID);
 
             std::chrono::system_clock::time_point getDate() override;
 
             std::shared_ptr<api::BigInt> getCounter() override;
 
-            std::shared_ptr<api::Amount> getGasLimit() override ;
+            std::shared_ptr<api::Amount> getGasLimit() override;
 
             std::shared_ptr<api::BigInt> getStorageLimit() override;
 
@@ -100,7 +98,7 @@ namespace ledger {
 
             std::string getCorrelationId() override;
 
-            std::string setCorrelationId(const std::string& newId) override;
+            std::string setCorrelationId(const std::string &newId) override;
 
             TezosLikeTransactionApi &setFees(const std::shared_ptr<BigInt> &fees);
 
@@ -116,19 +114,19 @@ namespace ledger {
 
             TezosLikeTransactionApi &setBlockHash(const std::string &blockHash);
 
-            TezosLikeTransactionApi & setTransactionGasLimit(const std::shared_ptr<BigInt>& gasLimit);
+            TezosLikeTransactionApi &setTransactionGasLimit(const std::shared_ptr<BigInt> &gasLimit);
 
-            TezosLikeTransactionApi & setRevealGasLimit(const std::shared_ptr<BigInt>& gasLimit);
-            
-            TezosLikeTransactionApi & setCounter(const std::shared_ptr<BigInt>& counter);
+            TezosLikeTransactionApi &setRevealGasLimit(const std::shared_ptr<BigInt> &gasLimit);
 
-            TezosLikeTransactionApi & setStorage(const std::shared_ptr<BigInt>& storage);
+            TezosLikeTransactionApi &setCounter(const std::shared_ptr<BigInt> &counter);
 
-            TezosLikeTransactionApi & setType(api::TezosOperationTag type);
+            TezosLikeTransactionApi &setStorage(const std::shared_ptr<BigInt> &storage);
 
-            TezosLikeTransactionApi & setBalance(const BigInt &balance);
+            TezosLikeTransactionApi &setType(api::TezosOperationTag type);
 
-            TezosLikeTransactionApi & setManagerAddress(const std::string &managerAddress, api::TezosCurve curve);
+            TezosLikeTransactionApi &setBalance(const BigInt &balance);
+
+            TezosLikeTransactionApi &setManagerAddress(const std::string &managerAddress, api::TezosCurve curve);
             std::string getManagerAddress() const;
 
             TezosLikeTransactionApi &setRawTx(const std::vector<uint8_t> &rawTx);
@@ -137,8 +135,9 @@ namespace ledger {
             bool toReveal() const;
 
             api::TezosOperationTag getOperationTypeInTransaction() const override;
-            TezosLikeTransactionApi& setOperationTypeInTransaction(api::TezosOperationTag type);
-        private:
+            TezosLikeTransactionApi &setOperationTypeInTransaction(api::TezosOperationTag type);
+
+          private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<TezosLikeBlockApi> _block;
             std::string _hash;
@@ -166,8 +165,8 @@ namespace ledger {
             std::shared_ptr<api::Amount> _revealFees;
             std::shared_ptr<api::Amount> _revealGasLimit;
             std::string _correlationId;
-            api::TezosOperationTag _operationTypeInTransaction {api::TezosOperationTag::OPERATION_TAG_NONE};
+            api::TezosOperationTag _operationTypeInTransaction{api::TezosOperationTag::OPERATION_TAG_NONE};
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_TEZOSLIKETRANSACTIONAPI_H

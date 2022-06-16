@@ -28,38 +28,33 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKEKEYCHAINFACTORY_H
 #define LEDGER_CORE_RIPPLELIKEKEYCHAINFACTORY_H
 
-
-#include <collections/DynamicObject.hpp>
-
-#include <api/ExtendedKeyAccountCreationInfo.hpp>
 #include <api/Currency.hpp>
-
-#include <wallet/ripple/keychains/RippleLikeKeychain.h>
+#include <api/ExtendedKeyAccountCreationInfo.hpp>
+#include <collections/DynamicObject.hpp>
 #include <preferences/Preferences.hpp>
+#include <wallet/ripple/keychains/RippleLikeKeychain.h>
 
 namespace ledger {
     namespace core {
         class RippleLikeKeychainFactory {
-        public:
+          public:
             std::shared_ptr<RippleLikeKeychain> build(int32_t index,
-                                                        const DerivationPath &path,
-                                                        const std::shared_ptr<DynamicObject>& configuration,
-                                                        const api::ExtendedKeyAccountCreationInfo& info,
-                                                        const std::shared_ptr<Preferences>& accountPreferences,
-                                                        const api::Currency& currency);
+                                                      const DerivationPath &path,
+                                                      const std::shared_ptr<DynamicObject> &configuration,
+                                                      const api::ExtendedKeyAccountCreationInfo &info,
+                                                      const std::shared_ptr<Preferences> &accountPreferences,
+                                                      const api::Currency &currency);
             std::shared_ptr<RippleLikeKeychain> restore(int32_t index,
-                                                          const DerivationPath &path,
-                                                          const std::shared_ptr<DynamicObject>& configuration,
-                                                          const std::string &databaseXpubEntry,
-                                                          const std::shared_ptr<Preferences>& accountPreferences,
-                                                          const api::Currency& currency);
+                                                        const DerivationPath &path,
+                                                        const std::shared_ptr<DynamicObject> &configuration,
+                                                        const std::string &databaseXpubEntry,
+                                                        const std::shared_ptr<Preferences> &accountPreferences,
+                                                        const api::Currency &currency);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_RIPPLELIKEKEYCHAINFACTORY_H

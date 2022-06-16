@@ -29,107 +29,90 @@
 
 #pragma once
 
-#include <wallet/algorand/AlgorandAddress.hpp>
 #include "../../utils/B64String.hpp"
 #include "AlgorandAsset.hpp"
 #include "AlgorandKeyreg.hpp"
 #include "AlgorandPayment.hpp"
 
-#include <utils/Option.hpp>
-
 #include <boost/variant.hpp>
-
 #include <cstdint>
 #include <string>
+#include <utils/Option.hpp>
+#include <wallet/algorand/AlgorandAddress.hpp>
 
 namespace ledger {
-namespace core {
-namespace algorand {
-namespace model {
+    namespace core {
+        namespace algorand {
+            namespace model {
 
-    class Transaction
-    {
+                class Transaction {
 
-    public:
-        class Header
-        {
-        public:
-            Header() = default;
-            Header(uint64_t fee,
-                   uint64_t firstValid,
-                   Option<std::string> genesisId,
-                   B64String genesisHash,
-                   Option<std::vector<uint8_t>> group,
-                   uint64_t lastValid,
-                   Option<std::vector<uint8_t>> lease,
-                   Option<std::vector<uint8_t>> note,
-                   Address sender,
-                   std::string type)
-                : fee(fee)
-                , firstValid(firstValid)
-                , genesisId(std::move(genesisId))
-                , genesisHash(std::move(genesisHash))
-                , group(std::move(group))
-                , lastValid(lastValid)
-                , lease(std::move(lease))
-                , note(std::move(note))
-                , sender(std::move(sender))
-                , type(std::move(type))
-            {}
+                  public:
+                    class Header {
+                      public:
+                        Header() = default;
+                        Header(uint64_t fee,
+                               uint64_t firstValid,
+                               Option<std::string> genesisId,
+                               B64String genesisHash,
+                               Option<std::vector<uint8_t>> group,
+                               uint64_t lastValid,
+                               Option<std::vector<uint8_t>> lease,
+                               Option<std::vector<uint8_t>> note,
+                               Address sender,
+                               std::string type)
+                            : fee(fee), firstValid(firstValid), genesisId(std::move(genesisId)), genesisHash(std::move(genesisHash)), group(std::move(group)), lastValid(lastValid), lease(std::move(lease)), note(std::move(note)), sender(std::move(sender)), type(std::move(type)) {}
 
-            uint64_t fee;
-            uint64_t firstValid;
-            Option<std::string> genesisId;
-            B64String genesisHash;
-            Option<std::vector<uint8_t>> group;
-            uint64_t lastValid;
-            Option<std::vector<uint8_t>> lease;
-            Option<std::vector<uint8_t>> note;
-            Address sender;
-            std::string type;
+                        uint64_t fee;
+                        uint64_t firstValid;
+                        Option<std::string> genesisId;
+                        B64String genesisHash;
+                        Option<std::vector<uint8_t>> group;
+                        uint64_t lastValid;
+                        Option<std::vector<uint8_t>> lease;
+                        Option<std::vector<uint8_t>> note;
+                        Address sender;
+                        std::string type;
 
-            // Additional fields retrieved from the blockchain
-            Option<std::string> id;
-            Option<uint64_t> round;
-            Option<uint64_t> timestamp;
-            Option<uint64_t> senderRewards;
-            Option<uint64_t> receiverRewards;
-            Option<uint64_t> closeRewards;
-        };
+                        // Additional fields retrieved from the blockchain
+                        Option<std::string> id;
+                        Option<uint64_t> round;
+                        Option<uint64_t> timestamp;
+                        Option<uint64_t> senderRewards;
+                        Option<uint64_t> receiverRewards;
+                        Option<uint64_t> closeRewards;
+                    };
 
-        using Details = boost::variant<KeyRegTxnFields,
-                                       PaymentTxnFields,
-                                       AssetConfigTxnFields,
-                                       AssetTransferTxnFields,
-                                       AssetFreezeTxnFields>;
+                    using Details = boost::variant<KeyRegTxnFields,
+                                                   PaymentTxnFields,
+                                                   AssetConfigTxnFields,
+                                                   AssetTransferTxnFields,
+                                                   AssetFreezeTxnFields>;
 
-        Transaction() = default;
-        Transaction(Header header, Details details)
-            : header(std::move(header))
-            , details(std::move(details))
-        {}
+                    Transaction() = default;
+                    Transaction(Header header, Details details)
+                        : header(std::move(header)), details(std::move(details)) {}
 
-        Header header;
-        Details details;
-    };
+                    Header header;
+                    Details details;
+                };
 
-    namespace constants {
+                namespace constants {
 
-        static constexpr const char* pay = "pay";
-        static constexpr const char* keyreg = "keyreg";
-        static constexpr const char* acfg = "acfg";
-        static constexpr const char* axfer = "axfer";
-        static constexpr const char* afreeze = "afrz";
+                    static constexpr const char *pay = "pay";
+                    static constexpr const char *keyreg = "keyreg";
+                    static constexpr const char *acfg = "acfg";
+                    static constexpr const char *axfer = "axfer";
+                    static constexpr const char *afreeze = "afrz";
 
-    } // namespace constants
+                } // namespace constants
 
-    struct TransactionsBulk {
-        std::vector<Transaction> transactions;
-        bool hasNext;
-    };
+                struct TransactionsBulk {
+                    std::vector<Transaction> transactions;
+                    bool hasNext;
+                };
 
-} // namespace model
+            } // namespace model
+        }     // namespace algorand
+    }         // namespace core
 } // namespace ledger
-} // namespace core
-} // namespace algorand
-

@@ -38,17 +38,16 @@
 namespace ledger {
     namespace core {
         class StellarLikeWalletFactory : public AbstractWalletFactory {
-        public:
-            StellarLikeWalletFactory(const api::Currency& currency, const std::shared_ptr<WalletPool>& pool);
+          public:
+            StellarLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
             std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
-        protected:
-            inline std::shared_ptr<api::ExecutionContext> getContext(const WalletDatabaseEntry& entry);
+          protected:
+            inline std::shared_ptr<api::ExecutionContext> getContext(const WalletDatabaseEntry &entry);
 
-            std::shared_ptr<StellarLikeBlockchainExplorer> getExplorer(const WalletDatabaseEntry& entry);
+            std::shared_ptr<StellarLikeBlockchainExplorer> getExplorer(const WalletDatabaseEntry &entry);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_STELLARLIKEWALLETFACTORY_HPP

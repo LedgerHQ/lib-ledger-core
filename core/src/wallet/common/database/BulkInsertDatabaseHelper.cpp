@@ -30,51 +30,52 @@
  */
 
 #include "BulkInsertDatabaseHelper.hpp"
+
 #include <bytes/serialization.hpp>
-#include <wallet/common/TrustIndicator.h>
-#include <wallet/common/database/BlockDatabaseHelper.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <wallet/common/TrustIndicator.h>
+#include <wallet/common/database/BlockDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
         using namespace soci;
 
         const StatementDeclaration<OperationBinding> BulkInsertDatabaseHelper::UPSERT_OPERATION =
-                db::stmt<OperationBinding>(
-                        "INSERT INTO operations VALUES("
-                        ":uid, :account_uid, :wallet_uid, :type, :date, :senders, :recipients, :amount,"
-                        ":fees, :block_uid, :currency_name, :trust"
-                        ") ON CONFLICT(uid) DO UPDATE SET block_uid = :block_uid, trust = :trust,"
-                        " amount = :amount", [] (auto& s, auto& b) {
-                            s, use(b.uid, "uid"), use(b.accountUid, "account_uid"),
-                                    use(b.walletUid, "wallet_uid"), use(b.type, "type"),
-                                    use(b.date, "date"), use(b.senders, "senders"),
-                                    use(b.receivers, "recipients"), use(b.amount, "amount"),
-                                    use(b.fees, "fees"), use(b.blockUid, "block_uid"),
-                                    use(b.currencyName, "currency_name"),
-                                    use(b.serializedTrust, "trust");
-                        });
+            db::stmt<OperationBinding>(
+                "INSERT INTO operations VALUES("
+                ":uid, :account_uid, :wallet_uid, :type, :date, :senders, :recipients, :amount,"
+                ":fees, :block_uid, :currency_name, :trust"
+                ") ON CONFLICT(uid) DO UPDATE SET block_uid = :block_uid, trust = :trust,"
+                " amount = :amount",
+                [](auto &s, auto &b) {
+                    s, use(b.uid, "uid"), use(b.accountUid, "account_uid"),
+                        use(b.walletUid, "wallet_uid"), use(b.type, "type"),
+                        use(b.date, "date"), use(b.senders, "senders"),
+                        use(b.receivers, "recipients"), use(b.amount, "amount"),
+                        use(b.fees, "fees"), use(b.blockUid, "block_uid"),
+                        use(b.currencyName, "currency_name"),
+                        use(b.serializedTrust, "trust");
+                });
         const StatementDeclaration<BlockBinding> BulkInsertDatabaseHelper::UPSERT_BLOCK =
-                db::stmt<BlockBinding>(
-                        "INSERT INTO blocks VALUES(:uid, :hash, :height, :time, :currency_name)"
-                        " ON CONFLICT DO NOTHING",
-                        [] (auto& s, auto&  b) {
-                            s, use(b.uid), use(b.hash), use(b.height), use(b.time),
-                                    use(b.currencyName);
-                        });
+            db::stmt<BlockBinding>(
+                "INSERT INTO blocks VALUES(:uid, :hash, :height, :time, :currency_name)"
+                " ON CONFLICT DO NOTHING",
+                [](auto &s, auto &b) {
+                    s, use(b.uid), use(b.hash), use(b.height), use(b.time),
+                        use(b.currencyName);
+                });
 
-        void BulkInsertDatabaseHelper::updateBlock(soci::session& sql, const Block &block) {
+        void BulkInsertDatabaseHelper::updateBlock(soci::session &sql, const Block &block) {
             PreparedStatement<BlockBinding> stmt;
             UPSERT_BLOCK(sql, stmt);
             stmt.bindings.update(block);
             stmt.execute();
         }
 
-
         void OperationBinding::update(const Operation &operation) {
             amount.push_back(operation.amount.toHexString());
-            blockUid.push_back(operation.block.map<std::string>([] (const Block& block) {
+            blockUid.push_back(operation.block.map<std::string>([](const Block &block) {
                 return block.getUid();
             }));
             std::string trust;
@@ -128,5 +129,5 @@ namespace ledger {
             time.clear();
             currencyName.clear();
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

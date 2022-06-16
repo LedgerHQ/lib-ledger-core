@@ -29,18 +29,18 @@
  *
  */
 
-#include <gtest/gtest.h>
-#include <UvThreadDispatcher.hpp>
-#include <src/database/DatabaseSessionPool.hpp>
-#include <NativePathResolver.hpp>
-#include <unordered_set>
-#include <src/wallet/pool/WalletPool.hpp>
-#include <CoutLogPrinter.hpp>
-#include <src/api/DynamicObject.hpp>
 #include "MemPreferencesBackend.hpp"
 
-using namespace ledger::core;
+#include <CoutLogPrinter.hpp>
+#include <NativePathResolver.hpp>
+#include <UvThreadDispatcher.hpp>
+#include <gtest/gtest.h>
+#include <src/api/DynamicObject.hpp>
+#include <src/database/DatabaseSessionPool.hpp>
+#include <src/wallet/pool/WalletPool.hpp>
+#include <unordered_set>
 
+using namespace ledger::core;
 
 static const std::unordered_set<std::string> ALL_TABLE_NAMES = {
     "__database_meta__",
@@ -58,30 +58,29 @@ static const std::unordered_set<std::string> ALL_TABLE_NAMES = {
     "bitcoin_operations",
     "bitcoin_transaction_inputs",
     "bitcoin_accounts",
-    "bitcoin_operations"
-};
+    "bitcoin_operations"};
 
 TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto resolver = std::make_shared<NativePathResolver>();
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, nullptr, "test")
-    .onComplete(dispatcher->getMainExecutionContext(), [&] (const TryPtr<DatabaseSessionPool>& result) {
-        EXPECT_TRUE(result.isSuccess());
-        if (result.isFailure()) {
-            std::cerr << result.getFailure().getMessage() << std::endl;
-        } else {
-            auto tables = ALL_TABLE_NAMES;
-            soci::session sql(result.getValue()->getPool());
-            soci::rowset<soci::row> rows = (sql.prepare << "SELECT name FROM sqlite_master WHERE type = 'table'");
-            for (auto& row : rows) {
-                auto name = row.get<std::string>("name");
-                tables.erase(name);
+        .onComplete(dispatcher->getMainExecutionContext(), [&](const TryPtr<DatabaseSessionPool> &result) {
+            EXPECT_TRUE(result.isSuccess());
+            if (result.isFailure()) {
+                std::cerr << result.getFailure().getMessage() << std::endl;
+            } else {
+                auto tables = ALL_TABLE_NAMES;
+                soci::session sql(result.getValue()->getPool());
+                soci::rowset<soci::row> rows = (sql.prepare << "SELECT name FROM sqlite_master WHERE type = 'table'");
+                for (auto &row : rows) {
+                    auto name = row.get<std::string>("name");
+                    tables.erase(name);
+                }
+                EXPECT_TRUE(tables.empty());
             }
-            EXPECT_TRUE(tables.empty());
-        }
-        dispatcher->stop();
-    });
+            dispatcher->stop();
+        });
     dispatcher->waitUntilStopped();
     resolver->clean();
 }
@@ -92,23 +91,22 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto pool = WalletPool::newInstance(
-            "my_pool",
-            "",
-            nullptr,
-            nullptr,
-            resolver,
-            printer,
-            dispatcher,
-            nullptr,
-            backend,
-            api::DynamicObject::newInstance(),
-            std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-            std::make_shared<ledger::core::test::MemPreferencesBackend>()
-    );
+        "my_pool",
+        "",
+        nullptr,
+        nullptr,
+        resolver,
+        printer,
+        dispatcher,
+        nullptr,
+        backend,
+        api::DynamicObject::newInstance(),
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        std::make_shared<ledger::core::test::MemPreferencesBackend>());
 
     api::Currency bitcoin;
 
-    for (auto& currency : pool->getCurrencies()) {
+    for (auto &currency : pool->getCurrencies()) {
         if (currency.name == "bitcoin") {
             bitcoin = currency;
         }
@@ -120,7 +118,7 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
     EXPECT_EQ(bitcoin.bitcoinLikeNetworkParameters.value().P2PKHVersion[0], 0);
     EXPECT_EQ(bitcoin.bitcoinLikeNetworkParameters.value().P2SHVersion[0], 5);
 
-    for (const auto& unit : bitcoin.units) {
+    for (const auto &unit : bitcoin.units) {
         if (unit.name == "bitcoin") {
             EXPECT_EQ(unit.code, "BTC");
             EXPECT_EQ(unit.symbol, "BTC");

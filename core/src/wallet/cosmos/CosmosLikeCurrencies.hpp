@@ -31,11 +31,11 @@
 #pragma once
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <core/LibCoreExport.hpp>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER)
+#include <core/LibCoreExport.hpp>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 #include <api/Currency.hpp>
@@ -43,9 +43,9 @@
 #include <wallet/cosmos/CosmosNetworks.hpp>
 
 namespace ledger {
-namespace core {
-namespace currencies {
-extern LIBCORE_EXPORT const api::Currency ATOM;
-}
-}  // namespace core
-}  // namespace ledger
+    namespace core {
+        namespace currencies {
+            extern LIBCORE_EXPORT const api::Currency ATOM;
+        }
+    } // namespace core
+} // namespace ledger

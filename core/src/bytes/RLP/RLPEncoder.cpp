@@ -28,7 +28,6 @@
  *
  */
 
-
 #include "RLPEncoder.h"
 
 /*
@@ -59,5 +58,5 @@ namespace ledger {
                 out.push_back(length % 256);
             }
         };
-    }
-}
+    } // namespace core
+} // namespace ledger

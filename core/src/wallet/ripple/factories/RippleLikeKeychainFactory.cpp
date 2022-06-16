@@ -28,7 +28,6 @@
  *
  */
 
-
 #include "RippleLikeKeychainFactory.h"
 
 #include <ripple/RippleLikeExtendedPublicKey.h>
@@ -38,27 +37,25 @@ namespace ledger {
 
         std::shared_ptr<RippleLikeKeychain>
         RippleLikeKeychainFactory::build(int32_t index,
-                                           const DerivationPath &path,
-                                           const std::shared_ptr<DynamicObject>& configuration,
-                                           const api::ExtendedKeyAccountCreationInfo& info,
-                                           const std::shared_ptr<Preferences>& accountPreferences,
-                                           const api::Currency& currency) {
+                                         const DerivationPath &path,
+                                         const std::shared_ptr<DynamicObject> &configuration,
+                                         const api::ExtendedKeyAccountCreationInfo &info,
+                                         const std::shared_ptr<Preferences> &accountPreferences,
+                                         const api::Currency &currency) {
             if (!info.extendedKeys.empty()) {
 
-                auto xpub = make_try<std::shared_ptr<RippleLikeExtendedPublicKey>>([&] () -> std::shared_ptr<RippleLikeExtendedPublicKey> {
+                auto xpub = make_try<std::shared_ptr<RippleLikeExtendedPublicKey>>([&]() -> std::shared_ptr<RippleLikeExtendedPublicKey> {
                     return RippleLikeExtendedPublicKey::fromBase58(
-                            currency,
-                            info.extendedKeys[info.extendedKeys.size() - 1],
-                            Option<std::string>(path.toString())
-                    );
+                        currency,
+                        info.extendedKeys[info.extendedKeys.size() - 1],
+                        Option<std::string>(path.toString()));
                 });
 
                 if (xpub.isFailure()) {
                     throw xpub.getFailure();
                 } else {
                     auto keychain = std::make_shared<RippleLikeKeychain>(
-                            configuration, currency, index, xpub.getValue(), accountPreferences
-                    );
+                        configuration, currency, index, xpub.getValue(), accountPreferences);
                     return keychain;
                 }
 
@@ -69,19 +66,18 @@ namespace ledger {
 
         std::shared_ptr<RippleLikeKeychain>
         RippleLikeKeychainFactory::restore(int32_t index,
-                                             const DerivationPath &path,
-                                             const std::shared_ptr<DynamicObject>& configuration,
-                                             const std::string &databaseXpubEntry,
-                                             const std::shared_ptr<Preferences>& accountPreferences,
-                                             const api::Currency& currency) {
+                                           const DerivationPath &path,
+                                           const std::shared_ptr<DynamicObject> &configuration,
+                                           const std::string &databaseXpubEntry,
+                                           const std::shared_ptr<Preferences> &accountPreferences,
+                                           const api::Currency &currency) {
 
             return std::make_shared<RippleLikeKeychain>(configuration,
-                                                          currency, index,
-                                                          RippleLikeExtendedPublicKey::fromBase58(
-                                                                  currency,
-                                                                  databaseXpubEntry, Option<std::string>(path.toString())
-                                                          ),
-                                                          accountPreferences);
+                                                        currency, index,
+                                                        RippleLikeExtendedPublicKey::fromBase58(
+                                                            currency,
+                                                            databaseXpubEntry, Option<std::string>(path.toString())),
+                                                        accountPreferences);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

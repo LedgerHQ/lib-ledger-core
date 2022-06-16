@@ -3,46 +3,46 @@
 // DO NOT EDIT BY HAND!!!
 #ifndef LEDGER_FIXTURES_ETH_XPUB
 #define LEDGER_FIXTURES_ETH_XPUB
-#include <gtest/gtest.h>
-#include <UvThreadDispatcher.hpp>
-#include <src/database/DatabaseSessionPool.hpp>
-#include <NativePathResolver.hpp>
-#include <unordered_set>
-#include <src/wallet/pool/WalletPool.hpp>
 #include <CoutLogPrinter.hpp>
-#include <src/api/DynamicObject.hpp>
-#include <wallet/common/CurrencyBuilder.hpp>
-#include <wallet/ethereum/explorers/api/EthereumLikeTransactionParser.hpp>
-#include <wallet/ethereum/EthereumLikeWallet.h>
-#include <wallet/ethereum/database/EthereumLikeWalletDatabase.h>
-#include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
-#include <wallet/common/database/AccountDatabaseHelper.h>
-#include <wallet/pool/database/PoolDatabaseHelper.hpp>
-#include <utils/JSONUtils.h>
-#include <wallet/ethereum/EthereumLikeAccount.h>
+#include <CppHttpLibClient.hpp>
+#include <NativePathResolver.hpp>
+#include <UvThreadDispatcher.hpp>
+#include <api/Account.hpp>
+#include <api/BigInt.hpp>
+#include <api/EthereumLikeAccount.hpp>
 #include <api/EthereumLikeOperation.hpp>
 #include <api/EthereumLikeTransaction.hpp>
-#include <api/BigInt.hpp>
-#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
+#include <gtest/gtest.h>
 #include <soci.h>
-#include <api/Account.hpp>
-#include <api/EthereumLikeAccount.hpp>
+#include <src/api/DynamicObject.hpp>
+#include <src/database/DatabaseSessionPool.hpp>
+#include <src/wallet/pool/WalletPool.hpp>
+#include <unordered_set>
+#include <utils/JSONUtils.h>
+#include <wallet/common/CurrencyBuilder.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
+#include <wallet/ethereum/EthereumLikeAccount.h>
+#include <wallet/ethereum/EthereumLikeWallet.h>
+#include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
+#include <wallet/ethereum/database/EthereumLikeWalletDatabase.h>
+#include <wallet/ethereum/explorers/api/EthereumLikeTransactionParser.hpp>
+#include <wallet/pool/database/PoolDatabaseHelper.hpp>
 
 namespace ledger {
-	namespace testing {
-		namespace eth_xpub {
-			extern core::api::ExtendedKeyAccountCreationInfo XPUB_INFO;
-			extern const std::string TX_1;
-			extern const std::string TX_2;
-			extern const std::string TX_3;
-			extern const std::string TX_4;
-			extern const std::string TX_5;
-			extern const std::string TX_6;
+    namespace testing {
+        namespace eth_xpub {
+            extern core::api::ExtendedKeyAccountCreationInfo XPUB_INFO;
+            extern const std::string TX_1;
+            extern const std::string TX_2;
+            extern const std::string TX_3;
+            extern const std::string TX_4;
+            extern const std::string TX_5;
+            extern const std::string TX_6;
 
-			std::shared_ptr<core::EthereumLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet);
-		}
-	}
-}
+            std::shared_ptr<core::EthereumLikeAccount> inflate(const std::shared_ptr<core::WalletPool> &pool, const std::shared_ptr<core::AbstractWallet> &wallet);
+        } // namespace eth_xpub
+    }     // namespace testing
+} // namespace ledger
 
 #endif // LEDGER_FIXTURES_ETH_XPUB

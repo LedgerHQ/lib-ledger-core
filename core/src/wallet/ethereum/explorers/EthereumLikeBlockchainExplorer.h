@@ -28,21 +28,19 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMBLOCKCHAINEXPLORER_H
 #define LEDGER_CORE_ETHEREUMBLOCKCHAINEXPLORER_H
 
-#include <string>
-
 #include <api/DynamicObject.hpp>
-#include <api/ExecutionContext.hpp>
 #include <api/EthereumGasLimitRequest.hpp>
 #include <api/EthereumLikeNetworkParameters.hpp>
+#include <api/ExecutionContext.hpp>
 #include <api/Operation.hpp>
 #include <async/DedicatedContext.hpp>
 #include <collections/DynamicObject.hpp>
 #include <math/BigInt.h>
 #include <net/HttpClient.hpp>
+#include <string>
 #include <utils/ConfigurationMatchable.h>
 #include <utils/Option.hpp>
 #include <wallet/common/Block.h>
@@ -108,12 +106,11 @@ namespace ledger {
                 this->internalTransactions = cpy.internalTransactions;
                 this->erc20Transactions = cpy.erc20Transactions;
             }
-
         };
 
         class EthereumLikeBlockchainExplorer : public ConfigurationMatchable,
                                                public AbstractBlockchainExplorer<EthereumLikeBlockchainExplorerTransaction> {
-        public:
+          public:
             typedef ledger::core::Block Block;
             using Transaction = EthereumLikeBlockchainExplorerTransaction;
 
@@ -130,8 +127,7 @@ namespace ledger {
             virtual Future<std::vector<BigInt>> getERC20Balances(const std::string &address,
                                                                  const std::vector<std::string> &erc20Addresses) = 0;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMBLOCKCHAINEXPLORER_H

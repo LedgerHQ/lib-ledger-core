@@ -28,29 +28,28 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEKEYCHAIN_H
 #define LEDGER_CORE_TEZOSLIKEKEYCHAIN_H
 
-#include <string>
-#include <vector>
-#include <utils/DerivationScheme.hpp>
-#include <utils/Option.hpp>
-#include <preferences/Preferences.hpp>
-#include <api/Configuration.hpp>
-#include <api/DynamicObject.hpp>
-#include <api/Currency.hpp>
 #include <api/AccountCreationInfo.hpp>
+#include <api/Configuration.hpp>
+#include <api/Currency.hpp>
+#include <api/DynamicObject.hpp>
 #include <api/ExtendedKeyAccountCreationInfo.hpp>
 #include <api/Keychain.hpp>
 #include <api/TezosLikeExtendedPublicKey.hpp>
+#include <preferences/Preferences.hpp>
+#include <string>
 #include <tezos/TezosLikeAddress.h>
+#include <utils/DerivationScheme.hpp>
+#include <utils/Option.hpp>
+#include <vector>
 
 namespace ledger {
     namespace core {
-        class TezosLikeKeychain: public api::Keychain {
+        class TezosLikeKeychain : public api::Keychain {
 
-        public:
+          public:
             using Address = std::shared_ptr<TezosLikeAddress>;
 
             TezosLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
@@ -58,7 +57,7 @@ namespace ledger {
                               const Option<std::vector<uint8_t>> &pubKey,
                               const std::shared_ptr<Preferences> &preferences);
 
-            std::vector <Address> getAllObservableAddresses(uint32_t from, uint32_t to);
+            std::vector<Address> getAllObservableAddresses(uint32_t from, uint32_t to);
 
             Address getAddress() const;
 
@@ -66,18 +65,18 @@ namespace ledger {
 
             const api::Currency &getCurrency() const;
 
-            Option <std::vector<uint8_t>> getPublicKey() const;
+            Option<std::vector<uint8_t>> getPublicKey() const;
 
-            std::shared_ptr <api::DynamicObject> getConfiguration() const;
+            std::shared_ptr<api::DynamicObject> getConfiguration() const;
 
             std::string getRestoreKey() const;
 
             bool contains(const std::string &address) const;
 
-            std::shared_ptr <Preferences> getPreferences() const;
-        protected:
+            std::shared_ptr<Preferences> getPreferences() const;
 
-        private:
+          protected:
+          private:
             TezosLikeKeychain::Address getAddressFromPublicKey();
 
             const api::Currency _currency;
@@ -86,6 +85,6 @@ namespace ledger {
             std::shared_ptr<TezosLikeAddress> _address;
             Option<std::vector<uint8_t>> _publicKey;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_TEZOSLIKEKEYCHAIN_H

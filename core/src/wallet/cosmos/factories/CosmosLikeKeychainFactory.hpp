@@ -38,24 +38,24 @@
 #include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
 
 namespace ledger {
-namespace core {
-class CosmosLikeKeychainFactory {
-   public:
-    std::shared_ptr<CosmosLikeKeychain> build(
-        const DerivationPath &path,
-        const std::shared_ptr<DynamicObject> &configuration,
-        const api::AccountCreationInfo &info,
-        const std::shared_ptr<Preferences> &accountPreferences,
-        const api::Currency &currency);
+    namespace core {
+        class CosmosLikeKeychainFactory {
+          public:
+            std::shared_ptr<CosmosLikeKeychain> build(
+                const DerivationPath &path,
+                const std::shared_ptr<DynamicObject> &configuration,
+                const api::AccountCreationInfo &info,
+                const std::shared_ptr<Preferences> &accountPreferences,
+                const api::Currency &currency);
 
-    std::shared_ptr<CosmosLikeKeychain> restore(
-        const DerivationPath &path,
-        const std::shared_ptr<DynamicObject> &configuration,
-        const std::string &restoreKey,
-        const std::shared_ptr<Preferences> &accountPreferences,
-        const api::Currency &currency);
-};
-}  // namespace core
-}  // namespace ledger
+            std::shared_ptr<CosmosLikeKeychain> restore(
+                const DerivationPath &path,
+                const std::shared_ptr<DynamicObject> &configuration,
+                const std::string &restoreKey,
+                const std::shared_ptr<Preferences> &accountPreferences,
+                const api::Currency &currency);
+        };
+    } // namespace core
+} // namespace ledger
 
-#endif  // LEDGER_CORE_COSMOSLIKEKEYCHAINFACTORY_H
+#endif // LEDGER_CORE_COSMOSLIKEKEYCHAINFACTORY_H

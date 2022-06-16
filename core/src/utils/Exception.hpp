@@ -31,27 +31,28 @@
 #ifndef LEDGER_CORE_EXCEPTION_HPP
 #define LEDGER_CORE_EXCEPTION_HPP
 
-#include <exception>
-#include <string>
-#include "../api/ErrorCode.hpp"
 #include "../api/Error.hpp"
+#include "../api/ErrorCode.hpp"
 #include "../utils/Option.hpp"
-#include <memory>
+
+#include <exception>
 #include <fmt/format.h>
 #include <iostream>
+#include <memory>
+#include <string>
 
 namespace ledger {
     namespace core {
         class Exception : public std::exception {
-        public:
-            Exception(api::ErrorCode code, const std::string& message,
-                      Option<std::shared_ptr<void>> userData = Option<std::shared_ptr<void>>());
+          public:
+            Exception(api::ErrorCode code, const std::string &message, Option<std::shared_ptr<void>> userData = Option<std::shared_ptr<void>>());
             api::ErrorCode getErrorCode() const;
             std::string getMessage() const;
-            const Option<std::shared_ptr<void>>& getUserData() const;
+            const Option<std::shared_ptr<void>> &getUserData() const;
 
-            template<typename T> Option<std::shared_ptr<T>> getTypeUserData() const {
-                return _userData.map<std::shared_ptr<T>>([] (const std::shared_ptr<void>& ptr) -> std::shared_ptr<T> {
+            template <typename T>
+            Option<std::shared_ptr<T>> getTypeUserData() const {
+                return _userData.map<std::shared_ptr<T>>([](const std::shared_ptr<void> &ptr) -> std::shared_ptr<T> {
                     return std::static_pointer_cast<T>(ptr);
                 });
             };
@@ -66,26 +67,25 @@ namespace ledger {
                 return os << "Exception(" << e.getMessage() << ")";
             }
 
-        public:
+          public:
             static const optional<api::Error> NO_CORE_ERROR;
 
-        private:
+          private:
             api::ErrorCode _code;
             std::string _message;
             Option<std::shared_ptr<void>> _userData;
         };
 
         template <typename... Args>
-        Exception make_exception(api::ErrorCode code, const std::string& format, const Args&... args) {
+        Exception make_exception(api::ErrorCode code, const std::string &format, const Args &... args) {
             return Exception(code, fmt::format(format, args...));
         };
 
         template <typename... Args>
-        Exception make_exception(api::ErrorCode code, std::shared_ptr<void> userData, const std::string& format, const Args&... args) {
+        Exception make_exception(api::ErrorCode code, std::shared_ptr<void> userData, const std::string &format, const Args &... args) {
             return Exception(code, fmt::format(format, args...), userData);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_EXCEPTION_HPP

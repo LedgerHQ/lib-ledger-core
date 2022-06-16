@@ -28,9 +28,8 @@
  *
  */
 
+#include "P2WSHBitcoinLikeKeychain.hpp"
 
-#include "P2WSHBitcoinLikeKeychain.hpp"
-#include "P2WSHBitcoinLikeKeychain.hpp"
 #include <api/KeychainEngines.hpp>
 namespace ledger {
     namespace core {
@@ -39,8 +38,7 @@ namespace ledger {
                                                            int account,
                                                            const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                                            const std::shared_ptr<Preferences> &preferences)
-                : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences)
-        {
+            : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences) {
             _keychainEngine = api::KeychainEngines::BIP173_P2WSH;
             getAllObservableAddresses(0, _observableRange);
         }
@@ -56,5 +54,5 @@ namespace ledger {
             result += 40;
             return result;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

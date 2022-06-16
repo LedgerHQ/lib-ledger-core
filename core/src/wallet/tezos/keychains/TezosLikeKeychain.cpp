@@ -28,16 +28,16 @@
  *
  */
 
-
 #include "TezosLikeKeychain.h"
+
 #include <api/Currency.hpp>
 #include <api/KeychainEngines.hpp>
-#include <cereal/cereal.hpp>
-#include <cereal/archives/binary.hpp>
-#include <cereal/types/set.hpp>
-#include <tezos/TezosLikeExtendedPublicKey.h>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/cereal.hpp>
+#include <cereal/types/set.hpp>
+#include <tezos/TezosLikeExtendedPublicKey.h>
 namespace ledger {
     namespace core {
 
@@ -45,7 +45,7 @@ namespace ledger {
                                              const api::Currency &params,
                                              const Option<std::vector<uint8_t>> &pubKey,
                                              const std::shared_ptr<Preferences> &preferences)
-                : _configuration(configuration), _currency(params), _preferences(preferences), _publicKey(pubKey) {
+            : _configuration(configuration), _currency(params), _preferences(preferences), _publicKey(pubKey) {
             _address = getAddressFromPublicKey();
         }
 
@@ -53,12 +53,11 @@ namespace ledger {
             return _currency.tezosLikeNetworkParameters.value();
         }
 
-
-        std::shared_ptr <Preferences> TezosLikeKeychain::getPreferences() const {
+        std::shared_ptr<Preferences> TezosLikeKeychain::getPreferences() const {
             return _preferences;
         }
 
-        std::shared_ptr <api::DynamicObject> TezosLikeKeychain::getConfiguration() const {
+        std::shared_ptr<api::DynamicObject> TezosLikeKeychain::getConfiguration() const {
             return _configuration;
         }
 
@@ -66,13 +65,13 @@ namespace ledger {
             return _currency;
         }
 
-        std::shared_ptr <TezosLikeAddress> TezosLikeKeychain::getAddress() const {
+        std::shared_ptr<TezosLikeAddress> TezosLikeKeychain::getAddress() const {
             return _address;
         }
 
-        std::vector <TezosLikeKeychain::Address>
+        std::vector<TezosLikeKeychain::Address>
         TezosLikeKeychain::getAllObservableAddresses(uint32_t from, uint32_t to) {
-            return { getAddressFromPublicKey() };
+            return {getAddressFromPublicKey()};
         }
 
         std::string TezosLikeKeychain::getRestoreKey() const {
@@ -83,7 +82,7 @@ namespace ledger {
             return _address->toString() == address;
         }
 
-        Option <std::vector<uint8_t>> TezosLikeKeychain::getPublicKey() const {
+        Option<std::vector<uint8_t>> TezosLikeKeychain::getPublicKey() const {
             return _publicKey;
         }
 
@@ -105,5 +104,5 @@ namespace ledger {
                                                       curve,
                                                       Option<std::string>(""));
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

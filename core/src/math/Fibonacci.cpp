@@ -42,4 +42,3 @@ int32_t ledger::core::Fibonacci::_compute(int prevI, int i, int n) {
         return i;
     return _compute(i, i + prevI, n - 1);
 }
-

@@ -29,6 +29,7 @@
  */
 
 #include "rippleNetworks.h"
+
 #include <utils/Exception.hpp>
 namespace ledger {
     namespace core {
@@ -37,20 +38,16 @@ namespace ledger {
             const api::RippleLikeNetworkParameters getRippleLikeNetworkParameters(const std::string &networkName) {
                 if (networkName == "ripple") {
                     static const api::RippleLikeNetworkParameters RIPPLE(
-                            "xrp",
-                            "XRP signed message:\n",
-                            {0x04, 0x88, 0xB2, 0x1E},
-                            {},
-                            0
-                    );
+                        "xrp",
+                        "XRP signed message:\n",
+                        {0x04, 0x88, 0xB2, 0x1E},
+                        {},
+                        0);
                     return RIPPLE;
                 }
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
             }
-            const std::vector<api::RippleLikeNetworkParameters> ALL_RIPPLE
-                    ({
-                             getRippleLikeNetworkParameters("ripple")
-                     });
-        }
-    }
-}
+            const std::vector<api::RippleLikeNetworkParameters> ALL_RIPPLE({getRippleLikeNetworkParameters("ripple")});
+        } // namespace networks
+    }     // namespace core
+} // namespace ledger

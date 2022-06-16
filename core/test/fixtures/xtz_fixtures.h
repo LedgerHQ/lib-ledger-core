@@ -3,48 +3,48 @@
 // DO NOT EDIT BY HAND!!!
 #ifndef LEDGER_FIXTURES_XTZ
 #define LEDGER_FIXTURES_XTZ
-#include <gtest/gtest.h>
-#include <UvThreadDispatcher.hpp>
-#include <src/database/DatabaseSessionPool.hpp>
-#include <NativePathResolver.hpp>
-#include <unordered_set>
-#include <src/wallet/pool/WalletPool.hpp>
 #include <CoutLogPrinter.hpp>
-#include <src/api/DynamicObject.hpp>
-#include <wallet/common/CurrencyBuilder.hpp>
-#include <wallet/tezos/explorers/api/TezosLikeTransactionParser.h>
-#include <wallet/tezos/TezosLikeWallet.h>
-#include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
-#include <wallet/common/database/AccountDatabaseHelper.h>
-#include <wallet/pool/database/PoolDatabaseHelper.hpp>
-#include <utils/JSONUtils.h>
-#include <wallet/tezos/TezosLikeAccount.h>
+#include <CppHttpLibClient.hpp>
+#include <NativePathResolver.hpp>
+#include <UvThreadDispatcher.hpp>
+#include <api/Account.hpp>
+#include <api/BigInt.hpp>
+#include <api/TezosLikeAccount.hpp>
 #include <api/TezosLikeOperation.hpp>
 #include <api/TezosLikeTransaction.hpp>
-#include <api/BigInt.hpp>
-#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
+#include <gtest/gtest.h>
 #include <soci.h>
+#include <src/api/DynamicObject.hpp>
+#include <src/database/DatabaseSessionPool.hpp>
+#include <src/wallet/pool/WalletPool.hpp>
+#include <unordered_set>
+#include <utils/JSONUtils.h>
 #include <utils/hex.h>
-#include <api/Account.hpp>
-#include <api/TezosLikeAccount.hpp>
+#include <wallet/common/CurrencyBuilder.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
+#include <wallet/pool/database/PoolDatabaseHelper.hpp>
+#include <wallet/tezos/TezosLikeAccount.h>
+#include <wallet/tezos/TezosLikeWallet.h>
+#include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
+#include <wallet/tezos/explorers/api/TezosLikeTransactionParser.h>
 
 namespace ledger {
-	namespace testing {
-		namespace xtz {
-			extern core::api::AccountCreationInfo XPUB_INFO;
-			extern const std::string TX_1;
-			extern const std::string TX_2;
-			extern const std::string TX_3;
-			extern const std::string TX_4;
-			extern const std::string TX_5;
-			extern const std::string TX_6;
-			extern const std::string TX_7;
-			extern const std::string TX_8;
+    namespace testing {
+        namespace xtz {
+            extern core::api::AccountCreationInfo XPUB_INFO;
+            extern const std::string TX_1;
+            extern const std::string TX_2;
+            extern const std::string TX_3;
+            extern const std::string TX_4;
+            extern const std::string TX_5;
+            extern const std::string TX_6;
+            extern const std::string TX_7;
+            extern const std::string TX_8;
 
-			std::shared_ptr<core::TezosLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet);
-		}
-	}
-}
+            std::shared_ptr<core::TezosLikeAccount> inflate(const std::shared_ptr<core::WalletPool> &pool, const std::shared_ptr<core::AbstractWallet> &wallet);
+        } // namespace xtz
+    }     // namespace testing
+} // namespace ledger
 
 #endif // LEDGER_FIXTURES_XTZ

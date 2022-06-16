@@ -34,17 +34,18 @@
 #include "../api/DynamicArray.hpp"
 #include "../api/DynamicObject.hpp"
 #include "../api/DynamicType.hpp"
-#include <cereal/cereal.hpp>
-#include <cereal/types/vector.hpp>
 #include "../collections/collections.hpp"
 #include "DynamicValue.hpp"
+
+#include <cereal/cereal.hpp>
+#include <cereal/types/vector.hpp>
 #include <sstream>
 
 namespace ledger {
     namespace core {
         class DynamicArray : public api::DynamicArray, public std::enable_shared_from_this<DynamicArray> {
-        public:
-            DynamicArray() : _readOnly(false) {};
+          public:
+            DynamicArray() : _readOnly(false){};
 
             int64_t size() override;
 
@@ -93,7 +94,6 @@ namespace ledger {
             std::shared_ptr<api::DynamicArray> pushArray(const std::shared_ptr<api::DynamicArray> &value) override;
             std::shared_ptr<api::DynamicArray> concat(const std::shared_ptr<api::DynamicArray> &array) override;
 
-
             bool isReadOnly() override;
             void setReadOnly(bool enable);
 
@@ -102,18 +102,18 @@ namespace ledger {
             std::string dump() override;
             std::vector<uint8_t> serialize() override;
 
-            std::ostream& dump(std::ostream& ss, int depth) const;
+            std::ostream &dump(std::ostream &ss, int depth) const;
 
             template <class Archive>
-            void serialize(Archive& ar) {
+            void serialize(Archive &ar) {
                 ar(_values.getContainer());
             }
 
-        private:
+          private:
             Array<DynamicValue> _values;
             bool _readOnly;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_DYNAMICARRAY_HPP

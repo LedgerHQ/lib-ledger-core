@@ -36,9 +36,9 @@
 namespace ledger {
     namespace core {
         class VectorUtils {
-        public:
+          public:
             template <typename T>
-            static void padOnLeft(std::vector<T>& vector, T elem, std::size_t length) {
+            static void padOnLeft(std::vector<T> &vector, T elem, std::size_t length) {
                 if (vector.size() < length) {
                     auto maxPadAddress = length - vector.size();
                     std::vector<T> result(length);
@@ -55,8 +55,7 @@ namespace ledger {
                 }
             }
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_VECTORUTILS_H

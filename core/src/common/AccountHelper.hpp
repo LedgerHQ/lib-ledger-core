@@ -43,7 +43,7 @@ namespace ledger {
              * `FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION` or `FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION` values
              */
             bool isInsertedOperation(int flag);
-        }
-       
+        } // namespace account
+
     } // namespace core
 } // namespace ledger

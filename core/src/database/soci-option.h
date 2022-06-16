@@ -38,7 +38,7 @@ namespace soci {
     struct type_conversion<ledger::core::Option<T>> {
         typedef typename type_conversion<T>::base_type base_type;
 
-        static void from_base(base_type const & in, indicator ind, ledger::core::Option<T> & out) {
+        static void from_base(base_type const &in, indicator ind, ledger::core::Option<T> &out) {
             if (ind == i_null) {
                 out = ledger::core::Option<T>();
             } else {
@@ -48,16 +48,14 @@ namespace soci {
             }
         }
 
-        static void to_base(ledger::core::Option<T> const & in, base_type & out, indicator & ind) {
+        static void to_base(ledger::core::Option<T> const &in, base_type &out, indicator &ind) {
             if (!in.isEmpty()) {
                 type_conversion<T>::to_base(in.getValue(), out, ind);
             } else {
                 ind = i_null;
             }
         }
-
     };
-}
-
+} // namespace soci
 
 #endif //LEDGER_CORE_SOCI_OPTION_H

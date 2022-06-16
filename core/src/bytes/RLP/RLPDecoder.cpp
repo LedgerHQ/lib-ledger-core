@@ -28,10 +28,10 @@
  *
  */
 
-
 #include "RLPDecoder.h"
-#include "RLPStringEncoder.h"
+
 #include "RLPListEncoder.h"
+#include "RLPStringEncoder.h"
 
 /*
  * Reursive Length Prefix Decoder
@@ -58,29 +58,28 @@ namespace ledger {
 
             std::shared_ptr<RLPEncoder> tmpResult;
             switch (type) {
-                case RLP_TYPES::bytes: {
-                    tmpResult = std::make_shared<RLPStringEncoder>(subBytes);
-                    if (parent->isList()) {
-                        parent->append(tmpResult);
-                        result = parent;
-                    } else {
-                        result = tmpResult;
-                    }
-                    break;
+            case RLP_TYPES::bytes: {
+                tmpResult = std::make_shared<RLPStringEncoder>(subBytes);
+                if (parent->isList()) {
+                    parent->append(tmpResult);
+                    result = parent;
+                } else {
+                    result = tmpResult;
                 }
-                case RLP_TYPES::bytesVector: {
-                    auto tmpParent = std::static_pointer_cast<RLPEncoder>(std::make_shared<RLPListEncoder>());
-                    auto child = decode(subBytes, tmpParent);
-                    if(parent->isList()) {
-                        parent->append(tmpParent);
-                        result = parent;
-                    } else {
-                        result = tmpParent;
-                    }
-                    break;
-                }
+                break;
             }
-
+            case RLP_TYPES::bytesVector: {
+                auto tmpParent = std::static_pointer_cast<RLPEncoder>(std::make_shared<RLPListEncoder>());
+                auto child = decode(subBytes, tmpParent);
+                if (parent->isList()) {
+                    parent->append(tmpParent);
+                    result = parent;
+                } else {
+                    result = tmpParent;
+                }
+                break;
+            }
+            }
 
             if (data.size() > std::get<0>(tuple) + std::get<1>(tuple)) {
                 std::vector<uint8_t> tail(data.begin() + std::get<0>(tuple) + std::get<1>(tuple), data.end());
@@ -126,8 +125,6 @@ namespace ledger {
             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "RLP decoder: Input don't conform RLP encoding form");
         }
 
-
-
         uint32_t RLPDecoder::toInteger(std::vector<uint8_t> &data) {
             auto length = data.size();
             if (length == 0) {
@@ -137,9 +134,9 @@ namespace ledger {
             } else {
                 std::vector<uint8_t> subBytes(data.begin(), data.end() - 1);
                 auto last = data[length - 1];
-                return (last + toInteger(subBytes))*256;
+                return (last + toInteger(subBytes)) * 256;
             }
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -28,37 +28,34 @@
  *
  */
 
-
 #include "EthereumLikeKeychainFactory.h"
 
 #include <ethereum/EthereumLikeExtendedPublicKey.h>
 
 namespace ledger {
     namespace core {
-        
-        std::shared_ptr<EthereumLikeKeychain> 
+
+        std::shared_ptr<EthereumLikeKeychain>
         EthereumLikeKeychainFactory::build(int32_t index,
                                            const DerivationPath &path,
-                                           const std::shared_ptr<DynamicObject>& configuration,
-                                           const api::ExtendedKeyAccountCreationInfo& info,
-                                           const std::shared_ptr<Preferences>& accountPreferences,
-                                           const api::Currency& currency) {
+                                           const std::shared_ptr<DynamicObject> &configuration,
+                                           const api::ExtendedKeyAccountCreationInfo &info,
+                                           const std::shared_ptr<Preferences> &accountPreferences,
+                                           const api::Currency &currency) {
             if (!info.extendedKeys.empty()) {
 
-                auto xpub = make_try<std::shared_ptr<EthereumLikeExtendedPublicKey>>([&] () -> std::shared_ptr<EthereumLikeExtendedPublicKey> {
+                auto xpub = make_try<std::shared_ptr<EthereumLikeExtendedPublicKey>>([&]() -> std::shared_ptr<EthereumLikeExtendedPublicKey> {
                     return EthereumLikeExtendedPublicKey::fromBase58(
-                            currency,
-                            info.extendedKeys[info.extendedKeys.size() - 1],
-                            Option<std::string>(path.toString())
-                    );
+                        currency,
+                        info.extendedKeys[info.extendedKeys.size() - 1],
+                        Option<std::string>(path.toString()));
                 });
 
                 if (xpub.isFailure()) {
                     throw xpub.getFailure();
                 } else {
                     return std::make_shared<EthereumLikeKeychain>(
-                            configuration, currency, index, xpub.getValue(), accountPreferences
-                    );
+                        configuration, currency, index, xpub.getValue(), accountPreferences);
                 }
 
             } else {
@@ -69,19 +66,17 @@ namespace ledger {
         std::shared_ptr<EthereumLikeKeychain>
         EthereumLikeKeychainFactory::restore(int32_t index,
                                              const DerivationPath &path,
-                                             const std::shared_ptr<DynamicObject>& configuration,
+                                             const std::shared_ptr<DynamicObject> &configuration,
                                              const std::string &databaseXpubEntry,
-                                             const std::shared_ptr<Preferences>& accountPreferences,
-                                             const api::Currency& currency) {
+                                             const std::shared_ptr<Preferences> &accountPreferences,
+                                             const api::Currency &currency) {
 
             return std::make_shared<EthereumLikeKeychain>(configuration,
                                                           currency, index,
                                                           EthereumLikeExtendedPublicKey::fromBase58(
-                                                                  currency,
-                                                                  databaseXpubEntry, Option<std::string>(path.toString())
-                                                          ),
+                                                              currency,
+                                                              databaseXpubEntry, Option<std::string>(path.toString())),
                                                           accountPreferences);
         }
-    }
-}
-
+    } // namespace core
+} // namespace ledger

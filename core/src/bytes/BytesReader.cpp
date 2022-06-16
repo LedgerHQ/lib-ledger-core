@@ -30,12 +30,14 @@
  */
 
 #include "BytesReader.h"
+
 #include "../utils/endian.h"
+
+#include <algorithm>
 #include <fmt/format.h>
 #include <sstream>
-#include <algorithm>
-#include <utils/hex.h>
 #include <utils/Exception.hpp>
+#include <utils/hex.h>
 
 namespace ledger {
 
@@ -51,15 +53,15 @@ namespace ledger {
         void BytesReader::seek(long offset, BytesReader::Seek origin) {
             unsigned long off = 0;
             switch (origin) {
-                case Seek::CUR :
-                    off = _cursor + offset;
-                    break;
-                case Seek::SET :
-                    off = _offset;
-                    break;
-                case Seek::END :
-                    off = _offset + _length + offset;
-                    break;
+            case Seek::CUR:
+                off = _cursor + offset;
+                break;
+            case Seek::SET:
+                off = _offset;
+                break;
+            case Seek::END:
+                off = _offset + _length + offset;
+                break;
             }
             if (off < _offset) {
                 throw std::out_of_range(fmt::format("Offset [{}] is too low (minimum value is {})", off, _offset));
@@ -70,7 +72,7 @@ namespace ledger {
         }
 
         std::vector<uint8_t> BytesReader::read(unsigned long length) {
-           std::vector<uint8_t> out(length);
+            std::vector<uint8_t> out(length);
             read(length, out);
             return out;
         }
@@ -160,17 +162,17 @@ namespace ledger {
         uint64_t BytesReader::readNextVarInt() {
             uint8_t size = readNextByte();
             switch (size) {
-                case 0xFD:
-                    size = 2;
-                    break;
-                case 0xFE:
-                    size = 4;
-                    break;
-                case 0xFF:
-                    size = 8;
-                    break;
-                default:
-                    return size;
+            case 0xFD:
+                size = 2;
+                break;
+            case 0xFE:
+                size = 4;
+                break;
+            case 0xFF:
+                size = 8;
+                break;
+            default:
+                return size;
             }
             return readNextLeBigInt(size).toUint64();
         }
@@ -211,6 +213,5 @@ namespace ledger {
             return readNextValue<int16_t, endianness::Endianness::LITTLE>();
         }
 
-
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -32,18 +32,16 @@
 #ifndef LEDGER_CORE_COSMOSLIKEOPERATIONSDATABASEHELPER_HPP
 #define LEDGER_CORE_COSMOSLIKEOPERATIONSDATABASEHELPER_HPP
 
-
-#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 #include <soci.h>
+#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 
 namespace ledger {
     namespace core {
         class CosmosLikeOperationsDatabaseHelper {
-        public:
-            static void bulkInsert(soci::session& sql, const std::vector<CosmosLikeOperation>& operations);
+          public:
+            static void bulkInsert(soci::session &sql, const std::vector<CosmosLikeOperation> &operations);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_COSMOSLIKEOPERATIONSDATABASEHELPER_HPP

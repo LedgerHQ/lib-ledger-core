@@ -31,10 +31,9 @@
 #ifndef LEDGER_CORE_DJINNI_HELPERS_HPP
 #define LEDGER_CORE_DJINNI_HELPERS_HPP
 
-#define CLONE_BITCOIN_LIKE_NETWORK_PARAMETERS(source, destination) \
-    destination( \
-      source.identifier, source.P2PKHVersion, source.P2SHVersion, source.XPUBVersion, source.usesFeePerBytePolicy, \
-      source.BIP44CoinType, source.PaymentUriScheme \
-    )
+#define CLONE_BITCOIN_LIKE_NETWORK_PARAMETERS(source, destination)                                                   \
+    destination(                                                                                                     \
+        source.identifier, source.P2PKHVersion, source.P2SHVersion, source.XPUBVersion, source.usesFeePerBytePolicy, \
+        source.BIP44CoinType, source.PaymentUriScheme)
 
 #endif //LEDGER_CORE_DJINNI_HELPERS_HPP

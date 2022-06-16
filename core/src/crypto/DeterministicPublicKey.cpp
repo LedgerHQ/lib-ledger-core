@@ -28,21 +28,21 @@
  * SOFTWARE.
  *
  */
-#include <debug/Benchmarker.h>
-#include "../bytes/BytesWriter.h"
 #include "DeterministicPublicKey.hpp"
-#include "RIPEMD160.hpp"
-#include "../utils/Exception.hpp"
-#include "HMAC.hpp"
-#include "../math/BigInt.h"
-#include "SECP256k1Point.hpp"
-#include "../bytes/BytesWriter.h"
-#include "HASH160.hpp"
-#include "HashAlgorithm.h"
 
+#include "../bytes/BytesWriter.h"
+#include "../math/BigInt.h"
+#include "../utils/Exception.hpp"
+#include "HASH160.hpp"
+#include "HMAC.hpp"
+#include "HashAlgorithm.h"
 #include "Keccak.h"
+#include "RIPEMD160.hpp"
+#include "SECP256k1Point.hpp"
+
 #include <api/Secp256k1.hpp>
 #include <crypto/BLAKE.h>
+#include <debug/Benchmarker.h>
 
 namespace ledger {
     namespace core {
@@ -50,21 +50,19 @@ namespace ledger {
         static auto N = BigInt::fromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141");
 
         DeterministicPublicKey::DeterministicPublicKey(const std::vector<uint8_t> &publicKey,
-                                                       const std::vector<uint8_t> &chainCode, uint32_t childNum,
-                                                       uint32_t depth, uint32_t parentFingerprint, const std::string &networkIdentifier) :
-            _key(publicKey), _chainCode(chainCode), _childNum(childNum), _depth(depth), _parentFingerprint(parentFingerprint), _networkIdentifier(networkIdentifier)
-        {
-
+                                                       const std::vector<uint8_t> &chainCode,
+                                                       uint32_t childNum,
+                                                       uint32_t depth,
+                                                       uint32_t parentFingerprint,
+                                                       const std::string &networkIdentifier) : _key(publicKey), _chainCode(chainCode), _childNum(childNum), _depth(depth), _parentFingerprint(parentFingerprint), _networkIdentifier(networkIdentifier) {
         }
-
-
 
         uint32_t DeterministicPublicKey::getFingerprint() const {
             auto hash160 = getPublicKeyHash160();
             return (uint32_t)hash160[0] << 24 |
                    (uint32_t)hash160[1] << 16 |
-                   (uint32_t)hash160[2] << 8  |
-                    (uint32_t)hash160[3];
+                   (uint32_t)hash160[2] << 8 |
+                   (uint32_t)hash160[3];
         }
 
         std::vector<uint8_t> DeterministicPublicKey::getUncompressedPublicKey() const {
@@ -86,14 +84,14 @@ namespace ledger {
             if (keccak.size() <= 20) {
                 throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid public key :  Keccak hash of uncompressed public key with wrong size");
             }
-            return  std::vector<uint8_t>(keccak.end() - 20, keccak.end());
+            return std::vector<uint8_t>(keccak.end() - 20, keccak.end());
         }
 
         std::vector<uint8_t> DeterministicPublicKey::getPublicKeyBlake2b(bool isED25519) const {
             return BLAKE::blake2b(_key, 20, !isED25519);
         }
 
-        const std::vector<uint8_t>& DeterministicPublicKey::getPublicKey() const {
+        const std::vector<uint8_t> &DeterministicPublicKey::getPublicKey() const {
             return _key;
         }
 
@@ -106,7 +104,7 @@ namespace ledger {
             data.writeBeValue<uint32_t>(childIndex);
 
             auto I = HMAC::sha512(_chainCode, data.toByteArray());
-            BigInt IL(std::vector<uint8_t >(I.begin(), I.begin() + 32), false);
+            BigInt IL(std::vector<uint8_t>(I.begin(), I.begin() + 32), false);
             std::vector<uint8_t> IR(I.begin() + 32, I.end());
 
             if (IL >= N) {
@@ -115,13 +113,12 @@ namespace ledger {
 
             SECP256k1Point K = SECP256k1Point(_key).generatorMultiply(IL.toByteArray());
             return DeterministicPublicKey(
-                    K.toByteArray(),
-                    IR,
-                    childIndex,
-                    _depth + 1,
-                    getFingerprint(),
-                    _networkIdentifier
-            );
+                K.toByteArray(),
+                IR,
+                childIndex,
+                _depth + 1,
+                getFingerprint(),
+                _networkIdentifier);
         }
 
         std::vector<uint8_t> DeterministicPublicKey::toByteArray(const std::vector<uint8_t> &version) const {
@@ -136,10 +133,8 @@ namespace ledger {
         }
 
         DeterministicPublicKey::DeterministicPublicKey(const DeterministicPublicKey &key) : DeterministicPublicKey(
-                key._key, key._chainCode, key._childNum, key._depth, key._parentFingerprint, key._networkIdentifier
-        ) {
-
+                                                                                                key._key, key._chainCode, key._childNum, key._depth, key._parentFingerprint, key._networkIdentifier) {
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

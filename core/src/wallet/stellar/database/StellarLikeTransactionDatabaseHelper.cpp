@@ -30,11 +30,13 @@
  */
 
 #include "StellarLikeTransactionDatabaseHelper.hpp"
-#include <crypto/SHA256.hpp>
-#include <fmt/format.h>
+
 #include "StellarLikeAssetDatabaseHelper.hpp"
+
+#include <crypto/SHA256.hpp>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <fmt/format.h>
 #include <wallet/common/database/OperationDatabaseHelper.h>
 
 using namespace soci;
@@ -42,8 +44,7 @@ using namespace soci;
 namespace ledger {
     namespace core {
 
-        bool StellarLikeTransactionDatabaseHelper::putTransaction(soci::session &sql, const api::Currency &currency,
-                                                                  const stellar::Transaction &tx) {
+        bool StellarLikeTransactionDatabaseHelper::putTransaction(soci::session &sql, const api::Currency &currency, const stellar::Transaction &tx) {
             auto uid = createTransactionUid(currency.name, tx.hash);
             if (!transactionExists(sql, uid)) {
                 const auto ledger = fmt::format("{}", tx.ledger);
@@ -52,15 +53,15 @@ namespace ledger {
                 const auto successful = tx.successful ? 1 : 0;
                 sql << "INSERT INTO stellar_transactions VALUES(:uid, :hash, :account, :sequence, :fee, :success, :ledger,"
                        ":memo_type, :memo)",
-                        use(uid), use(tx.hash), use(tx.sourceAccount), use(sequence), use(fee), use(successful),
-                        use(ledger), use(tx.memoType), use(tx.memo);
+                    use(uid), use(tx.hash), use(tx.sourceAccount), use(sequence), use(fee), use(successful),
+                    use(ledger), use(tx.memoType), use(tx.memo);
                 return true;
             }
             return false;
         }
 
         std::string StellarLikeTransactionDatabaseHelper::createTransactionUid(const std::string &currencyName,
-                const std::string &transactionHash) {
+                                                                               const std::string &transactionHash) {
             return SHA256::stringToHexHash(fmt::format("{}::{}", currencyName, transactionHash));
         }
 
@@ -71,36 +72,33 @@ namespace ledger {
         }
 
         std::string
-        StellarLikeTransactionDatabaseHelper::putOperation(soci::session &sql, const std::string &accountUid,
-                                                           const std::string& currencyName,
-                                                           const stellar::Operation &op) {
+        StellarLikeTransactionDatabaseHelper::putOperation(soci::session &sql, const std::string &accountUid, const std::string &currencyName, const stellar::Operation &op) {
             auto uid = createOperationUid(accountUid, op.id);
             auto txUid = createTransactionUid(currencyName, op.transactionHash);
             auto assetUid = StellarLikeAssetDatabaseHelper::createAssetUid(op.asset);
-            auto sourceAssetUid = op.sourceAsset.map<std::string>([] (const stellar::Asset& asset) {
+            auto sourceAssetUid = op.sourceAsset.map<std::string>([](const stellar::Asset &asset) {
                 return StellarLikeAssetDatabaseHelper::createAssetUid(asset);
             });
             auto amount = op.amount.toString();
-            auto srcAmount = op.sourceAmount.map<std::string>([] (const BigInt& b) {
+            auto srcAmount = op.sourceAmount.map<std::string>([](const BigInt &b) {
                 return b.toString();
             });
             StellarLikeAssetDatabaseHelper::putAsset(sql, op.asset);
-            if (op.sourceAsset)  {
+            if (op.sourceAsset) {
                 StellarLikeAssetDatabaseHelper::putAsset(sql, op.sourceAsset.getValue());
             }
             int type = static_cast<int>(op.type);
             if (!operationExists(sql, uid)) {
                 sql << "INSERT INTO stellar_operations VALUES("
                        ":uid, :tx_uid, :hash, :time, :asset_uid, :src_asset_uid, :amount, :src_amount, :from, :to, :type"
-                       ")", use(uid), use(txUid), use(op.id), use(op.createdAt), use(assetUid), use(sourceAssetUid),
-                       use(amount), use(srcAmount), use(op.from), use(op.to), use(type);
+                       ")",
+                    use(uid), use(txUid), use(op.id), use(op.createdAt), use(assetUid), use(sourceAssetUid),
+                    use(amount), use(srcAmount), use(op.from), use(op.to), use(type);
             }
             return uid;
         }
 
-        bool
-        StellarLikeTransactionDatabaseHelper::getOperation(soci::session &sql, const std::string &accountOperationUid,
-                                                           stellar::Operation &out) {
+        bool StellarLikeTransactionDatabaseHelper::getOperation(soci::session &sql, const std::string &accountOperationUid, stellar::Operation &out) {
             Option<std::string> sourceAssetUid, sourceAssetCode, sourceAssetIssuer, sourceAmount;
             Option<std::string> assetCode, assetIssuer;
             int type, successful;
@@ -112,25 +110,22 @@ namespace ledger {
                    "LEFT JOIN stellar_operations AS o ON ao.operation_uid = o.uid "
                    "LEFT JOIN stellar_transactions AS t ON t.uid = o.transaction_uid "
                    "LEFT JOIN stellar_assets AS a ON  a.uid = o.asset_uid "
-                   "WHERE ao.uid = :uid", use(accountOperationUid), into(out.id)
-                   ,into(successful), into(type), into(amount), into(out.from)
-                   ,into(out.to), into(out.createdAt), into(sourceAmount), into(out.asset.type)
-                   ,into(assetCode), into(assetIssuer), into(sourceAssetUid)
-                   ,into(out.transactionHash), into(transactionSequence), into(fee);
+                   "WHERE ao.uid = :uid",
+                use(accountOperationUid), into(out.id), into(successful), into(type), into(amount), into(out.from), into(out.to), into(out.createdAt), into(sourceAmount), into(out.asset.type), into(assetCode), into(assetIssuer), into(sourceAssetUid), into(out.transactionHash), into(transactionSequence), into(fee);
 
             out.amount = BigInt::fromString(amount);
             out.type = (stellar::OperationType)type;
             out.transactionSuccessful = successful == 1;
             out.asset.issuer = assetIssuer.getValueOr("");
             out.asset.code = assetCode.getValueOr("");
-            out.sourceAmount = sourceAmount.map<BigInt>([] (const std::string& s) {
+            out.sourceAmount = sourceAmount.map<BigInt>([](const std::string &s) {
                 return BigInt::fromString(s);
             });
             if (sourceAssetUid.nonEmpty()) {
                 stellar::Asset asset;
                 sql << "SELECT asset_type, asset_code, asset_issuer "
-                       "FROM stellar_assets WHERE uid = :uid", use(sourceAssetUid.getValue())
-                       ,into(asset.type), into(sourceAssetCode), into(sourceAssetCode);
+                       "FROM stellar_assets WHERE uid = :uid",
+                    use(sourceAssetUid.getValue()), into(asset.type), into(sourceAssetCode), into(sourceAssetCode);
                 asset.code = sourceAssetCode.getValueOr("");
                 asset.issuer = sourceAssetIssuer.getValueOr("");
                 out.sourceAsset = asset;
@@ -140,17 +135,15 @@ namespace ledger {
             return !out.transactionHash.empty();
         }
 
-
-
-        bool StellarLikeTransactionDatabaseHelper::getTransaction(soci::session &sql, const std::string &hash,
-                                                                  stellar::Transaction &out) {
+        bool StellarLikeTransactionDatabaseHelper::getTransaction(soci::session &sql, const std::string &hash, stellar::Transaction &out) {
             std::string fee;
             std::string sequence;
             int successful;
             sql << "SELECT hash, source_account, sequence, fee, successful, ledger, memo_type, memo "
                    "FROM stellar_transactions "
-                   "WHERE hash = :hash LIMIT 1", use(hash), into(out.hash), into(out.sourceAccount), into(sequence), into(fee),
-                   into(successful), into(out.ledger), into(out.memoType), into(out.memo);
+                   "WHERE hash = :hash LIMIT 1",
+                use(hash), into(out.hash), into(out.sourceAccount), into(sequence), into(fee),
+                into(successful), into(out.ledger), into(out.memoType), into(out.memo);
             out.successful = successful == 1;
             out.feePaid = BigInt::fromString(fee);
             out.sourceAccountSequence = BigInt::fromString(sequence);
@@ -173,30 +166,29 @@ namespace ledger {
                                                                                 const std::string &senderAddress) {
             int count;
             sql << "SELECT COUNT(*) FROM stellar_operations "
-                   "WHERE transaction_hash = :hash AND from_address = :address"
-                   , use(txHash), use(senderAddress), into(count);
+                   "WHERE transaction_hash = :hash AND from_address = :address",
+                use(txHash), use(senderAddress), into(count);
             return count;
         }
 
         void StellarLikeTransactionDatabaseHelper::eraseDataSince(
-                    soci::session &sql,
-                    const std::string &accountUid,
-                    const std::chrono::system_clock::time_point & date) {
-                        
-            rowset<std::string> rows = (sql.prepare <<
-                "SELECT transaction_uid FROM stellar_operations AS sop "
-                "JOIN stellar_account_operations AS aop ON aop.operation_uid = sop.uid "
-                "JOIN operations AS op ON aop.uid = op.uid "
-                "WHERE op.account_uid = :uid AND op.date >= :date", 
-                use(accountUid), use(date)
-            );
+            soci::session &sql,
+            const std::string &accountUid,
+            const std::chrono::system_clock::time_point &date) {
+
+            rowset<std::string> rows = (sql.prepare << "SELECT transaction_uid FROM stellar_operations AS sop "
+                                                       "JOIN stellar_account_operations AS aop ON aop.operation_uid = sop.uid "
+                                                       "JOIN operations AS op ON aop.uid = op.uid "
+                                                       "WHERE op.account_uid = :uid AND op.date >= :date",
+                                        use(accountUid), use(date));
             std::vector<std::string> txToDelete(rows.begin(), rows.end());
             if (!txToDelete.empty()) {
-                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date", 
+                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date",
                     use(accountUid), use(date);
                 sql << "DELETE FROM stellar_transactions"
-                    " WHERE uid IN (:uids)", use(txToDelete);
+                       " WHERE uid IN (:uids)",
+                    use(txToDelete);
             }
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

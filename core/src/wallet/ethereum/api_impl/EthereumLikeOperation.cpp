@@ -28,22 +28,20 @@
  *
  */
 
-
 #include "EthereumLikeOperation.h"
-#include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
-#include <wallet/ethereum/api_impl/InternalTransaction.h>
+
+#include <api/OperationType.hpp>
 #include <session.h>
 #include <wallet/common/AbstractAccount.hpp>
+#include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
 #include <wallet/ethereum/api_impl/InternalTransaction.h>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
-#include <api/OperationType.hpp>
 
 namespace ledger {
     namespace core {
 
-        EthereumLikeOperation::EthereumLikeOperation(const std::shared_ptr<OperationApi>& baseOp)
-        : _internalTxsRetrieved(false)
-        {
+        EthereumLikeOperation::EthereumLikeOperation(const std::shared_ptr<OperationApi> &baseOp)
+            : _internalTxsRetrieved(false) {
             _transaction = std::make_shared<EthereumLikeTransactionApi>(baseOp);
             _backend = baseOp;
         }
@@ -58,9 +56,9 @@ namespace ledger {
                 soci::session sql(_backend->getAccount()->getWallet()->getDatabase()->getPool());
                 auto uid = _backend->getUid();
                 soci::rowset<soci::row> internalTxRows = (sql.prepare << "SELECT type, value, sender, "
-                        "receiver, gas_limit, gas_used, input_data "
-                        "FROM internal_operations WHERE ethereum_operation_uid = :uid ",
-                        soci::use(uid));
+                                                                         "receiver, gas_limit, gas_used, input_data "
+                                                                         "FROM internal_operations WHERE ethereum_operation_uid = :uid ",
+                                                          soci::use(uid));
                 for (auto &row : internalTxRows) {
                     InternalTx internalTx;
                     internalTx.type = api::from_string<api::OperationType>(row.get<std::string>(0));
@@ -76,5 +74,5 @@ namespace ledger {
             }
             return _internalTxs;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

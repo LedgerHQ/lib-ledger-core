@@ -29,19 +29,20 @@
  *
  */
 
-#include <gtest/gtest.h>
-#include <EventLooper.hpp>
-#include <EventThread.hpp>
-#include <NativeThreadDispatcher.hpp>
-#include <ledger/core/preferences/Preferences.hpp>
-#include <ledger/core/utils/Option.hpp>
-#include <NativePathResolver.hpp>
-#include <fstream>
-#include <OpenSSLRandomNumberGenerator.hpp>
 #include "MemPreferencesBackend.hpp"
 
+#include <EventLooper.hpp>
+#include <EventThread.hpp>
+#include <NativePathResolver.hpp>
+#include <NativeThreadDispatcher.hpp>
+#include <OpenSSLRandomNumberGenerator.hpp>
+#include <fstream>
+#include <gtest/gtest.h>
+#include <ledger/core/preferences/Preferences.hpp>
+#include <ledger/core/utils/Option.hpp>
+
 class PreferencesTest : public ::testing::Test {
-protected:
+  protected:
     std::shared_ptr<NativePathResolver> resolver;
     std::shared_ptr<NativeThreadDispatcher> dispatcher;
     std::shared_ptr<ledger::core::api::Lock> preferencesLock;
@@ -51,57 +52,57 @@ protected:
         backend->clear();
     }
 
-public:
+  public:
     PreferencesTest()
-        : resolver(std::make_shared<NativePathResolver>())
-        , dispatcher(std::make_shared<NativeThreadDispatcher>())
-        , preferencesLock(dispatcher->newLock())
-        , backend(std::make_shared<ledger::core::test::MemPreferencesBackend>()) {
+        : resolver(std::make_shared<NativePathResolver>()), dispatcher(std::make_shared<NativeThreadDispatcher>()), preferencesLock(dispatcher->newLock()), backend(std::make_shared<ledger::core::test::MemPreferencesBackend>()) {
     }
 };
 
 TEST_F(PreferencesTest, StoreAndGetWithPreferencesAPI) {
     auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "my_test_preferences");
 
-    dispatcher->getSerialExecutionContext("not_my_worker")->execute(make_runnable([=] () {
+    dispatcher->getSerialExecutionContext("not_my_worker")->execute(make_runnable([=]() {
         preferences->edit()
-                ->putString("my_string", "Hello World!")
-                ->putBoolean("my_bool", true)
-                ->putInt("my_int", 42)
-                ->putLong("my_long", 42LL << 42LL)
-                ->putStringArray("my_string_array", std::vector<std::string>({"Hello", "world", "!"}))
-                ->commit();
+            ->putString("my_string", "Hello World!")
+            ->putBoolean("my_bool", true)
+            ->putInt("my_int", 42)
+            ->putLong("my_long", 42LL << 42LL)
+            ->putStringArray("my_string_array", std::vector<std::string>({"Hello", "world", "!"}))
+            ->commit();
     }));
 
-    dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([=] () {
+    dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([=]() {
         preferences
-                ->edit()
-                ->putString("my_worker_string", "Hey World!")
-                ->putString("my_string_to_remove", "Remove this please!")
-                ->commit();
+            ->edit()
+            ->putString("my_worker_string", "Hey World!")
+            ->putString("my_string_to_remove", "Remove this please!")
+            ->commit();
     }));
 
     // Assume that 100ms should be enough to persist data
-    dispatcher->getMainExecutionContext()->delay(make_runnable([=] () {
-        EXPECT_EQ(preferences->getString("my_string", ""), "Hello World!");
-        EXPECT_EQ(preferences->getString("my_worker_string", ""), "Hey World!");
-        EXPECT_EQ(preferences->getString("my_fake_string", "Not My String"), "Not My String");
-        EXPECT_EQ(preferences->getString("my_string_to_remove", ""), "Remove this please!");
-        EXPECT_EQ(preferences->getInt("my_int", -1), 42);
-        EXPECT_EQ(preferences->getLong("my_long", -1),  42LL << 42LL);
-        EXPECT_EQ(preferences->getBoolean("my_bool", false), true);
-        EXPECT_EQ(preferences->getStringArray("my_string_array", {}), std::vector<std::string>({"Hello", "world", "!"}));
-        preferences->edit()->remove("my_string_to_remove")->commit();
-        dispatcher->getSerialExecutionContext("worker")->delay(make_runnable([=] () {
-            EXPECT_EQ(preferences->getString("my_string_to_remove", "Removed"), "Removed");
-            dispatcher->stop();
-        }), 50);
-    }), 100);
+    dispatcher->getMainExecutionContext()->delay(make_runnable([=]() {
+                                                     EXPECT_EQ(preferences->getString("my_string", ""), "Hello World!");
+                                                     EXPECT_EQ(preferences->getString("my_worker_string", ""), "Hey World!");
+                                                     EXPECT_EQ(preferences->getString("my_fake_string", "Not My String"), "Not My String");
+                                                     EXPECT_EQ(preferences->getString("my_string_to_remove", ""), "Remove this please!");
+                                                     EXPECT_EQ(preferences->getInt("my_int", -1), 42);
+                                                     EXPECT_EQ(preferences->getLong("my_long", -1), 42LL << 42LL);
+                                                     EXPECT_EQ(preferences->getBoolean("my_bool", false), true);
+                                                     EXPECT_EQ(preferences->getStringArray("my_string_array", {}), std::vector<std::string>({"Hello", "world", "!"}));
+                                                     preferences->edit()->remove("my_string_to_remove")->commit();
+                                                     dispatcher->getSerialExecutionContext("worker")->delay(make_runnable([=]() {
+                                                                                                                EXPECT_EQ(preferences->getString("my_string_to_remove", "Removed"), "Removed");
+                                                                                                                dispatcher->stop();
+                                                                                                            }),
+                                                                                                            50);
+                                                 }),
+                                                 100);
 
     dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([=]() {
-        dispatcher->stop();
-        FAIL() << "Timeout";
-    }), 5000);
+                                                             dispatcher->stop();
+                                                             FAIL() << "Timeout";
+                                                         }),
+                                                         5000);
 
     dispatcher->waitUntilStopped();
     resolver->clean();
@@ -111,7 +112,7 @@ TEST_F(PreferencesTest, DISABLED_EncryptDecrypt) {
     auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "encrypt_decrypt");
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
     auto password = std::string("v3ry_secr3t_p4sSw0rD");
-    auto string_array = std::vector<std::string>{ "foo", "bar", "zoo" };
+    auto string_array = std::vector<std::string>{"foo", "bar", "zoo"};
 
     backend->setEncryption(rng, password);
 
@@ -122,7 +123,7 @@ TEST_F(PreferencesTest, DISABLED_EncryptDecrypt) {
         ->putInt("int", 9246)
         ->putLong("long", 89356493564)
         ->putBoolean("bool", true)
-        ->putStringArray("string_array", { "foo", "bar", "zoo" })
+        ->putStringArray("string_array", {"foo", "bar", "zoo"})
         ->commit();
 
     ASSERT_EQ(preferences->getString("string", ""), "dawg");
@@ -145,7 +146,7 @@ TEST_F(PreferencesTest, DISABLED_EncryptDecrypt) {
 
     // encoding is fucked up, so we need to manually check bytes and that the strings are not there
     auto garbage = preferences->getData("string_array", {});
-    for (auto& s : string_array) {
+    for (auto &s : string_array) {
         ASSERT_TRUE(std::search(garbage.cbegin(), garbage.cend(), s.cbegin(), s.cend()) == garbage.cend());
     }
 #endif

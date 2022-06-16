@@ -28,16 +28,14 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMLIKEWALLETDATABASE_H
 #define LEDGER_CORE_ETHEREUMLIKEWALLETDATABASE_H
 
 namespace ledger {
     namespace core {
         class EthereumLikeWalletDatabase {
-
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMLIKEWALLETDATABASE_H

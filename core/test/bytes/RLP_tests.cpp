@@ -29,15 +29,12 @@
  */
 
 #include <gtest/gtest.h>
-
+#include <iostream>
+#include <ledger/core/bytes/BytesWriter.h>
+#include <ledger/core/bytes/RLP/RLPDecoder.h>
 #include <ledger/core/bytes/RLP/RLPListEncoder.h>
 #include <ledger/core/bytes/RLP/RLPStringEncoder.h>
-#include <ledger/core/bytes/RLP/RLPDecoder.h>
-
-#include <ledger/core/bytes/BytesWriter.h>
 #include <ledger/core/utils/hex.h>
-
-#include <iostream>
 using namespace std;
 
 using namespace ledger::core;
@@ -59,7 +56,6 @@ TEST(RLPTests, SimpleCases) {
 
     auto decodedVector = RLPDecoder::decode(rlpVector->encode());
     EXPECT_EQ(hex::toString(rlpVector->encode()), hex::toString(decodedVector->encode()));
-
 }
 
 TEST(RLPTests, RecursiveEmptyLists) {
@@ -76,7 +72,6 @@ TEST(RLPTests, RecursiveEmptyLists) {
     auto rlpVector3 = std::make_shared<RLPListEncoder>();
     rlpVector3->append(std::make_shared<RLPListEncoder>());
     rlpVector3->append(rlpVector2);
-
 
     //[]
     auto rlpVector = std::make_shared<RLPListEncoder>();
@@ -164,11 +159,9 @@ TEST(RLPTests, Tx) {
     EXPECT_EQ(hex::toString(decoder->encode()), tx);
 }
 
-
 TEST(RLPTests, BigInt) {
     auto bigInt = std::shared_ptr<BigInt>(BigInt::from_hex("100102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
     auto encoder = std::make_shared<RLPStringEncoder>(hex::toByteArray(bigInt->toHexString()));
     std::string sBigInt = "a0100102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
     EXPECT_EQ(hex::toString(encoder->encode()), sBigInt);
 }
-

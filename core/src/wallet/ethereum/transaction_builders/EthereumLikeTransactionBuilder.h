@@ -28,28 +28,24 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMLIKETRANSACTIONBUILDER_H
 #define LEDGER_CORE_ETHEREUMLIKETRANSACTIONBUILDER_H
 
-#include <api/EthereumLikeTransactionBuilder.hpp>
-#include <api/Currency.hpp>
-#include <api/ExecutionContext.hpp>
 #include <api/Amount.hpp>
-
+#include <api/Currency.hpp>
+#include <api/EthereumLikeTransactionBuilder.hpp>
+#include <api/ExecutionContext.hpp>
+#include <async/Future.hpp>
+#include <math/BigInt.h>
+#include <spdlog/logger.h>
 #include <wallet/common/Amount.h>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
-
-#include <math/BigInt.h>
-
-#include <async/Future.hpp>
-#include <spdlog/logger.h>
 
 namespace ledger {
     namespace core {
 
         struct EthereumLikeTransactionBuildRequest {
-            EthereumLikeTransactionBuildRequest(){
+            EthereumLikeTransactionBuildRequest() {
                 wipe = false;
                 nonce = std::make_shared<BigInt>(0);
             };
@@ -63,50 +59,48 @@ namespace ledger {
             std::string correlationId;
         };
 
-        using EthereumLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::EthereumLikeTransaction>> (const EthereumLikeTransactionBuildRequest&, const std::shared_ptr<EthereumLikeBlockchainExplorer> &)>;
-        
-        class EthereumLikeTransactionBuilder : public api::EthereumLikeTransactionBuilder, public std::enable_shared_from_this<EthereumLikeTransactionBuilder>{
-        public:
-            
-            explicit EthereumLikeTransactionBuilder(const std::shared_ptr<api::ExecutionContext>& context,
-                                                    const api::Currency& params,
+        using EthereumLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::EthereumLikeTransaction>>(const EthereumLikeTransactionBuildRequest &, const std::shared_ptr<EthereumLikeBlockchainExplorer> &)>;
+
+        class EthereumLikeTransactionBuilder : public api::EthereumLikeTransactionBuilder, public std::enable_shared_from_this<EthereumLikeTransactionBuilder> {
+          public:
+            explicit EthereumLikeTransactionBuilder(const std::shared_ptr<api::ExecutionContext> &context,
+                                                    const api::Currency &params,
                                                     const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer,
-                                                    const std::shared_ptr<spdlog::logger>& logger,
-                                                    const EthereumLikeTransactionBuildFunction& buildFunction);
+                                                    const std::shared_ptr<spdlog::logger> &logger,
+                                                    const EthereumLikeTransactionBuildFunction &buildFunction);
 
-            EthereumLikeTransactionBuilder(const EthereumLikeTransactionBuilder& cpy);
-            
-            std::shared_ptr<api::EthereumLikeTransactionBuilder> sendToAddress(const std::shared_ptr<api::Amount> & amount,
-                                                                               const std::string & address) override;
+            EthereumLikeTransactionBuilder(const EthereumLikeTransactionBuilder &cpy);
 
-            std::shared_ptr<api::EthereumLikeTransactionBuilder> wipeToAddress(const std::string & address) override;
-            
-            std::shared_ptr<api::EthereumLikeTransactionBuilder> setGasPrice(const std::shared_ptr<api::Amount> & gasPrice) override;
-            std::shared_ptr<api::EthereumLikeTransactionBuilder> setGasLimit(const std::shared_ptr<api::Amount> & gasLimit) override;
-            std::shared_ptr<api::EthereumLikeTransactionBuilder> setInputData(const std::vector<uint8_t> & data) override;
-            std::shared_ptr<api::EthereumLikeTransactionBuilder> setCorrelationId(const std::string & correlationId) override;
+            std::shared_ptr<api::EthereumLikeTransactionBuilder> sendToAddress(const std::shared_ptr<api::Amount> &amount,
+                                                                               const std::string &address) override;
 
-            void build(const std::shared_ptr<api::EthereumLikeTransactionCallback> & callback) override;
+            std::shared_ptr<api::EthereumLikeTransactionBuilder> wipeToAddress(const std::string &address) override;
+
+            std::shared_ptr<api::EthereumLikeTransactionBuilder> setGasPrice(const std::shared_ptr<api::Amount> &gasPrice) override;
+            std::shared_ptr<api::EthereumLikeTransactionBuilder> setGasLimit(const std::shared_ptr<api::Amount> &gasLimit) override;
+            std::shared_ptr<api::EthereumLikeTransactionBuilder> setInputData(const std::vector<uint8_t> &data) override;
+            std::shared_ptr<api::EthereumLikeTransactionBuilder> setCorrelationId(const std::string &correlationId) override;
+
+            void build(const std::shared_ptr<api::EthereumLikeTransactionCallback> &callback) override;
             Future<std::shared_ptr<api::EthereumLikeTransaction>> build();
 
             std::shared_ptr<api::EthereumLikeTransactionBuilder> clone() override;
-            
+
             void reset() override;
 
-            static std::shared_ptr<api::EthereumLikeTransaction> parseRawTransaction(const api::Currency & currency,
-                                                                              const std::vector<uint8_t> & rawTransaction,
-                                                                              bool isSigned);
-        private:
+            static std::shared_ptr<api::EthereumLikeTransaction> parseRawTransaction(const api::Currency &currency,
+                                                                                     const std::vector<uint8_t> &rawTransaction,
+                                                                                     bool isSigned);
+
+          private:
             api::Currency _currency;
             std::shared_ptr<EthereumLikeBlockchainExplorer> _explorer;
             EthereumLikeTransactionBuildFunction _build;
             EthereumLikeTransactionBuildRequest _request;
             std::shared_ptr<api::ExecutionContext> _context;
             std::shared_ptr<spdlog::logger> _logger;
-            
-        };       
-    }
-}
-
+        };
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMLIKETRANSACTIONBUILDER_H

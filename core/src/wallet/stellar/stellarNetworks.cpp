@@ -28,8 +28,8 @@
  *
  */
 
-
 #include "stellarNetworks.h"
+
 #include <utils/Exception.hpp>
 
 namespace ledger {
@@ -38,17 +38,13 @@ namespace ledger {
             const api::StellarLikeNetworkParameters getStellarLikeNetworkParameters(const std::string &networkName) {
                 if (networkName == "stellar") {
                     static const api::StellarLikeNetworkParameters STELLAR(
-                        "xlm", {6 << 3}, {12 << 3}, 5000000, 100, {}, "Public Global Stellar Network ; September 2015"
-                    );
+                        "xlm", {6 << 3}, {12 << 3}, 5000000, 100, {}, "Public Global Stellar Network ; September 2015");
                     return STELLAR;
                 }
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
             }
 
-            const std::vector<api::StellarLikeNetworkParameters> ALL_STELLAR
-                    ({
-                             getStellarLikeNetworkParameters("stellar")
-                     });
-        }
-    }
-}
+            const std::vector<api::StellarLikeNetworkParameters> ALL_STELLAR({getStellarLikeNetworkParameters("stellar")});
+        } // namespace networks
+    }     // namespace core
+} // namespace ledger

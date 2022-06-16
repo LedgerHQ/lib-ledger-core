@@ -43,7 +43,6 @@ static const JsonParserPathMatcher ACCOUNT_SIGNER_KEY_MATCHER("/signers[*]/key")
 static const JsonParserPathMatcher ACCOUNT_SIGNER_TYPE_MATCHER("/signers[*]/type");
 static const JsonParserPathMatcher ACCOUNT_SIGNER_WEIGHT_MATCHER("/signers[*]/weight");
 
-
 namespace ledger {
     namespace core {
 
@@ -134,5 +133,5 @@ namespace ledger {
             _flagsParser.setPathView(_path.view(2));
             _balancesParser.setPathView(_path.view(4));
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

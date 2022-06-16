@@ -31,16 +31,16 @@
 #ifndef LEDGER_CORE_LEDGERAPIPARSER_HPP
 #define LEDGER_CORE_LEDGERAPIPARSER_HPP
 
-#include <cstdint>
-#include <rapidjson/reader.h>
-#include <net/HttpClient.hpp>
 #include <collections/collections.hpp>
+#include <cstdint>
+#include <net/HttpClient.hpp>
+#include <rapidjson/reader.h>
 
 namespace ledger {
     namespace core {
         template <typename ResultType, typename Parser>
         class LedgerApiParser {
-        public:
+          public:
             LedgerApiParser() : _parser(_lastKey) {
                 _statusCode = 0;
                 _depth = 0;
@@ -48,83 +48,82 @@ namespace ledger {
                 _parser.init(_result.get());
             }
 
-            LedgerApiParser(const LedgerApiParser<ResultType, Parser>& cpy) :
-                _statusCode(cpy._statusCode),
-                _statusText(cpy._statusText),
-                _depth(cpy._depth),
-                _result(cpy._result),
-                _lastKey(cpy._lastKey),
-                _parser(_lastKey) {
+            LedgerApiParser(const LedgerApiParser<ResultType, Parser> &cpy) : _statusCode(cpy._statusCode),
+                                                                              _statusText(cpy._statusText),
+                                                                              _depth(cpy._depth),
+                                                                              _result(cpy._result),
+                                                                              _lastKey(cpy._lastKey),
+                                                                              _parser(_lastKey) {
                 _parser.init(_result.get());
             }
 
             bool Null() {
-               return delegate([&] () {
-                   _parser.Null();
-               });
+                return delegate([&]() {
+                    _parser.Null();
+                });
             }
 
             bool Bool(bool b) {
-               return delegate([&] () {
+                return delegate([&]() {
                     _parser.Bool(b);
-               });
+                });
             }
 
             bool Int(int i) {
-                return delegate([&] () {
+                return delegate([&]() {
                     _parser.Int(i);
                 });
             }
 
             bool Uint(unsigned i) {
-                return delegate([&] () {
-                   _parser.Uint(i);
+                return delegate([&]() {
+                    _parser.Uint(i);
                 });
             }
 
             bool Int64(int64_t i) {
-                return delegate([&] () {
-                   _parser.Int64(i);
+                return delegate([&]() {
+                    _parser.Int64(i);
                 });
             }
 
             bool Uint64(uint64_t i) {
-                return delegate([&] () {
-                   _parser.Uint64(i);
+                return delegate([&]() {
+                    _parser.Uint64(i);
                 });
             }
 
             bool Double(double d) {
-                return delegate([&] () {
-                   _parser.Double(d);
+                return delegate([&]() {
+                    _parser.Double(d);
                 });
             }
 
-            bool RawNumber(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy) {
-                return delegate([&] () {
+            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                return delegate([&]() {
                     _parser.RawNumber(str, length, copy);
                 });
             }
 
-            bool String(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy) {
+            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
                 if (_depth == 1 && isFailure() && _lastKey == "error") {
                     _error = std::string(str, length);
                 }
-                return delegate([&] () {
+                return delegate([&]() {
                     _parser.String(str, length, copy);
                 });
             }
 
             bool StartObject() {
                 _depth += 1;
-                return delegate([&] () {
+                return delegate([&]() {
                     _parser.StartObject();
                 });
             }
 
-            bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy) {
+            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
                 _lastKey = std::string(str, length);
-                delegate([&] () {
+                delegate([&]() {
                     _parser.Key(str, length, copy);
                 });
                 return continueParsing();
@@ -132,7 +131,7 @@ namespace ledger {
 
             bool EndObject(rapidjson::SizeType memberCount) {
                 _depth -= 1;
-                delegate([&] () {
+                delegate([&]() {
                     _parser.EndObject(memberCount);
                 });
                 return continueParsing();
@@ -140,7 +139,7 @@ namespace ledger {
 
             bool StartArray() {
                 _depth += 1;
-                delegate([&] () {
+                delegate([&]() {
                     _parser.StartArray();
                 });
                 return continueParsing();
@@ -148,7 +147,7 @@ namespace ledger {
 
             bool EndArray(rapidjson::SizeType elementCount) {
                 _depth -= 1;
-                delegate([&] () {
+                delegate([&]() {
                     _parser.EndArray(elementCount);
                 });
                 return continueParsing();
@@ -162,11 +161,11 @@ namespace ledger {
                 }
             };
 
-            void attach(const std::shared_ptr<api::HttpUrlConnection>& connection) {
+            void attach(const std::shared_ptr<api::HttpUrlConnection> &connection) {
                 attach(connection->getStatusText(), static_cast<uint32_t>(connection->getStatusCode()));
             }
 
-            void attach(const std::string& statusText, uint32_t statusCode) {
+            void attach(const std::string &statusText, uint32_t statusCode) {
                 _statusCode = statusCode;
                 _statusText = statusText;
                 if (isFailure()) {
@@ -182,17 +181,18 @@ namespace ledger {
                 return _exception.isEmpty();
             }
 
-        private:
-            bool delegate(std::function<void ()>&& fn) {
+          private:
+            bool delegate(std::function<void()> &&fn) {
                 if (!isFailure()) {
-                    _exception = Try<Unit>::from([&] () {
-                        fn();
-                        return unit;
-                    }).exception();
+                    _exception = Try<Unit>::from([&]() {
+                                     fn();
+                                     return unit;
+                                 }).exception();
                 }
                 return continueParsing();
             }
-        private:
+
+          private:
             Parser _parser;
             std::shared_ptr<ResultType> _result;
             uint32_t _depth;
@@ -202,7 +202,7 @@ namespace ledger {
             std::string _lastKey;
             Option<Exception> _exception;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_LEDGERAPIPARSER_HPP

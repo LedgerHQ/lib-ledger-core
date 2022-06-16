@@ -29,6 +29,7 @@
  *
  */
 #include "TrustIndicator.h"
+
 #include <algorithm>
 
 using namespace rapidjson;
@@ -88,5 +89,5 @@ namespace ledger {
             return *this;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

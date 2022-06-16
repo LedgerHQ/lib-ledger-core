@@ -31,9 +31,8 @@
 #ifndef LEDGER_CORE_COSMOSLIKEWALLETFACTORY_H
 #define LEDGER_CORE_COSMOSLIKEWALLETFACTORY_H
 
-#include <functional>
-
 #include <api/Currency.hpp>
+#include <functional>
 #include <wallet/common/AbstractWalletFactory.hpp>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/factories/CosmosLikeKeychainFactory.hpp>
@@ -41,29 +40,29 @@
 #include <wallet/pool/WalletPool.hpp>
 
 namespace ledger {
-namespace core {
+    namespace core {
 
-using CosmosLikeAccountSynchronizerFactory =
-    std::function<std::shared_ptr<CosmosLikeAccountSynchronizer>()>;
+        using CosmosLikeAccountSynchronizerFactory =
+            std::function<std::shared_ptr<CosmosLikeAccountSynchronizer>()>;
 
-class CosmosLikeWalletFactory : public AbstractWalletFactory {
-   public:
-    CosmosLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
-    std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
+        class CosmosLikeWalletFactory : public AbstractWalletFactory {
+          public:
+            CosmosLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
+            std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
-   private:
-    std::shared_ptr<CosmosLikeBlockchainExplorer> getExplorer(
-        const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
+          private:
+            std::shared_ptr<CosmosLikeBlockchainExplorer> getExplorer(
+                const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
 
-   private:
-    // Explorers
-    std::list<std::weak_ptr<CosmosLikeBlockchainExplorer>> _runningExplorers;
-    
-    // Keychain factories
-    std::unordered_map<std::string, std::shared_ptr<CosmosLikeKeychainFactory>> _keychainFactories;
-};
+          private:
+            // Explorers
+            std::list<std::weak_ptr<CosmosLikeBlockchainExplorer>> _runningExplorers;
 
-}  // namespace core
-}  // namespace ledger
+            // Keychain factories
+            std::unordered_map<std::string, std::shared_ptr<CosmosLikeKeychainFactory>> _keychainFactories;
+        };
 
-#endif  // LEDGER_CORE_COSMOSLIKEWALLETFACTORY_H
+    } // namespace core
+} // namespace ledger
+
+#endif // LEDGER_CORE_COSMOSLIKEWALLETFACTORY_H

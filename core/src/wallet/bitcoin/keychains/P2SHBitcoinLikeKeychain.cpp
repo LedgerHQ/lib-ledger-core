@@ -29,17 +29,17 @@
  *
  */
 #include "P2SHBitcoinLikeKeychain.hpp"
+
 #include <api/KeychainEngines.hpp>
 namespace ledger {
     namespace core {
 
         P2SHBitcoinLikeKeychain::P2SHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                                           const api::Currency &params,
-                                                           int account,
-                                                           const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                                                           const std::shared_ptr<Preferences> &preferences)
-                : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences)
-        {
+                                                         const api::Currency &params,
+                                                         int account,
+                                                         const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
+                                                         const std::shared_ptr<Preferences> &preferences)
+            : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences) {
             _keychainEngine = api::KeychainEngines::BIP49_P2SH;
             getAllObservableAddresses(0, _observableRange);
         }
@@ -55,5 +55,5 @@ namespace ledger {
             result += 40;
             return result;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

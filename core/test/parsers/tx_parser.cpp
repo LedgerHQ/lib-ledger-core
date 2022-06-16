@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-
 #include <utils/JSONUtils.h>
 #include <wallet/common/explorers/api/AbstractBlockParser.h>
 
@@ -14,7 +13,7 @@ struct TestBlock {
 struct TestParser : AbstractBlockParser<TestBlock> {
     typedef TestBlock Result;
 
-    TestParser(std::string& lastKey) : _lastKey(lastKey) {}
+    TestParser(std::string &lastKey) : _lastKey(lastKey) {}
     ~TestParser() = default;
 
     bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
@@ -22,10 +21,10 @@ struct TestParser : AbstractBlockParser<TestBlock> {
         return true;
     }
 
-protected:
-    std::string& _lastKey;
+  protected:
+    std::string &_lastKey;
 
-    std::string& getLastKey() override {
+    std::string &getLastKey() override {
         return _lastKey;
     }
 };

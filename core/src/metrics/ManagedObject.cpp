@@ -59,5 +59,5 @@ namespace ledger {
             static std::shared_ptr<AllocationMap> instance = std::make_shared<AllocationMap>();
             return instance;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

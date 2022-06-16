@@ -30,9 +30,9 @@
  */
 
 #include "BaseFixture.h"
+
 #include <ledger/core/api/ErrorCode.hpp>
 class WalletTests : public BaseFixture {
-
 };
 
 TEST_F(WalletTests, CreateNewWallet) {
@@ -103,7 +103,6 @@ TEST_F(WalletTests, CreateNonContiguousAccount) {
     EXPECT_EQ(uv::wait(std::dynamic_pointer_cast<ledger::core::AbstractAccount>(accounts.front())->getFreshPublicAddresses())[0]->toString(), uv::wait(fetchedAccount->getFreshPublicAddresses())[0]->toString());
 }
 
-
 TEST_F(WalletTests, CreateNonContiguousAccountBis) {
     auto pool = newDefaultPool();
     auto wallet = uv::wait(pool->createWallet(randomWalletName(), "bitcoin", api::DynamicObject::newInstance()));
@@ -115,26 +114,27 @@ TEST_F(WalletTests, CreateNonContiguousAccountBis) {
 TEST_F(WalletTests, DISABLED_CreateAccountBug) {
     auto pool = newDefaultPool();
     auto wallet = uv::wait(pool->createWallet(randomWalletName(), "bitcoin", api::DynamicObject::newInstance()));
-    auto list = [pool, this] () -> Future<Unit> {
-        return pool->getWalletCount().flatMap<std::vector<std::shared_ptr<AbstractWallet>>>(dispatcher->getMainExecutionContext(), [pool] (const int64_t& count) -> Future<std::vector<std::shared_ptr<AbstractWallet>>> {
-            return pool->getWallets(0, count);
-        }).flatMap<Unit>(dispatcher->getMainExecutionContext(), [] (const std::vector<std::shared_ptr<AbstractWallet>>& wallets) -> Future<Unit> {
-            return Future<Unit>::successful(unit);
-        });
+    auto list = [pool, this]() -> Future<Unit> {
+        return pool->getWalletCount().flatMap<std::vector<std::shared_ptr<AbstractWallet>>>(dispatcher->getMainExecutionContext(), [pool](const int64_t &count) -> Future<std::vector<std::shared_ptr<AbstractWallet>>> {
+                                         return pool->getWallets(0, count);
+                                     })
+            .flatMap<Unit>(dispatcher->getMainExecutionContext(), [](const std::vector<std::shared_ptr<AbstractWallet>> &wallets) -> Future<Unit> {
+                return Future<Unit>::successful(unit);
+            });
     };
     //Otherwise test takes a long time
     //int LOOP_COUNT = 250;
     int LOOP_COUNT = 5;
-    std::function<void (int)> loop;
-    loop = [&loop, &wallet, this, list, LOOP_COUNT] (int index) {
+    std::function<void(int)> loop;
+    loop = [&loop, &wallet, this, list, LOOP_COUNT](int index) {
         if (index >= LOOP_COUNT) {
             dispatcher->stop();
-            return ;
+            return;
         }
         auto info = P2PKH_MEDIUM_XPUB_INFO;
         info.index = index;
-        wallet->newAccountWithExtendedKeyInfo(info).onComplete(dispatcher->getMainExecutionContext(), [&loop, index, list, this] (const TryPtr<api::Account>& res) {
-            list().onComplete(dispatcher->getMainExecutionContext(), [res, &loop, list, index] (const Try<Unit>&) {
+        wallet->newAccountWithExtendedKeyInfo(info).onComplete(dispatcher->getMainExecutionContext(), [&loop, index, list, this](const TryPtr<api::Account> &res) {
+            list().onComplete(dispatcher->getMainExecutionContext(), [res, &loop, list, index](const Try<Unit> &) {
                 if (res.isSuccess()) {
                     res.getValue()->synchronize();
                     loop(index + 1);

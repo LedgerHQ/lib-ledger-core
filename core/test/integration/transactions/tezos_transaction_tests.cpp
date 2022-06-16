@@ -28,20 +28,21 @@
  *
  */
 
-#include "../BaseFixture.h"
 #include "../../fixtures/xtz_fixtures.h"
+#include "../BaseFixture.h"
+#include "transaction_test_helper.h"
+
+#include <api/BlockchainExplorerEngines.hpp>
 #include <api/KeychainEngines.hpp>
-#include <api/TezosLikeOriginatedAccount.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
-#include <api/BlockchainExplorerEngines.hpp>
-#include "transaction_test_helper.h"
-#include <utils/hex.h>
-#include <utils/DateUtils.hpp>
-#include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
-#include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
-#include <wallet/currencies.hpp>
+#include <api/TezosLikeOriginatedAccount.hpp>
 #include <iostream>
+#include <utils/DateUtils.hpp>
+#include <utils/hex.h>
+#include <wallet/currencies.hpp>
+#include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
+#include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
 using namespace std;
 
 struct TezosMakeTransaction : public TezosMakeBaseTransaction {

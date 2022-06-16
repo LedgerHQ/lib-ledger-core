@@ -29,6 +29,7 @@
  *
  */
 #include "Block.h"
+
 #include "database/BlockDatabaseHelper.h"
 
 namespace ledger {
@@ -38,9 +39,8 @@ namespace ledger {
             return BlockDatabaseHelper::createBlockUid(*this);
         }
 
-        api::Block Block::toApiBlock() const
-        {
+        api::Block Block::toApiBlock() const {
             return api::Block(hash, getUid(), time, currencyName, static_cast<int64_t>(height));
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

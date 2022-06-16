@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMLIKETRANSACTIONSPARSER_H
 #define LEDGER_CORE_ETHEREUMLIKETRANSACTIONSPARSER_H
 
@@ -40,23 +39,21 @@
 namespace ledger {
     namespace core {
         class EthereumLikeTransactionsParser : public AbstractTransactionsParser<EthereumLikeBlockchainExplorerTransaction, EthereumLikeTransactionParser> {
-        public:
-            EthereumLikeTransactionsParser(std::string& lastKey) : _transactionParser(lastKey)
-            {
+          public:
+            EthereumLikeTransactionsParser(std::string &lastKey) : _transactionParser(lastKey) {
                 _arrayDepth = 0;
                 _objectDepth = 0;
             }
 
-        protected:
+          protected:
             EthereumLikeTransactionParser &getTransactionParser() override {
                 return _transactionParser;
             }
 
-        private:
+          private:
             EthereumLikeTransactionParser _transactionParser;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ETHEREUMLIKETRANSACTIONSPARSER_H

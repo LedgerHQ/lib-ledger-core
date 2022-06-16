@@ -28,32 +28,30 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEWALLET_H
 #define LEDGER_CORE_TEZOSLIKEWALLET_H
 #include <api/TezosLikeWallet.hpp>
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
-#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.hpp>
-#include <wallet/tezos/factories/TezosLikeWalletFactory.h>
 #include <wallet/tezos/factories/TezosLikeKeychainFactory.h>
+#include <wallet/tezos/factories/TezosLikeWalletFactory.h>
+#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.hpp>
 
 namespace ledger {
     namespace core {
         class TezosLikeWallet : public api::TezosLikeWallet, public AbstractWallet {
-        public:
+          public:
             static const api::WalletType type;
 
             TezosLikeWallet(
-                    const std::string &name,
-                    const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
-                    const std::shared_ptr<TezosLikeKeychainFactory> &keychainFactory,
-                    const TezosLikeAccountSynchronizerFactory &synchronizerFactory,
-                    const std::shared_ptr<WalletPool> &pool,
-                    const api::Currency &network,
-                    const std::shared_ptr<DynamicObject> &configuration,
-                    const DerivationScheme &scheme
-            );
+                const std::string &name,
+                const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
+                const std::shared_ptr<TezosLikeKeychainFactory> &keychainFactory,
+                const TezosLikeAccountSynchronizerFactory &synchronizerFactory,
+                const std::shared_ptr<WalletPool> &pool,
+                const api::Currency &network,
+                const std::shared_ptr<DynamicObject> &configuration,
+                const DerivationScheme &scheme);
 
             // API methods
             bool isSynchronizing() override;
@@ -72,15 +70,15 @@ namespace ledger {
 
             std::shared_ptr<TezosLikeBlockchainExplorer> getBlockchainExplorer();
 
-            Future<bool> isDelegate(const std::string& address);
+            Future<bool> isDelegate(const std::string &address);
 
             void isDelegate(const std::string &address, const std::shared_ptr<api::BoolCallback> &callback) override;
 
-        protected:
+          protected:
             std::shared_ptr<AbstractAccount>
             createAccountInstance(soci::session &sql, const std::string &accountUid) override;
 
-        private:
+          private:
             std::shared_ptr<TezosLikeWallet> getSelf();
 
             std::shared_ptr<TezosLikeBlockchainExplorer> _explorer;
@@ -88,6 +86,6 @@ namespace ledger {
             TezosLikeAccountSynchronizerFactory _synchronizerFactory;
             api::TezosLikeNetworkParameters _network;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_TEZOSLIKEWALLET_H

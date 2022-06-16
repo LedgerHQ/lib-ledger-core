@@ -28,26 +28,25 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKETRANSACTIONPARSER_H
 #define LEDGER_CORE_RIPPLELIKETRANSACTIONPARSER_H
 
 #include "RippleLikeBlockParser.h"
-#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
+
 #include <collections/collections.hpp>
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 #include <net/HttpClient.hpp>
 #include <rapidjson/reader.h>
 #include <stack>
-
+#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 
 namespace ledger {
     namespace core {
         class RippleLikeBlockchainExplorer;
 
         class RippleLikeTransactionParser {
-        public:
+          public:
             typedef RippleLikeBlockchainExplorerTransaction Result;
 
             RippleLikeTransactionParser(std::string &lastKey);
@@ -85,7 +84,8 @@ namespace ledger {
             std::string &getLastKey() {
                 return _lastKey;
             };
-        private:
+
+          private:
             std::string &_lastKey;
             RippleLikeBlockchainExplorerTransaction *_transaction;
 
@@ -93,7 +93,7 @@ namespace ledger {
             uint32_t _arrayDepth;
             RippleLikeBlockParser _blockParser;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_RIPPLELIKETRANSACTIONPARSER_H

@@ -31,31 +31,31 @@
 #ifndef LEDGER_CORE_ABSTRACTWALLETFACTORY_HPP
 #define LEDGER_CORE_ABSTRACTWALLETFACTORY_HPP
 
+#include "AbstractWallet.hpp"
+
 #include <memory>
 #include <wallet/pool/database/WalletDatabaseEntry.hpp>
-#include "AbstractWallet.hpp"
 
 namespace ledger {
     namespace core {
         class AbstractWalletFactory {
-        public:
-            AbstractWalletFactory(const api::Currency& currency, const std::shared_ptr<WalletPool>& pool);
-            virtual std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry& entry) = 0;
-            const api::Currency& getCurrency() const;
-            virtual ~AbstractWalletFactory() {};
+          public:
+            AbstractWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
+            virtual std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) = 0;
+            const api::Currency &getCurrency() const;
+            virtual ~AbstractWalletFactory(){};
 
-        protected:
+          protected:
             std::shared_ptr<WalletPool> getPool() const;
 
-        private:
+          private:
             api::Currency _currency;
             std::weak_ptr<WalletPool> _pool;
         };
 
         template <api::WalletType>
-        std::shared_ptr<AbstractWalletFactory> make_factory(const api::Currency& currency, const std::shared_ptr<WalletPool>& pool);
-    }
-}
-
+        std::shared_ptr<AbstractWalletFactory> make_factory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_ABSTRACTWALLETFACTORY_HPP

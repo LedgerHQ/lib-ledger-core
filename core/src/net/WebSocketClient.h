@@ -44,18 +44,19 @@ namespace ledger {
             RECEIVE,
             CLOSE
         };
-        using WebSocketEventHandler = std::function<void (WebSocketEventType,
-                                                          const std::shared_ptr<WebSocketConnection>& connection,
-                                                          const Option<std::string>& message, Option<api::ErrorCode>)>;
+        using WebSocketEventHandler = std::function<void(WebSocketEventType,
+                                                         const std::shared_ptr<WebSocketConnection> &connection,
+                                                         const Option<std::string> &message,
+                                                         Option<api::ErrorCode>)>;
         class WebSocketClient {
-        public:
-            WebSocketClient(const std::shared_ptr<api::WebSocketClient>& client);
-            FuturePtr<WebSocketConnection> connect(const std::string& url, const WebSocketEventHandler& handler);
-        private:
+          public:
+            WebSocketClient(const std::shared_ptr<api::WebSocketClient> &client);
+            FuturePtr<WebSocketConnection> connect(const std::string &url, const WebSocketEventHandler &handler);
+
+          private:
             std::shared_ptr<api::WebSocketClient> _client;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_WEBSOCKETCLIENT_H

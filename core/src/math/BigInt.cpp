@@ -30,14 +30,15 @@
  */
 
 #include "BigInt.h"
-#include <cstdlib>
-#include <iostream>
-#include <algorithm>
+
 #include "../collections/collections.hpp"
-#include <boost/serialization/nvp.hpp>
+
+#include <algorithm>
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <boost/multiprecision/cpp_int.hpp>
+#include <boost/serialization/nvp.hpp>
 #include <cstdlib>
+#include <iostream>
 #include <utils/endian.h>
 
 namespace ledger {
@@ -55,7 +56,7 @@ namespace ledger {
             _negative = false;
         }
 
-        BigInt::BigInt(const BigInt& cpy) {
+        BigInt::BigInt(const BigInt &cpy) {
             _bigd = bdNew();
             _negative = cpy._negative;
             bdSetEqual(_bigd, cpy._bigd);
@@ -67,12 +68,11 @@ namespace ledger {
         }
 
         BigInt::BigInt(const std::vector<uint8_t> &data, bool negative)
-        : BigInt(data.data(), data.size(), negative){
-
+            : BigInt(data.data(), data.size(), negative) {
         }
 
         BigInt::BigInt(int value)
-                : BigInt() {
+            : BigInt() {
             bdSetShort(_bigd, (bdigit_t)std::abs(value));
             if (value < 0) {
                 _negative = true;
@@ -92,17 +92,16 @@ namespace ledger {
         }
 
         BigInt::BigInt(int64_t value) : BigInt() {
-            auto bytes = endianness::scalar_type_to_array<int64_t >(std::abs(value), endianness::Endianness::BIG);
+            auto bytes = endianness::scalar_type_to_array<int64_t>(std::abs(value), endianness::Endianness::BIG);
             bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(int64_t));
             std::free(bytes);
             _negative = value < 0LL;
         }
 
-        BigInt::BigInt(const std::string& str) : BigInt(str, 10)
-        {};
+        BigInt::BigInt(const std::string &str) : BigInt(str, 10){};
 
-        BigInt& BigInt::assignI64(int64_t value) {
-            auto bytes = endianness::scalar_type_to_array<int64_t >(std::abs(value), endianness::Endianness::BIG);
+        BigInt &BigInt::assignI64(int64_t value) {
+            auto bytes = endianness::scalar_type_to_array<int64_t>(std::abs(value), endianness::Endianness::BIG);
             bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(int64_t));
             std::free(bytes);
             _negative = value < 0LL;
@@ -251,7 +250,7 @@ namespace ledger {
             return temp;
         }
 
-        BigInt& BigInt::operator=(const BigInt &a) {
+        BigInt &BigInt::operator=(const BigInt &a) {
             if (this != &a) {
                 bdSetEqual(_bigd, a._bigd);
                 _negative = a._negative;
@@ -260,7 +259,7 @@ namespace ledger {
             return *this;
         }
 
-        BigInt& BigInt::operator=(BigInt&& a) {
+        BigInt &BigInt::operator=(BigInt &&a) {
             if (this == &a) {
                 return *this;
             }
@@ -347,7 +346,7 @@ namespace ledger {
 
         std::vector<uint8_t> BigInt::toByteArray() const {
             size_t nchars = bdConvToOctets(_bigd, NULL, 0);
-            std::vector<uint8_t> out = std::vector<uint8_t >(nchars);
+            std::vector<uint8_t> out = std::vector<uint8_t>(nchars);
             bdConvToOctets(_bigd, reinterpret_cast<unsigned char *>(out.data()), nchars);
             return out;
         }
@@ -403,7 +402,7 @@ namespace ledger {
             mov._bigd = nullptr;
         }
 
-        bool BigInt::all_digits(std::string const& s) {
+        bool BigInt::all_digits(std::string const &s) {
             auto it = s.cbegin();
             auto end = s.cend();
 
@@ -418,7 +417,7 @@ namespace ledger {
             namespace mp = boost::multiprecision;
 
             mp::cpp_dec_float_50 f(str);
-            mp::cpp_dec_float_50 scale = mp::pow(mp::cpp_dec_float_50(10), (float) scaleFactor);
+            mp::cpp_dec_float_50 scale = mp::pow(mp::cpp_dec_float_50(10), (float)scaleFactor);
             f = f * scale;
 
             bool isNegative = f < 0;
@@ -447,5 +446,5 @@ namespace ledger {
             return BigInt(limbs, size * sizeof(mp::limb_type), isNegative);
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

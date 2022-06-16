@@ -34,12 +34,18 @@
 
 #include "models.hpp"
 
-namespace ledger { namespace core { namespace stellar { namespace xdr {
+namespace ledger {
+    namespace core {
+        namespace stellar {
+            namespace xdr {
 
-    const std::list<xdr::Operation>& getOperations(const xdr::TransactionEnvelope& envelope);
-    TransactionEnvelope wrap(const xdr::TransactionV0Envelope& envelope);
-    TransactionEnvelope wrap(const xdr::TransactionV1Envelope& envelope);
+                const std::list<xdr::Operation> &getOperations(const xdr::TransactionEnvelope &envelope);
+                TransactionEnvelope wrap(const xdr::TransactionV0Envelope &envelope);
+                TransactionEnvelope wrap(const xdr::TransactionV1Envelope &envelope);
 
-} } } }
+            } // namespace xdr
+        }     // namespace stellar
+    }         // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_STELLARMODELUTILS_HPP

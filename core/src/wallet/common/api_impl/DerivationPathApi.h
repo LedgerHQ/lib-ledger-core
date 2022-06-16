@@ -38,8 +38,8 @@
 namespace ledger {
     namespace core {
         class DerivationPathApi : public api::DerivationPath {
-        public:
-            explicit DerivationPathApi(const ledger::core::DerivationPath& path) : _path(path) {};
+          public:
+            explicit DerivationPathApi(const ledger::core::DerivationPath &path) : _path(path){};
             int32_t getDepth() override;
 
             int32_t getChildNum(int32_t index) override;
@@ -54,11 +54,10 @@ namespace ledger {
 
             std::vector<int32_t> toArray() override;
 
-        private:
+          private:
             ledger::core::DerivationPath _path;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_DERIVATIONPATHAPI_H

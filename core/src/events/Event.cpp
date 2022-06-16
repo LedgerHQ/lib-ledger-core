@@ -28,8 +28,9 @@
  * SOFTWARE.
  *
  */
-#include <collections/DynamicObject.hpp>
 #include "Event.hpp"
+
+#include <collections/DynamicObject.hpp>
 
 ledger::core::api::EventCode ledger::core::Event::getCode() {
     return _code;
@@ -68,16 +69,16 @@ void ledger::core::Event::setReadOnly(bool readOnly) {
     }
 }
 
-std::shared_ptr<ledger::core::api::Event> ledger::core::make_event(ledger::core::api::EventCode code, const std::shared_ptr<ledger::core::api::DynamicObject>& payload) {
+std::shared_ptr<ledger::core::api::Event> ledger::core::make_event(ledger::core::api::EventCode code, const std::shared_ptr<ledger::core::api::DynamicObject> &payload) {
     return std::make_shared<ledger::core::Event>(code, payload);
 }
 
 namespace ledger {
     namespace core {
         namespace api {
-            std::shared_ptr<Event> Event::newInstance(EventCode code, const std::shared_ptr<DynamicObject> & payload) {
+            std::shared_ptr<Event> Event::newInstance(EventCode code, const std::shared_ptr<DynamicObject> &payload) {
                 return std::make_shared<ledger::core::Event>(code, payload);
             }
-        }
-    }
-}
+        } // namespace api
+    }     // namespace core
+} // namespace ledger

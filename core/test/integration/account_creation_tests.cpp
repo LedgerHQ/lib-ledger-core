@@ -34,26 +34,21 @@
 #include "api/TezosConfigurationDefaults.hpp"
 
 class AccountCreationTest : public BaseFixture {
-protected:
-  void CheckDoubleAccountCreation(const api::AccountCreationInfo& aci, const std::string& currencyName, const std::shared_ptr<api::DynamicObject> &configuration) {
-    auto pool = newDefaultPool();
-    const auto walletName = "my_wallet_createaccountwithinfo";
-    auto wallet = uv::wait(pool->createWallet(walletName, currencyName, configuration));
-    uv::wait(wallet->newAccountWithInfo(aci));
-    try
-    {
-      uv::wait(wallet->newAccountWithInfo(aci));
+  protected:
+    void CheckDoubleAccountCreation(const api::AccountCreationInfo &aci, const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration) {
+        auto pool = newDefaultPool();
+        const auto walletName = "my_wallet_createaccountwithinfo";
+        auto wallet = uv::wait(pool->createWallet(walletName, currencyName, configuration));
+        uv::wait(wallet->newAccountWithInfo(aci));
+        try {
+            uv::wait(wallet->newAccountWithInfo(aci));
+        } catch (const ledger::core::Exception &e) {
+            EXPECT_EQ(e.getErrorCode(), ledger::core::api::ErrorCode::ACCOUNT_ALREADY_EXISTS);
+        } catch (...) {
+            ADD_FAILURE() << "Expected ledger::core::Exception exception";
+        }
+        uv::wait(pool->deleteWallet(walletName));
     }
-    catch(const ledger::core::Exception& e)
-    {
-      EXPECT_EQ(e.getErrorCode(), ledger::core::api::ErrorCode::ACCOUNT_ALREADY_EXISTS);
-    }
-    catch(...)
-    {
-      ADD_FAILURE() << "Expected ledger::core::Exception exception";
-    }
-    uv::wait(pool->deleteWallet(walletName));
-  }
 };
 
 TEST_F(AccountCreationTest, CreateBitcoinAccountWithInfo) {
@@ -102,7 +97,7 @@ TEST_F(AccountCreationTest, ChangePassword) {
         EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
     }
 
-    auto changePasswordAndGetInfos = [walletName] (const std::shared_ptr<WalletPool> &walletPool, const std::string &oldPassword, const std::string &newPassword) {
+    auto changePasswordAndGetInfos = [walletName](const std::shared_ptr<WalletPool> &walletPool, const std::string &oldPassword, const std::string &newPassword) {
         uv::wait(walletPool->changePassword(oldPassword, newPassword));
         {
             auto wallet = uv::wait(walletPool->getWallet(walletName));
@@ -119,25 +114,24 @@ TEST_F(AccountCreationTest, ChangePassword) {
 }
 
 TEST_F(AccountCreationTest, CreateBitcoinAccountTwiceShouldRaiseError) {
-  CheckDoubleAccountCreation(P2PKH_MEDIUM_KEYS_INFO, "bitcoin", DynamicObject::newInstance());
+    CheckDoubleAccountCreation(P2PKH_MEDIUM_KEYS_INFO, "bitcoin", DynamicObject::newInstance());
 }
 
 TEST_F(AccountCreationTest, CreateEthereumAccountTwiceShouldRaiseError) {
-  CheckDoubleAccountCreation(ETH_KEYS_INFO, "ethereum", DynamicObject::newInstance());
+    CheckDoubleAccountCreation(ETH_KEYS_INFO, "ethereum", DynamicObject::newInstance());
 }
 
 TEST_F(AccountCreationTest, CreateTezosAccountTwiceShouldRaiseError) {
-  auto configuration = DynamicObject::newInstance();
-  configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
-  CheckDoubleAccountCreation(XTZ_KEYS_INFO, "tezos", configuration);
+    auto configuration = DynamicObject::newInstance();
+    configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
+    CheckDoubleAccountCreation(XTZ_KEYS_INFO, "tezos", configuration);
 }
 
 TEST_F(AccountCreationTest, CreateStellarAccountTwiceShouldRaiseError) {
-  CheckDoubleAccountCreation(api::AccountCreationInfo(0, {"main"}, {"44'/148'/0'"}, {ledger::core::hex::toByteArray(
-                                 "a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f")}, {}), "stellar",
-                             DynamicObject::newInstance());
+    CheckDoubleAccountCreation(api::AccountCreationInfo(0, {"main"}, {"44'/148'/0'"}, {ledger::core::hex::toByteArray("a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f")}, {}), "stellar",
+                               DynamicObject::newInstance());
 }
 
 TEST_F(AccountCreationTest, CreateRippleAccountTwiceShouldRaiseError) {
-  CheckDoubleAccountCreation(XRP_KEYS_INFO, "ripple", DynamicObject::newInstance());
+    CheckDoubleAccountCreation(XRP_KEYS_INFO, "ripple", DynamicObject::newInstance());
 }

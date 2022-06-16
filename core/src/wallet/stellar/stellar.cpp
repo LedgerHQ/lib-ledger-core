@@ -30,6 +30,7 @@
  */
 
 #include "stellar.hpp"
+
 #include "StellarLikeAddress.hpp"
 
 namespace ledger {
@@ -40,16 +41,16 @@ namespace ledger {
             static const std::string kAssetTypeCreditAlphanum4("credit_alphanum4");
             static const std::string kAssetTypeCreditAlphanum12("credit_alphanum12");
 
-            void xdrAssetToAsset(const xdr::Asset& asset, const api::StellarLikeNetworkParameters& params, stellar::Asset& out) {
+            void xdrAssetToAsset(const xdr::Asset &asset, const api::StellarLikeNetworkParameters &params, stellar::Asset &out) {
                 if (asset.type == xdr::AssetType::ASSET_TYPE_NATIVE) {
                     out.type = kAssetTypeNative;
-                    return ;
-                } else if (asset.type == xdr::AssetType::ASSET_TYPE_CREDIT_ALPHANUM4){
-                    const auto& code =  boost::get<xdr::AssetCode4>(asset.assetCode);
+                    return;
+                } else if (asset.type == xdr::AssetType::ASSET_TYPE_CREDIT_ALPHANUM4) {
+                    const auto &code = boost::get<xdr::AssetCode4>(asset.assetCode);
                     out.code = std::string(code.begin(), code.end());
                     out.type = kAssetTypeCreditAlphanum4;
                 } else {
-                    const auto& code =  boost::get<xdr::AssetCode4>(asset.assetCode);
+                    const auto &code = boost::get<xdr::AssetCode4>(asset.assetCode);
                     out.code = std::string(code.begin(), code.end());
                     out.type = kAssetTypeCreditAlphanum4;
                 }
@@ -58,6 +59,6 @@ namespace ledger {
                 }
             }
 
-        }
-    }
-}
+        } // namespace stellar
+    }     // namespace core
+} // namespace ledger

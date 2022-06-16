@@ -29,32 +29,31 @@
  *
  */
 
-#include <gtest/gtest.h>
 #include "../BaseFixture.h"
-#include <set>
-#include <api/ConfigurationDefaults.hpp>
-#include <api/KeychainEngines.hpp>
-#include <api/RippleLikeTransaction.hpp>
-#include <api/OperationOrderKey.hpp>
-#include <utils/DateUtils.hpp>
-#include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
-#include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
-#include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
-#include <api/RippleConfigurationDefaults.hpp>
-#include <iostream>
 #include "FakeHttpClient.hpp"
 #include "MemPreferencesBackend.hpp"
 
+#include <api/ConfigurationDefaults.hpp>
+#include <api/KeychainEngines.hpp>
+#include <api/OperationOrderKey.hpp>
+#include <api/RippleConfigurationDefaults.hpp>
+#include <api/RippleLikeTransaction.hpp>
+#include <gtest/gtest.h>
+#include <iostream>
+#include <set>
+#include <utils/DateUtils.hpp>
+#include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
+#include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
+#include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
+
 using namespace std;
 
-class RippleLikeOptimisticTransactionUpdate : public BaseFixture
-{
+class RippleLikeOptimisticTransactionUpdate : public BaseFixture {
 };
 
 std::pair<std::shared_ptr<LambdaEventReceiver>, ledger::core::Future<bool>> createSyncReceiver();
 
-TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction)
-{
+TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction) {
 
     auto fakeHttp = std::make_shared<test::FakeHttpClient>();
 
@@ -94,7 +93,7 @@ TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction)
             dummy_transaction->setSender(account->getKeychain()->getAddress());
             dummy_transaction->setReceiver(account->getKeychain()->getAddress());
             dummy_transaction->setHash("AC0D84CB81E8ECA92E7EF9ABC3526FAED54DE07763A308296B28468D68D34991");
-            std::vector<uint8_t> dummy_key = {1 , 2 , 3 , 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
+            std::vector<uint8_t> dummy_key = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
             dummy_transaction->setSigningPubKey(dummy_key);
             dummy_transaction->setDERSignature(dummy_key);
 

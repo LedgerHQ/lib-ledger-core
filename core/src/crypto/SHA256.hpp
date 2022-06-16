@@ -35,19 +35,18 @@
 #include <vector>
 
 namespace ledger {
- namespace core {
-     class SHA256 {
-     public:
-         static std::string stringToHexHash(const std::string& input);
-         static std::string bytesToHexHash(const std::vector<uint8_t>& bytes);
-         static std::vector<uint8_t> stringToBytesHash(const std::string& input);
-         static std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t>& bytes);
+    namespace core {
+        class SHA256 {
+          public:
+            static std::string stringToHexHash(const std::string &input);
+            static std::string bytesToHexHash(const std::vector<uint8_t> &bytes);
+            static std::vector<uint8_t> stringToBytesHash(const std::string &input);
+            static std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t> &bytes);
 
-     private:
-         static std::vector<uint8_t> dataToBytesHash(const void *data, size_t size);
-     };
- }
-}
-
+          private:
+            static std::vector<uint8_t> dataToBytesHash(const void *data, size_t size);
+        };
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_SHA256_HPP

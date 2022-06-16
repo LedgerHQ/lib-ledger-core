@@ -32,15 +32,16 @@
 #ifndef LEDGER_CORE_HORIZONTRANSACTIONPARSER_HPP
 #define LEDGER_CORE_HORIZONTRANSACTIONPARSER_HPP
 
+#include "HorizonArrayParser.hpp"
+
 #include <rapidjson/reader.h>
 #include <utils/JsonParserPath.hpp>
 #include <wallet/stellar/stellar.hpp>
-#include "HorizonArrayParser.hpp"
 
 namespace ledger {
     namespace core {
         class HorizonTransactionParser {
-        public:
+          public:
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -56,16 +57,15 @@ namespace ledger {
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
             void init(stellar::Transaction *transaction);
-            void setPathView(const JsonParserPathView& path);
+            void setPathView(const JsonParserPathView &path);
 
-        private:
+          private:
             stellar::Transaction *_transaction;
             JsonParserPathView _path;
-
         };
 
         using HorizonTransactionsParser = HorizonArrayParser<HorizonTransactionParser, stellar::Transaction>;
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_HORIZONTRANSACTIONPARSER_HPP

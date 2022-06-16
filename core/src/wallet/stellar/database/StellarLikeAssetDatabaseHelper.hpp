@@ -38,18 +38,16 @@
 namespace ledger {
     namespace core {
         class StellarLikeAssetDatabaseHelper {
-        public:
+          public:
             StellarLikeAssetDatabaseHelper() = delete;
 
-            static std::string createAssetUid(const std::string& type, const Option<std::string>& code, const Option<std::string>&issuer);
-            static std::string createAssetUid(const stellar::Asset& asset);
+            static std::string createAssetUid(const std::string &type, const Option<std::string> &code, const Option<std::string> &issuer);
+            static std::string createAssetUid(const stellar::Asset &asset);
 
-            static bool putAsset(soci::session& sql, const std::string& type, const Option<std::string>& code, const Option<std::string>&issuer);
-            static bool putAsset(soci::session& sql, const stellar::Asset& asset);
-
+            static bool putAsset(soci::session &sql, const std::string &type, const Option<std::string> &code, const Option<std::string> &issuer);
+            static bool putAsset(soci::session &sql, const stellar::Asset &asset);
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_STELLARLIKEASSETDATABASEHELPER_HPP

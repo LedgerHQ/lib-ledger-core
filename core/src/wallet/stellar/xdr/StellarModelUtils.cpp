@@ -30,36 +30,43 @@
  */
 
 #include "StellarModelUtils.hpp"
+
 #include <utils/Exception.hpp>
 
-namespace ledger { namespace core { namespace stellar { namespace xdr {
+namespace ledger {
+    namespace core {
+        namespace stellar {
+            namespace xdr {
 
-    const std::list<xdr::Operation>& getOperations(const xdr::TransactionEnvelope& envelope) {
-        switch (envelope.type) {
-            case EnvelopeType::ENVELOPE_TYPE_TX_V0:
-                return boost::get<TransactionV0Envelope>(envelope.content).tx.operations;
-            case EnvelopeType::ENVELOPE_TYPE_TX:
-                return boost::get<TransactionV1Envelope>(envelope.content).tx.operations;
-            case EnvelopeType::ENVELOPE_TYPE_TX_FEE_BUMP:
-                return boost::get<FeeBumpTransactionEnvelope>(envelope.content).tx.operations;
-            default:
-                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Envelope type {} is not supported",
-                        static_cast<int>(envelope.type));
-        }
-    }
+                const std::list<xdr::Operation> &getOperations(const xdr::TransactionEnvelope &envelope) {
+                    switch (envelope.type) {
+                    case EnvelopeType::ENVELOPE_TYPE_TX_V0:
+                        return boost::get<TransactionV0Envelope>(envelope.content).tx.operations;
+                    case EnvelopeType::ENVELOPE_TYPE_TX:
+                        return boost::get<TransactionV1Envelope>(envelope.content).tx.operations;
+                    case EnvelopeType::ENVELOPE_TYPE_TX_FEE_BUMP:
+                        return boost::get<FeeBumpTransactionEnvelope>(envelope.content).tx.operations;
+                    default:
+                        throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Envelope type {} is not supported",
+                                             static_cast<int>(envelope.type));
+                    }
+                }
 
-    TransactionEnvelope wrap(const xdr::TransactionV0Envelope& envelope) {
-        TransactionEnvelope env;
-        env.type = EnvelopeType::ENVELOPE_TYPE_TX_V0;
-        env.content = envelope;
-        return env;
-    }
+                TransactionEnvelope wrap(const xdr::TransactionV0Envelope &envelope) {
+                    TransactionEnvelope env;
+                    env.type = EnvelopeType::ENVELOPE_TYPE_TX_V0;
+                    env.content = envelope;
+                    return env;
+                }
 
-    TransactionEnvelope wrap(const xdr::TransactionV1Envelope& envelope) {
-        TransactionEnvelope env;
-        env.type = EnvelopeType::ENVELOPE_TYPE_TX;
-        env.content = envelope;
-        return env;
-    }
+                TransactionEnvelope wrap(const xdr::TransactionV1Envelope &envelope) {
+                    TransactionEnvelope env;
+                    env.type = EnvelopeType::ENVELOPE_TYPE_TX;
+                    env.content = envelope;
+                    return env;
+                }
 
-} } } }
+            } // namespace xdr
+        }     // namespace stellar
+    }         // namespace core
+} // namespace ledger

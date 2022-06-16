@@ -28,20 +28,19 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKETRANSACTIONDATABASEHELPER_H
 #define LEDGER_CORE_TEZOSLIKETRANSACTIONDATABASEHELPER_H
 
-#include <string>
-#include <soci.h>
-#include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
-#include <api/TezosOperationTag.hpp>
 #include <api/OperationType.hpp>
+#include <api/TezosOperationTag.hpp>
+#include <soci.h>
+#include <string>
+#include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
 
 namespace ledger {
     namespace core {
         class TezosLikeTransactionDatabaseHelper {
-        public:
+          public:
             static bool getTransactionByHash(soci::session &sql,
                                              const std::string &hash,
                                              const std::string &operationUid, // different ops can belong to same tx
@@ -61,11 +60,11 @@ namespace ledger {
             static std::string putTransaction(soci::session &sql,
                                               const std::string &accountUid,
                                               const TezosLikeBlockchainExplorerTransaction &tx);
-        
+
             static void eraseDataSince(soci::session &sql,
-                                        const std::string &accountUid,
-                                        const std::chrono::system_clock::time_point & date);
+                                       const std::string &accountUid,
+                                       const std::chrono::system_clock::time_point &date);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 #endif //LEDGER_CORE_TEZOSLIKETRANSACTIONDATABASEHELPER_H

@@ -30,10 +30,11 @@
  */
 
 #include "ConditionQueryFilter.h"
-#include <utils/DateUtils.hpp>
-#include <cereal/external/base64.hpp>
-#include <api/TrustLevel.hpp>
+
 #include <api/OperationType.hpp>
+#include <api/TrustLevel.hpp>
+#include <cereal/external/base64.hpp>
+#include <utils/DateUtils.hpp>
 
 namespace ledger {
     namespace core {
@@ -183,9 +184,9 @@ namespace ledger {
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::operationTypeNeq(api::
-                                                                             OperationType type) {
+                                                                                 OperationType type) {
             return std::make_shared<ConditionQueryFilter<std::string>>("type", "<>", api::to_string(type), "o");
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

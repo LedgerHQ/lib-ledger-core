@@ -34,8 +34,6 @@
 #include "api/LedgerCore.hpp"
 
 class LedgerCoreImpl {
-
 };
-
 
 #endif //LEDGER_CORE_LEDGERCOREIMPL_HPP

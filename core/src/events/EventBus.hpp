@@ -31,35 +31,35 @@
 #ifndef LEDGER_CORE_EVENTBUS_HPP
 #define LEDGER_CORE_EVENTBUS_HPP
 
-#include "EventPublisher.hpp"
 #include "Event.hpp"
-#include <tuple>
-#include <unordered_map>
+#include "EventPublisher.hpp"
+
 #include <list>
 #include <mutex>
+#include <tuple>
+#include <unordered_map>
 
 namespace ledger {
     namespace core {
         class EventBus : public api::EventBus, public DedicatedContext, public std::enable_shared_from_this<EventBus> {
-        public:
+          public:
             void subscribe(const std::shared_ptr<api::ExecutionContext> &context,
                            const std::shared_ptr<api::EventReceiver> &receiver) override;
             void unsubscribe(const std::shared_ptr<api::EventReceiver> &receiver) override;
-            explicit EventBus(const std::shared_ptr<api::ExecutionContext>& context);
-        private:
+            explicit EventBus(const std::shared_ptr<api::ExecutionContext> &context);
+
+          private:
             friend class EventPublisher;
-            void post(const std::shared_ptr<Event>& event);
+            void post(const std::shared_ptr<Event> &event);
 
-
-        private:
+          private:
             using SubscribersList = std::list<std::tuple<std::shared_ptr<api::ExecutionContext>, std::shared_ptr<api::EventReceiver>>>;
             SubscribersList _subscribers;
             using StickiesMap = std::unordered_map<int32_t, std::shared_ptr<Event>>;
             StickiesMap _stickies;
             std::mutex _mutex;
         };
-    }
-}
-
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_EVENTBUS_HPP

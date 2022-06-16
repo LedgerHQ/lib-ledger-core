@@ -31,21 +31,21 @@
 #ifndef LEDGER_CORE_HMACSHA256_HPP
 #define LEDGER_CORE_HMACSHA256_HPP
 
-#include <vector>
 #include <cstdint>
+#include <vector>
 
 namespace ledger {
     namespace core {
         class HMAC {
-        public:
+          public:
             HMAC() = delete;
             ~HMAC() = delete;
-            static std::vector<uint8_t> sha256(const std::vector<uint8_t>& key,
-                                             const std::vector<uint8_t>& data);
-            static std::vector<uint8_t> sha512(const std::vector<uint8_t>& key,
-                                               const std::vector<uint8_t>& data);
+            static std::vector<uint8_t> sha256(const std::vector<uint8_t> &key,
+                                               const std::vector<uint8_t> &data);
+            static std::vector<uint8_t> sha512(const std::vector<uint8_t> &key,
+                                               const std::vector<uint8_t> &data);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_HMACSHA256_HPP

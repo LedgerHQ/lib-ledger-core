@@ -32,21 +32,22 @@
 #ifndef LEDGER_CORE_TRANSACTION_TEST_HELPER_H
 #define LEDGER_CORE_TRANSACTION_TEST_HELPER_H
 
-#include <string>
-#include <api/DynamicObject.hpp>
-#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
-#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
-#include <wallet/ethereum/EthereumLikeWallet.h>
-#include <wallet/ethereum/EthereumLikeAccount.h>
-#include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
-#include <wallet/ripple/RippleLikeWallet.h>
-#include <wallet/ripple/RippleLikeAccount.h>
-#include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
-#include <wallet/tezos/TezosLikeWallet.h>
-#include <wallet/tezos/TezosLikeAccount.h>
-#include <wallet/tezos/transaction_builders/TezosLikeTransactionBuilder.h>
 #include "../BaseFixture.h"
+
+#include <api/DynamicObject.hpp>
+#include <string>
+#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
+#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
+#include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
+#include <wallet/ethereum/EthereumLikeAccount.h>
+#include <wallet/ethereum/EthereumLikeWallet.h>
+#include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
+#include <wallet/ripple/RippleLikeAccount.h>
+#include <wallet/ripple/RippleLikeWallet.h>
+#include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
+#include <wallet/tezos/TezosLikeAccount.h>
+#include <wallet/tezos/TezosLikeWallet.h>
+#include <wallet/tezos/transaction_builders/TezosLikeTransactionBuilder.h>
 
 using namespace ledger::core;
 
@@ -54,16 +55,20 @@ struct TransactionTestData {
     std::shared_ptr<api::DynamicObject> configuration;
     std::string walletName;
     std::string currencyName;
-    std::function<std::shared_ptr<BitcoinLikeAccount> (const std::shared_ptr<WalletPool>&,
-                                                       const std::shared_ptr<AbstractWallet>& )> inflate_btc;
-    std::function<std::shared_ptr<EthereumLikeAccount> (const std::shared_ptr<WalletPool>&,
-                                                       const std::shared_ptr<AbstractWallet>& )> inflate_eth;
+    std::function<std::shared_ptr<BitcoinLikeAccount>(const std::shared_ptr<WalletPool> &,
+                                                      const std::shared_ptr<AbstractWallet> &)>
+        inflate_btc;
+    std::function<std::shared_ptr<EthereumLikeAccount>(const std::shared_ptr<WalletPool> &,
+                                                       const std::shared_ptr<AbstractWallet> &)>
+        inflate_eth;
 
-    std::function<std::shared_ptr<RippleLikeAccount> (const std::shared_ptr<WalletPool>&,
-                                                      const std::shared_ptr<AbstractWallet>& )> inflate_xrp;
+    std::function<std::shared_ptr<RippleLikeAccount>(const std::shared_ptr<WalletPool> &,
+                                                     const std::shared_ptr<AbstractWallet> &)>
+        inflate_xrp;
 
-    std::function<std::shared_ptr<TezosLikeAccount> (const std::shared_ptr<WalletPool>&,
-                                                     const std::shared_ptr<AbstractWallet>& )> inflate_xtz;
+    std::function<std::shared_ptr<TezosLikeAccount>(const std::shared_ptr<WalletPool> &,
+                                                    const std::shared_ptr<AbstractWallet> &)>
+        inflate_xtz;
 };
 
 struct BitcoinMakeBaseTransaction : public BaseFixture {
@@ -104,16 +109,16 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
         return std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(account->buildTransaction(false));
     }
 
-    std::shared_ptr<api::BitcoinLikeTransaction> createTransaction(const std::vector<OutputDescr>& outputs);
+    std::shared_ptr<api::BitcoinLikeTransaction> createTransaction(const std::vector<OutputDescr> &outputs);
 
     bool verifyTransactionInputs(std::shared_ptr<api::BitcoinLikeTransaction> tx,
-                                 const std::vector<InputDescr>& inputs);
+                                 const std::vector<InputDescr> &inputs);
     bool verifyTransactionOutputs(std::shared_ptr<api::BitcoinLikeTransaction> tx,
-                                  const std::vector<OutputDescr>& outputs);
+                                  const std::vector<OutputDescr> &outputs);
 
     bool verifyTransaction(std::shared_ptr<api::BitcoinLikeTransaction> tx,
-                           const std::vector<InputDescr>& inputs,
-                           const std::vector<OutputDescr>& outputs);
+                           const std::vector<InputDescr> &inputs,
+                           const std::vector<OutputDescr> &outputs);
 
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<AbstractWallet> wallet;
@@ -121,7 +126,7 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
     api::Currency currency;
     TransactionTestData testData;
 
-protected:
+  protected:
     virtual void SetUpConfig() = 0;
 };
 
@@ -156,7 +161,7 @@ struct EthereumMakeBaseTransaction : public BaseFixture {
     api::Currency currency;
     TransactionTestData testData;
 
-protected:
+  protected:
     virtual void SetUpConfig() = 0;
 };
 
@@ -191,7 +196,7 @@ struct RippleMakeBaseTransaction : public BaseFixture {
     api::Currency currency;
     TransactionTestData testData;
 
-protected:
+  protected:
     virtual void SetUpConfig() = 0;
 };
 
@@ -226,10 +231,8 @@ struct TezosMakeBaseTransaction : public BaseFixture {
     api::Currency currency;
     TransactionTestData testData;
 
-protected:
+  protected:
     virtual void SetUpConfig() = 0;
 };
-
-
 
 #endif //LEDGER_CORE_TRANSACTION_TEST_HELPER_H
