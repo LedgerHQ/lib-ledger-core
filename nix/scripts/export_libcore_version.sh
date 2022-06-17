@@ -16,6 +16,8 @@ LIBCORE_VERSION="$LIB_VERSION-rc-$COMMIT_HASH"
 LIBCORE_GIT_DESCRIBE=`git describe --tags --first-parent`
 
 echo "=====> Libcore version : $LIBCORE_VERSION"
+echo "GITHUB_BASE_REF: ${GITHUB_BASE_REF}"
+
 # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-output-parameter
 echo "::set-output name=lib_version::$LIBCORE_VERSION"
 
