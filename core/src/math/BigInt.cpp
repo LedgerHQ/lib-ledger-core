@@ -34,12 +34,15 @@
 #include "../collections/collections.hpp"
 
 #include <algorithm>
-#include <boost/multiprecision/cpp_dec_float.hpp>
-#include <boost/multiprecision/cpp_int.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <cstdlib>
 #include <iostream>
 #include <utils/endian.h>
+
+// clang-format off
+#include <boost/multiprecision/cpp_dec_float.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
+// clang-format on
 
 namespace ledger {
     namespace core {
