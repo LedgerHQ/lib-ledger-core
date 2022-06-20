@@ -1,7 +1,16 @@
+## 4.3.0
+
+- Send to Taproot addresses (Bitcoin only):
+-- Bech32m encoding
+-- Generation of P2TR outputs
+-- ALLOW\_P2TR feature flag (off by default) blocks "Send to Taproot"
+
+Side effect: can't serialize native segwit address to base58 and legacy address to bech32.
+
 ## 4.1.2
 
 - Fix of Tezos fees calculation formula
-  
+
 ## 4.1.1
 > Unreleased
 
@@ -23,11 +32,11 @@
 
 - Performance improvements
 - Tezos: support of all tz adresses (tz1, tz2, tz3) by implementing ED25519, SECP256K1 and P256
-- Tezos: support of grouped transaction messages 
+- Tezos: support of grouped transaction messages
 - Tezos: fix smart contracts balance
 - Tezos: concurent transactions (optimistic counter)
 - Tezos: get current delegate
-- Tezos: fees estimation 
+- Tezos: fees estimation
 - Tezos: get token balance
 
 ## 4.0.6
