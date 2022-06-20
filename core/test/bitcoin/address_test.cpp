@@ -63,15 +63,19 @@ TEST(Address, AddressFromBase58String) {
     auto x = currency.bitcoinLikeNetworkParameters.value();
     for (auto& item : fixtures) {
         EXPECT_TRUE(Address::isValid(item[1], currency));
-        auto address = Address::parse(item[1], currency)->asBitcoinLikeAddress();
-        EXPECT_EQ(address->getHash160(), hex::toByteArray(item[0]));
-        EXPECT_EQ(address->getVersion(), hex::toByteArray(item[3]));
+        auto address_from_base58 = Address::parse(item[1], currency)->asBitcoinLikeAddress();
+        auto address_from_bech32 = Address::parse(item[2], currency)->asBitcoinLikeAddress();
+        EXPECT_EQ(address_from_base58->getHash160(), hex::toByteArray(item[0]));
+        EXPECT_EQ(address_from_base58->getVersion(), hex::toByteArray(item[3]));
+        EXPECT_EQ(address_from_bech32->getHash160(), hex::toByteArray(item[0]));
+
         if (item[3] == "05") {
-            EXPECT_TRUE(address->isP2SH());
+            EXPECT_TRUE(address_from_base58->isP2SH());
         } else {
-            EXPECT_TRUE(address->isP2PKH());
+            EXPECT_TRUE(address_from_base58->isP2PKH());
+            EXPECT_EQ(address_from_bech32->getVersion(), hex::toByteArray(item[3]));
         }
-        EXPECT_EQ(address->toBech32(), item[2]);
+        EXPECT_TRUE(address_from_bech32->isP2WPKH());
     }
 }
 
@@ -98,11 +102,16 @@ TEST(Address, XpubFromBase58StringToBech32) {
     config->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
     auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, xpubStr, optional<std::string>("49'/145'/0'"), config);
     EXPECT_EQ(xpub->toBase58(), xpubStr);
-    EXPECT_EQ(xpub->derive("0/0")->toBase58(), base58Address);
     EXPECT_EQ(xpub->derive("0/0")->toBech32(), bech32Address);
 
+    config->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP32_P2PKH);
+    xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, xpubStr, optional<std::string>("49'/145'/0'"), config);
+    EXPECT_EQ(xpub->toBase58(), xpubStr);
+    EXPECT_EQ(xpub->derive("0/0")->toBase58(), base58Address);
+
     auto addr = ledger::core::BitcoinLikeAddress::fromBech32(bech32Address, currency);
-    EXPECT_EQ(addr->toBase58(), base58Address);
+    auto addr_p2pkh = ledger::core::BitcoinLikeAddress(currency, addr->getHash160(), api::KeychainEngines::BIP32_P2PKH);
+    EXPECT_EQ(addr_p2pkh.toBase58(), base58Address);
 }
 
 // Test writting based on NanoS of QA
@@ -148,14 +157,19 @@ TEST(Address, XpubFromBase58StringToBech32LTC) {
 TEST(Address, FromBech32Address) {
     //https://github.com/bitcoincashjs/cashaddrjs/blob/master/test/cashaddr.js
     std::vector<std::pair<std::string, ledger::core::api::Currency>> tests = {
-            {"tb1qunawpra24prfc46klknlhl0ydy32feajmwpg84", currencies::BITCOIN_TESTNET},//BTC P2WPKH
-            {"bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3", currencies::BITCOIN},//BTC P2WSH
-            {"bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a", currencies::BITCOIN_CASH},//BCH P2WPKH
-            {"bitcoincash:ppm2qsznhks23z7629mms6s4cwef74vcwvn0h829pq", currencies::BITCOIN_CASH},//BCH P2WSH
-            {"dgb1qgdg3hdysnpmaxpdpqqzhey2f5888av488hq0z6", currencies::DIGIBYTE},//DGB P2WPKH
-            {"ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd", currencies::LITECOIN}//LTC P2WPKH
+            {"tb1qunawpra24prfc46klknlhl0ydy32feajmwpg84", currencies::BITCOIN_TESTNET}, // BTC P2WPKH
+            {"bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3", currencies::BITCOIN}, // BTC P2WSH
+            {"bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4", currencies::BITCOIN}, // BTC P2WPKH
+            {"tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx", currencies::BITCOIN_TESTNET}, // BTC P2WPKH
+            {"tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7", currencies::BITCOIN_TESTNET}, // BTC P2WSH
+            {"bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqzk5jj0", currencies::BITCOIN}, // BTC P2TR (BIP350)
+            {"bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a", currencies::BITCOIN_CASH}, // BCH P2WPKH
+            {"bitcoincash:ppm2qsznhks23z7629mms6s4cwef74vcwvn0h829pq", currencies::BITCOIN_CASH}, // BCH P2WSH
+            {"dgb1qgdg3hdysnpmaxpdpqqzhey2f5888av488hq0z6", currencies::DIGIBYTE}, // DGB P2WPKH
+            {"ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd", currencies::LITECOIN} // LTC P2WPKH
     };
     for (auto &test : tests) {
+        std::cerr << test.first << std::endl;
         auto address = ledger::core::BitcoinLikeAddress::fromBech32(test.first, test.second);
         EXPECT_EQ(address->toBech32(), test.first);
     }

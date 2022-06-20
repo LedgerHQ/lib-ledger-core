@@ -42,15 +42,16 @@ namespace ledger {
             BTCBech32(const std::string &networkIdentifier) : Bech32(Bech32Parameters::getBech32Params(networkIdentifier)){
             };
 
-            uint64_t polymod(const std::vector<uint8_t>& values) const override;
-
-            std::vector<uint8_t> expandHrp(const std::string& hrp) const override;
-
             std::string encode(const std::vector<uint8_t>& hash,
                                const std::vector<uint8_t>& version) const override;
 
             std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
             decode(const std::string& str) const override;
+
+        private:
+            uint64_t polymod(const std::vector<uint8_t>& values) const override;
+
+            std::vector<uint8_t> expandHrp(const std::string& hrp) const override;
         };
     }
 }

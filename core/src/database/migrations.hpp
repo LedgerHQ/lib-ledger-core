@@ -218,6 +218,10 @@ namespace ledger {
         // add indexes for db performance optimization
         template <> void migrate<29>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<29>(soci::session& sql, api::DatabaseBackendType type);
+      
+        // add P2TRVersion field
+        template <> void migrate<30>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<30>(soci::session& sql, api::DatabaseBackendType type);
     }
 }
 

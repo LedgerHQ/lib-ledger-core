@@ -90,24 +90,7 @@ TEST_F(BitcoinMakeTransactionFromNativeSegwitToNativeSegwit, CreateStandardP2WPK
         }
     };
 
-    std::shared_ptr<api::BitcoinLikeTransaction> generatedTx
-            = createTransaction(output_descrs);
-
-    std::cerr << hex::toString(generatedTx->serialize()) << std::endl;
-
-    EXPECT_TRUE(verifyTransaction(generatedTx, input_descrs, output_descrs));
-
-    std::vector<uint8_t> tx_bin = generatedTx->serialize();
-    std::cerr << hex::toString(generatedTx->serialize()) << std::endl;
-
-    auto parsedTx
-            = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(),
-                                                                         tx_bin, 0);
-
-    EXPECT_TRUE(verifyTransactionOutputs(parsedTx, output_descrs));
-    // Values in inputs are missing after parsing. Here we can test only outputs.
-
-    EXPECT_EQ(tx_bin, parsedTx->serialize());
+    createAndVerifyTransaction(input_descrs, output_descrs);
 }
 
 struct BitcoinMakeTransactionFromLegacyToNativeSegwit : public BitcoinMakeBaseTransaction {
@@ -146,24 +129,7 @@ TEST_F(BitcoinMakeTransactionFromLegacyToNativeSegwit, CreateStandardP2WPKHWithO
         }
     };
 
-    std::shared_ptr<api::BitcoinLikeTransaction> generatedTx
-            = createTransaction(output_descrs);
-
-    std::cerr << "generated tx: " << std::endl
-              << hex::toString(generatedTx->serialize()) << std::endl;
-
-    EXPECT_TRUE(verifyTransaction(generatedTx, input_descrs, output_descrs));
-
-    std::vector<uint8_t> tx_bin = generatedTx->serialize();
-
-    auto parsedTx
-            = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(),
-                                                                         tx_bin, 0);
-
-    EXPECT_TRUE(verifyTransactionOutputs(parsedTx, output_descrs));
-    // Values in inputs are missing after parsing. Here we can test only outputs.
-
-    EXPECT_EQ(tx_bin, parsedTx->serialize());
+    createAndVerifyTransaction(input_descrs, output_descrs);
 }
 
 TEST_F(BitcoinMakeTransactionFromLegacyToNativeSegwit, ParseSignedTx) {

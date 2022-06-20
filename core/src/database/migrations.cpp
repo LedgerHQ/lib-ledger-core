@@ -32,6 +32,7 @@
 #include "migrations.hpp"
 #include <api/BitcoinLikeNetworkParameters.hpp>
 #include <wallet/bitcoin/networks.hpp>
+#include <fmt/format.h>
 
 namespace ledger {
     namespace core {
@@ -358,7 +359,6 @@ namespace ledger {
                     "symbol VARCHAR(255) NOT NULL,"
                     "number_of_decimal INTEGER NOT NULL"
                     ")";
-
         }
 
         template <> void rollback<5>(soci::session& sql, api::DatabaseBackendType type) {
@@ -436,15 +436,21 @@ namespace ledger {
             sql << "DROP TABLE ripple_currencies";
         }
 
+        namespace {
+            std::string getBech32ParamsCreateTableSQL(const char* tableName) {
+                return fmt::format("CREATE TABLE {}("
+                       "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES bitcoin_currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                       "hrp VARCHAR(255) NOT NULL,"
+                       "separator VARCHAR(255) NOT NULL,"
+                       "generator VARCHAR(255) NOT NULL,"
+                       "p2wpkh_version VARCHAR(255) NOT NULL,"
+                       "p2wsh_version VARCHAR(255) NOT NULL"
+                       ")", tableName);
+            }
+        }
+
         template <> void migrate<7>(soci::session& sql, api::DatabaseBackendType type) {
-            sql << "CREATE TABLE bech32_parameters("
-                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES bitcoin_currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
-                    "hrp VARCHAR(255) NOT NULL,"
-                    "separator VARCHAR(255) NOT NULL,"
-                    "generator VARCHAR(255) NOT NULL,"
-                    "p2wpkh_version VARCHAR(255) NOT NULL,"
-                    "p2wsh_version VARCHAR(255) NOT NULL"
-                    ")";
+            sql << getBech32ParamsCreateTableSQL("bech32_parameters");
         }
 
         template <> void rollback<7>(soci::session& sql, api::DatabaseBackendType type) {
@@ -734,7 +740,6 @@ namespace ledger {
         }
 
         template <> void rollback<18>(soci::session& sql, api::DatabaseBackendType type) {
-
         }
 
         template <> void migrate<19>(soci::session& sql,  api::DatabaseBackendType type) {
@@ -813,7 +818,6 @@ namespace ledger {
                    "type INTEGER NOT NULL"
                    ")";
 
-
             // Stellar account operations
             sql << "CREATE TABLE stellar_account_operations("
                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
@@ -825,7 +829,6 @@ namespace ledger {
                    "base_fee VARCHAR(255) NOT NULL,"
                    "base_reserve VARCHAR(255) NOT NULL"
                    ")";
-
         }
 
         template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type) {
@@ -955,9 +958,7 @@ namespace ledger {
             sql << "DROP TABLE cosmos_transactions";
             sql << "DROP TABLE cosmos_accounts";
             sql << "DROP TABLE cosmos_currencies";
-
         }
-
 
         template <> void migrate<21>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE bitcoin_outputs ADD replaceable INTEGER DEFAULT 0";
@@ -1181,6 +1182,14 @@ namespace ledger {
           sql << "DROP INDEX ripple_transactions_hash_index ;";
           sql << "DROP INDEX stellar_transactions_hash_index ;";
           sql << "DROP INDEX tezos_transactions_hash_index ;";
+        }
+      
+        template <> void migrate<30>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "ALTER TABLE bech32_parameters ADD p2trversion VARCHAR(255) DEFAULT 01;";
+        }
+
+        template <> void rollback<30>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "ALTER TABLE bech32_parameters DROP p2trversion";
         }
     }
 }

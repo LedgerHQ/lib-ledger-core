@@ -35,6 +35,7 @@
 #include <utils/hex.h>
 #include <collections/strings.hpp>
 #include <math/BigInt.h>
+
 using namespace soci;
 namespace ledger {
     namespace core {
@@ -48,7 +49,8 @@ namespace ledger {
                             6,
                             {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
                             {0x00},
-                            {0x00}
+                            {0x00},
+                            {0x01}
                     };
                     return BITCOIN;
                 } else if (networkIdentifier == "btc_testnet") {
@@ -59,7 +61,8 @@ namespace ledger {
                             6,
                             {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
                             {0x00},
-                            {0x00}
+                            {0x00},
+                            {0x01}
                     };
                     return BITCOIN_TESTNET;
                 } else if (networkIdentifier == "btc_regtest") {
@@ -70,7 +73,8 @@ namespace ledger {
                             6,
                             {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
                             {0x00},
-                            {0x00}
+                            {0x00},
+                            {0x01}
                     };
                     return BITCOIN_REGTEST;
                 } else if (networkIdentifier == "abc") {
@@ -81,7 +85,8 @@ namespace ledger {
                             8,
                             {0x98f2bc8e61ULL, 0x79b76d99e2ULL, 0xf33e5fb3c4ULL, 0xae2eabe2a8ULL, 0x1e4f43e470ULL},
                             {0x00},
-                            {0x08}
+                            {0x08},
+                            {0xFF}
                     };
                     return BITCOIN_CASH;
                 } else if (networkIdentifier == "dgb") {
@@ -93,7 +98,8 @@ namespace ledger {
                             6,
                             {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
                             {0x00},
-                            {0x00}
+                            {0x00},
+                            {0xFF}
                     };
                     return DIGIBYTE;
                 } else if (networkIdentifier == "ltc") {
@@ -105,7 +111,8 @@ namespace ledger {
                             6,
                             {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
                             {0x00},
-                            {0x00}
+                            {0x00},
+                            {0xFF}
                     };
                     return LITECOIN;
                 }
@@ -139,14 +146,16 @@ namespace ledger {
                     strings::join(strGenerator, generator, separator);
                     auto P2WPKHVersion = hex::toString(params.P2WPKHVersion);
                     auto P2WSHVersion = hex::toString(params.P2WSHVersion);
+                    auto P2TRVersion = hex::toString(params.P2TRVersion);
                     auto generatorStr = generator.str();
-                    sql << "INSERT INTO bech32_parameters VALUES(:name, :hrp, :separator, :generator, :p2wpkh_version, :p2wsh_version)",
+                    sql << "INSERT INTO bech32_parameters VALUES(:name, :hrp, :separator, :generator, :p2wpkh_version, :p2wsh_version, :p2tr_version)",
                             use(params.name),
                             use(params.hrp),
                             use(params.separator),
                             use(generatorStr),
                             use(P2WPKHVersion),
-                            use(P2WSHVersion);
+                            use(P2WSHVersion),
+                            use(P2TRVersion);
                     return true;
                 }
                 return false;
@@ -154,3 +163,4 @@ namespace ledger {
         }
     }
 }
+

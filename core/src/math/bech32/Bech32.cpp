@@ -28,9 +28,9 @@
  *
  */
 
-
 #include "Bech32.h"
 #include <collections/vector.hpp>
+
 namespace ledger {
     namespace core {
 
@@ -50,15 +50,15 @@ namespace ledger {
         };
 
         // Verify a checksum.
-        bool Bech32::verifyChecksum(const std::vector<uint8_t>& values) const {
-            return polymod(vector::concat(expandHrp(_bech32Params.hrp), values)) == 1;
+        bool Bech32::verifyChecksum(const std::vector<uint8_t>& values, uint32_t bech32_param) const {
+            return polymod(vector::concat(expandHrp(_bech32Params.hrp), values)) == bech32_param;
         }
 
         // Create a checksum.
-        std::vector<uint8_t> Bech32::createChecksum(const std::vector<uint8_t>& values) const {
+        std::vector<uint8_t> Bech32::createChecksum(const std::vector<uint8_t>& values, uint32_t bech32_param) const {
             std::vector<uint8_t> enc = vector::concat(expandHrp(_bech32Params.hrp), values);
             enc.resize(enc.size() + _bech32Params.checksumSize);
-            uint64_t mod = polymod(enc) ^ 1;
+            uint64_t mod = polymod(enc) ^ bech32_param;
             std::vector<uint8_t> ret;
             ret.resize(_bech32Params.checksumSize);
             // Can't use ssize_t because it's posix specific (problem with MSVC build) so let's
@@ -70,9 +70,9 @@ namespace ledger {
             return ret;
         }
         
-        std::string Bech32::encodeBech32(const std::vector<uint8_t>& values) const {
+        std::string Bech32::encodeBech32(const std::vector<uint8_t>& values, uint32_t bech32_param) const {
             // Values here should be concatenation of version (base256) + hash (base32)
-            std::vector<uint8_t> checksum = createChecksum(values);
+            std::vector<uint8_t> checksum = createChecksum(values, bech32_param);
             std::vector<uint8_t> combined = vector::concat(values, checksum);
             std::string ret = _bech32Params.hrp + _bech32Params.separator;
             ret.reserve(ret.size() + combined.size());
@@ -85,8 +85,8 @@ namespace ledger {
             return ret;
         }
 
-        std::pair<std::string, std::vector<uint8_t>>
-        Bech32::decodeBech32(const std::string& str) const {
+        // Caller is responsible for checksum verification.
+        std::pair<std::string, std::vector<uint8_t>> Bech32::decodeBech32Raw(const std::string& str) const {
             bool lower = false, upper = false;
             bool ok = true;
             for (size_t i = 0; ok && i < str.size(); ++i) {
@@ -110,10 +110,20 @@ namespace ledger {
                     for (size_t i = 0; i < pos; ++i) {
                         hrp += toLowerCase(str[i]);
                     }
-                    if (verifyChecksum(values)) {
-                        return std::make_pair(hrp, std::vector<uint8_t>(values.begin(), values.end() - _bech32Params.checksumSize));
-                    }
+                    return std::make_pair(hrp, values);
                 }
+            }
+            return std::make_pair(std::string(), std::vector<uint8_t>());
+        }
+
+        // Decodes and verifies checksum according to BECH32 rules.
+        std::pair<std::string, std::vector<uint8_t>> Bech32::decodeBech32(const std::string& str) const {
+            const std::pair<std::string, std::vector<uint8_t>> decoded = decodeBech32Raw(str);
+            const std::string& hrp = decoded.first;
+            const std::vector<uint8_t>& values = decoded.second;
+
+            if (verifyChecksum(values, 1)) {
+                return std::make_pair(hrp, std::vector<uint8_t>(values.begin(), values.end() - _bech32Params.checksumSize));
             }
             return std::make_pair(std::string(), std::vector<uint8_t>());
         }

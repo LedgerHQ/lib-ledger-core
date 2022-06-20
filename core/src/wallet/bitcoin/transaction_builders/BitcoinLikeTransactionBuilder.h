@@ -98,7 +98,8 @@ namespace ledger {
                     const std::shared_ptr<api::ExecutionContext>& context,
                     const api::Currency& params,
                     const std::shared_ptr<spdlog::logger>& logger,
-                    const BitcoinLikeTransactionBuildFunction& buildFunction);
+                    const BitcoinLikeTransactionBuildFunction& buildFunction,
+                    bool allowP2TR = false);
             BitcoinLikeTransactionBuilder(const BitcoinLikeTransactionBuilder& cpy);
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder> addOutput(const std::shared_ptr<api::Amount> &amount,
@@ -145,7 +146,7 @@ namespace ledger {
             BitcoinLikeTransactionBuildRequest _request;
             std::shared_ptr<api::ExecutionContext> _context;
             std::shared_ptr<spdlog::logger> _logger;
-
+            bool _allowP2TR = false;
         };
     }
 }

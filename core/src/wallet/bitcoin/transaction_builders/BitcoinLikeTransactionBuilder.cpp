@@ -54,17 +54,20 @@ namespace ledger {
             _request = cpy._request;
             _context = cpy._context;
             _logger = cpy._logger;
+            _allowP2TR = cpy._allowP2TR;
         }
 
         BitcoinLikeTransactionBuilder::BitcoinLikeTransactionBuilder(
                 const std::shared_ptr<api::ExecutionContext> &context, const api::Currency &currency,
                 const std::shared_ptr<spdlog::logger> &logger,
-                const BitcoinLikeTransactionBuildFunction &buildFunction) :
+                const BitcoinLikeTransactionBuildFunction &buildFunction,
+                bool allowP2TR) :
                 _request(std::make_shared<BigInt>(currency.bitcoinLikeNetworkParameters.value().Dust)) {
             _currency = currency;
             _build = buildFunction;
             _context = context;
             _logger = logger;
+            _allowP2TR = allowP2TR;
             _request.wipe = false;
         }
 
@@ -173,6 +176,11 @@ namespace ledger {
             if (a == nullptr) {
                 throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Invalid address {}", address);
             }
+
+            if (!_allowP2TR && a->isP2TR()) {
+                throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Can't send to Taproot address ({}). The ALLOW_P2TR flag is off.", address);
+            }
+
             BitcoinLikeScript script;
 
             // BCH has a fake P2WPKH and P2WSH
@@ -184,6 +192,13 @@ namespace ledger {
                 script << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUAL;
             } else if (a->isP2WPKH() || a->isP2WSH()) {
                 script << btccore::OP_0 << a->getHash160();
+            } else if (a->isP2TR()) {
+                if (_currency.name != currencies::BITCOIN.name &&
+                    _currency.name != currencies::BITCOIN_TESTNET.name &&
+                    _currency.name != currencies::BITCOIN_REGTEST.name) {
+                    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Can't send to Taproot address ({}) in currency {}", address, _currency.name);
+                }
+                script << btccore::OP_1 << a->getHash160();
             } else {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Cannot create output script from {}.", address);
             }

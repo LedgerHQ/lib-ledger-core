@@ -128,8 +128,8 @@ public:
 
     void testKeychain(const KeychainTestData &data, std::shared_ptr<api::PreferencesBackend> backend, std::function<void (Keychain&)> f) {
         auto configuration = std::make_shared<DynamicObject>();
-        dispatcher->getMainExecutionContext()->execute(ledger::core::make_runnable([=]() {
-            Keychain keychain(
+        {
+            Keychain temp_keychain(
                     configuration,
                     data.currency,
                     0,
@@ -139,10 +139,21 @@ public:
                                                                            configuration),
                     std::make_shared<ledger::core::Preferences>(*backend, randomKeychainName())
             );
-            f(keychain);
-            dispatcher->stop();
-        }));
-        dispatcher->waitUntilStopped();
+            configuration->putString(api::Configuration::KEYCHAIN_ENGINE, temp_keychain.getKeychainEngine());
+        }
+
+        Keychain keychain(
+                configuration,
+                data.currency,
+                0,
+                ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(data.currency,
+                                                                       data.xpub,
+                                                                       optional<std::string>(data.derivationPath),
+                                                                       configuration),
+                std::make_shared<ledger::core::Preferences>(*backend, randomKeychainName())
+        );
+
+        f(keychain);
     };
 };
 

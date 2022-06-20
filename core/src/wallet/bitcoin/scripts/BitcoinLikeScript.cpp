@@ -177,6 +177,13 @@ namespace ledger {
             return (size() == 2 && (*this)[0].isEqualTo(btccore::OP_0) && (*this)[1].sizeEqualsTo(32));
         }
 
+        bool BitcoinLikeScript::isP2TR() const {
+            if (_configuration.isSigned) {
+                return _configuration.keychainEngine == api::KeychainEngines::BIP350_P2TR;
+            }
+            return (size() == 2 && (*this)[0].isEqualTo(btccore::OP_1) && (*this)[1].sizeEqualsTo(32));
+        }
+
         std::size_t BitcoinLikeScript::size() const {
             return _chunks.size();
         }
@@ -222,10 +229,13 @@ namespace ledger {
                 // <OP_0> <WitnessScript>
                 return Option<BitcoinLikeAddress>(
                         BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP173_P2WSH));
+            } else if (isP2TR()) {
+                // <OP_1> <WitnessScript>
+                return Option<BitcoinLikeAddress>(
+                        BitcoinLikeAddress(currency, (*this)[1].getBytes(), api::KeychainEngines::BIP350_P2TR));
             }
             return Option<BitcoinLikeAddress>();
         }
-
 
         BitcoinLikeScriptChunk::BitcoinLikeScriptChunk(BitcoinLikeScriptOpCode op) : _value(op) {
 

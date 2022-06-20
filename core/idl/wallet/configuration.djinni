@@ -29,6 +29,7 @@ KeychainEngines = interface +c {
     const BIP49_P2SH: string = "BIP49_P2SH";
     const BIP173_P2WPKH: string = "BIP173_P2WPKH";
     const BIP173_P2WSH: string = "BIP173_P2WSH";
+    const BIP350_P2TR: string = "BIP350_P2TR";
 }
 
 # Class of constants representing the engines to rely on for synchronization.
@@ -117,6 +118,9 @@ Configuration = interface +c {
     # Grace period (in seconds) during which no "missing" transactions on-chain should trigger
     # deletion from database
     const MEMPOOL_GRACE_PERIOD_SECS: string = "MEMPOOL_GRACE_PERIOD_SECS";
+
+    # Allow the generation of the P2TR (Taproot) outputs
+    const ALLOW_P2TR: string = "ALLOW_P2TR";
 }
 
 # Configuration of wallet pools.
