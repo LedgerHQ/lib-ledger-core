@@ -1,0 +1,24 @@
+name: "Clang-tidy Code Review"
+on: [pull_request]
+
+jobs:
+  build:
+    name: Code review of changed lines
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - uses: ZedThree/clang-tidy-review@v0.8.3
+        id: review
+        with:
+          build_dir: build
+          # List of packages to install
+          apt_packages: libssl-dev
+          # Googletest triggers a _lot_ of clang-tidy warnings, so ignore all
+          # the unit tests until they're fixed or ignored upstream
+          exclude: "core/test/*"
+          # CMake command to run in order to generate compile_commands.json
+          cmake_command: cmake . -B build -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE -DTARGET_JNI=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=on && cmake --build build --target secp256k1
