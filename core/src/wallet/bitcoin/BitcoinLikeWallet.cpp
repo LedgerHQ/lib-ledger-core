@@ -184,7 +184,8 @@ namespace ledger {
                     info.derivations.push_back(xpubPath.toString());
                     info.owners.push_back(std::string("main"));
                 } else {
-                    throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "No implementation found found for keychain {}", keychainEngine);
+                    // keychainEngine == BIP350_P2TR: no reason to implement this operation for Taproot
+                    throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "No implementation found for keychain {}", keychainEngine);
                 }
 
                 return info;

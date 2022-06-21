@@ -27,6 +27,8 @@ public:
     static std::string const BIP173_P2WPKH;
 
     static std::string const BIP173_P2WSH;
+
+    static std::string const BIP350_P2TR;
 };
 
 } } }  // namespace ledger::core::api

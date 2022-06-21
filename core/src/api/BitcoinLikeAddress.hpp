@@ -80,6 +80,12 @@ public:
      * @return True if the keychain engine is P2WPKH
      */
     virtual bool isP2WPKH() = 0;
+
+    /**
+     * Checks if the given address is a P2TR address
+     * @return True if the keychain engine is P2TR
+     */
+    virtual bool isP2TR() = 0;
 };
 
 } } }  // namespace ledger::core::api

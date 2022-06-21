@@ -13,4 +13,6 @@ std::string const KeychainEngines::BIP173_P2WPKH = {"BIP173_P2WPKH"};
 
 std::string const KeychainEngines::BIP173_P2WSH = {"BIP173_P2WSH"};
 
+std::string const KeychainEngines::BIP350_P2TR = {"BIP350_P2TR"};
+
 } } }  // namespace ledger::core::api

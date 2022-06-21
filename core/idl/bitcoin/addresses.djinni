@@ -75,6 +75,9 @@ BitcoinLikeAddress = interface +c {
     # Checks if the given address is a P2WPKH address
     # @return True if the keychain engine is P2WPKH
     isP2WPKH(): bool;
+    # Checks if the given address is a P2TR address
+    # @return True if the keychain engine is P2TR
+    isP2TR(): bool;
 }
 
 # The xPUB definition for Bitcoin.

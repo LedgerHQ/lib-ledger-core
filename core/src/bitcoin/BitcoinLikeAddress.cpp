@@ -29,32 +29,34 @@
  *
  */
 #include "BitcoinLikeAddress.hpp"
-
-#include "../bytes/BytesWriter.h"
-#include "../collections/vector.hpp"
-#include "../math/Base58.hpp"
-#include "../utils/Exception.hpp"
 #include "../utils/djinni_helpers.hpp"
-
-#include <api/Configuration.hpp>
-#include <api/KeychainEngines.hpp>
+#include "../bytes/BytesWriter.h"
+#include "../math/Base58.hpp"
+#include "../collections/vector.hpp"
+#include "../utils/Exception.hpp"
 #include <collections/DynamicObject.hpp>
-#include <crypto/HASH160.hpp>
-#include <crypto/HashAlgorithm.h>
 #include <math/bech32/Bech32.h>
 #include <math/bech32/Bech32Factory.h>
+#include <api/KeychainEngines.hpp>
+#include <api/Configuration.hpp>
+#include <crypto/HashAlgorithm.h>
+#include <crypto/HASH160.hpp>
 #include <wallet/bitcoin/scripts/operators.h>
+#include <wallet/currencies.hpp>
 
 namespace ledger {
     namespace core {
         BitcoinLikeAddress::BitcoinLikeAddress(const ledger::core::api::Currency &currency,
-                                               const std::vector<uint8_t> &hash160,
+                                               const std::vector<uint8_t>& hash160,
                                                const std::string &keychainEngine,
-                                               const Option<std::string> &derivationPath) : _params(currency.bitcoinLikeNetworkParameters.value()),
-                                                                                            _derivationPath(derivationPath),
-                                                                                            _keychainEngine(keychainEngine),
-                                                                                            _hash160(hash160),
-                                                                                            AbstractAddress(currency, derivationPath) {
+                                               const Option<std::string>& derivationPath) :
+                _params(currency.bitcoinLikeNetworkParameters.value()),
+                _derivationPath(derivationPath),
+                _keychainEngine(keychainEngine),
+                _hash160(hash160),
+                AbstractAddress(currency, derivationPath)
+        {
+
         }
 
         std::vector<uint8_t> BitcoinLikeAddress::getVersion() {
@@ -62,7 +64,8 @@ namespace ledger {
         }
 
         std::vector<uint8_t> BitcoinLikeAddress::getVersionFromKeychainEngine(const std::string &keychainEngine,
-                                                                              const api::BitcoinLikeNetworkParameters &params) const {
+                                                                              const api::BitcoinLikeNetworkParameters &params) {
+
             if (keychainEngine == api::KeychainEngines::BIP32_P2PKH) {
                 return params.P2PKHVersion;
             } else if (keychainEngine == api::KeychainEngines::BIP49_P2SH) {
@@ -73,6 +76,9 @@ namespace ledger {
             } else if (keychainEngine == api::KeychainEngines::BIP173_P2WSH) {
                 auto bech32Params = Bech32Parameters::getBech32Params(params.Identifier);
                 return bech32Params.P2WSHVersion;
+            } else if (keychainEngine == api::KeychainEngines::BIP350_P2TR) {
+                auto bech32Params = Bech32Parameters::getBech32Params(params.Identifier);
+                return bech32Params.P2TRVersion;
             }
             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid Keychain Engine: ", keychainEngine);
         };
@@ -86,21 +92,11 @@ namespace ledger {
         }
 
         std::string BitcoinLikeAddress::toBase58() {
-            auto config = std::make_shared<DynamicObject>();
-            config->putString("networkIdentifier", _params.Identifier);
-            return Base58::encodeWithChecksum(vector::concat(getVersionFromKeychainEngine(_keychainEngine, _params), _hash160), config);
-        }
-
-        std::string toBech32Helper(const std::string &keychainEngine,
-                                   const std::vector<uint8_t> &hash160,
-                                   const api::BitcoinLikeNetworkParameters &params) {
-            auto bech32         = Bech32Factory::newBech32Instance(params.Identifier).getValue();
-            auto witnessVersion = (keychainEngine == api::KeychainEngines::BIP173_P2WPKH) ? bech32->getBech32Params().P2WPKHVersion : bech32->getBech32Params().P2WSHVersion;
-            return bech32->encode(hash160, witnessVersion);
+            return toBase58Impl();
         }
 
         std::string BitcoinLikeAddress::toBech32() {
-            return toBech32Helper(_keychainEngine, _hash160, _params);
+            return toBech32Impl();
         }
 
         bool BitcoinLikeAddress::isP2SH() {
@@ -119,29 +115,49 @@ namespace ledger {
             return _keychainEngine == api::KeychainEngines::BIP173_P2WPKH;
         }
 
+        bool BitcoinLikeAddress::isP2TR() {
+            return _keychainEngine == api::KeychainEngines::BIP350_P2TR;
+        }
+
         std::experimental::optional<std::string> BitcoinLikeAddress::getDerivationPath() {
             return _derivationPath.toOptional();
         }
 
-        std::string BitcoinLikeAddress::toBase58() const {
+        bool BitcoinLikeAddress::isKeychainEngineBech32Compatible() const {
+            return _keychainEngine == api::KeychainEngines::BIP173_P2WPKH
+                    || _keychainEngine == api::KeychainEngines::BIP173_P2WSH
+                    || _keychainEngine == api::KeychainEngines::BIP350_P2TR;
+        }
+
+        std::string BitcoinLikeAddress::toBase58Impl() const {
             if (_keychainEngine != api::KeychainEngines::BIP32_P2PKH && _keychainEngine != api::KeychainEngines::BIP49_P2SH) {
-                throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Base58 format only available for api::KeychainEngines::BIP32_P2PKH and api::KeychainEngines::BIP49_P2SH");
+                throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT,
+                                "Base58 format only available for api::KeychainEngines::BIP32_P2PKH and api::KeychainEngines::BIP49_P2SH");
             }
+
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", _params.Identifier);
             return Base58::encodeWithChecksum(vector::concat(getVersionFromKeychainEngine(_keychainEngine, _params), _hash160), config);
         }
 
-        std::string BitcoinLikeAddress::toBech32() const {
-            return toBech32Helper(_keychainEngine, _hash160, _params);
+        std::string BitcoinLikeAddress::toBech32Impl() const {
+            if (!isKeychainEngineBech32Compatible()) {
+                throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT,
+                                "Bech32 format only available for api::KeychainEngines::BIP173_P2WPKH/P2WSH and api::KeychainEngines::BIP350_P2TR");
+            }
+
+            auto bech32 = Bech32Factory::newBech32Instance(_params.Identifier).getValue();
+            std::vector<uint8_t> witnessVersion
+                    = BitcoinLikeAddress::getVersionFromKeychainEngine(_keychainEngine, _params);
+            return bech32->encode(_hash160, witnessVersion);
         }
 
         std::shared_ptr<ledger::core::AbstractAddress>
         BitcoinLikeAddress::parse(const std::string &address,
                                   const ledger::core::api::Currency &currency,
-                                  const Option<std::string> &derivationPath) {
-            auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&]() {
-                auto bech32   = Bech32Factory::newBech32Instance(currency.bitcoinLikeNetworkParameters.value().Identifier);
+                                  const Option<std::string>& derivationPath) {
+            auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&] () {
+                auto bech32 = Bech32Factory::newBech32Instance(currency.bitcoinLikeNetworkParameters.value().Identifier);
                 auto isBech32 = bech32.hasValue() && (bech32.getValue()->getBech32Params().hrp == address.substr(0, bech32.getValue()->getBech32Params().hrp.size()));
                 return isBech32 ? fromBech32(address, currency, derivationPath) : fromBase58(address, currency, derivationPath);
             });
@@ -153,17 +169,21 @@ namespace ledger {
         }
 
         std::string BitcoinLikeAddress::getStringAddress() const {
-            if (_keychainEngine == api::KeychainEngines::BIP173_P2WPKH || _keychainEngine == api::KeychainEngines::BIP173_P2WSH) {
-                return toBech32();
+            if (isKeychainEngineBech32Compatible()) {
+                return toBech32Impl();
             }
-            return toBase58();
+            return toBase58Impl();
+        }
+
+        const std::string& BitcoinLikeAddress::getKeychainEngine() const {
+            return _keychainEngine;
         }
 
         std::shared_ptr<BitcoinLikeAddress> BitcoinLikeAddress::fromBase58(const std::string &address,
                                                                            const api::Currency &currency,
-                                                                           const Option<std::string> &derivationPath) {
-            auto &params = currency.bitcoinLikeNetworkParameters.value();
-            auto config  = std::make_shared<DynamicObject>();
+                                                                           const Option<std::string>& derivationPath) {
+            auto& params = currency.bitcoinLikeNetworkParameters.value();
+            auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params.Identifier);
             auto decoded = Base58::checkAndDecode(address, config);
             if (decoded.isFailure()) {
@@ -171,7 +191,7 @@ namespace ledger {
             }
             auto value = decoded.getValue();
 
-            // Check decoded address size
+            //Check decoded address size
             if (value.size() <= 20) {
                 throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid address : Invalid base 58 format");
             }
@@ -185,13 +205,47 @@ namespace ledger {
             return std::make_shared<ledger::core::BitcoinLikeAddress>(currency, hash160, keychainEngine, derivationPath);
         }
 
-        std::shared_ptr<BitcoinLikeAddress> BitcoinLikeAddress::fromBech32(const std::string &address,
-                                                                           const api::Currency &currency,
-                                                                           const Option<std::string> &derivationPath) {
-            auto &params        = currency.bitcoinLikeNetworkParameters.value();
-            auto bech32         = Bech32Factory::newBech32Instance(params.Identifier).getValue();
-            auto decoded        = bech32->decode(address);
-            auto keychainEngine = (decoded.second.size() == 32 || decoded.first == bech32->getBech32Params().P2WSHVersion) ? api::KeychainEngines::BIP173_P2WSH : api::KeychainEngines::BIP173_P2WPKH;
+        std::shared_ptr<BitcoinLikeAddress> BitcoinLikeAddress::fromBech32(const std::string& address,
+                                                                           const api::Currency& currency,
+                                                                           const Option<std::string>& derivationPath) {
+            const auto& params = currency.bitcoinLikeNetworkParameters.value();
+            const auto bech32 = Bech32Factory::newBech32Instance(params.Identifier).getValue();
+            const auto decoded = bech32->decode(address);
+            std::string keychainEngine;
+            const auto bech32_params = bech32->getBech32Params();
+            const size_t payload_sz = decoded.second.size();
+            if (bech32_params.P2WSHVersion == bech32_params.P2WPKHVersion) {
+                // Bitcoin-like case (both are equal to zero) => detect keychain engine by length
+                if (decoded.first == bech32_params.P2WSHVersion) {
+                    if (payload_sz == 32) {
+                        keychainEngine = api::KeychainEngines::BIP173_P2WSH;
+                    } else if (payload_sz == 20) {
+                        keychainEngine = api::KeychainEngines::BIP173_P2WPKH;
+                    } else {
+                        throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Unexpected wintess program length");
+                    }
+                } else if (decoded.first == bech32_params.P2TRVersion && payload_sz == 32) {
+                    if (currency.name != currencies::BITCOIN.name &&
+                        currency.name != currencies::BITCOIN_TESTNET.name &&
+                        currency.name != currencies::BITCOIN_REGTEST.name) {
+                        throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Can't create Taproot address ({}) in currency {}", address, currency.name);
+                    }
+                    keychainEngine = api::KeychainEngines::BIP350_P2TR;
+                } else {
+                    throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Unknown form of Bech32 format (Bitcoin like)");
+                }
+            } else {
+                // Bitcoin Cash like case (P2WPKH is 0 and P2WSH is 8), length of hash can be different
+                // https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md
+                if (decoded.first == bech32_params.P2WSHVersion && (payload_sz == 32 || payload_sz == 20)) {
+                    keychainEngine = api::KeychainEngines::BIP173_P2WSH;
+                } else if (decoded.first == bech32_params.P2WPKHVersion && payload_sz == 20) {
+                    keychainEngine = api::KeychainEngines::BIP173_P2WPKH;
+                } else {
+                    throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Unknown form of Bech32 format (BCH)");
+                }
+            }
+
             return std::make_shared<ledger::core::BitcoinLikeAddress>(currency,
                                                                       decoded.second,
                                                                       keychainEngine,
@@ -208,6 +262,7 @@ namespace ledger {
                 auto hash160 = fromPublicKeyToHash160(pubKey->derivePublicKey(derivationPath), pubKey->deriveHash160(derivationPath), currency, keychainEngine);
                 return BitcoinLikeAddress(currency, hash160, keychainEngine).toString();
             }
+            // keychainEngine == BIP350_P2TR: we don't create Taproot addresses from extended pubkey.
             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid Keychain Engine: ", keychainEngine);
         }
 
@@ -216,23 +271,24 @@ namespace ledger {
                                                                         const api::Currency &currency,
                                                                         const std::string &keychainEngine) {
             if (keychainEngine == api::KeychainEngines::BIP49_P2SH) {
-                // Script
+                //Script
                 std::vector<uint8_t> script = {0x00, 0x14};
-                // Insert hash160 of public key
+                //Insert hash160 of public key
                 script.insert(script.end(), pubKeyHash160.begin(), pubKeyHash160.end());
-                // Hash script
+                //Hash script
                 HashAlgorithm hashAlgorithm(currency.bitcoinLikeNetworkParameters.value().Identifier);
                 return HASH160::hash(script, hashAlgorithm);
             } else if (keychainEngine == api::KeychainEngines::BIP173_P2WSH) {
                 // Reference https://bitcoincore.org/en/segwit_wallet_dev
                 // Here scriptHash = SHA256(witnessScript) = SHA256(pubKeyHash160 + OP_CHECKSIG)
-                const auto &params = currency.bitcoinLikeNetworkParameters.value();
+                const auto& params = currency.bitcoinLikeNetworkParameters.value();
                 std::vector<uint8_t> witnessScript;
-                // Hash160 of public key
+                //Hash160 of public key
                 witnessScript.insert(witnessScript.end(), pubKey.begin(), pubKey.end());
                 witnessScript.push_back(btccore::OP_CHECKSIG);
                 return SHA256::bytesToBytesHash(witnessScript);
             }
+            // keychainEngine == BIP350_P2TR: we don't create a hash160 from the Taproot public key
             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid Keychain Engine: ", keychainEngine);
         }
 
@@ -248,5 +304,5 @@ namespace ledger {
             }
             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid Keychain Engine: ", keychainEngine);
         }
-    } // namespace core
-} // namespace ledger
+    }
+}

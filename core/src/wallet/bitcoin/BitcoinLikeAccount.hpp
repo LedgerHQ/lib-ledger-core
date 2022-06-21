@@ -153,6 +153,7 @@ namespace ledger {
             inline void computeOperationTrust(Operation &operation,
                                               const BitcoinLikeBlockchainExplorerTransaction &tx);
             std::vector<std::shared_ptr<api::Address>> fromBitcoinAddressesToAddresses(const std::vector<std::shared_ptr<BitcoinLikeAddress>> &addresses);
+            inline bool allowP2TR() const;
 
             std::shared_ptr<BitcoinLikeKeychain> _keychain;
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
