@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_BTCBECH32_H
 #define LEDGER_CORE_BTCBECH32_H
 
@@ -38,23 +37,21 @@
 namespace ledger {
     namespace core {
         class BTCBech32 : public Bech32 {
-        public:
-            BTCBech32(const std::string &networkIdentifier) : Bech32(Bech32Parameters::getBech32Params(networkIdentifier)){
-            };
+          public:
+            BTCBech32(const std::string &networkIdentifier) : Bech32(Bech32Parameters::getBech32Params(networkIdentifier)){};
 
-            std::string encode(const std::vector<uint8_t>& hash,
-                               const std::vector<uint8_t>& version) const override;
+            std::string encode(const std::vector<uint8_t> &hash,
+                               const std::vector<uint8_t> &version) const override;
 
             std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
-            decode(const std::string& str) const override;
+            decode(const std::string &str) const override;
 
-        private:
-            uint64_t polymod(const std::vector<uint8_t>& values) const override;
+          private:
+            uint64_t polymod(const std::vector<uint8_t> &values) const override;
 
-            std::vector<uint8_t> expandHrp(const std::string& hrp) const override;
+            std::vector<uint8_t> expandHrp(const std::string &hrp) const override;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BTCBECH32_H
+#endif // LEDGER_CORE_BTCBECH32_H

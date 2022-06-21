@@ -119,8 +119,8 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
                            const std::vector<InputDescr> &inputs,
                            const std::vector<OutputDescr> &outputs);
 
-    void createAndVerifyTransaction(const std::vector<InputDescr>& inputs,
-                                    const std::vector<OutputDescr>& outputs);
+    void createAndVerifyTransaction(const std::vector<InputDescr> &inputs,
+                                    const std::vector<OutputDescr> &outputs);
 
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<AbstractWallet> wallet;

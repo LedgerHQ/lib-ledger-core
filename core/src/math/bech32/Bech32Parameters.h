@@ -28,21 +28,20 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_BECH32PARAMETERS_H
 #define LEDGER_CORE_BECH32PARAMETERS_H
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER)
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
+#include <soci.h>
 #include <string>
 #include <vector>
-#include <soci.h>
 namespace ledger {
     namespace core {
         namespace Bech32Parameters {
@@ -72,14 +71,12 @@ namespace ledger {
                                                                          generator(_generator),
                                                                          P2WPKHVersion(_P2WPKHVersion),
                                                                          P2WSHVersion(_P2WSHVersion),
-                                                                         P2TRVersion(_P2TRVersion)
-                {};
-
+                                                                         P2TRVersion(_P2TRVersion){};
             };
             extern LIBCORE_EXPORT const Bech32Struct getBech32Params(const std::string &networkIdentifier);
             extern LIBCORE_EXPORT const std::vector<Bech32Struct> ALL;
-            bool insertParameters(soci::session& sql, const Bech32Struct &params);
-        }
-    }
-}
-#endif //LEDGER_CORE_BECH32PARAMETERS_H
+            bool insertParameters(soci::session &sql, const Bech32Struct &params);
+        } // namespace Bech32Parameters
+    }     // namespace core
+} // namespace ledger
+#endif // LEDGER_CORE_BECH32PARAMETERS_H

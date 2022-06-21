@@ -88,7 +88,7 @@ namespace ledger {
             return state;
         }
 
-        const std::string& CommonBitcoinLikeKeychains::getKeychainEngine() const {
+        const std::string &CommonBitcoinLikeKeychains::getKeychainEngine() const {
             return _keychainEngine;
         }
 
