@@ -28,24 +28,24 @@
  *
  */
 
-#include <gtest/gtest.h>
-#include <ledger/core/utils/hex.h>
-#include <ledger/core/api/TezosLikeExtendedPublicKey.hpp>
-#include <ledger/core/tezos/TezosLikeAddress.h>
-#include <ledger/core/utils/optional.hpp>
-#include <ledger/core/collections/DynamicObject.hpp>
-#include <ledger/core/api/DynamicObject.hpp>
-#include <ledger/core/api/Networks.hpp>
-#include <wallet/currencies.hpp>
+#include "Fixtures.hpp"
+
 #include <api/Address.hpp>
-#include <tezos/TezosLikeExtendedPublicKey.h>
-#include <utils/hex.h>
+#include <api/BlockchainExplorerEngines.hpp>
 #include <api/Configuration.hpp>
 #include <crypto/HASH160.hpp>
+#include <gtest/gtest.h>
+#include <ledger/core/api/DynamicObject.hpp>
+#include <ledger/core/api/Networks.hpp>
+#include <ledger/core/api/TezosLikeExtendedPublicKey.hpp>
+#include <ledger/core/collections/DynamicObject.hpp>
 #include <ledger/core/crypto/BLAKE.h>
-#include <api/BlockchainExplorerEngines.hpp>
-
-#include "Fixtures.hpp"
+#include <ledger/core/tezos/TezosLikeAddress.h>
+#include <ledger/core/utils/hex.h>
+#include <ledger/core/utils/optional.hpp>
+#include <tezos/TezosLikeExtendedPublicKey.h>
+#include <utils/hex.h>
+#include <wallet/currencies.hpp>
 
 using namespace ledger::core;
 using namespace ledger::testing::tezos;
@@ -56,30 +56,30 @@ struct AddressFeaturesTest : public BaseFixture {};
 
 TEST_P(AddressTest, FromBase58PubKey) {
     TezosTestData data = GetParam();
-    auto xpub = data.key.pubkey;
-    auto zPub = ledger::core::TezosLikeExtendedPublicKey::fromBase58(currencies::TEZOS, xpub, Option<std::string>("44'/1729'/0'/0'"));
+    auto xpub          = data.key.pubkey;
+    auto zPub          = ledger::core::TezosLikeExtendedPublicKey::fromBase58(currencies::TEZOS, xpub, Option<std::string>("44'/1729'/0'/0'"));
     EXPECT_EQ(zPub->toBase58(), xpub);
     EXPECT_EQ(zPub->derive("")->toBase58(), data.key.address);
 }
 
 TEST_P(AddressTest, FromPubKey) {
-    TezosTestData data = GetParam();
-    std::vector<uint8_t> pubKey = hex::toByteArray(data.key.hexkey);
+    TezosTestData data             = GetParam();
+    std::vector<uint8_t> pubKey    = hex::toByteArray(data.key.hexkey);
     std::vector<uint8_t> chainCode = hex::toByteArray("");
-    auto zPub = ledger::core::TezosLikeExtendedPublicKey::fromRaw(currencies::TEZOS,
-                                                                  optional<std::vector<uint8_t >>(),
-                                                                  pubKey,
-                                                                  chainCode,
-                                                                  "44'/1729'/0'/0'",
-                                                                  data.curve);
+    auto zPub                      = ledger::core::TezosLikeExtendedPublicKey::fromRaw(currencies::TEZOS,
+                                                                                       optional<std::vector<uint8_t>>(),
+                                                                                       pubKey,
+                                                                                       chainCode,
+                                                                                       "44'/1729'/0'/0'",
+                                                                                       data.curve);
     EXPECT_EQ(zPub->toBase58(), data.key.pubkey);
     EXPECT_EQ(zPub->derive("")->toBase58(), data.key.address);
 }
 
 TEST_P(AddressTest, ParseFromString) {
     TezosTestData data = GetParam();
-    auto address = data.key.address;
-    auto tezosAddress = ledger::core::TezosLikeAddress::parse(address, currencies::TEZOS, Option<std::string>("0/0"));
+    auto address       = data.key.address;
+    auto tezosAddress  = ledger::core::TezosLikeAddress::parse(address, currencies::TEZOS, Option<std::string>("0/0"));
     EXPECT_EQ(address, tezosAddress->toString());
 }
 
@@ -88,7 +88,7 @@ TEST_P(AddressTest, AddressValidation) {
     auto currency = currencies::TEZOS;
 
     // Test valid adresses
-    auto address = KEY_ED25519.address;
+    auto address  = KEY_ED25519.address;
     EXPECT_EQ(api::Address::isValid(address, currency), true);
     address = KEY_SECP256K1.address;
     EXPECT_EQ(api::Address::isValid(address, currency), true);
@@ -114,19 +114,18 @@ TEST_P(AddressTest, AddressValidation) {
 }
 
 TEST_F(AddressFeaturesTest, DISABLED_isDelegate) {
-    auto pool = newDefaultPool();
+    auto pool          = newDefaultPool();
     auto configuration = DynamicObject::newInstance();
     configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
     const auto walletName = "my_wallet_isDelegate";
-    auto wallet = std::dynamic_pointer_cast<TezosLikeWallet>(uv::wait(pool->createWallet(walletName, "tezos", configuration)));
+    auto wallet           = std::dynamic_pointer_cast<TezosLikeWallet>(uv::wait(pool->createWallet(walletName, "tezos", configuration)));
     EXPECT_EQ(uv::wait(wallet->isDelegate("tz3bnhbn7uYfL43zfXtBvCYoq6DW743mRWvc")), false);
     EXPECT_EQ(uv::wait(wallet->isDelegate("tz1PWCDnz783NNGGQjEFFsHtrcK5yBW4E2rm")), true);
     EXPECT_ANY_THROW(uv::wait(wallet->isDelegate("tz2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")));
-}    
+}
 
 INSTANTIATE_TEST_CASE_P(
     Tezos,
     AddressTest,
     TezosParams(),
-    TezosParamsNames
-);
+    TezosParamsNames);

@@ -31,22 +31,23 @@
 #ifndef LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
 #define LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
 
-#include "CommonBitcoinLikeKeychains.hpp"
 #include "../../../collections/DynamicObject.hpp"
+#include "CommonBitcoinLikeKeychains.hpp"
+
 #include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
         class P2PKHBitcoinLikeKeychain : public CommonBitcoinLikeKeychains {
-        public:
+          public:
             P2PKHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                     const api::Currency &params, int account,
+                                     const api::Currency &params,
+                                     int account,
                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                      const std::shared_ptr<Preferences> &preferences);
-            int32_t getOutputSizeAsSignedTxInput() const override ;
+            int32_t getOutputSizeAsSignedTxInput() const override;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP
+#endif // LEDGER_CORE_P2PKHBITCOINLIKEKEYCHAIN_HPP

@@ -28,12 +28,12 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKETRANSACTIONSBULKPARSER_H
 #define LEDGER_CORE_RIPPLELIKETRANSACTIONSBULKPARSER_H
 
 #include "../RippleLikeBlockchainExplorer.h"
 #include "RippleLikeTransactionsParser.h"
+
 #include <wallet/common/explorers/api/AbstractTransactionsBulkParser.h>
 
 namespace ledger {
@@ -41,12 +41,11 @@ namespace ledger {
         class RippleLikeBlockchainExplorer;
 
         class RippleLikeTransactionsBulkParser
-                : public AbstractTransactionsBulkParser<RippleLikeBlockchainExplorer::TransactionsBulk, RippleLikeTransactionsParser> {
-        public:
-            RippleLikeTransactionsBulkParser(std::string &lastKey):
-                _lastKey(lastKey),
-                _transactionsParser(lastKey),
-                _inPaginationMarker(false) {
+            : public AbstractTransactionsBulkParser<RippleLikeBlockchainExplorer::TransactionsBulk, RippleLikeTransactionsParser> {
+          public:
+            RippleLikeTransactionsBulkParser(std::string &lastKey) : _lastKey(lastKey),
+                                                                     _transactionsParser(lastKey),
+                                                                     _inPaginationMarker(false) {
                 _depth = 0;
             };
 
@@ -77,12 +76,11 @@ namespace ledger {
             bool EndObject(rapidjson::SizeType memberCount) {
                 if (_inPaginationMarker) {
                     _bulk->paginationMarker = fmt::format("{}-{}",
-                            _paginationMarkerLedger,
-                            _paginationMarkerSeq
-                    );
+                                                          _paginationMarkerLedger,
+                                                          _paginationMarkerSeq);
                     _paginationMarkerLedger = "";
-                    _paginationMarkerSeq = "";
-                    _inPaginationMarker = false;
+                    _paginationMarkerSeq    = "";
+                    _inPaginationMarker     = false;
                 }
 
                 PROXY_PARSE_TXS(EndObject, memberCount)
@@ -104,8 +102,7 @@ namespace ledger {
                 PROXY_PARSE_TXS(Bool, b)
             }
 
-
-        protected:
+          protected:
             RippleLikeTransactionsParser &getTransactionsParser() override {
                 return _transactionsParser;
             }
@@ -114,14 +111,14 @@ namespace ledger {
                 return _lastKey;
             }
 
-        private:
+          private:
             RippleLikeTransactionsParser _transactionsParser;
             std::string &_lastKey;
             bool _inPaginationMarker;
             std::string _paginationMarkerLedger;
             std::string _paginationMarkerSeq;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_RIPPLELIKETRANSACTIONSBULKPARSER_H
+#endif // LEDGER_CORE_RIPPLELIKETRANSACTIONSBULKPARSER_H

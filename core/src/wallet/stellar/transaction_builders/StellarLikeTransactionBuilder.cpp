@@ -30,17 +30,18 @@
  */
 
 #include "StellarLikeTransactionBuilder.hpp"
-#include <wallet/stellar/StellarLikeAccount.hpp>
-#include <api/StellarLikeTransactionCallback.hpp>
+
 #include <algorithm>
+#include <api/StellarLikeTransactionCallback.hpp>
 #include <api_impl/BigIntImpl.hpp>
+#include <wallet/stellar/StellarLikeAccount.hpp>
 #include <wallet/stellar/xdr/StellarModelUtils.hpp>
 
 namespace ledger {
     namespace core {
 
         StellarLikeTransactionBuilder::StellarLikeTransactionBuilder(
-                const std::shared_ptr<StellarLikeAccount> &account) : _account(account) {
+            const std::shared_ptr<StellarLikeAccount> &account) : _account(account) {
             // Initialize everything with default values
             _envelope.tx.memo.type = stellar::xdr::MemoType::MEMO_NONE;
         }
@@ -55,11 +56,11 @@ namespace ledger {
             stellar::xdr::Operation operation;
             stellar::xdr::PaymentOp op;
             StellarLikeAddress addr(address, _account->getWallet()->getCurrency(), Option<std::string>::NONE);
-            op.destination = addr.toXdrMuxedAccount();
-            op.asset.type = stellar::xdr::AssetType::ASSET_TYPE_NATIVE;
-            op.amount = std::static_pointer_cast<Amount>(amount)->value()->toInt64();
+            op.destination    = addr.toXdrMuxedAccount();
+            op.asset.type     = stellar::xdr::AssetType::ASSET_TYPE_NATIVE;
+            op.amount         = std::static_pointer_cast<Amount>(amount)->value()->toInt64();
 
-            operation.type = stellar::OperationType::PAYMENT;
+            operation.type    = stellar::OperationType::PAYMENT;
             operation.content = op;
             _envelope.tx.operations.emplace_back(operation);
 
@@ -73,7 +74,7 @@ namespace ledger {
                                                         const std::shared_ptr<api::Amount> &amount) {
             if (!StellarLikeAddress::isValid(address, _account->getWallet()->getCurrency())) {
                 throw make_exception(api::ErrorCode::INVALID_STELLAR_ADDRESS_FORMAT,
-                        "{} is not a valid stellar address", address);
+                                     "{} is not a valid stellar address", address);
             }
             stellar::xdr::Operation operation;
             stellar::xdr::CreateAccountOp op;
@@ -85,8 +86,8 @@ namespace ledger {
             std::copy(pubKey.begin(), pubKey.end(), op.destination.content.begin());
             op.startingBalance = std::static_pointer_cast<Amount>(amount)->value()->toInt64();
 
-            operation.type = stellar::OperationType::CREATE_ACCOUNT;
-            operation.content = op;
+            operation.type     = stellar::OperationType::CREATE_ACCOUNT;
+            operation.content  = op;
             _envelope.tx.operations.emplace_back(operation);
 
             _balanceChange = _balanceChange + BigInt(op.startingBalance);
@@ -106,45 +107,45 @@ namespace ledger {
             return shared_from_this();
         }
 
-        void
-        StellarLikeTransactionBuilder::build(const std::shared_ptr<api::StellarLikeTransactionCallback> &callback) {
-           build().callback(_account->getContext(), callback);
+        void StellarLikeTransactionBuilder::build(const std::shared_ptr<api::StellarLikeTransactionCallback> &callback) {
+            build().callback(_account->getContext(), callback);
         }
 
         FuturePtr<ledger::core::api::StellarLikeTransaction> StellarLikeTransactionBuilder::build() {
             // Check if balance is OK
             // Get account pub key
             // Sanitize signatures
-            auto account = _account;
-            auto envelope = _envelope;
-            auto muxedAccount = _account->params().keychain->getAddress()->toXdrMuxedAccount();
-            auto pubKey = _account->params().keychain->getAddress()->toPublicKey();
+            auto account       = _account;
+            auto envelope      = _envelope;
+            auto muxedAccount  = _account->params().keychain->getAddress()->toXdrMuxedAccount();
+            auto pubKey        = _account->params().keychain->getAddress()->toPublicKey();
             auto balanceChange = _balanceChange;
-            auto baseFee = _baseFee.getValueOr(100);
+            auto baseFee       = _baseFee.getValueOr(100);
             auto correlationId = _correlationId;
-            return account->getBalance().flatMap<Unit>(account->getContext(), [=] (const std::shared_ptr<Amount>& balance) {
-                return account->getBaseReserve().map<Unit>(account->getContext(), [=] (const std::shared_ptr<Amount> &reserve) -> Unit {
-                    auto newBalance = *balance->value() - balanceChange;
-                    if (newBalance <= *reserve->value())
-                        throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "New balance ({}) is below base reserve ({})", newBalance.toInt64(), reserve->toLong());
-                    return unit;
+            return account->getBalance().flatMap<Unit>(account->getContext(), [=](const std::shared_ptr<Amount> &balance) {
+                                            return account->getBaseReserve().map<Unit>(account->getContext(), [=](const std::shared_ptr<Amount> &reserve) -> Unit {
+                                                auto newBalance = *balance->value() - balanceChange;
+                                                if (newBalance <= *reserve->value())
+                                                    throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "New balance ({}) is below base reserve ({})", newBalance.toInt64(), reserve->toLong());
+                                                return unit;
+                                            });
+                                        })
+                .mapPtr<api::StellarLikeTransaction>(account->getContext(), [=](const Unit &) mutable -> std::shared_ptr<api::StellarLikeTransaction> {
+                    envelope.tx.sourceAccount = muxedAccount;
+                    for (auto &signature : envelope.signatures) {
+                        std::copy(pubKey.begin() + 28, pubKey.end(), signature.hint.begin());
+                    }
+                    envelope.tx.fee = envelope.tx.operations.size() * baseFee;
+                    auto wrapped    = stellar::xdr::wrap(envelope);
+                    auto tx         = std::make_shared<StellarLikeTransaction>(_account->getWallet()->getCurrency(), wrapped);
+                    tx->setCorrelationId(correlationId);
+                    return tx;
                 });
-            }).mapPtr<api::StellarLikeTransaction>(account->getContext(), [=] (const Unit&) mutable -> std::shared_ptr<api::StellarLikeTransaction> {
-                envelope.tx.sourceAccount = muxedAccount;
-                for (auto& signature : envelope.signatures) {
-                    std::copy(pubKey.begin() + 28,  pubKey.end(), signature.hint.begin());
-                }
-                envelope.tx.fee = envelope.tx.operations.size() * baseFee;
-                auto wrapped = stellar::xdr::wrap(envelope);
-                auto tx = std::make_shared<StellarLikeTransaction>(_account->getWallet()->getCurrency(), wrapped);
-                tx->setCorrelationId(correlationId);
-                return tx;
-            });
         }
 
         std::shared_ptr<api::StellarLikeTransactionBuilder>
         StellarLikeTransactionBuilder::setTextMemo(const std::string &text) {
-            _envelope.tx.memo.type = stellar::xdr::MemoType::MEMO_TEXT;
+            _envelope.tx.memo.type    = stellar::xdr::MemoType::MEMO_TEXT;
             _envelope.tx.memo.content = text;
             return shared_from_this();
         }
@@ -175,9 +176,10 @@ namespace ledger {
 
         std::shared_ptr<api::StellarLikeTransactionBuilder>
         StellarLikeTransactionBuilder::setNumberMemo(const std::shared_ptr<api::BigInt> &number) {
-            _envelope.tx.memo.type = stellar::xdr::MemoType::MEMO_ID;
+            _envelope.tx.memo.type    = stellar::xdr::MemoType::MEMO_ID;
             _envelope.tx.memo.content = std::static_pointer_cast<api::BigIntImpl>(number)->backend().toUint64();
-            return shared_from_this();;
+            return shared_from_this();
+            ;
         }
 
         std::shared_ptr<api::StellarLikeTransactionBuilder>
@@ -187,16 +189,16 @@ namespace ledger {
         }
 
         std::shared_ptr<api::StellarLikeTransaction>
-        api::StellarLikeTransactionBuilder::parseRawTransaction(const api::Currency & currency,
-                                                                const std::vector<uint8_t> & rawTransaction) {
+        api::StellarLikeTransactionBuilder::parseRawTransaction(const api::Currency &currency,
+                                                                const std::vector<uint8_t> &rawTransaction) {
             return ::ledger::core::StellarLikeTransaction::parseRawTransaction(currency, rawTransaction);
         }
 
         std::shared_ptr<api::StellarLikeTransaction>
-        api::StellarLikeTransactionBuilder::parseSignatureBase(const api::Currency & currency,
-                                                               const std::vector<uint8_t> & rawTransaction) {
+        api::StellarLikeTransactionBuilder::parseSignatureBase(const api::Currency &currency,
+                                                               const std::vector<uint8_t> &rawTransaction) {
             return ::ledger::core::StellarLikeTransaction::parseSignatureBase(currency, rawTransaction);
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

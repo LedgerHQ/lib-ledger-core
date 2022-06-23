@@ -31,38 +31,37 @@
 #ifndef LEDGER_CORE_LOGGER_HPP
 #define LEDGER_CORE_LOGGER_HPP
 
-#include <spdlog/spdlog.h>
 #include "../api/ExecutionContext.hpp"
 #include "../api/LogPrinter.hpp"
 #include "../api/PathResolver.hpp"
-#include <memory>
-#include <cstddef>
 #include "../utils/optional.hpp"
+
+#include <cstddef>
+#include <memory>
+#include <spdlog/spdlog.h>
 
 namespace ledger {
     namespace core {
         class logger {
-        public:
+          public:
             static const std::size_t DEFAULT_MAX_SIZE = 5 * 1048576;
             static std::shared_ptr<spdlog::logger> create(
-                    const std::string& name,
-                    const std::shared_ptr<api::ExecutionContext>& context,
-                    const std::shared_ptr<api::PathResolver>& resolver,
-                    const std::shared_ptr<api::LogPrinter>& printer,
-                    std::size_t maxSize = DEFAULT_MAX_SIZE,
-                    bool enabled = true
-            );
+                const std::string &name,
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<api::PathResolver> &resolver,
+                const std::shared_ptr<api::LogPrinter> &printer,
+                std::size_t maxSize = DEFAULT_MAX_SIZE,
+                bool enabled        = true);
 
             static std::shared_ptr<spdlog::logger> trace(
-                    const std::string& purpose,
-                    const std::string& tracePrefix,
-                    const std::shared_ptr<spdlog::logger>& logger
-            );
+                const std::string &purpose,
+                const std::string &tracePrefix,
+                const std::shared_ptr<spdlog::logger> &logger);
 
-        private:
+          private:
             logger() = delete;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_LOGGER_HPP
+#endif // LEDGER_CORE_LOGGER_HPP

@@ -31,7 +31,6 @@
 
 #include "AccountHelper.hpp"
 
-
 #include <api/Account.hpp>
 
 namespace ledger {
@@ -41,12 +40,10 @@ namespace ledger {
             bool isInsertedOperation(int flag) {
                 using namespace ::ledger::core::api;
 
-                auto const insertedFlag = Account::FLAG_TRANSACTION_CREATED_SENDING_OPERATION
-                    | Account::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION
-                    | Account::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
+                auto const insertedFlag = Account::FLAG_TRANSACTION_CREATED_SENDING_OPERATION | Account::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION | Account::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
 
                 return static_cast<bool>((flag & insertedFlag) != 0);
             }
-        }
-    }
-}
+        } // namespace account
+    }     // namespace core
+} // namespace ledger

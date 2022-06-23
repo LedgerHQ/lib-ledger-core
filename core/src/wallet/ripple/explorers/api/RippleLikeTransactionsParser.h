@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKETRANSACTIONSPARSER_H
 #define LEDGER_CORE_RIPPLELIKETRANSACTIONSPARSER_H
 
@@ -39,22 +38,22 @@
 namespace ledger {
     namespace core {
         class RippleLikeTransactionsParser
-                : public AbstractTransactionsParser<RippleLikeBlockchainExplorerTransaction, RippleLikeTransactionParser> {
-        public:
+            : public AbstractTransactionsParser<RippleLikeBlockchainExplorerTransaction, RippleLikeTransactionParser> {
+          public:
             RippleLikeTransactionsParser(std::string &lastKey) : _transactionParser(lastKey) {
-                _arrayDepth = 0;
+                _arrayDepth  = 0;
                 _objectDepth = 0;
             }
 
-        protected:
+          protected:
             RippleLikeTransactionParser &getTransactionParser() override {
                 return _transactionParser;
             }
 
-        private:
+          private:
             RippleLikeTransactionParser _transactionParser;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_RIPPLELIKETRANSACTIONSPARSER_H
+#endif // LEDGER_CORE_RIPPLELIKETRANSACTIONSPARSER_H

@@ -32,9 +32,7 @@
 #include <gtest/gtest.h>
 #include <ledger/core/utils/Lazy.hpp>
 
-
 struct MySuperClass {
-
     MySuperClass() {
         _id = counter;
         counter += 1;
@@ -44,17 +42,17 @@ struct MySuperClass {
         _id = id;
     }
 
-    MySuperClass(const MySuperClass& c) {
+    MySuperClass(const MySuperClass &c) {
         _id = c._id;
     }
 
     int getId() const {
-      return _id;
+        return _id;
     };
 
     static int counter;
 
-private:
+  private:
     int _id;
 };
 
@@ -63,7 +61,7 @@ int MySuperClass::counter = 0;
 using namespace ledger::core;
 
 TEST(Lazy, CreateLazyValue) {
-    MySuperClass::counter = 0;
+    MySuperClass::counter  = 0;
     Lazy<MySuperClass> obj = Lazy<MySuperClass>::make_lazy();
     EXPECT_EQ(MySuperClass::counter, 0);
     EXPECT_EQ(obj->getId(), 0);
@@ -74,7 +72,7 @@ TEST(Lazy, CreateLazyValue) {
 }
 
 TEST(Lazy, CreateLazyWithInitializer) {
-    MySuperClass::counter = 0;
+    MySuperClass::counter  = 0;
     Lazy<MySuperClass> obj = Lazy<MySuperClass>::make_lazy(42);
     EXPECT_EQ(MySuperClass::counter, 0);
     EXPECT_EQ(obj->getId(), 42);

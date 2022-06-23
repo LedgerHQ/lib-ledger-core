@@ -35,16 +35,16 @@
 #include <gtest/gtest.h>
 
 class IntegrationEnvironment {
-public:
-    static IntegrationEnvironment* initInstance(int argc, char** argv);
-    static IntegrationEnvironment* getInstance();
+  public:
+    static IntegrationEnvironment *initInstance(int argc, char **argv);
+    static IntegrationEnvironment *getInstance();
     std::string getApplicationDirPath() const;
-private:
-    IntegrationEnvironment(int argc, char** argv);
+
+  private:
+    IntegrationEnvironment(int argc, char **argv);
 
     std::string _appDir;
-    static IntegrationEnvironment* _instance;
+    static IntegrationEnvironment *_instance;
 };
 
-
-#endif //LEDGER_CORE_INTEGRATIONENVIRONMENT_H
+#endif // LEDGER_CORE_INTEGRATIONENVIRONMENT_H

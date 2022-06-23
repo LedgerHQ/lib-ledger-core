@@ -27,32 +27,32 @@
  * SOFTWARE.
  *
  */
-#include <gtest/gtest.h>
-#include <src/wallet/ripple/keychains/RippleLikeKeychain.h>
-#include <src/ripple/RippleLikeExtendedPublicKey.h>
-#include <src/ripple/RippleLikeAddress.h>
-#include <src/utils/DerivationPath.hpp>
-#include <src/utils/optional.hpp>
-#include "keychain_test_helper.h"
 #include "../BaseFixture.h"
 #include "MemPreferencesBackend.hpp"
+#include "keychain_test_helper.h"
+
+#include <gtest/gtest.h>
+#include <src/ripple/RippleLikeAddress.h>
+#include <src/ripple/RippleLikeExtendedPublicKey.h>
+#include <src/utils/DerivationPath.hpp>
+#include <src/utils/optional.hpp>
+#include <src/wallet/ripple/keychains/RippleLikeKeychain.h>
 
 using namespace std;
 class RippleKeychains : public BaseFixture {
-public:
-    void testXrpKeychain(const KeychainTestData &data, std::function<void (RippleLikeKeychain&)> f) {
-        auto backend = std::make_shared<ledger::core::test::MemPreferencesBackend>();
+  public:
+    void testXrpKeychain(const KeychainTestData &data, std::function<void(RippleLikeKeychain &)> f) {
+        auto backend       = std::make_shared<ledger::core::test::MemPreferencesBackend>();
         auto configuration = std::make_shared<DynamicObject>();
         dispatcher->getMainExecutionContext()->execute(ledger::core::make_runnable([=]() {
             RippleLikeKeychain keychain(
-                    configuration,
-                    data.currency,
-                    0,
-                    ledger::core::RippleLikeExtendedPublicKey::fromBase58(data.currency,
-                                                                            data.xpub,
-                                                                            optional<std::string>(data.derivationPath)),
-                    std::make_shared<ledger::core::Preferences>(*backend, randomKeychainName())
-            );
+                configuration,
+                data.currency,
+                0,
+                ledger::core::RippleLikeExtendedPublicKey::fromBase58(data.currency,
+                                                                      data.xpub,
+                                                                      optional<std::string>(data.derivationPath)),
+                std::make_shared<ledger::core::Preferences>(*backend, randomKeychainName()));
             f(keychain);
             dispatcher->stop();
         }));
@@ -69,44 +69,37 @@ struct DerivationSchemeData {
 };
 // Data taken from nanoS of dev
 const std::vector<DerivationSchemeData> derivationSchemeTestData = {
-        {
-                {"44'/<coin_type>'/<account>'/<node>/<address>", "44'/<coin_type>'/<account>'/<node>/0", "44'/<coin_type>'/<account>'/0/0"},
-                "44'/144'/0'",
-                "03c73f64083463fa923e1530af6f558204853873c6a45cbfb1f2f1e2ac2a5d989c",
-                "f7e8d16154d3c7cbfa2cea35aa7a6ae0c429980892cf2d6ea9e031f57f22a63d",
-                "rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7"
-        },
-        {
-                {"44'/144'/0'/0'"},
-                "44'/144'/0'/0'",
-                "0274282fa4d2f1e58f8a5735dc6acaa1b0b56c20bbfe368e66f3803cc015c9acf5",
-                "70fe2dbddb85ba2656043f0732b7ea6f24f226c9a243daa0d9283b969e988af6",
-                "rUsnp1vzpoUCeDRG9hmrTtScrdffT7Yx52"
-        },
-        {
-                {"44'/144'/14'/5'/16"},
-                "44'/144'/14'/5'",
-                "02ea8289915225abedc9a24239ddfad883d7f3b30205e0a1178dca1c32bdbd3b32",
-                "6a4ecb12b1b59d08d21b59f6a28e6ea2bdf7f03c08c8b4a9adb7cc988df275a1",
-                "rLJEcapF3TyMgwE8wmBvj4gYiZrcTdf3it"
-        }
-};
+    {{"44'/<coin_type>'/<account>'/<node>/<address>", "44'/<coin_type>'/<account>'/<node>/0", "44'/<coin_type>'/<account>'/0/0"},
+     "44'/144'/0'",
+     "03c73f64083463fa923e1530af6f558204853873c6a45cbfb1f2f1e2ac2a5d989c",
+     "f7e8d16154d3c7cbfa2cea35aa7a6ae0c429980892cf2d6ea9e031f57f22a63d",
+     "rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7"},
+    {{"44'/144'/0'/0'"},
+     "44'/144'/0'/0'",
+     "0274282fa4d2f1e58f8a5735dc6acaa1b0b56c20bbfe368e66f3803cc015c9acf5",
+     "70fe2dbddb85ba2656043f0732b7ea6f24f226c9a243daa0d9283b969e988af6",
+     "rUsnp1vzpoUCeDRG9hmrTtScrdffT7Yx52"},
+    {{"44'/144'/14'/5'/16"},
+     "44'/144'/14'/5'",
+     "02ea8289915225abedc9a24239ddfad883d7f3b30205e0a1178dca1c32bdbd3b32",
+     "6a4ecb12b1b59d08d21b59f6a28e6ea2bdf7f03c08c8b4a9adb7cc988df275a1",
+     "rLJEcapF3TyMgwE8wmBvj4gYiZrcTdf3it"}};
 
 TEST_F(RippleKeychains, RippleDerivationSchemes) {
-    auto pool = newDefaultPool();
+    auto pool          = newDefaultPool();
     auto configuration = DynamicObject::newInstance();
     {
         for (auto &elem : derivationSchemeTestData) {
             auto derivationSchemes = elem.equivalentDerivationSchemes;
             for (auto &scheme : derivationSchemes) {
                 configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, scheme);
-                auto wallet = uv::wait(pool->createWallet(scheme, "ripple", configuration));
-                //Create account as Live does
+                auto wallet                   = uv::wait(pool->createWallet(scheme, "ripple", configuration));
+                // Create account as Live does
                 api::AccountCreationInfo info = uv::wait(wallet->getNextAccountCreationInfo());
                 EXPECT_EQ(info.derivations[0], elem.expectedDerivationPath);
                 info.publicKeys.push_back(hex::toByteArray(elem.pubKey));
                 info.chainCodes.push_back(hex::toByteArray(elem.chainCode));
-                auto account = createRippleLikeAccount(wallet, info.index, info);
+                auto account   = createRippleLikeAccount(wallet, info.index, info);
                 auto addresses = uv::wait(account->getFreshPublicAddresses());
                 EXPECT_GT(addresses.size(), 0);
                 EXPECT_EQ(addresses[0]->toString(), elem.expectedAddress);

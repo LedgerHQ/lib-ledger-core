@@ -40,19 +40,18 @@
 namespace ledger {
     namespace core {
         class DurationsMap {
-        public:
-            void record(const std::string& name,
-                    const std::chrono::high_resolution_clock::duration& duration);
-            const std::unordered_map<std::string, api::DurationMetric>& getMetrics();
+          public:
+            void record(const std::string &name,
+                        const std::chrono::high_resolution_clock::duration &duration);
+            const std::unordered_map<std::string, api::DurationMetric> &getMetrics();
 
-            static DurationsMap& getInstance();
+            static DurationsMap &getInstance();
 
-        private:
+          private:
             std::unordered_map<std::string, api::DurationMetric> _metrics;
             std::mutex _mutex;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_DURATIONSMAP_HPP
+#endif // LEDGER_CORE_DURATIONSMAP_HPP

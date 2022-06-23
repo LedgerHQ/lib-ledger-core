@@ -29,8 +29,9 @@
  *
  */
 
-#include "gtest/gtest.h"
 #include "math/BigInt.h"
+
+#include "gtest/gtest.h"
 #include <limits>
 
 using namespace ledger::core;
@@ -56,14 +57,14 @@ TEST(BigInt, InitializeWithLowValueString) {
 }
 
 TEST(BigInt, ConvertToHexString) {
-    auto hex = "0102030405060708090a0b0c0d0f11223344556677889900aabbccddeeff";
+    auto hex   = "0102030405060708090a0b0c0d0f11223344556677889900aabbccddeeff";
     auto value = BigInt::from_hex(hex);
     EXPECT_EQ(value->toHexString(), hex);
     delete value;
 }
 
 TEST(BigInt, ConvertToDecString) {
-    auto dec = "-1234567890123456789012345678901234567890123467890123457890";
+    auto dec   = "-1234567890123456789012345678901234567890123467890123457890";
     auto value = BigInt::from_dec(dec);
     EXPECT_EQ(value->toString(), dec);
     delete value;
@@ -75,7 +76,7 @@ TEST(BigInt, CompareLt) {
     EXPECT_TRUE(BigInt("1000000000000000000000000000000000000000000000") <
                 BigInt("10000000000000000000000000000000000000000000000"));
     EXPECT_FALSE(BigInt("10000000000000000000000000000000000000000000000") <
-                BigInt("1000000000000000000000000000000000000000000000"));
+                 BigInt("1000000000000000000000000000000000000000000000"));
     EXPECT_FALSE(BigInt("-12") < BigInt("-13"));
     EXPECT_TRUE(BigInt("-13") < BigInt("-12"));
 }
@@ -112,16 +113,16 @@ TEST(BigInt, Add) {
     EXPECT_B_EQ((BigInt("-12") + BigInt(12)), BigInt("0"));
     EXPECT_B_EQ((BigInt("10000000000000000000000000000000000000000000000000000000000000000") +
                  BigInt("10000000000000000000000000000000000000000000000000000000000000000")),
-                 BigInt("20000000000000000000000000000000000000000000000000000000000000000"));
+                BigInt("20000000000000000000000000000000000000000000000000000000000000000"));
     EXPECT_B_EQ((BigInt("10000000000000000000000000000000000000000000000000000000000000000") +
                  BigInt("-10000000000000000000000000000000000000000000000000000000000000000")),
-                 BigInt("0"));
+                BigInt("0"));
     EXPECT_B_EQ((BigInt("-10000000000000000000000000000000000000000000000000000000000000000") +
                  BigInt("10000000000000000000000000000000000000000000000000000000000000000")),
-                 BigInt("0"));
+                BigInt("0"));
     EXPECT_B_EQ((BigInt("-10000000000000000000000000000000000000000000000000000000000000000") +
                  BigInt("-10000000000000000000000000000000000000000000000000000000000000000")),
-                 BigInt("-20000000000000000000000000000000000000000000000000000000000000000"));
+                BigInt("-20000000000000000000000000000000000000000000000000000000000000000"));
 }
 
 TEST(BigInt, Subtract) {
@@ -171,10 +172,11 @@ TEST(BigInt, Power) {
 TEST(BigInt, FromFloatString) {
     BigInt witness = BigInt::fromDecimal("5753854965885600108583111560790390019024492832");
     BigInt subject = BigInt::fromFloatString("5.753854965885600108583111560790390019024492832", 45);
-    std::cout << std::endl << witness.toString() << std::endl;
+    std::cout << std::endl
+              << witness.toString() << std::endl;
     std::cout << subject.toString() << std::endl;
 
-    auto t = witness.toByteArray();
+    auto t  = witness.toByteArray();
     auto tt = subject.toByteArray();
     EXPECT_TRUE(witness.compare(subject) == 0);
 }

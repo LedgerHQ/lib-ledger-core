@@ -31,35 +31,34 @@
 #pragma once
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER) && _MSC_VER <= 1900
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 #include <api/CosmosLikeNetworkParameters.hpp>
 
 namespace ledger {
-namespace core {
-namespace networks {
-extern LIBCORE_EXPORT const api::CosmosLikeNetworkParameters getCosmosLikeNetworkParameters(
-    const std::string &chainID);
-extern LIBCORE_EXPORT const std::vector<api::CosmosLikeNetworkParameters> ALL_COSMOS;
+    namespace core {
+        namespace networks {
+            extern LIBCORE_EXPORT const api::CosmosLikeNetworkParameters getCosmosLikeNetworkParameters(
+                const std::string &chainID);
+            extern LIBCORE_EXPORT const std::vector<api::CosmosLikeNetworkParameters> ALL_COSMOS;
 
-template <class Archive>
-void serialize(Archive &archive, api::CosmosLikeNetworkParameters &p)
-{
-    archive(
-        p.Identifier,
-        p.MessagePrefix,
-        p.XPUBVersion,
-        p.PubKeyPrefix,
-        p.AddressPrefix,
-        p.ChainId,
-        p.AdditionalCIPs);
-}
+            template <class Archive>
+            void serialize(Archive &archive, api::CosmosLikeNetworkParameters &p) {
+                archive(
+                    p.Identifier,
+                    p.MessagePrefix,
+                    p.XPUBVersion,
+                    p.PubKeyPrefix,
+                    p.AddressPrefix,
+                    p.ChainId,
+                    p.AdditionalCIPs);
+            }
 
-}  // namespace networks
-}  // namespace core
-}  // namespace ledger
+        } // namespace networks
+    }     // namespace core
+} // namespace ledger

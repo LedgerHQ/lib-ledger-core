@@ -31,9 +31,9 @@
 #ifndef LEDGER_CORE_BLOCK_H
 #define LEDGER_CORE_BLOCK_H
 
+#include <api/Block.hpp>
 #include <chrono>
 #include <string>
-#include <api/Block.hpp>
 
 namespace ledger {
     namespace core {
@@ -43,21 +43,19 @@ namespace ledger {
             std::chrono::system_clock::time_point time;
             std::string currencyName;
 
-            Block() {};
+            Block(){};
             // TODO : MARK AS EXPLICIT
             // this is implicit because of the raw count
             // of compilation errors to fight through. Once all errors are dealt with,
             // make this constructor explicit to avoid implicit conversions
-            Block(const api::Block &apiBlock) :
-                hash(apiBlock.blockHash),
-                height(apiBlock.height),
-                time(apiBlock.time),
-                currencyName(apiBlock.currencyName){};
+            Block(const api::Block &apiBlock) : hash(apiBlock.blockHash),
+                                                height(apiBlock.height),
+                                                time(apiBlock.time),
+                                                currencyName(apiBlock.currencyName){};
             std::string getUid() const;
             api::Block toApiBlock() const;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BLOCK_H
+#endif // LEDGER_CORE_BLOCK_H

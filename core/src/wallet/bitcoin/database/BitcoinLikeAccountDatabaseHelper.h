@@ -31,19 +31,19 @@
 #ifndef LEDGER_CORE_BITCOINLIKEACCOUNTDATABASEHELPER_H
 #define LEDGER_CORE_BITCOINLIKEACCOUNTDATABASEHELPER_H
 
-#include <soci.h>
 #include "BitcoinLikeAccountDatabaseEntry.h"
+
 #include <math/BigInt.h>
+#include <soci.h>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeAccountDatabaseHelper {
-        public:
-            static void createAccount(soci::session& sql, const std::string walletUid, int32_t index, const std::string& xpub);
-            static bool queryAccount(soci::session& sql, const std::string& accountUid, BitcoinLikeAccountDatabaseEntry& entry);
+          public:
+            static void createAccount(soci::session &sql, const std::string walletUid, int32_t index, const std::string &xpub);
+            static bool queryAccount(soci::session &sql, const std::string &accountUid, BitcoinLikeAccountDatabaseEntry &entry);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BITCOINLIKEACCOUNTDATABASEHELPER_H
+#endif // LEDGER_CORE_BITCOINLIKEACCOUNTDATABASEHELPER_H

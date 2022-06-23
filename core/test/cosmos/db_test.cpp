@@ -1,63 +1,59 @@
 #include "../integration/BaseFixture.h"
 #include "Fixtures.hpp"
 
-#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
-#include <wallet/cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
-#include <wallet/cosmos/CosmosLikeOperationQuery.hpp>
+#include <api/PoolConfiguration.hpp>
+#include <gtest/gtest.h>
+#include <utils/DateUtils.hpp>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <wallet/cosmos/CosmosLikeMessage.hpp>
+#include <wallet/cosmos/CosmosLikeOperationQuery.hpp>
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
-
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
+#include <wallet/cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
 #include <wallet/pool/WalletPool.hpp>
-#include <api/PoolConfiguration.hpp>
-#include <utils/DateUtils.hpp>
-
-#include <gtest/gtest.h>
 
 using namespace ledger::testing::cosmos;
 
 class CosmosDBTest : public BaseFixture {
-public:
- void SetUp() override
- {
-     BaseFixture::SetUp();
+  public:
+    void SetUp() override {
+        BaseFixture::SetUp();
 #ifdef PG_SUPPORT
-     const bool usePostgreSQL = true;
-     auto poolConfig = DynamicObject::newInstance();
-     poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-     pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
+        const bool usePostgreSQL = true;
+        auto poolConfig          = DynamicObject::newInstance();
+        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+        pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
 #else
-     pool = newDefaultPool();
+        pool = newDefaultPool();
 #endif
-     backend->enableQueryLogging(true);
- }
+        backend->enableQueryLogging(true);
+    }
 
- void setupTest(
-     std::shared_ptr<WalletPool> &pool,
-     std::shared_ptr<CosmosLikeAccount> &account,
-     std::shared_ptr<CosmosLikeWallet> &wallet,
-     const std::string& walletName)
- {
-     auto configuration = DynamicObject::newInstance();
-     configuration->putString(
-         api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
-         "44'/<coin_type>'/<account>'/<node>/<address>");
-     wallet = std::dynamic_pointer_cast<CosmosLikeWallet>(
-         uv::wait(pool->createWallet(walletName, "cosmos", configuration)));
+    void setupTest(
+        std::shared_ptr<WalletPool> &pool,
+        std::shared_ptr<CosmosLikeAccount> &account,
+        std::shared_ptr<CosmosLikeWallet> &wallet,
+        const std::string &walletName) {
+        auto configuration = DynamicObject::newInstance();
+        configuration->putString(
+            api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
+            "44'/<coin_type>'/<account>'/<node>/<address>");
+        wallet = std::dynamic_pointer_cast<CosmosLikeWallet>(
+            uv::wait(pool->createWallet(walletName, "cosmos", configuration)));
 
-     auto accountInfo = uv::wait(wallet->getNextAccountCreationInfo());
-     EXPECT_EQ(accountInfo.index, 0);
-     accountInfo.publicKeys.push_back(hex::toByteArray(DEFAULT_HEX_PUB_KEY));
+        auto accountInfo = uv::wait(wallet->getNextAccountCreationInfo());
+        EXPECT_EQ(accountInfo.index, 0);
+        accountInfo.publicKeys.push_back(hex::toByteArray(DEFAULT_HEX_PUB_KEY));
 
-     account = createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
- }
+        account = createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
+    }
 
- void TearDown() override {
-     uv::wait(pool->freshResetAll());
-     BaseFixture::TearDown();
- }
+    void TearDown() override {
+        uv::wait(pool->freshResetAll());
+        BaseFixture::TearDown();
+    }
 
- std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<WalletPool> pool;
 };
 
 TEST_F(CosmosDBTest, BasicDBTest) {
@@ -67,8 +63,8 @@ TEST_F(CosmosDBTest, BasicDBTest) {
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    const auto msg = setupSendMessage();
-    auto tx = setupTransactionResponse(std::vector<Message>{ msg }, timeRef);
+    const auto msg                                = setupSendMessage();
+    auto tx                                       = setupTransactionResponse(std::vector<Message>{msg}, timeRef);
 
     // Test writing into DB
     {
@@ -87,7 +83,7 @@ TEST_F(CosmosDBTest, BasicDBTest) {
         assertSameTransaction(tx, txRetrieved);
 
         // TODO Test other (all?) message types
-        auto sendMsg = boost::get<MsgSend>(tx.messages[0].content);
+        auto sendMsg          = boost::get<MsgSend>(tx.messages[0].content);
         auto sendMsgRetrieved = boost::get<MsgSend>(txRetrieved.messages[0].content);
         EXPECT_EQ(sendMsgRetrieved.fromAddress, sendMsg.fromAddress);
         EXPECT_EQ(sendMsgRetrieved.toAddress, sendMsg.toAddress);
@@ -95,7 +91,6 @@ TEST_F(CosmosDBTest, BasicDBTest) {
         EXPECT_EQ(sendMsgRetrieved.amount[0].amount, sendMsg.amount[0].amount);
         EXPECT_EQ(sendMsgRetrieved.amount[0].denom, sendMsg.amount[0].denom);
     }
-
 }
 
 TEST_F(CosmosDBTest, OperationQueryTest) {
@@ -105,8 +100,8 @@ TEST_F(CosmosDBTest, OperationQueryTest) {
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    const auto msg = setupSendMessage();
-    const auto tx = setupTransactionResponse(std::vector<Message>{ msg }, timeRef);
+    const auto msg                                = setupSendMessage();
+    const auto tx                                 = setupTransactionResponse(std::vector<Message>{msg}, timeRef);
 
     {
         std::vector<CosmosLikeOperation> operations;
@@ -117,7 +112,7 @@ TEST_F(CosmosDBTest, OperationQueryTest) {
     {
         auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
         ASSERT_EQ(ops.size(), 1);
-        auto op = ops[0];
+        auto op          = ops[0];
 
         /* TODO
         EXPECT_EQ(op->getAccountIndex(), account->getIndex());
@@ -136,7 +131,7 @@ TEST_F(CosmosDBTest, OperationQueryTest) {
         */
 
         // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
-        auto cosmosOp = op->asCosmosLikeOperation();
+        auto cosmosOp    = op->asCosmosLikeOperation();
 
         auto txRetrieved = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction())->getRawData();
         assertSameTransaction(tx, txRetrieved);
@@ -152,8 +147,8 @@ TEST_F(CosmosDBTest, FeesMsgTypeFilteredOutTest) {
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    const auto msgFees = setupFeesMessage("cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl");
-    auto tx = setupTransactionResponse(std::vector<Message>{ msgFees }, timeRef);
+    const auto msgFees                            = setupFeesMessage("cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl");
+    auto tx                                       = setupTransactionResponse(std::vector<Message>{msgFees}, timeRef);
 
     {
         std::vector<CosmosLikeOperation> operations;
@@ -164,7 +159,7 @@ TEST_F(CosmosDBTest, FeesMsgTypeFilteredOutTest) {
     {
         auto ops =
             uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
-                     ->execute());
+                         ->execute());
         ASSERT_EQ(ops.size(), 0) << "This account did not pay for the fees of this message so it "
                                     "should not appear in the results.";
     }
@@ -177,8 +172,8 @@ TEST_F(CosmosDBTest, DISABLED_FeesMsgTypeTest) {
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    const auto msgFees = setupFeesMessage(account->getAddress());
-    auto tx = setupTransactionResponse(std::vector<Message>{ msgFees }, timeRef);
+    const auto msgFees                            = setupFeesMessage(account->getAddress());
+    auto tx                                       = setupTransactionResponse(std::vector<Message>{msgFees}, timeRef);
 
     {
         std::vector<CosmosLikeOperation> operations;
@@ -190,7 +185,7 @@ TEST_F(CosmosDBTest, DISABLED_FeesMsgTypeTest) {
         auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
         ASSERT_EQ(ops.size(), 1);
 
-        auto op = ops[0];
+        auto op       = ops[0];
         // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
         auto cosmosOp = op->asCosmosLikeOperation();
         ASSERT_NE(cosmosOp, nullptr);
@@ -199,7 +194,7 @@ TEST_F(CosmosDBTest, DISABLED_FeesMsgTypeTest) {
         auto txPtr = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction());
         ASSERT_NE(txPtr, nullptr);
         auto txRetrieved = txPtr->getRawData();
-        auto msgPtr = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage());
+        auto msgPtr      = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage());
         ASSERT_NE(msgPtr, nullptr);
         auto msgRetrieved = msgPtr->getRawData();
 
@@ -214,11 +209,11 @@ TEST_F(CosmosDBTest, DISABLED_UnsuportedMsgTypeTest) {
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    const auto msg = setupSendMessage();
-    auto tx = setupTransactionResponse(std::vector<Message>{ msg }, timeRef);
+    const auto msg                                = setupSendMessage();
+    auto tx                                       = setupTransactionResponse(std::vector<Message>{msg}, timeRef);
 
     // Change message type
-    tx.messages[0].type = "unknown-message-type";
+    tx.messages[0].type                           = "unknown-message-type";
 
     {
         std::vector<CosmosLikeOperation> operations;
@@ -230,9 +225,9 @@ TEST_F(CosmosDBTest, DISABLED_UnsuportedMsgTypeTest) {
         auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
         ASSERT_EQ(ops.size(), 1);
 
-        auto op = ops[0];
+        auto op                = ops[0];
         // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
-        auto cosmosOp = op->asCosmosLikeOperation();
+        auto cosmosOp          = op->asCosmosLikeOperation();
         const auto txRetrieved = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction())->getRawData();
 
         assertSameTransaction(tx, txRetrieved);
@@ -246,9 +241,9 @@ TEST_F(CosmosDBTest, DISABLED_MultipleMsgTest) {
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    const auto msgSend = setupSendMessage();
-    const auto msgVote = setupVoteMessage();
-    const auto tx = setupTransactionResponse(std::vector<Message>{ msgSend, msgVote }, timeRef);
+    const auto msgSend                            = setupSendMessage();
+    const auto msgVote                            = setupVoteMessage();
+    const auto tx                                 = setupTransactionResponse(std::vector<Message>{msgSend, msgVote}, timeRef);
 
     {
         std::vector<CosmosLikeOperation> operations;
@@ -261,7 +256,7 @@ TEST_F(CosmosDBTest, DISABLED_MultipleMsgTest) {
         ASSERT_EQ(ops.size(), 2);
 
         {
-            auto op = ops[0];
+            auto op       = ops[0];
             // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
             auto cosmosOp = op->asCosmosLikeOperation();
             ASSERT_NE(cosmosOp, nullptr);
@@ -270,7 +265,7 @@ TEST_F(CosmosDBTest, DISABLED_MultipleMsgTest) {
             auto txPtr = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction());
             ASSERT_NE(txPtr, nullptr);
             auto txRetrieved = txPtr->getRawData();
-            auto msgPtr = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage());
+            auto msgPtr      = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage());
             ASSERT_NE(msgPtr, nullptr);
             auto msgRetrieved = msgPtr->getRawData();
 
@@ -279,7 +274,7 @@ TEST_F(CosmosDBTest, DISABLED_MultipleMsgTest) {
         }
 
         {
-            auto op = ops[1];
+            auto op       = ops[1];
             // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
             // auto txRetrieved = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction())->getRawData();
             // auto msgRetrieved = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage())->getRawData();
@@ -290,7 +285,7 @@ TEST_F(CosmosDBTest, DISABLED_MultipleMsgTest) {
             auto txPtr = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction());
             ASSERT_NE(txPtr, nullptr);
             auto txRetrieved = txPtr->getRawData();
-            auto msgPtr = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage());
+            auto msgPtr      = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage());
             ASSERT_NE(msgPtr, nullptr);
             auto msgRetrieved = msgPtr->getRawData();
 

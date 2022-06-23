@@ -29,6 +29,7 @@
  *
  */
 #include "CompoundQueryFilter.h"
+
 #include <fmt/format.h>
 
 namespace ledger {
@@ -47,5 +48,5 @@ namespace ledger {
             _children->getHead()->toString(ss);
             ss << ")";
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -29,9 +29,9 @@
  *
  */
 
-#include <gtest/gtest.h>
-#include <database/query/QueryFilter.h>
 #include <api/TrustLevel.hpp>
+#include <database/query/QueryFilter.h>
+#include <gtest/gtest.h>
 
 using namespace ledger::core;
 
@@ -47,8 +47,8 @@ TEST(QueryFilters, DoubleConditionFilter) {
 
 TEST(QueryFilters, DoubleConditionWithCompoundFilter) {
     auto filter = api::QueryFilter::accountEq("my_account")
-            ->op_and(api::QueryFilter::blockHeightGt(12000))
-            ->op_or_not(api::QueryFilter::trustEq(api::TrustLevel::TRUSTED)->op_and(api::QueryFilter::containsSender("toto")));
+                      ->op_and(api::QueryFilter::blockHeightGt(12000))
+                      ->op_or_not(api::QueryFilter::trustEq(api::TrustLevel::TRUSTED)->op_and(api::QueryFilter::containsSender("toto")));
     EXPECT_EQ(std::dynamic_pointer_cast<QueryFilter>(filter)->getHead()->toString(),
               "o.account_uid = :account_uid AND b.height > :height OR NOT (o.trust LIKE :trust AND o.senders LIKE :senders)");
 }

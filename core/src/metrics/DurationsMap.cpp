@@ -30,19 +30,18 @@
  */
 
 #include "DurationsMap.hpp"
+
 #include <api/DurationMetrics.hpp>
 
 namespace ledger {
     namespace core {
-
 
         DurationsMap &DurationsMap::getInstance() {
             static DurationsMap instance;
             return instance;
         }
 
-        void
-        DurationsMap::record(const std::string &name, const std::chrono::high_resolution_clock::duration &duration) {
+        void DurationsMap::record(const std::string &name, const std::chrono::high_resolution_clock::duration &duration) {
             std::lock_guard<std::mutex> lock(_mutex);
             auto existing = _metrics.find(name);
             if (existing != _metrics.end()) {
@@ -50,13 +49,12 @@ namespace ledger {
                 existing->second.total_ms += static_cast<int64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count());
             } else {
                 _metrics[name] = api::DurationMetric(
-                        static_cast<int64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()),
-                        1
-                );
+                    static_cast<int64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()),
+                    1);
             }
         }
 
-        const std::unordered_map<std::string, api::DurationMetric>& DurationsMap::getMetrics() {
+        const std::unordered_map<std::string, api::DurationMetric> &DurationsMap::getMetrics() {
             return _metrics;
         }
 
@@ -64,5 +62,5 @@ namespace ledger {
             return DurationsMap::getInstance().getMetrics();
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

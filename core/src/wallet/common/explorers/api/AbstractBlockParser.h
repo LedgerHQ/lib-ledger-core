@@ -28,23 +28,20 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ABSTRACTBLOCKPARSER_H
 #define LEDGER_CORE_ABSTRACTBLOCKPARSER_H
-
-#include <rapidjson/reader.h>
 
 #include <collections/collections.hpp>
 #include <math/BigInt.h>
 #include <net/HttpClient.hpp>
+#include <rapidjson/reader.h>
 #include <utils/DateUtils.hpp>
 
 namespace ledger {
     namespace core {
         template <typename BlockchainExplorerTransactionBlock>
         class AbstractBlockParser {
-        public:
-
+          public:
             bool Null() {
                 return true;
             }
@@ -76,7 +73,7 @@ namespace ledger {
             bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
                 if (getLastKey() == "height") {
                     std::string number(str, length);
-                    BigInt value = BigInt::fromString(number);
+                    BigInt value   = BigInt::fromString(number);
                     _block->height = value.toUint64();
                 }
                 return true;
@@ -116,11 +113,11 @@ namespace ledger {
                 _block = block;
             }
 
-        protected:
+          protected:
             virtual std::string &getLastKey() = 0;
-            BlockchainExplorerTransactionBlock* _block;
+            BlockchainExplorerTransactionBlock *_block;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_ABSTRACTBLOCKPARSER_H
+#endif // LEDGER_CORE_ABSTRACTBLOCKPARSER_H

@@ -30,8 +30,8 @@
  */
 
 #include <gtest/gtest.h>
-#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
 #include <utils/hex.h>
+#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
 
 using namespace ledger::core;
 using namespace btccore;

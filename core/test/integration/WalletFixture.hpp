@@ -32,52 +32,50 @@
 #pragma once
 
 #include "BaseFixture.h"
-#include <wallet/common/AbstractWallet.hpp>
-#include <wallet/pool/WalletPool.hpp>
-#include <collections/DynamicObject.hpp>
+
 #include <api/ErrorCode.hpp>
 #include <api/PoolConfiguration.hpp>
-
+#include <collections/DynamicObject.hpp>
 #include <fmt/format.h>
-
+#include <wallet/common/AbstractWallet.hpp>
+#include <wallet/pool/WalletPool.hpp>
 
 template <class WalletFactory>
 class WalletFixture : public BaseFixture {
-public:
-
+  public:
     void SetUp() override {
         BaseFixture::SetUp();
 
 #ifdef PG_SUPPORT
         const bool usePostgreSQL = true;
-        auto poolConfig = DynamicObject::newInstance();
+        auto poolConfig          = DynamicObject::newInstance();
         poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
         const auto dbName = randomDBName();
-        pool = newDefaultPool(dbName, "", poolConfig, usePostgreSQL);
+        pool              = newDefaultPool(dbName, "", poolConfig, usePostgreSQL);
 #else
         pool = newDefaultPool();
 #endif
-      //  walletStore = newWalletStore(services);
+        //  walletStore = newWalletStore(services);
     }
 
     void TearDown() override {
         BaseFixture::TearDown();
         uv::wait(pool->freshResetAll());
         pool.reset();
-     //   walletStore.reset();
+        //   walletStore.reset();
     }
 
     void registerCurrency(api::Currency const &currency) {
-        //auto walletFactory = std::make_shared<WalletFactory>(currency, pool);
+        // auto walletFactory = std::make_shared<WalletFactory>(currency, pool);
 
-       // wait(pool->addCurrency(currency));
-       // walletStore->registerFactory(currency, walletFactory);
+        // wait(pool->addCurrency(currency));
+        // walletStore->registerFactory(currency, walletFactory);
     }
 
     std::shared_ptr<WalletPool> pool;
-  //  std::shared_ptr<WalletStore> walletStore;
+    //  std::shared_ptr<WalletStore> walletStore;
 
-private:
+  private:
     std::string randomDBName() {
         static const char alphanum[] =
             "0123456789"

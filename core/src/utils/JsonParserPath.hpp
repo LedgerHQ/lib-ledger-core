@@ -32,14 +32,16 @@
 #ifndef LEDGER_CORE_JSONPARSERPATH_HPP
 #define LEDGER_CORE_JSONPARSERPATH_HPP
 
-#include <string>
-#include <list>
 #include <boost/variant.hpp>
+#include <list>
+#include <string>
 
 namespace ledger {
     namespace core {
 
-        enum class JsonParserPathNodeType {OBJECT, ARRAY, VALUE};
+        enum class JsonParserPathNodeType { OBJECT,
+                                            ARRAY,
+                                            VALUE };
 
         struct JsonParserPathValue {};
 
@@ -50,7 +52,7 @@ namespace ledger {
             JsonParserPathNodeType type;
             boost::variant<int /* index in array */, std::string /* key in object */> content;
 
-            const std::string& key() const {
+            const std::string &key() const {
                 return boost::get<std::string>(content);
             }
 
@@ -63,7 +65,9 @@ namespace ledger {
             JsonParserPathNode(JsonParserPathNodeType t, std::string key) : type(t), content(key) {}
         };
 
-        enum class JsonParserPathMatcherFilter {WILDCARD, EXACT, MATCH_ALL};
+        enum class JsonParserPathMatcherFilter { WILDCARD,
+                                                 EXACT,
+                                                 MATCH_ALL };
 
         /**
          * Represents a single element in a json path matcher.
@@ -74,8 +78,8 @@ namespace ledger {
             JsonParserPathNode node;
 
             JsonParserPathMatcherElement(
-                    JsonParserPathMatcherFilter f,
-                    const JsonParserPathNode& n) : filter(f), node(n) {};
+                JsonParserPathMatcherFilter f,
+                const JsonParserPathNode &n) : filter(f), node(n){};
         };
 
         /**
@@ -91,11 +95,12 @@ namespace ledger {
          *
          */
         class JsonParserPathMatcher {
-        public:
-            JsonParserPathMatcher(const std::string& filter);
-            const std::list<JsonParserPathMatcherElement>& getElements() const;
+          public:
+            JsonParserPathMatcher(const std::string &filter);
+            const std::list<JsonParserPathMatcherElement> &getElements() const;
             std::string toString() const;
-        private:
+
+          private:
             std::list<JsonParserPathMatcherElement> _elements;
         };
 
@@ -105,8 +110,8 @@ namespace ledger {
          * Limited view over a JSON path. The view is immutable and can create others views.
          */
         class JsonParserPathView {
-        public:
-            JsonParserPathView() {};
+          public:
+            JsonParserPathView(){};
             /**
              * Matches the current path to a given path string representation.
              * e.g "/my_array[]/name" { "my_array" : [ {"name": ****} }
@@ -115,16 +120,16 @@ namespace ledger {
              * e.g "/foo/\*" { "foo" : {bar: ***} }
              * @param path
              * @return
-            */
+             */
             bool match(const JsonParserPathMatcher &matcher) const;
 
             JsonParserPathView view(int depth);
             std::string toString() const;
 
-        private:
-            JsonParserPathView(JsonParserPath* owner, int depth) : _owner(owner), _depth(depth) {};
+          private:
+            JsonParserPathView(JsonParserPath *owner, int depth) : _owner(owner), _depth(depth){};
 
-            JsonParserPath* _owner;
+            JsonParserPath *_owner;
             int _depth;
             friend class JsonParserPath;
         };
@@ -136,9 +141,8 @@ namespace ledger {
          * be used to build the path and create views which will be then used to match locations.
          */
         class JsonParserPath {
-        public:
+          public:
             JsonParserPath();
-
 
             /**
              * Marks the beginning of an array
@@ -159,13 +163,13 @@ namespace ledger {
             /**
              * Marks the encounter of a value
              */
-             void value();
+            void value();
 
             /**
              * Record the given key.
              * @param key
              */
-            void key(const std::string& key);
+            void key(const std::string &key);
 
             /**
              * Transform this object ot its string representation.
@@ -173,13 +177,13 @@ namespace ledger {
              */
             std::string toString() const;
             /**
-            * Transform this object ot its string representation.
-            * @return
-            */
+             * Transform this object ot its string representation.
+             * @return
+             */
             std::string toString(int depth) const;
 
-            inline const JsonParserPathNode& getCurrent() const;
-            inline const JsonParserPathNode& getParent() const;
+            inline const JsonParserPathNode &getCurrent() const;
+            inline const JsonParserPathNode &getParent() const;
 
             /**
              * Creates a view at the root of the path.
@@ -204,19 +208,17 @@ namespace ledger {
              * @param depth The depth at which the path will be matched.
              * @return true if it matches, false otherwise.
              */
-            bool match(const JsonParserPathMatcher& matcher, int depth) const;
+            bool match(const JsonParserPathMatcher &matcher, int depth) const;
 
-        private:
-            inline JsonParserPathNode& getCurrent();
-            inline JsonParserPathNode& getParent();
+          private:
+            inline JsonParserPathNode &getCurrent();
+            inline JsonParserPathNode &getParent();
 
             std::list<JsonParserPathNode> _path;
             std::string _lastKey;
         };
 
+    } // namespace core
+} // namespace ledger
 
-    }
-}
-
-
-#endif //LEDGER_CORE_JSONPARSERPATH_HPP
+#endif // LEDGER_CORE_JSONPARSERPATH_HPP

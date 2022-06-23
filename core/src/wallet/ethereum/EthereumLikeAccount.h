@@ -28,95 +28,93 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMLIKEACCOUNT_H
 #define LEDGER_CORE_ETHEREUMLIKEACCOUNT_H
 
-#include <api/AddressListCallback.hpp>
 #include <api/Address.hpp>
-#include <api/EthereumLikeAccount.hpp>
-#include <api/EthereumLikeTransactionBuilder.hpp>
-#include <api/StringCallback.hpp>
-#include <api/Event.hpp>
+#include <api/AddressListCallback.hpp>
 #include <api/BigIntCallback.hpp>
 #include <api/BigIntListCallback.hpp>
-#include <wallet/common/AbstractWallet.hpp>
+#include <api/EthereumLikeAccount.hpp>
+#include <api/EthereumLikeTransactionBuilder.hpp>
+#include <api/Event.hpp>
+#include <api/StringCallback.hpp>
 #include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/AbstractWallet.hpp>
 #include <wallet/common/Amount.h>
-#include <wallet/ethereum/api_impl/InternalTransaction.h>
-#include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
-#include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
-#include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 #include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
+#include <wallet/ethereum/api_impl/InternalTransaction.h>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseEntry.h>
+#include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
+#include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
+#include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
 
 namespace ledger {
     namespace core {
         class EthereumLikeAccount : public api::EthereumLikeAccount, public AbstractAccount {
-        public:
-
-            EthereumLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+          public:
+            EthereumLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                 int32_t index,
-                                const std::shared_ptr<EthereumLikeBlockchainExplorer>& explorer,
-                                const std::shared_ptr<EthereumLikeAccountSynchronizer>& synchronizer,
-                                const std::shared_ptr<EthereumLikeKeychain>& keychain);
+                                const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer,
+                                const std::shared_ptr<EthereumLikeAccountSynchronizer> &synchronizer,
+                                const std::shared_ptr<EthereumLikeKeychain> &keychain);
 
-            FuturePtr<EthereumLikeBlockchainExplorerTransaction> getTransaction(const std::string& hash);
+            FuturePtr<EthereumLikeBlockchainExplorerTransaction> getTransaction(const std::string &hash);
             void inflateOperation(Operation &out,
-                                  const std::shared_ptr<const AbstractWallet>& wallet,
+                                  const std::shared_ptr<const AbstractWallet> &wallet,
                                   const EthereumLikeBlockchainExplorerTransaction &tx);
 
-            void interpretTransaction(const EthereumLikeBlockchainExplorerTransaction& transaction, std::vector<Operation>& out);
-            Try<int> bulkInsert(const std::vector<Operation>& operations);
+            void interpretTransaction(const EthereumLikeBlockchainExplorerTransaction &transaction, std::vector<Operation> &out);
+            Try<int> bulkInsert(const std::vector<Operation> &operations);
             /// Get internal transactions related to the parent operation.
             std::vector<Operation> getInternalOperations(soci::session &sql);
 
             void updateERC20Accounts(Operation &operation);
             void updateERC20Operation(Operation &operation,
                                       const ERC20Transaction &erc20Tx);
-            bool putBlock(soci::session& sql, const EthereumLikeBlockchainExplorer::Block& block);
+            bool putBlock(soci::session &sql, const EthereumLikeBlockchainExplorer::Block &block);
 
             std::shared_ptr<EthereumLikeKeychain> getKeychain() const;
 
-            FuturePtr<Amount> getBalance() override ;
-            Future<AbstractAccount::AddressList> getFreshPublicAddresses() override ;
+            FuturePtr<Amount> getBalance() override;
+            Future<AbstractAccount::AddressList> getFreshPublicAddresses() override;
             Future<std::vector<std::shared_ptr<api::Amount>>>
-            getBalanceHistory(const std::string & start,
-                              const std::string & end,
-                              api::TimePeriod precision) override ;
-            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) override ;
+            getBalanceHistory(const std::string &start,
+                              const std::string &end,
+                              api::TimePeriod precision) override;
+            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point &date) override;
 
             bool isSynchronizing() override;
-            std::shared_ptr<api::EventBus> synchronize() override ;
-            std::string getRestoreKey() override ;
+            std::shared_ptr<api::EventBus> synchronize() override;
+            std::string getRestoreKey() override;
 
-            void emitNewERC20Operations(std::vector<ERC20LikeOperation>& ops, const std::string &accountUid);
-            void emitNewERC20Operation(ERC20LikeOperation& op, const std::string &accountUid);
+            void emitNewERC20Operations(std::vector<ERC20LikeOperation> &ops, const std::string &accountUid);
+            void emitNewERC20Operation(ERC20LikeOperation &op, const std::string &accountUid);
 
             static EthereumLikeBlockchainExplorerTransaction getETHLikeBlockchainExplorerTxFromRawTx(const std::shared_ptr<EthereumLikeAccount> &account,
                                                                                                      const std::string &txHash,
                                                                                                      const std::vector<uint8_t> &rawTx);
 
-            void broadcastRawTransaction(const std::vector<uint8_t> & transaction, const std::shared_ptr<api::StringCallback> & callback) override;
+            void broadcastRawTransaction(const std::vector<uint8_t> &transaction, const std::shared_ptr<api::StringCallback> &callback) override;
 
-            void broadcastTransaction(const std::shared_ptr<api::EthereumLikeTransaction> & transaction,
-                                      const std::shared_ptr<api::StringCallback> & callback) override;
+            void broadcastTransaction(const std::shared_ptr<api::EthereumLikeTransaction> &transaction,
+                                      const std::shared_ptr<api::StringCallback> &callback) override;
 
             std::shared_ptr<api::EthereumLikeTransactionBuilder> buildTransaction() override;
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
-            std::shared_ptr<api::EthereumLikeAccount> asEthereumLikeAccount() override ;
+            std::shared_ptr<api::EthereumLikeAccount> asEthereumLikeAccount() override;
 
-            std::vector<std::shared_ptr<api::ERC20LikeAccount>> getERC20Accounts() override ;
+            std::vector<std::shared_ptr<api::ERC20LikeAccount>> getERC20Accounts() override;
 
-            void getGasPrice(const std::shared_ptr<api::BigIntCallback> & callback) override;
+            void getGasPrice(const std::shared_ptr<api::BigIntCallback> &callback) override;
 
-            void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override ;
-            void getDryRunGasLimit(const std::string & address, const api::EthereumGasLimitRequest &request, const std::shared_ptr<api::BigIntCallback> & callback) override ;
-            FuturePtr<api::BigInt> getERC20Balance(const std::string & erc20Address);
-            void getERC20Balance(const std::string & erc20Address, const std::shared_ptr<api::BigIntCallback> & callback) override;
+            void getEstimatedGasLimit(const std::string &address, const std::shared_ptr<api::BigIntCallback> &callback) override;
+            void getDryRunGasLimit(const std::string &address, const api::EthereumGasLimitRequest &request, const std::shared_ptr<api::BigIntCallback> &callback) override;
+            FuturePtr<api::BigInt> getERC20Balance(const std::string &erc20Address);
+            void getERC20Balance(const std::string &erc20Address, const std::shared_ptr<api::BigIntCallback> &callback) override;
             Future<std::vector<std::shared_ptr<api::BigInt>>> getERC20Balances(const std::vector<std::string> &erc20Addresses);
-            void getERC20Balances(const std::vector<std::string> &erc20Addresses, const std::shared_ptr<api::BigIntListCallback> & callback) override;
+            void getERC20Balances(const std::vector<std::string> &erc20Addresses, const std::shared_ptr<api::BigIntListCallback> &callback) override;
 
             void addERC20Accounts(soci::session &sql,
                                   const std::vector<ERC20LikeAccountDatabaseEntry> &erc20Entries);
@@ -124,13 +122,12 @@ namespace ledger {
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
             void emitEventsNow() override;
 
+          private:
+            void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
+                                         const std::shared_ptr<api::StringCallback> &callback,
+                                         const std::string &correlationId);
 
-        private:
-            void broadcastRawTransaction(const std::vector<uint8_t> & transaction,
-                const std::shared_ptr<api::StringCallback> & callback,
-                const std::string& correlationId);
-
-        private:
+          private:
             std::shared_ptr<EthereumLikeAccount> getSelf();
             std::shared_ptr<EthereumLikeKeychain> _keychain;
             std::string _accountAddress;
@@ -142,11 +139,11 @@ namespace ledger {
             std::mutex _synchronizationLock;
             uint64_t _currentBlockHeight;
             std::vector<ERC20LikeAccountDatabaseEntry> erc20Entries;
-            std::vector<std::shared_ptr<api::ERC20LikeAccount> >_erc20LikeAccounts;
+            std::vector<std::shared_ptr<api::ERC20LikeAccount>> _erc20LikeAccounts;
             std::mutex _erc20EventLock;
             std::shared_ptr<api::Event> _batchedErc20Event;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_ETHEREUMLIKEACCOUNT_H
+#endif // LEDGER_CORE_ETHEREUMLIKEACCOUNT_H

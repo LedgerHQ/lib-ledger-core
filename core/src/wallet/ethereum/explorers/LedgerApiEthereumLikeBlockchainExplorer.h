@@ -28,17 +28,16 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_LEDGERAPIETHEREUMLIKEBLOCKCHAINEXPLORER_H
 #define LEDGER_CORE_LEDGERAPIETHEREUMLIKEBLOCKCHAINEXPLORER_H
 
-#include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
-#include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
-#include <wallet/ethereum/explorers/api/EthereumLikeTransactionsParser.h>
-#include <wallet/ethereum/explorers/api/EthereumLikeTransactionsBulkParser.h>
-#include <wallet/ethereum/explorers/api/EthereumLikeBlockParser.hpp>
 #include <api/EthereumGasLimitRequest.hpp>
 #include <api/EthereumLikeNetworkParameters.hpp>
+#include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
+#include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
+#include <wallet/ethereum/explorers/api/EthereumLikeBlockParser.hpp>
+#include <wallet/ethereum/explorers/api/EthereumLikeTransactionsBulkParser.h>
+#include <wallet/ethereum/explorers/api/EthereumLikeTransactionsParser.h>
 
 namespace ledger {
     namespace core {
@@ -46,12 +45,12 @@ namespace ledger {
         class LedgerApiEthereumLikeBlockchainExplorer : public EthereumLikeBlockchainExplorer,
                                                         public LedgerApiEthBlockchainExplorer,
                                                         public DedicatedContext,
-                                                        public std::enable_shared_from_this<LedgerApiEthereumLikeBlockchainExplorer>{
-        public:
-            LedgerApiEthereumLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
-                                           const std::shared_ptr<HttpClient>& http,
-                                           const api::EthereumLikeNetworkParameters& parameters,
-                                           const std::shared_ptr<api::DynamicObject>& configuration);
+                                                        public std::enable_shared_from_this<LedgerApiEthereumLikeBlockchainExplorer> {
+          public:
+            LedgerApiEthereumLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
+                                                    const std::shared_ptr<HttpClient> &http,
+                                                    const api::EthereumLikeNetworkParameters &parameters,
+                                                    const std::shared_ptr<api::DynamicObject> &configuration);
             Future<std::shared_ptr<BigInt>> getNonce(const std::string &address) override;
             Future<std::shared_ptr<BigInt>> getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) override;
             Future<std::shared_ptr<BigInt>> getGasPrice() override;
@@ -65,33 +64,31 @@ namespace ledger {
             getERC20Balances(const std::string &address,
                              const std::vector<std::string> &erc20Addresses) override;
 
-            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId="") override;
+            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
             Future<void *> startSession() override;
             Future<Unit> killSession(void *session) override;
-            Future<Bytes> getRawTransaction(const String& transactionHash) override;
-            Future<String> pushTransaction(const std::vector<uint8_t>& transaction, const std::string& correlationId="") override;
+            Future<Bytes> getRawTransaction(const String &transactionHash) override;
+            Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
 
             FuturePtr<EthereumLikeBlockchainExplorer::TransactionsBulk>
-            getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash = Option<std::string>(),
-                            Option<void *> session = Option<void *>()) override;
+            getTransactions(const std::vector<std::string> &addresses, Option<std::string> fromBlockHash = Option<std::string>(), Option<void *> session = Option<void *>()) override;
 
             FuturePtr<Block> getCurrentBlock() const override;
             FuturePtr<EthereumLikeBlockchainExplorerTransaction> getTransactionByHash(const String &transactionHash) const override;
 
-            Future<int64_t > getTimestamp() const override;
+            Future<int64_t> getTimestamp() const override;
 
             std::shared_ptr<api::ExecutionContext> getExplorerContext() const override;
             api::EthereumLikeNetworkParameters getNetworkParameters() const override;
             std::string getExplorerVersion() const override;
 
-        private:
+          private:
             Future<std::shared_ptr<BigInt>> getHelper(const std::string &url,
                                                       const std::string &field);
             api::EthereumLikeNetworkParameters _parameters;
             std::string _explorerVersion;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_LEDGERAPIETHEREUMLIKEBLOCKCHAINEXPLORER_H
+#endif // LEDGER_CORE_LEDGERAPIETHEREUMLIKEBLOCKCHAINEXPLORER_H

@@ -29,50 +29,48 @@
  *
  */
 
-#include <gtest/gtest.h>
 #include "../BaseFixture.h"
-#include <set>
-#include <api/ConfigurationDefaults.hpp>
-#include <api/KeychainEngines.hpp>
-#include <api/RippleLikeTransaction.hpp>
-#include <api/OperationOrderKey.hpp>
-#include <utils/DateUtils.hpp>
-#include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
-#include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
-#include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
-#include <api/RippleConfigurationDefaults.hpp>
-#include <iostream>
 #include "FakeHttpClient.hpp"
 #include "MemPreferencesBackend.hpp"
 
+#include <api/ConfigurationDefaults.hpp>
+#include <api/KeychainEngines.hpp>
+#include <api/OperationOrderKey.hpp>
+#include <api/RippleConfigurationDefaults.hpp>
+#include <api/RippleLikeTransaction.hpp>
+#include <gtest/gtest.h>
+#include <iostream>
+#include <set>
+#include <utils/DateUtils.hpp>
+#include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
+#include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
+#include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
+
 using namespace std;
 
-class RippleLikeOptimisticTransactionUpdate : public BaseFixture
-{
+class RippleLikeOptimisticTransactionUpdate : public BaseFixture {
 };
 
 std::pair<std::shared_ptr<LambdaEventReceiver>, ledger::core::Future<bool>> createSyncReceiver();
 
-TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction)
-{
-
+TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction) {
     auto fakeHttp = std::make_shared<test::FakeHttpClient>();
 
-    backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+    backend       = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
 
-    auto pool = WalletPool::newInstance(
-        "my_pool",
-        "",
-        fakeHttp,
-        ws,
-        resolver,
-        printer,
-        dispatcher,
-        rng,
-        backend,
-        api::DynamicObject::newInstance(),
-        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-        std::make_shared<ledger::core::test::MemPreferencesBackend>());
+    auto pool     = WalletPool::newInstance(
+            "my_pool",
+            "",
+            fakeHttp,
+            ws,
+            resolver,
+            printer,
+            dispatcher,
+            rng,
+            backend,
+            api::DynamicObject::newInstance(),
+            std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+            std::make_shared<ledger::core::test::MemPreferencesBackend>());
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
@@ -81,7 +79,7 @@ TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction)
         auto wallet = uv::wait(pool->createWallet(randomWalletName(), "ripple", configuration));
         {
             auto account = createRippleLikeAccount(wallet, 0, XRP_KEYS_INFO);
-            auto waiter = createSyncReceiver();
+            auto waiter  = createSyncReceiver();
 
             fakeHttp->setBehavior({{fmt::format("http://test.test:{}/", api::RippleConfigurationDefaults::RIPPLE_DEFAULT_PORT),
                                     test::FakeUrlConnection::fromString("{\"result\":{\"engine_result\":\"tesSUCCESS\",\"tx_json\":{\"hash\":\"AC0D84CB81E8ECA92E7EF9ABC3526FAED54DE07763A308296B28468D68D34991\"}}}")}});
@@ -94,11 +92,11 @@ TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction)
             dummy_transaction->setSender(account->getKeychain()->getAddress());
             dummy_transaction->setReceiver(account->getKeychain()->getAddress());
             dummy_transaction->setHash("AC0D84CB81E8ECA92E7EF9ABC3526FAED54DE07763A308296B28468D68D34991");
-            std::vector<uint8_t> dummy_key = {1 , 2 , 3 , 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
+            std::vector<uint8_t> dummy_key = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
             dummy_transaction->setSigningPubKey(dummy_key);
             dummy_transaction->setDERSignature(dummy_key);
 
-            auto tx_hash = uv::wait(account->broadcastTransaction(dynamic_pointer_cast<api::RippleLikeTransaction>(dummy_transaction)));
+            auto tx_hash     = uv::wait(account->broadcastTransaction(dynamic_pointer_cast<api::RippleLikeTransaction>(dummy_transaction)));
             auto explorer_tx = uv::wait(account->getTransaction(tx_hash));
 
             EXPECT_EQ(explorer_tx->hash, "AC0D84CB81E8ECA92E7EF9ABC3526FAED54DE07763A308296B28468D68D34991");

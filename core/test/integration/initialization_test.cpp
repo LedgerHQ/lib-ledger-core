@@ -29,22 +29,19 @@
  *
  */
 
-#include <gtest/gtest.h>
-#include <NativePathResolver.hpp>
-#include <NativeThreadDispatcher.hpp>
-#include <ledger/core/api/WalletPoolBuilder.hpp>
-#include <ledger/core/api/WalletPool.hpp>
 #include <CoutLogPrinter.hpp>
 #include <MongooseHttpClient.hpp>
+#include <NativePathResolver.hpp>
+#include <NativeThreadDispatcher.hpp>
+#include <gtest/gtest.h>
 #include <ledger/core/api/Logger.hpp>
+#include <ledger/core/api/WalletPool.hpp>
+#include <ledger/core/api/WalletPoolBuilder.hpp>
 
 using namespace ledger::core;
 
 TEST(BitcoinWalletInitialization, InitializeNewWalletPool) {
-
 }
 
 TEST(BitcoinWalletInitialization, InitializeBitcoinWallet) {
-
 }
-

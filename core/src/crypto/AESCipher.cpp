@@ -30,19 +30,19 @@
  */
 
 #include "AESCipher.hpp"
-#include "PBKDF2.hpp"
+
 #include "AES256.hpp"
+#include "PBKDF2.hpp"
+
 #include <cassert>
 
 namespace ledger {
     namespace core {
-        AESCipher::AESCipher(const std::shared_ptr<api::RandomNumberGenerator> &rng, const std::string &password,
-                             const std::string &salt, uint32_t iter) {
+        AESCipher::AESCipher(const std::shared_ptr<api::RandomNumberGenerator> &rng, const std::string &password, const std::string &salt, uint32_t iter) {
             _rng = rng;
             _key = PBKDF2::derive(
-                    std::vector<uint8_t>(password.data(), password.data() + password.size()),
-                    std::vector<uint8_t>(salt.data(), salt.data() + salt.size())
-                    , iter, 32);
+                std::vector<uint8_t>(password.data(), password.data() + password.size()),
+                std::vector<uint8_t>(salt.data(), salt.data() + salt.size()), iter, 32);
         }
 
         void AESCipher::encrypt(std::istream *input, std::ostream *output) {
@@ -57,11 +57,11 @@ namespace ledger {
                 uint32_t read = input->gcount();
 
                 // Create an IVt
-                auto IV = _rng->getRandomBytes(AES256::BLOCK_SIZE);
+                auto IV       = _rng->getRandomBytes(AES256::BLOCK_SIZE);
                 assert(IV.size() == AES256::BLOCK_SIZE);
 
                 // Encrypt
-                auto encrypted = AES256::encrypt(IV, _key, std::vector<uint8_t>(buffer, buffer + read));
+                auto encrypted      = AES256::encrypt(IV, _key, std::vector<uint8_t>(buffer, buffer + read));
                 // Store number of blocks
                 uint8_t blocksCount = (encrypted.size() / AES256::BLOCK_SIZE);
                 (*output) << blocksCount;
@@ -98,23 +98,23 @@ namespace ledger {
 #endif
         }
 
-        void AESCipher::encrypt(BytesReader& input, BytesWriter& output) {
+        void AESCipher::encrypt(BytesReader &input, BytesWriter &output) {
             uint32_t maxRead = 254 * AES256::BLOCK_SIZE;
             do {
                 // Read 254 * AES_BLOCK_SIZE bytes (we want at most 0xFF blocks to encrypt we the same IV)
-                uint32_t available = input.available();
-                uint32_t minEncryptedRead = std::min(maxRead,available);
+                uint32_t available                 = input.available();
+                uint32_t minEncryptedRead          = std::min(maxRead, available);
                 std::vector<uint8_t> dataToEncrypt = input.read(minEncryptedRead);
-                uint32_t read = dataToEncrypt.size();
+                uint32_t read                      = dataToEncrypt.size();
                 // Create an IVt
-                auto IV = _rng->getRandomBytes(AES256::BLOCK_SIZE);
+                auto IV                            = _rng->getRandomBytes(AES256::BLOCK_SIZE);
                 // Encrypt
-                auto encrypted = AES256::encrypt(IV, _key, dataToEncrypt);
+                auto encrypted                     = AES256::encrypt(IV, _key, dataToEncrypt);
                 // Store number of blocks
-                uint8_t blocksCount = (encrypted.size() / AES256::BLOCK_SIZE);
-                //Number of blocks of size AES256::BLOCK_SIZE in enrypted data
+                uint8_t blocksCount                = (encrypted.size() / AES256::BLOCK_SIZE);
+                // Number of blocks of size AES256::BLOCK_SIZE in enrypted data
                 output.writeByte(blocksCount);
-                //Limit of reading (padding or string terminating before maxRead)
+                // Limit of reading (padding or string terminating before maxRead)
                 output.writeVarInt(read);
                 // Store IV
                 output.writeByteArray(IV);
@@ -123,34 +123,34 @@ namespace ledger {
             } while (input.hasNext());
         }
 
-        void AESCipher::decrypt(BytesReader& input, BytesWriter& output) const {
+        void AESCipher::decrypt(BytesReader &input, BytesWriter &output) const {
             uint32_t maxRead = 255 * AES256::BLOCK_SIZE;
             do {
-                //Get number of blocks in encrypted data
-                uint8_t blocksCount = input.readNextByte();
-                //Size of encrypted (chunk of) data
-                uint32_t encryptedDataSize = blocksCount*AES256::BLOCK_SIZE;
-                //Get data that we read
-                uint32_t dataSize = input.readNextVarInt();
-                //Read IV
-                std::vector<uint8_t> IV = input.read(AES256::BLOCK_SIZE);
-                //Get number of bytes to read
-                uint32_t available = input.available();
-                if(available < encryptedDataSize) {
-                    //Should not read than more available data
+                // Get number of blocks in encrypted data
+                uint8_t blocksCount        = input.readNextByte();
+                // Size of encrypted (chunk of) data
+                uint32_t encryptedDataSize = blocksCount * AES256::BLOCK_SIZE;
+                // Get data that we read
+                uint32_t dataSize          = input.readNextVarInt();
+                // Read IV
+                std::vector<uint8_t> IV    = input.read(AES256::BLOCK_SIZE);
+                // Get number of bytes to read
+                uint32_t available         = input.available();
+                if (available < encryptedDataSize) {
+                    // Should not read than more available data
                     break;
                 }
-                //Read encrypted data
+                // Read encrypted data
                 std::vector<uint8_t> encryptedData = input.read(encryptedDataSize);
-                //Decrypt
-                auto decrypted = AES256::decrypt(IV, _key, encryptedData);
-                //Truncate if needed to size of encrypted data that we stored in dataSize bytes
-                if(dataSize <  decrypted.size()){
+                // Decrypt
+                auto decrypted                     = AES256::decrypt(IV, _key, encryptedData);
+                // Truncate if needed to size of encrypted data that we stored in dataSize bytes
+                if (dataSize < decrypted.size()) {
                     decrypted.resize(dataSize);
                 }
-                //Store decrypted data
+                // Store decrypted data
                 output.writeByteArray(decrypted);
             } while (input.hasNext());
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

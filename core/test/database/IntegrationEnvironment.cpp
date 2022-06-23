@@ -30,9 +30,10 @@
  */
 
 #include "IntegrationEnvironment.h"
+
 #include <FilesystemUtils.hpp>
 
-IntegrationEnvironment* IntegrationEnvironment::_instance = nullptr;
+IntegrationEnvironment *IntegrationEnvironment::_instance = nullptr;
 
 IntegrationEnvironment::IntegrationEnvironment(int argc, char **argv) {
     _appDir = FilesystemUtils::getExecutableDir();

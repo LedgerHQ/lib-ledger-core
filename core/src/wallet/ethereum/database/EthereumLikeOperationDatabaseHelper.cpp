@@ -30,16 +30,17 @@
  */
 
 #include "EthereumLikeOperationDatabaseHelper.hpp"
+
+#include <api/BigInt.hpp>
+#include <api/ERC20Token.hpp>
+#include <crypto/SHA256.hpp>
+#include <database/soci-backend-utils.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
-#include <api/BigInt.hpp>
-#include <crypto/SHA256.hpp>
-#include <unordered_set>
-#include <database/soci-backend-utils.h>
 #include <debug/Benchmarker.h>
+#include <unordered_set>
 #include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
-#include <api/ERC20Token.hpp>
 
 using namespace soci;
 
@@ -65,7 +66,7 @@ namespace {
         std::vector<uint64_t> confirmations;
         std::vector<uint64_t> status;
 
-        void update(const Option<std::string> blockUid, const std::string& txUid, const Transaction& tx) {
+        void update(const Option<std::string> blockUid, const std::string &txUid, const Transaction &tx) {
             uid.push_back(txUid);
             hash.push_back(tx.hash);
             nonce.push_back(tx.nonce);
@@ -81,7 +82,6 @@ namespace {
             confirmations.push_back(tx.confirmations);
             status.push_back(tx.status);
         }
-
     };
     const auto UPSERT_ETHEREUM_TRANSACTION = db::stmt<EthereumTransactionBinding>(
         "INSERT INTO ethereum_transactions VALUES("
@@ -90,24 +90,23 @@ namespace {
         " :status"
         ") ON CONFLICT(transaction_uid) DO UPDATE SET"
         " block_uid = :block_uid, status = :status, gas_used = :gas_used",
-        [] (auto& s, auto& b) {
+        [](auto &s, auto &b) {
             s,
-            use(b.uid, "tx_uid"),
-            use(b.hash, "hash"),
-            use(b.nonce, "nonce"),
-            use(b.value, "value"),
-            use(b.block, "block_uid"),
-            use(b.time, "time"),
-            use(b.sender, "sender"),
-            use(b.receiver, "receiver"),
-            use(b.inputData, "input_data"),
-            use(b.gasPrice, "gas_price"),
-            use(b.gasLimit, "gas_limit"),
-            use(b.gasUsed, "gas_used"),
-            use(b.confirmations, "confirmations"),
-            use(b.status, "status");
-        }
-    );
+                use(b.uid, "tx_uid"),
+                use(b.hash, "hash"),
+                use(b.nonce, "nonce"),
+                use(b.value, "value"),
+                use(b.block, "block_uid"),
+                use(b.time, "time"),
+                use(b.sender, "sender"),
+                use(b.receiver, "receiver"),
+                use(b.inputData, "input_data"),
+                use(b.gasPrice, "gas_price"),
+                use(b.gasLimit, "gas_limit"),
+                use(b.gasUsed, "gas_used"),
+                use(b.confirmations, "confirmations"),
+                use(b.status, "status");
+        });
 
     // Ethereum operation
     struct EthereumOperationBinding {
@@ -115,7 +114,7 @@ namespace {
         std::vector<std::string> txUid;
         std::vector<std::string> hash;
 
-        void update(const std::string& opUid, const std::string& tUid, const std::string& tHash) {
+        void update(const std::string &opUid, const std::string &tUid, const std::string &tHash) {
             uid.push_back(opUid);
             txUid.push_back(tUid);
             hash.push_back(tHash);
@@ -125,10 +124,9 @@ namespace {
         "INSERT INTO ethereum_operations VALUES("
         ":uid, :tx_uid, :tx_hash"
         ") ON CONFLICT DO NOTHING",
-        [] (auto& s, auto& b) {
+        [](auto &s, auto &b) {
             s, use(b.uid), use(b.txUid), use(b.hash);
-        }
-    );
+        });
 
     // ERC20 Token
     struct ERC20TokenBinding {
@@ -137,7 +135,7 @@ namespace {
         std::vector<std::string> symbol;
         std::vector<int32_t> numberOfDecimal;
 
-        void update(const api::ERC20Token& token) {
+        void update(const api::ERC20Token &token) {
             contractAddress.push_back(token.contractAddress);
             name.push_back(token.name);
             symbol.push_back(token.symbol);
@@ -147,11 +145,10 @@ namespace {
     const auto UPSERT_TOKEN = db::stmt<ERC20TokenBinding>(
         "INSERT INTO erc20_tokens VALUES(:contract_address, :name, :symbol, "
         ":number_of_decimal) ON CONFLICT DO NOTHING",
-        [] (auto& s, auto& b) {
+        [](auto &s, auto &b) {
             s, use(b.contractAddress), use(b.name), use(b.symbol),
-            use(b.numberOfDecimal);
-        }
-    );
+                use(b.numberOfDecimal);
+        });
 
     // ERC20 accounts
     struct ERC20AccountBinding {
@@ -159,7 +156,7 @@ namespace {
         std::vector<std::string> accountUid;
         std::vector<std::string> contractAddress;
 
-        void update(const std::string& accUid, const std::shared_ptr<ERC20LikeAccount>& acc) {
+        void update(const std::string &accUid, const std::shared_ptr<ERC20LikeAccount> &acc) {
             uid.push_back(acc->getUid());
             accountUid.push_back(accUid);
             contractAddress.push_back(acc->getToken().contractAddress);
@@ -170,10 +167,9 @@ namespace {
         "INSERT INTO erc20_accounts VALUES("
         ":uid, :ethereum_account_uid, :contract_address"
         ") ON CONFLICT DO NOTHING",
-        [] (auto& s, auto& b) {
+        [](auto &s, auto &b) {
             s, use(b.uid), use(b.accountUid), use(b.contractAddress);
-        }
-    );
+        });
 
     // ERC 20 operations
     struct ERC20OperationBinding {
@@ -194,7 +190,7 @@ namespace {
         std::vector<std::string> data;
         std::vector<int32_t> status;
 
-        void update(const std::string& ercAccUid, ERC20LikeOperation& op) {
+        void update(const std::string &ercAccUid, ERC20LikeOperation &op) {
             ercOpUid.push_back(op.getOperationUid());
             ethOpUid.push_back(op.getETHOperationUid());
             accountUid.push_back(ercAccUid);
@@ -215,31 +211,30 @@ namespace {
     };
 
     const auto UPSERT_ERC20_OPERATION = db::stmt<ERC20OperationBinding>(
-            "INSERT INTO erc20_operations VALUES("
-             ":uid, :eth_op_uid, :account_uid, :op_type, :hash, :nonce, :value, :date, :sender,"
-             ":receiver, :data, :gas_price, :gas_limit, :gas_used, :status, :block_height"
-             ") ON CONFLICT(uid) DO UPDATE SET "
-             " status = :status, gas_used = :gas_used",
-        [] (auto& s, auto& b) {
+        "INSERT INTO erc20_operations VALUES("
+        ":uid, :eth_op_uid, :account_uid, :op_type, :hash, :nonce, :value, :date, :sender,"
+        ":receiver, :data, :gas_price, :gas_limit, :gas_used, :status, :block_height"
+        ") ON CONFLICT(uid) DO UPDATE SET "
+        " status = :status, gas_used = :gas_used",
+        [](auto &s, auto &b) {
             s,
-            use(b.ercOpUid, "uid"),
-            use(b.ethOpUid, "eth_op_uid"),
-            use(b.accountUid, "account_uid"),
-            use(b.opType, "op_type"),
-            use(b.hash, "hash"),
-            use(b.nonce, "nonce"),
-            use(b.value, "value"),
-            use(b.time, "date"),
-            use(b.sender, "sender"),
-            use(b.receiver, "receiver"),
-            use(b.data, "data"),
-            use(b.gasPrice, "gas_price"),
-            use(b.gasLimit, "gas_limit"),
-            use(b.gasUsed, "gas_used"),
-            use(b.status, "status"),
-            use(b.blockHeight, "block_height");
-        }
-    );
+                use(b.ercOpUid, "uid"),
+                use(b.ethOpUid, "eth_op_uid"),
+                use(b.accountUid, "account_uid"),
+                use(b.opType, "op_type"),
+                use(b.hash, "hash"),
+                use(b.nonce, "nonce"),
+                use(b.value, "value"),
+                use(b.time, "date"),
+                use(b.sender, "sender"),
+                use(b.receiver, "receiver"),
+                use(b.data, "data"),
+                use(b.gasPrice, "gas_price"),
+                use(b.gasLimit, "gas_limit"),
+                use(b.gasUsed, "gas_used"),
+                use(b.status, "status"),
+                use(b.blockHeight, "block_height");
+        });
 
     // Internal operations
     struct InternalOperationBinding {
@@ -253,16 +248,12 @@ namespace {
         std::vector<std::string> gasUsed;
         std::vector<std::string> inputData;
 
-        void update(int index, const std::string& oUid, const InternalTx& tx,
-                    const EthereumLikeBlockchainExplorerTransaction& transaction,
-                    const std::string& accountAddress) {
-            auto type = tx.from == accountAddress ? api::OperationType::SEND :
-                        tx.to == accountAddress ? api::OperationType::RECEIVE :
-                        api::OperationType::NONE;
-            auto uid = OperationDatabaseHelper::createUid(oUid, fmt::format("{}-{}-{}",
-                    tx.from, hex::toString(tx.inputData), index), type);
+        void update(int index, const std::string &oUid, const InternalTx &tx, const EthereumLikeBlockchainExplorerTransaction &transaction, const std::string &accountAddress) {
+            auto type = tx.from == accountAddress ? api::OperationType::SEND : tx.to == accountAddress ? api::OperationType::RECEIVE
+                                                                                                       : api::OperationType::NONE;
+            auto uid  = OperationDatabaseHelper::createUid(oUid, fmt::format("{}-{}-{}", tx.from, hex::toString(tx.inputData), index), type);
             if (tx.from != transaction.sender || tx.to != transaction.receiver ||
-                hex::toString(tx.inputData )!= hex::toString(transaction.inputData)) {
+                hex::toString(tx.inputData) != hex::toString(transaction.inputData)) {
                 internalTxUid.push_back(uid);
                 opUid.push_back(oUid);
                 opType.push_back(api::to_string(type));
@@ -271,44 +262,46 @@ namespace {
                 to.push_back(tx.to);
                 gasLimit.push_back(tx.gasLimit.toHexString());
                 gasUsed.push_back(tx.gasUsed.map<std::string>([](const auto &g) {
-                    return g.toHexString();
-                }).getValueOr("00"));
+                                                return g.toHexString();
+                                            })
+                                      .getValueOr("00"));
                 inputData.push_back(hex::toString(tx.inputData));
             }
         }
     };
     const auto UPSERT_INTERNAL_OPERATION = db::stmt<InternalOperationBinding>(
-            "INSERT INTO internal_operations VALUES("
-            ":uid, :eth_op_uid, :type, :value, :sender, :receiver, "
-            ":gas_limit, :gas_used, :input_data) ON CONFLICT DO NOTHING"
-            , [] (auto& s, auto& b) {
-                s, use(b.internalTxUid), use(b.opUid), use(b.opType), use(b.value),
+        "INSERT INTO internal_operations VALUES("
+        ":uid, :eth_op_uid, :type, :value, :sender, :receiver, "
+        ":gas_limit, :gas_used, :input_data) ON CONFLICT DO NOTHING",
+        [](auto &s, auto &b) {
+            s, use(b.internalTxUid), use(b.opUid), use(b.opType), use(b.value),
                 use(b.from), use(b.to), use(b.gasLimit), use(b.gasUsed),
                 use(b.inputData);
-            }
-    );
+        });
 
     const auto UPSERT_OPERATION = db::stmt<OperationBinding>(
-            "INSERT INTO operations VALUES("
-            ":uid, :account_uid, :wallet_uid, :type, :date, :senders, :recipients, :amount,"
-            ":fees, :block_uid, :currency_name, :trust"
-            ") ON CONFLICT(uid) DO UPDATE SET block_uid = :block_uid, trust = :trust,"
-            " amount = :amount, fees = :fees", [] (auto& s, auto& b) {
-                s, use(b.uid, "uid"), use(b.accountUid, "account_uid"),
-                        use(b.walletUid, "wallet_uid"), use(b.type, "type"),
-                        use(b.date, "date"), use(b.senders, "senders"),
-                        use(b.receivers, "recipients"), use(b.amount, "amount"),
-                        use(b.fees, "fees"), use(b.blockUid, "block_uid"),
-                        use(b.currencyName, "currency_name"),
-                        use(b.serializedTrust, "trust");
-            });
-}
+        "INSERT INTO operations VALUES("
+        ":uid, :account_uid, :wallet_uid, :type, :date, :senders, :recipients, :amount,"
+        ":fees, :block_uid, :currency_name, :trust"
+        ") ON CONFLICT(uid) DO UPDATE SET block_uid = :block_uid, trust = :trust,"
+        " amount = :amount, fees = :fees",
+        [](auto &s, auto &b) {
+            s, use(b.uid, "uid"), use(b.accountUid, "account_uid"),
+                use(b.walletUid, "wallet_uid"), use(b.type, "type"),
+                use(b.date, "date"), use(b.senders, "senders"),
+                use(b.receivers, "recipients"), use(b.amount, "amount"),
+                use(b.fees, "fees"), use(b.blockUid, "block_uid"),
+                use(b.currencyName, "currency_name"),
+                use(b.serializedTrust, "trust");
+        });
+} // namespace
 
 namespace ledger {
     namespace core {
 
         void EthereumLikeOperationDatabaseHelper::bulkInsert(session &sql,
-                const std::vector<Operation> &ops, const std::string& accountAddress) {
+                                                             const std::vector<Operation> &ops,
+                                                             const std::string &accountAddress) {
             if (ops.empty())
                 return;
 
@@ -330,20 +323,20 @@ namespace ledger {
             UPSERT_INTERNAL_OPERATION(sql, internalOpStmt);
             UPSERT_TOKEN(sql, tokenStmt);
 
-            for (const auto& op : ops) {
-                if (op.block.nonEmpty())  {
+            for (const auto &op : ops) {
+                if (op.block.nonEmpty()) {
                     blockStmt.bindings.update(op.block.getValue());
                 }
-                const auto blockUid = op.block.map<std::string>([] (const auto& b) {
+                const auto blockUid   = op.block.map<std::string>([](const auto &b) {
                     return b.getUid();
                 });
                 const auto accountUid = op.accountUid;
-                const auto& tx = op.ethereumTransaction.getValue();
-                const auto opUid = op.uid;
-                auto txUid = EthereumLikeTransactionDatabaseHelper::createEthereumTransactionUid(op.accountUid, tx.hash);
-                const auto& data = std::dynamic_pointer_cast<EthereumOperationAttachedData>(op.attachedData);
-                auto internalOpIndex = 0;
-                for (const auto& internalTx : tx.internalTransactions) {
+                const auto &tx        = op.ethereumTransaction.getValue();
+                const auto opUid      = op.uid;
+                auto txUid            = EthereumLikeTransactionDatabaseHelper::createEthereumTransactionUid(op.accountUid, tx.hash);
+                const auto &data      = std::dynamic_pointer_cast<EthereumOperationAttachedData>(op.attachedData);
+                auto internalOpIndex  = 0;
+                for (const auto &internalTx : tx.internalTransactions) {
                     internalOpStmt.bindings.update(internalOpIndex, opUid, internalTx, tx, accountAddress);
                     internalOpIndex += 1;
                 }
@@ -355,7 +348,7 @@ namespace ledger {
                     }
                     for (auto &erc20Op : data->erc20Operations) {
                         erc20OpStmt.bindings.update(
-                                std::get<0>(erc20Op), std::get<1>(erc20Op));
+                            std::get<0>(erc20Op), std::get<1>(erc20Op));
                     }
                 }
                 ethTxStmt.bindings.update(blockUid, txUid, tx);
@@ -383,8 +376,7 @@ namespace ledger {
             // ERC20 operation
             if (!erc20OpStmt.bindings.hash.empty())
                 erc20OpStmt.execute();
-
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

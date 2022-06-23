@@ -30,18 +30,19 @@
  */
 
 #include "AlgorandOperationsDatabaseHelper.hpp"
-#include <database/PreparedStatement.hpp>
-#include <database/soci-date.h>
-#include <database/soci-option.h>
+
 #include <api/BigInt.hpp>
 #include <crypto/SHA256.hpp>
+#include <database/PreparedStatement.hpp>
+#include <database/soci-backend-utils.h>
+#include <database/soci-date.h>
+#include <database/soci-option.h>
+#include <debug/Benchmarker.h>
+#include <unordered_set>
+#include <wallet/algorand/AlgorandExplorerConstants.hpp>
 #include <wallet/algorand/database/AlgorandTransactionDatabaseHelper.hpp>
 #include <wallet/algorand/model/transactions/AlgorandTransaction.hpp>
-#include <unordered_set>
-#include <database/soci-backend-utils.h>
-#include <debug/Benchmarker.h>
 #include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
-#include <wallet/algorand/AlgorandExplorerConstants.hpp>
 
 using namespace soci;
 
@@ -54,8 +55,7 @@ namespace {
         std::vector<std::string> txUid;
         std::vector<std::string> txHash;
 
-        void update(const std::string& opUid, const std::string& transactionUid,
-                const std::string& transactionHash) {
+        void update(const std::string &opUid, const std::string &transactionUid, const std::string &transactionHash) {
             uid.push_back(opUid);
             txUid.push_back(transactionUid);
             txHash.push_back(transactionHash);
@@ -69,11 +69,11 @@ namespace {
     };
 
     const auto UPSERT_ALGORAND_OPERATION = ledger::core::db::stmt<AlgorandOperationBinding>(
-            "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash) "
-            "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, use(b.uid), use(b.txUid), use(b.txHash);
-            });
+        "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash) "
+        "ON CONFLICT DO NOTHING",
+        [](auto &s, auto &b) {
+            s, use(b.uid), use(b.txUid), use(b.txHash);
+        });
 
     // Algorand transactions: generic class
     struct TransactionBinding {
@@ -95,18 +95,18 @@ namespace {
         std::vector<boost::optional<uint64_t>> receiverRewards;
         std::vector<boost::optional<uint64_t>> closeRewards;
 
-        void update(const std::string& txUid, const model::Transaction & tx) {
-            auto headerId = optionalValue<std::string>(tx.header.id);
-            auto headerGenesisId = optionalValue<std::string>(tx.header.genesisId);
-            auto headerRound = optionalValue<uint64_t>(tx.header.round);
-            auto headerTimestamp = optionalValue<uint64_t>(tx.header.timestamp);
-            auto headerNote = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
-            auto headerGroup = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
-            auto headerLease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
-            auto headerSenderRewards = optionalValue(tx.header.senderRewards);
+        void update(const std::string &txUid, const model::Transaction &tx) {
+            auto headerId              = optionalValue<std::string>(tx.header.id);
+            auto headerGenesisId       = optionalValue<std::string>(tx.header.genesisId);
+            auto headerRound           = optionalValue<uint64_t>(tx.header.round);
+            auto headerTimestamp       = optionalValue<uint64_t>(tx.header.timestamp);
+            auto headerNote            = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
+            auto headerGroup           = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
+            auto headerLease           = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
+            auto headerSenderRewards   = optionalValue(tx.header.senderRewards);
             auto headerReceiverRewards = optionalValue(tx.header.receiverRewards);
-            auto headerCloseRewards = optionalValue(tx.header.closeRewards);
-            
+            auto headerCloseRewards    = optionalValue(tx.header.closeRewards);
+
             uid.push_back(txUid);
             txHash.push_back(headerId);
             type.push_back(tx.header.type);
@@ -158,10 +158,10 @@ namespace {
         std::vector<boost::optional<std::string>> closeAddr;
         std::vector<boost::optional<uint64_t>> closeAmount;
 
-        void update(const std::string& txUid, const model::Transaction & tx) {
+        void update(const std::string &txUid, const model::Transaction &tx) {
             TransactionBinding::update(txUid, tx);
-            auto& payment = boost::get<model::PaymentTxnFields>(tx.details);
-            auto paymentCloseAddr = optionalValueWithTransform<Address, std::string>(payment.closeAddr, addrToString);
+            auto &payment           = boost::get<model::PaymentTxnFields>(tx.details);
+            auto paymentCloseAddr   = optionalValueWithTransform<Address, std::string>(payment.closeAddr, addrToString);
             auto paymentCloseAmount = optionalValue<uint64_t>(payment.closeAmount);
 
             amount.push_back(payment.amount);
@@ -177,20 +177,19 @@ namespace {
             closeAddr.clear();
             closeAmount.clear();
         }
-
     };
- 
+
     const auto UPSERT_ALGORAND_TRANSACTION_PAYMENT = ledger::core::db::stmt<PaymentTransactionBinding>(
-            "INSERT INTO algorand_transactions ("
-                "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
-                "sender, fee, note, groupVal, leaseVal, sender_rewards, receiver_rewards, close_rewards, "
-                "pay_amount, pay_receiver_address, pay_close_address, pay_close_amount) "
+        "INSERT INTO algorand_transactions ("
+        "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
+        "sender, fee, note, groupVal, leaseVal, sender_rewards, receiver_rewards, close_rewards, "
+        "pay_amount, pay_receiver_address, pay_close_address, pay_close_amount) "
         "VALUES(:tx_uid, :hash, :tx_type, :round, :timestamp, :first_valid, :last_valid, :genesis_id, :genesis_hash, "
-                ":sender, :fee, :note, :group, :lease, :sender_rewards, :receiver_rewards, :close_rewards, "
-                ":amount, :receiver_addr, :close_addr, :close_amount) "
+        ":sender, :fee, :note, :group, :lease, :sender_rewards, :receiver_rewards, :close_rewards, "
+        ":amount, :receiver_addr, :close_addr, :close_amount) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
+        [](auto &s, auto &b) {
+            s,
                 use(b.uid),
                 use(b.txHash),
                 use(b.type),
@@ -212,12 +211,10 @@ namespace {
                 use(b.receiverAddr),
                 use(b.closeAddr),
                 use(b.closeAmount);
-            });
-
+        });
 
     // Algorand transactions: keyreg
     struct KeyregTransactionBinding : public TransactionBinding {
-
         std::vector<boost::optional<int32_t>> nonParticipation;
         std::vector<std::string> selectionPk;
         std::vector<std::string> votePk;
@@ -225,10 +222,10 @@ namespace {
         std::vector<uint64_t> voteFirst;
         std::vector<uint64_t> voteLast;
 
-        void update(const std::string& txUid, const model::Transaction & tx) {
+        void update(const std::string &txUid, const model::Transaction &tx) {
             TransactionBinding::update(txUid, tx);
-            
-            auto& keyreg = boost::get<model::KeyRegTxnFields>(tx.details);
+
+            auto &keyreg                 = boost::get<model::KeyRegTxnFields>(tx.details);
             auto keyreg_nonParticipation = optionalValueWithTransform<bool, int32_t>(keyreg.nonParticipation, boolToNum);
 
             nonParticipation.push_back(keyreg_nonParticipation);
@@ -250,17 +247,17 @@ namespace {
         }
     };
 
-        const auto UPSERT_ALGORAND_TRANSACTION_KEYREG = ledger::core::db::stmt<KeyregTransactionBinding>(
+    const auto UPSERT_ALGORAND_TRANSACTION_KEYREG = ledger::core::db::stmt<KeyregTransactionBinding>(
         "INSERT INTO algorand_transactions ("
-                "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
-                "sender, fee, note, groupVal, leaseVal, sender_rewards, receiver_rewards, close_rewards, "
-                "keyreg_non_participation, keyreg_selection_pk, keyreg_vote_pk, keyreg_vote_key_dilution, keyreg_vote_first, keyreg_vote_last) "
+        "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
+        "sender, fee, note, groupVal, leaseVal, sender_rewards, receiver_rewards, close_rewards, "
+        "keyreg_non_participation, keyreg_selection_pk, keyreg_vote_pk, keyreg_vote_key_dilution, keyreg_vote_first, keyreg_vote_last) "
         "VALUES(:tx_uid, :hash, :tx_type, :round, :timestamp, :first_valid, :last_valid, :genesis_id, :genesis_hash, "
-                ":sender, :fee, :note, :group, :lease, :sender_rewards, :receiver_rewards, :close_rewards, "
-                ":non_part, :selection_pk, :vote_pk, :vote_key_dilution, :vote_first, :vote_last) "
+        ":sender, :fee, :note, :group, :lease, :sender_rewards, :receiver_rewards, :close_rewards, "
+        ":non_part, :selection_pk, :vote_pk, :vote_key_dilution, :vote_first, :vote_last) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
+        [](auto &s, auto &b) {
+            s,
                 use(b.uid),
                 use(b.txHash),
                 use(b.type),
@@ -284,11 +281,10 @@ namespace {
                 use(b.voteKeyDilution),
                 use(b.voteFirst),
                 use(b.voteLast);
-            });
- 
+        });
+
     // Algorand transactions: AssetConfig
     struct AssetConfigTransactionBinding : public TransactionBinding {
-
         std::vector<boost::optional<uint64_t>> assetConfigId;
         std::vector<boost::optional<std::string>> assetConfigName;
         std::vector<boost::optional<std::string>> assetConfigUnitname;
@@ -303,24 +299,24 @@ namespace {
         std::vector<boost::optional<std::string>> assetConfigMetadata;
         std::vector<boost::optional<std::string>> assetConfigUrl;
 
-        void update(const std::string& txUid, const model::Transaction & tx) {
+        void update(const std::string &txUid, const model::Transaction &tx) {
             TransactionBinding::update(txUid, tx);
 
-            auto& assetConfig = boost::get<model::AssetConfigTxnFields>(tx.details);
-            auto& assetParams = *assetConfig.assetParams;
-            auto assetId = optionalValue<uint64_t>(assetConfig.assetId);
-            auto assetName = optionalValue<std::string>(assetParams.assetName);
+            auto &assetConfig  = boost::get<model::AssetConfigTxnFields>(tx.details);
+            auto &assetParams  = *assetConfig.assetParams;
+            auto assetId       = optionalValue<uint64_t>(assetConfig.assetId);
+            auto assetName     = optionalValue<std::string>(assetParams.assetName);
             auto assetUnitname = optionalValue<std::string>(assetParams.unitName);
-            auto assetTotal = optionalValue<uint64_t>(assetParams.total);
+            auto assetTotal    = optionalValue<uint64_t>(assetParams.total);
             auto assetDecimals = optionalValue<uint32_t>(assetParams.decimals);
-            auto assetFrozen = optionalValueWithTransform<bool, int32_t>(assetParams.defaultFrozen, boolToNum);
-            auto assetCreator = optionalValueWithTransform<Address, std::string>(assetParams.creatorAddr, addrToString);
-            auto assetManager = optionalValueWithTransform<Address, std::string>(assetParams.managerAddr, addrToString);
-            auto assetReserve = optionalValueWithTransform<Address, std::string>(assetParams.reserveAddr, addrToString);
-            auto assetFreeze = optionalValueWithTransform<Address, std::string>(assetParams.freezeAddr, addrToString);
+            auto assetFrozen   = optionalValueWithTransform<bool, int32_t>(assetParams.defaultFrozen, boolToNum);
+            auto assetCreator  = optionalValueWithTransform<Address, std::string>(assetParams.creatorAddr, addrToString);
+            auto assetManager  = optionalValueWithTransform<Address, std::string>(assetParams.managerAddr, addrToString);
+            auto assetReserve  = optionalValueWithTransform<Address, std::string>(assetParams.reserveAddr, addrToString);
+            auto assetFreeze   = optionalValueWithTransform<Address, std::string>(assetParams.freezeAddr, addrToString);
             auto assetClawback = optionalValueWithTransform<Address, std::string>(assetParams.clawbackAddr, addrToString);
             auto assetMetadata = optionalValueWithTransform<std::vector<uint8_t>, std::string>(assetParams.metaDataHash, bytesToB64);
-            auto assetUrl = optionalValue<std::string>(assetParams.url);
+            auto assetUrl      = optionalValue<std::string>(assetParams.url);
 
             assetConfigId.push_back(assetId);
             assetConfigName.push_back(assetName);
@@ -357,18 +353,18 @@ namespace {
 
     const auto UPSERT_ALGORAND_TRANSACTION_ASSETCONFIG = ledger::core::db::stmt<AssetConfigTransactionBinding>(
         "INSERT INTO algorand_transactions ("
-                "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
-                "sender, fee, note, groupVal, leaseVal, sender_rewards, receiver_rewards, close_rewards, "
-                "acfg_asset_id, acfg_asset_name, acfg_unit_name, acfg_total, acfg_decimals, acfg_default_frozen, "
-                "acfg_creator_address, acfg_manager_address, acfg_reserve_address, acfg_freeze_address, acfg_clawback_address, "
-                "acfg_metadata_hash, acfg_url) "
+        "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
+        "sender, fee, note, groupVal, leaseVal, sender_rewards, receiver_rewards, close_rewards, "
+        "acfg_asset_id, acfg_asset_name, acfg_unit_name, acfg_total, acfg_decimals, acfg_default_frozen, "
+        "acfg_creator_address, acfg_manager_address, acfg_reserve_address, acfg_freeze_address, acfg_clawback_address, "
+        "acfg_metadata_hash, acfg_url) "
         "VALUES(:tx_uid, :hash, :tx_type, :round, :timestamp, :first_valid, :last_valid, :genesis_id, :genesis_hash, "
-                ":sender, :fee, :note, :group, :lease, :sender_rewards, :receiver_rewards, :close_rewards, "
-                ":asset_id, :asset_name, :unit_name, :total, :decimals, :default_frozen, :creator_addr, "
-                ":manager_addr, :reserve_addr, :freeze_addr, :clawback_addr, :metadata_hash, :url) "
+        ":sender, :fee, :note, :group, :lease, :sender_rewards, :receiver_rewards, :close_rewards, "
+        ":asset_id, :asset_name, :unit_name, :total, :decimals, :default_frozen, :creator_addr, "
+        ":manager_addr, :reserve_addr, :freeze_addr, :clawback_addr, :metadata_hash, :url) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
+        [](auto &s, auto &b) {
+            s,
                 use(b.uid),
                 use(b.txHash),
                 use(b.type),
@@ -399,26 +395,24 @@ namespace {
                 use(b.assetConfigClawback),
                 use(b.assetConfigMetadata),
                 use(b.assetConfigUrl);
-            });
-
+        });
 
     // Algorand transactions: AssetTransfer
     struct AssetTransferTransactionBinding : public TransactionBinding {
-       
-            std::vector<uint64_t> assetTransferId;
-            std::vector<boost::optional<uint64_t>> assetTransferAmount;
-            std::vector<std::string> assetTransferReceiver;
-            std::vector<boost::optional<std::string>> assetTransferCloseTo;
-            std::vector<boost::optional<uint64_t>> assetTransferCloseAmount;
-            std::vector<boost::optional<std::string>> assetTransferSender;
+        std::vector<uint64_t> assetTransferId;
+        std::vector<boost::optional<uint64_t>> assetTransferAmount;
+        std::vector<std::string> assetTransferReceiver;
+        std::vector<boost::optional<std::string>> assetTransferCloseTo;
+        std::vector<boost::optional<uint64_t>> assetTransferCloseAmount;
+        std::vector<boost::optional<std::string>> assetTransferSender;
 
-        void update(const std::string& txUid, const model::Transaction & tx) {
+        void update(const std::string &txUid, const model::Transaction &tx) {
             TransactionBinding::update(txUid, tx);
-            auto& assetTransfer = boost::get<model::AssetTransferTxnFields>(tx.details);
-            auto assetAmount = optionalValue<uint64_t>(assetTransfer.assetAmount);
-            auto assetCloseTo = optionalValueWithTransform<Address, std::string>(assetTransfer.assetCloseTo, addrToString);
+            auto &assetTransfer   = boost::get<model::AssetTransferTxnFields>(tx.details);
+            auto assetAmount      = optionalValue<uint64_t>(assetTransfer.assetAmount);
+            auto assetCloseTo     = optionalValueWithTransform<Address, std::string>(assetTransfer.assetCloseTo, addrToString);
             auto assetCloseAmount = optionalValue(assetTransfer.closeAmount);
-            auto assetSender = optionalValueWithTransform<Address, std::string>(assetTransfer.assetSender, addrToString);
+            auto assetSender      = optionalValueWithTransform<Address, std::string>(assetTransfer.assetSender, addrToString);
 
             assetTransferId.push_back(assetTransfer.assetId);
             assetTransferAmount.push_back(assetAmount);
@@ -441,15 +435,15 @@ namespace {
 
     const auto UPSERT_ALGORAND_TRANSACTION_ASSETTRANSFER = ledger::core::db::stmt<AssetTransferTransactionBinding>(
         "INSERT INTO algorand_transactions ("
-                "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
-                "sender, fee, note, groupVal, leaseVal, sender_rewards, receiver_rewards, close_rewards, "
-                "axfer_asset_id, axfer_asset_amount, axfer_receiver_address, axfer_close_address, axfer_close_amount, axfer_sender_address) "
+        "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
+        "sender, fee, note, groupVal, leaseVal, sender_rewards, receiver_rewards, close_rewards, "
+        "axfer_asset_id, axfer_asset_amount, axfer_receiver_address, axfer_close_address, axfer_close_amount, axfer_sender_address) "
         "VALUES(:tx_uid, :hash, :tx_type, :round, :timestamp, :first_valid, :last_valid, :genesis_id, :genesis_hash, "
-                ":sender, :fee, :note, :group, :lease, :sender_rewards, :receiver_rewards, :close_rewards, "
-                ":assetId, :amount, :receiver_addr, :close_addr, :close_amount, :sender_addr) "
+        ":sender, :fee, :note, :group, :lease, :sender_rewards, :receiver_rewards, :close_rewards, "
+        ":assetId, :amount, :receiver_addr, :close_addr, :close_amount, :sender_addr) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
+        [](auto &s, auto &b) {
+            s,
                 use(b.uid),
                 use(b.txHash),
                 use(b.type),
@@ -473,21 +467,18 @@ namespace {
                 use(b.assetTransferCloseTo),
                 use(b.assetTransferCloseAmount),
                 use(b.assetTransferSender);
-            });
+        });
 
-
-
-// Algorand transactions: AssetFreeze
+    // Algorand transactions: AssetFreeze
     struct AssetFreezeTransactionBinding : public TransactionBinding {
-       
         std::vector<uint64_t> assetFreezeId;
         std::vector<int32_t> assetFreezeFrozen;
         std::vector<std::string> assetFreezeAddres;
 
-        void update(const std::string& txUid, const model::Transaction & tx) {
+        void update(const std::string &txUid, const model::Transaction &tx) {
             TransactionBinding::update(txUid, tx);
 
-            auto& assetFreeze = boost::get<model::AssetFreezeTxnFields>(tx.details);
+            auto &assetFreeze = boost::get<model::AssetFreezeTxnFields>(tx.details);
             assetFreezeId.push_back(assetFreeze.assetId);
             assetFreezeFrozen.push_back(static_cast<int32_t>(assetFreeze.assetFrozen));
             assetFreezeAddres.push_back(assetFreeze.frozenAddress.toString());
@@ -504,15 +495,15 @@ namespace {
 
     const auto UPSERT_ALGORAND_TRANSACTION_ASSETFREEZE = ledger::core::db::stmt<AssetFreezeTransactionBinding>(
         "INSERT INTO algorand_transactions ("
-                "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
-                "sender, fee, note, groupVal, leaseVal, sender_rewards, receiver_rewards, close_rewards, "
-                "afrz_asset_id, afrz_frozen, afrz_frozen_address) "
+        "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
+        "sender, fee, note, groupVal, leaseVal, sender_rewards, receiver_rewards, close_rewards, "
+        "afrz_asset_id, afrz_frozen, afrz_frozen_address) "
         "VALUES(:tx_uid, :hash, :tx_type, :round, :timestamp, :first_valid, :last_valid, :genesis_id, :genesis_hash, "
-                ":sender, :fee, :note, :group, :lease, :sender_rewards, :receiver_rewards, :close_rewards, "
-                ":asset_id, :frozen, :frozen_addr) "
-        "ON CONFLICT DO NOTHING",    
-            [] (auto& s, auto&  b) {
-                s, 
+        ":sender, :fee, :note, :group, :lease, :sender_rewards, :receiver_rewards, :close_rewards, "
+        ":asset_id, :frozen, :frozen_addr) "
+        "ON CONFLICT DO NOTHING",
+        [](auto &s, auto &b) {
+            s,
                 use(b.uid),
                 use(b.txHash),
                 use(b.type),
@@ -533,15 +524,15 @@ namespace {
                 use(b.assetFreezeId),
                 use(b.assetFreezeFrozen),
                 use(b.assetFreezeAddres);
-            });
-}
+        });
+} // namespace
 
 namespace ledger {
     namespace core {
         namespace algorand {
 
             void OperationsDatabaseHelper::bulkInsert(soci::session &sql,
-                    const std::vector<Operation> &operations) {
+                                                      const std::vector<Operation> &operations) {
                 if (operations.empty())
                     return;
                 Benchmarker rawInsert("raw_db_insert_algorand", nullptr);
@@ -557,11 +548,11 @@ namespace ledger {
 
                 BulkInsertDatabaseHelper::UPSERT_OPERATION(sql, operationStmt);
                 BulkInsertDatabaseHelper::UPSERT_BLOCK(sql, blockStmt);
-                UPSERT_ALGORAND_OPERATION(sql, algorandOpStmt);     
-                
-                for (const auto& op : operations) {
+                UPSERT_ALGORAND_OPERATION(sql, algorandOpStmt);
+
+                for (const auto &op : operations) {
                     if (op.getBackend().block.hasValue()) {
-                        auto block = op.getBackend().block.getValue(); 
+                        auto block         = op.getBackend().block.getValue();
                         block.currencyName = op.getAccount()->getWallet()->getCurrency().name;
                         blockStmt.bindings.update(block);
                     }
@@ -569,29 +560,25 @@ namespace ledger {
                     operationStmt.bindings.update(op.getBackend());
 
                     // Upsert transaction
-                    auto& tx = op.getTransactionData(); 
+                    auto &tx         = op.getTransactionData();
                     const auto txUid = *tx.header.id;
                     if (tx.header.type == constants::xPay) {
                         if (paymentTransactionStmt.bindings.empty())
                             UPSERT_ALGORAND_TRANSACTION_PAYMENT(sql, paymentTransactionStmt);
                         paymentTransactionStmt.bindings.update(txUid, tx);
-                    } 
-                    else if (tx.header.type == constants::xKeyregs) {
+                    } else if (tx.header.type == constants::xKeyregs) {
                         if (keyregTransactionStmt.bindings.empty())
                             UPSERT_ALGORAND_TRANSACTION_KEYREG(sql, keyregTransactionStmt);
                         keyregTransactionStmt.bindings.update(txUid, tx);
-                    } 
-                    else if (tx.header.type == constants::xAcfg) {
+                    } else if (tx.header.type == constants::xAcfg) {
                         if (assetConfigTransactionStmt.bindings.empty())
                             UPSERT_ALGORAND_TRANSACTION_ASSETCONFIG(sql, assetConfigTransactionStmt);
                         assetConfigTransactionStmt.bindings.update(txUid, tx);
-                    } 
-                    else if (tx.header.type == constants::xAxfer) {
+                    } else if (tx.header.type == constants::xAxfer) {
                         if (assetTransferTransactionStmt.bindings.empty())
                             UPSERT_ALGORAND_TRANSACTION_ASSETTRANSFER(sql, assetTransferTransactionStmt);
                         assetTransferTransactionStmt.bindings.update(txUid, tx);
-                    } 
-                    else if (tx.header.type == constants::xAfreeze) {
+                    } else if (tx.header.type == constants::xAfreeze) {
                         if (assetFreezeTransactionStmt.bindings.empty())
                             UPSERT_ALGORAND_TRANSACTION_ASSETFREEZE(sql, assetFreezeTransactionStmt);
                         assetFreezeTransactionStmt.bindings.update(txUid, tx);
@@ -599,16 +586,16 @@ namespace ledger {
 
                     // Algorand operation
                     const auto txHash = op.getTransaction()->getId();
-                    algorandOpStmt.bindings.update(op.getBackend().uid, txUid, txHash);  
+                    algorandOpStmt.bindings.update(op.getBackend().uid, txUid, txHash);
                 }
-                //1- block
+                // 1- block
                 if (!blockStmt.bindings.uid.empty())
                     blockStmt.execute();
 
-                //2- operations 
+                // 2- operations
                 operationStmt.execute();
 
-                //3- algorand transactions 
+                // 3- algorand transactions
                 if (!paymentTransactionStmt.bindings.empty())
                     paymentTransactionStmt.execute();
                 if (!keyregTransactionStmt.bindings.empty())
@@ -620,11 +607,11 @@ namespace ledger {
                 if (!assetFreezeTransactionStmt.bindings.empty())
                     assetFreezeTransactionStmt.execute();
 
-                //4- algorand operations
+                // 4- algorand operations
                 algorandOpStmt.execute();
 
                 rawInsert.stop();
             }
-        }
-    }
-}
+        } // namespace algorand
+    }     // namespace core
+} // namespace ledger

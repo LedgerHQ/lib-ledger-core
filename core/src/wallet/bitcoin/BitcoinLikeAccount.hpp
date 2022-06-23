@@ -32,23 +32,23 @@
 #define LEDGER_CORE_BITCOINLIKEACCOUNT_HPP
 
 #include "BitcoinLikeWallet.hpp"
-#include <api/BitcoinLikeAccount.hpp>
 #include "explorers/BitcoinLikeBlockchainExplorer.hpp"
-#include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
-#include <soci.h>
-#include <preferences/Preferences.hpp>
-#include <wallet/common/AbstractAccount.hpp>
+
 #include <api/Amount.hpp>
 #include <api/AmountCallback.hpp>
-#include <api/OperationListCallback.hpp>
+#include <api/BigIntListCallback.hpp>
+#include <api/BitcoinLikeAccount.hpp>
 #include <api/BitcoinLikeOutput.hpp>
 #include <api/BitcoinLikePickingStrategy.hpp>
-#include <api/BitcoinLikeTransactionRequest.hpp>
 #include <api/BitcoinLikePreparedTransaction.hpp>
-#include <api/BigIntListCallback.hpp>
-#include <wallet/bitcoin/types.h>
-
+#include <api/BitcoinLikeTransactionRequest.hpp>
+#include <api/OperationListCallback.hpp>
+#include <preferences/Preferences.hpp>
+#include <soci.h>
+#include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
 #include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
+#include <wallet/bitcoin/types.h>
+#include <wallet/common/AbstractAccount.hpp>
 
 namespace ledger {
     namespace core {
@@ -56,13 +56,12 @@ namespace ledger {
         class BitcoinLikeUtxoPicker;
 
         class BitcoinLikeAccount : public api::BitcoinLikeAccount, public AbstractAccount {
-        public:
-            BitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+          public:
+            BitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                int32_t index,
-                               const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
-                               const std::shared_ptr<BitcoinLikeAccountSynchronizer>& synchronizer,
-                               const std::shared_ptr<BitcoinLikeKeychain>& keychain
-            );
+                               const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer,
+                               const std::shared_ptr<BitcoinLikeAccountSynchronizer> &synchronizer,
+                               const std::shared_ptr<BitcoinLikeKeychain> &keychain);
 
             std::shared_ptr<api::BitcoinLikeAccount> asBitcoinLikeAccount() override;
 
@@ -72,16 +71,16 @@ namespace ledger {
              * @param out A vector which is filled by this function
              * @param needExtendKeychain Whether we need to extend the keychain during the transaction interpretation
              */
-            void interpretTransaction(const BitcoinLikeBlockchainExplorerTransaction& transaction, std::vector<Operation>& out, bool needExtendKeychain=false);
+            void interpretTransaction(const BitcoinLikeBlockchainExplorerTransaction &transaction, std::vector<Operation> &out, bool needExtendKeychain = false);
 
-            Try<int> bulkInsert(const std::vector<Operation>& out);
+            Try<int> bulkInsert(const std::vector<Operation> &out);
 
             /**
              *
              * @param block
              * @return true if the block wasn't already known.
              */
-            bool putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
+            bool putBlock(soci::session &sql, const BitcoinLikeBlockchainExplorer::Block &block);
 
             std::shared_ptr<BitcoinLikeKeychain> getKeychain() const;
 
@@ -93,11 +92,11 @@ namespace ledger {
 
             FuturePtr<ledger::core::Amount> getBalance() override;
 
-            Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::string & start,
-                                                                           const std::string & end,
-                                                                           api::TimePeriod precision) override;
+            Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::string &start,
+                                                                                const std::string &end,
+                                                                                api::TimePeriod precision) override;
 
-            FuturePtr<BitcoinLikeBlockchainExplorerTransaction> getTransaction(const std::string& hash);
+            FuturePtr<BitcoinLikeBlockchainExplorerTransaction> getTransaction(const std::string &hash);
 
             std::shared_ptr<api::EventBus> synchronize() override;
 
@@ -108,8 +107,8 @@ namespace ledger {
                                       const std::shared_ptr<api::StringCallback> &callback) override;
 
             void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
-                                        const std::shared_ptr<api::StringCallback> &callback,
-                                        const std::string& correlationId);
+                                         const std::shared_ptr<api::StringCallback> &callback,
+                                         const std::string &correlationId);
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder> buildTransaction(bool partial) override;
 
@@ -118,9 +117,8 @@ namespace ledger {
             FuturePtr<ledger::core::Amount> getMaxSpendable(api::BitcoinLikePickingStrategy strategy, optional<int32_t> maxUtxos);
 
             void getMaxSpendable(api::BitcoinLikePickingStrategy strategy, optional<int32_t> maxUtxos, const std::shared_ptr<api::AmountCallback> &callback) override;
-            
-            void getUTXO(int32_t from, int32_t to,
-                         const std::shared_ptr<api::BitcoinLikeOutputListCallback> &callback) override;
+
+            void getUTXO(int32_t from, int32_t to, const std::shared_ptr<api::BitcoinLikeOutputListCallback> &callback) override;
             Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> getUTXO();
             Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> getUTXO(int32_t from, int32_t to);
             void getUTXOCount(const std::shared_ptr<api::I32Callback> &callback) override;
@@ -128,32 +126,32 @@ namespace ledger {
 
             Future<AddressList> getFreshPublicAddresses() override;
 
-            Future<std::string> broadcastTransaction(const std::vector<uint8_t>& transaction);
+            Future<std::string> broadcastTransaction(const std::vector<uint8_t> &transaction);
 
             std::string getRestoreKey() override;
 
-            const std::shared_ptr<BitcoinLikeBlockchainExplorer>& getExplorer() const;
+            const std::shared_ptr<BitcoinLikeBlockchainExplorer> &getExplorer() const;
 
-            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) override ;
+            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point &date) override;
 
-            void getFees(const std::shared_ptr<api::BigIntListCallback> & callback) override ;
+            void getFees(const std::shared_ptr<api::BigIntListCallback> &callback) override;
 
             Future<AbstractAccount::AddressList> getAddresses(int64_t from, int64_t to);
-            void getAddresses(int64_t from, int64_t to, const std::shared_ptr<api::AddressListCallback> & callback) override;
+            void getAddresses(int64_t from, int64_t to, const std::shared_ptr<api::AddressListCallback> &callback) override;
 
             AbstractAccount::AddressList getAllAddresses() override;
-            
+
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
-        protected:
+          protected:
             bool checkIfWalletIsEmpty();
 
-        private:
+          private:
             std::shared_ptr<BitcoinLikeAccount> getSelf();
-            inline void inflateOperation(Operation& out,
-                                         const BitcoinLikeBlockchainExplorerTransaction& tx);
-            inline void computeOperationTrust(Operation& operation,
-                                              const BitcoinLikeBlockchainExplorerTransaction& tx);
+            inline void inflateOperation(Operation &out,
+                                         const BitcoinLikeBlockchainExplorerTransaction &tx);
+            inline void computeOperationTrust(Operation &operation,
+                                              const BitcoinLikeBlockchainExplorerTransaction &tx);
             std::vector<std::shared_ptr<api::Address>> fromBitcoinAddressesToAddresses(const std::vector<std::shared_ptr<BitcoinLikeAddress>> &addresses);
             inline bool allowP2TR() const;
 
@@ -165,8 +163,7 @@ namespace ledger {
             std::mutex _synchronizationLock;
             uint64_t _currentBlockHeight;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BITCOINLIKEACCOUNT_HPP
+#endif // LEDGER_CORE_BITCOINLIKEACCOUNT_HPP

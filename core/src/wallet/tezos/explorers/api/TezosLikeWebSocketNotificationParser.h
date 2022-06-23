@@ -28,120 +28,110 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEWEBSOCKETNOTIFICATIONPARSER_H
 #define LEDGER_CORE_TEZOSLIKEWEBSOCKETNOTIFICATIONPARSER_H
 
-#include <cstdio>
-#include <cstdint>
-#include <rapidjson/reader.h>
-#include <stack>
-#include <net/HttpClient.hpp>
-#include <collections/collections.hpp>
 #include "../TezosLikeBlockchainExplorer.h"
 #include "TezosLikeBlockParser.h"
 #include "TezosLikeTransactionParser.h"
+
+#include <collections/collections.hpp>
+#include <cstdint>
+#include <cstdio>
+#include <net/HttpClient.hpp>
+#include <rapidjson/reader.h>
+#include <stack>
 #include <wallet/common/explorers/api/AbstractWebSocketNotificationParser.h>
 
-
-#define PROXY_PARSE_TEZOS_WS(method, ...)              \
- auto& currentObject = _currentObject;                  \
- if (currentObject == "transaction") {                  \
-    return getTransactionParser().method(__VA_ARGS__);  \
- } else                                                 \
+#define PROXY_PARSE_TEZOS_WS(method, ...)                  \
+    auto &currentObject = _currentObject;                  \
+    if (currentObject == "transaction") {                  \
+        return getTransactionParser().method(__VA_ARGS__); \
+    } else
 
 namespace ledger {
     namespace core {
         class TezosLikeWebSocketNotificationParser
-                : public AbstractWebSocketNotificationParser<TezosLikeBlockchainExplorerTransaction, TezosLikeBlockchainExplorer::Block, TezosLikeTransactionParser, TezosLikeBlockParser> {
-        public:
-
-
+            : public AbstractWebSocketNotificationParser<TezosLikeBlockchainExplorerTransaction, TezosLikeBlockchainExplorer::Block, TezosLikeTransactionParser, TezosLikeBlockParser> {
+          public:
             explicit TezosLikeWebSocketNotificationParser(std::string &lastKey) : _lastKey(lastKey),
                                                                                   _blockParser(lastKey),
                                                                                   _transactionParser(lastKey) {
-
             }
 
             bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) override {
                 _lastKey = std::string(str, length);
                 return AbstractWebSocketNotificationParser<TezosLikeBlockchainExplorerTransaction,
-                        TezosLikeBlockchainExplorer::Block,
-                        TezosLikeTransactionParser,
-                        TezosLikeBlockParser>::Key(str, length, copy);
+                                                           TezosLikeBlockchainExplorer::Block,
+                                                           TezosLikeTransactionParser,
+                                                           TezosLikeBlockParser>::Key(str, length, copy);
             }
 
-            bool StartObject() {
-                {
-                    _depth += 1;
-                    auto lastKey = getLastKey();
-                    if (lastKey == "transaction") {
-                        _currentObject = lastKey;
-                        getTransactionParser().init(&_result->transaction);
-                    }
-                }
-                PROXY_PARSE_TEZOS_WS(StartObject) {
-                    return true;
-                }
-            };
+            bool StartObject(){
+                {_depth += 1;
+            auto lastKey = getLastKey();
+            if (lastKey == "transaction") {
+                _currentObject = lastKey;
+                getTransactionParser().init(&_result->transaction);
+            }
+        } PROXY_PARSE_TEZOS_WS(StartObject) {
+            return true;
+        }
+    }; // namespace core
 
-            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length,
-                           bool copy) {
-                PROXY_PARSE_TEZOS_WS(String, str, length, copy) {
-                    auto value = std::string(str, length);
-                    if (getLastKey() == "block_height") {
-                        BigInt bigIntValue = BigInt::fromString(value);
-                        _result->block.height = bigIntValue.toUint64();
-                    }
-                }
-                return true;
-            };
+    bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+        PROXY_PARSE_TEZOS_WS(String, str, length, copy) {
+            auto value = std::string(str, length);
+            if (getLastKey() == "block_height") {
+                BigInt bigIntValue    = BigInt::fromString(value);
+                _result->block.height = bigIntValue.toUint64();
+            }
+        }
+        return true;
+    };
 
-            bool
-            String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+    bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+        auto value = std::string(str, length);
+        if (getLastKey() == "type") {
+            _result->type = value;
+        }
 
-                auto value = std::string(str, length);
-                if (getLastKey() == "type") {
-                    _result->type = value;
-                }
+        PROXY_PARSE_TEZOS_WS(String, str, length, copy) {
+            if (getLastKey() == "block_hash") {
+                _result->block.hash = value;
+            }
+            return true;
+        }
+    };
 
-                PROXY_PARSE_TEZOS_WS(String, str, length, copy) {
-                    if (getLastKey() == "block_hash") {
-                        _result->block.hash = value;
-                    }
-                    return true;
-                }
-            };
+    bool EndObject(rapidjson::SizeType memberCount) {
+        _depth -= 1;
+        if (_depth == 1)
+            _currentObject = "";
+        PROXY_PARSE_WS(EndObject, memberCount) {
+            return true;
+        }
+    };
 
-            bool EndObject(rapidjson::SizeType memberCount) {
-                _depth -= 1;
-                if (_depth == 1)
-                    _currentObject = "";
-                PROXY_PARSE_WS(EndObject, memberCount) {
-                    return true;
-                }
-            };
+  protected:
+    TezosLikeTransactionParser &getTransactionParser() override {
+        return _transactionParser;
+    };
 
-        protected:
+    TezosLikeBlockParser &getBlockParser() override {
+        return _blockParser;
+    };
 
-            TezosLikeTransactionParser &getTransactionParser() override {
-                return _transactionParser;
-            };
+    std::string &getLastKey() override {
+        return _lastKey;
+    };
 
-            TezosLikeBlockParser &getBlockParser() override {
-                return _blockParser;
-            };
-
-            std::string &getLastKey() override {
-                return _lastKey;
-            };
-
-        private:
-            std::string &_lastKey;
-            TezosLikeBlockParser _blockParser;
-            TezosLikeTransactionParser _transactionParser;
-        };
-    }
+  private:
+    std::string &_lastKey;
+    TezosLikeBlockParser _blockParser;
+    TezosLikeTransactionParser _transactionParser;
+}; // namespace ledger
+}
 }
 
-#endif //LEDGER_CORE_TEZOSLIKEWEBSOCKETNOTIFICATIONPARSER_H
+#endif // LEDGER_CORE_TEZOSLIKEWEBSOCKETNOTIFICATIONPARSER_H

@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEACCOUNTDATABASEENTRY_H
 #define LEDGER_CORE_TEZOSLIKEACCOUNTDATABASEENTRY_H
 #include <string>
@@ -49,6 +48,6 @@ namespace ledger {
             std::string publicKey;
             std::vector<TezosLikeOriginatedAccountDatabaseEntry> originatedAccounts;
         };
-    }
-}
-#endif //LEDGER_CORE_TEZOSLIKEACCOUNTDATABASEENTRY_H
+    } // namespace core
+} // namespace ledger
+#endif // LEDGER_CORE_TEZOSLIKEACCOUNTDATABASEENTRY_H

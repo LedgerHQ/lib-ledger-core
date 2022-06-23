@@ -32,79 +32,75 @@
 #include "../../AlgorandAddress.hpp"
 #include "AlgorandAssetParams.hpp"
 
-#include <utils/Option.hpp>
-
 #include <cstdint>
 #include <string>
+#include <utils/Option.hpp>
 
 namespace ledger {
-namespace core {
-namespace algorand {
-namespace model {
+    namespace core {
+        namespace algorand {
+            namespace model {
 
-    class AssetConfigTxnFields
-    {
-    public:
-        static AssetConfigTxnFields create(AssetParams assetParams);
-        static AssetConfigTxnFields reconfigure(AssetParams assetParams, uint64_t assetId);
-        static AssetConfigTxnFields destroy(uint64_t assetId);
+                class AssetConfigTxnFields {
+                  public:
+                    static AssetConfigTxnFields create(AssetParams assetParams);
+                    static AssetConfigTxnFields reconfigure(AssetParams assetParams, uint64_t assetId);
+                    static AssetConfigTxnFields destroy(uint64_t assetId);
 
-        AssetConfigTxnFields() = default;
-        AssetConfigTxnFields(Option<AssetParams> assetParams, Option<uint64_t> assetId);
+                    AssetConfigTxnFields() = default;
+                    AssetConfigTxnFields(Option<AssetParams> assetParams, Option<uint64_t> assetId);
 
-    public:
-        Option<AssetParams> assetParams;
-        Option<uint64_t> assetId;
-    };
+                  public:
+                    Option<AssetParams> assetParams;
+                    Option<uint64_t> assetId;
+                };
 
-    class AssetTransferTxnFields
-    {
-    public:
-        static AssetTransferTxnFields transfer(uint64_t assetAmount,
-                                               Option<Address> assetCloseTo,
-                                               Address assetReceiver,
-                                               uint64_t assetId);
+                class AssetTransferTxnFields {
+                  public:
+                    static AssetTransferTxnFields transfer(uint64_t assetAmount,
+                                                           Option<Address> assetCloseTo,
+                                                           Address assetReceiver,
+                                                           uint64_t assetId);
 
-        static AssetTransferTxnFields clawback(uint64_t assetAmount,
-                                               Option<Address> assetCloseTo,
-                                               Address assetReceiver,
-                                               Address assetSender,
-                                               uint64_t assetId);
+                    static AssetTransferTxnFields clawback(uint64_t assetAmount,
+                                                           Option<Address> assetCloseTo,
+                                                           Address assetReceiver,
+                                                           Address assetSender,
+                                                           uint64_t assetId);
 
-        static AssetTransferTxnFields optIn(Address assetReceiver,
-                                            uint64_t assetId);
+                    static AssetTransferTxnFields optIn(Address assetReceiver,
+                                                        uint64_t assetId);
 
-        AssetTransferTxnFields() = default;
-        AssetTransferTxnFields(Option<uint64_t> assetAmount,
-                               Option<Address> assetCloseTo,
-                               Address assetReceiver,
-                               Option<Address> assetSender,
-                               uint64_t assetId);
-    public:
-        Option<uint64_t> assetAmount;
-        Option<Address> assetCloseTo;
-        Address assetReceiver;
-        Option<Address> assetSender;
-        uint64_t assetId;
+                    AssetTransferTxnFields() = default;
+                    AssetTransferTxnFields(Option<uint64_t> assetAmount,
+                                           Option<Address> assetCloseTo,
+                                           Address assetReceiver,
+                                           Option<Address> assetSender,
+                                           uint64_t assetId);
 
-        Option<uint64_t> closeAmount;
-    };
+                  public:
+                    Option<uint64_t> assetAmount;
+                    Option<Address> assetCloseTo;
+                    Address assetReceiver;
+                    Option<Address> assetSender;
+                    uint64_t assetId;
 
-    class AssetFreezeTxnFields
-    {
-    public:
-        AssetFreezeTxnFields() = default;
-        AssetFreezeTxnFields(bool assetFrozen,
-                             Address frozenAddress,
-                             uint64_t assetId);
+                    Option<uint64_t> closeAmount;
+                };
 
-        bool assetFrozen;
-        Address frozenAddress;
-        uint64_t assetId;
-    };
+                class AssetFreezeTxnFields {
+                  public:
+                    AssetFreezeTxnFields() = default;
+                    AssetFreezeTxnFields(bool assetFrozen,
+                                         Address frozenAddress,
+                                         uint64_t assetId);
 
-} // namespace model
+                    bool assetFrozen;
+                    Address frozenAddress;
+                    uint64_t assetId;
+                };
+
+            } // namespace model
+        }     // namespace algorand
+    }         // namespace core
 } // namespace ledger
-} // namespace core
-} // namespace algorand
-

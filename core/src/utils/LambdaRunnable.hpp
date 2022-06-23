@@ -31,27 +31,26 @@
 #ifndef LEDGER_CORE_LAMBDARUNNABLE_HPP
 #define LEDGER_CORE_LAMBDARUNNABLE_HPP
 
-#include <functional>
 #include "../api/Runnable.hpp"
+
+#include <functional>
 #include <memory>
 
 namespace ledger {
     namespace core {
         class LambdaRunnable : public api::Runnable {
-
-        public:
+          public:
             LambdaRunnable(std::function<void()> func);
             virtual void run() override;
 
             static std::shared_ptr<api::Runnable> make(std::function<void()> func);
 
-        private:
-            std::function<void ()> _func;
+          private:
+            std::function<void()> _func;
         };
 
         std::shared_ptr<api::Runnable> make_runnable(std::function<void()> func);
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_LAMBDARUNNABLE_HPP
+#endif // LEDGER_CORE_LAMBDARUNNABLE_HPP

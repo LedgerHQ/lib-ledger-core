@@ -34,8 +34,8 @@
 namespace ledger {
     namespace core {
 
-        static inline const ledger::core::BitcoinLikeScriptChunk& chunkOf(const std::shared_ptr<BitcoinLikeScriptApi> &script,
-                              int index) {
+        static inline const ledger::core::BitcoinLikeScriptChunk &chunkOf(const std::shared_ptr<BitcoinLikeScriptApi> &script,
+                                                                          int index) {
             auto it = script->getScript().toList().begin();
             while (index > 0) {
                 index--;
@@ -53,7 +53,6 @@ namespace ledger {
         }
 
         BitcoinLikeScriptApi::BitcoinLikeScriptApi(const ledger::core::BitcoinLikeScript &script) : _script(script) {
-
         }
 
         const ledger::core::BitcoinLikeScript &BitcoinLikeScriptApi::getScript() const {
@@ -71,13 +70,13 @@ namespace ledger {
         BitcoinLikeScriptChunkApi::BitcoinLikeScriptChunkApi(const std::shared_ptr<BitcoinLikeScriptApi> &script,
                                                              int index) : _chunk(chunkOf(script, index)) {
             _script = script;
-            _index = index;
+            _index  = index;
         }
 
         optional<api::BitcoinLikeOperator> BitcoinLikeScriptChunkApi::getOperator() {
             auto &chunk = getChunk();
             if (chunk.isBytes()) {
-                api::BitcoinLikeOperator op(btccore::GetOpName(chunk.getOpCode()), (uint8_t) chunk.getOpCode());
+                api::BitcoinLikeOperator op(btccore::GetOpName(chunk.getOpCode()), (uint8_t)chunk.getOpCode());
                 return Option<api::BitcoinLikeOperator>(op).toOptional();
             }
             return Option<api::BitcoinLikeOperator>().toOptional();
@@ -85,8 +84,9 @@ namespace ledger {
 
         optional<std::vector<uint8_t>> BitcoinLikeScriptChunkApi::getPushedData() {
             auto &chunk = getChunk();
-            if (chunk.isBytes()) return Option<std::vector<uint8_t> >(chunk.getBytes()).toOptional();
-            return Option<std::vector<uint8_t> >().toOptional();
+            if (chunk.isBytes())
+                return Option<std::vector<uint8_t>>(chunk.getBytes()).toOptional();
+            return Option<std::vector<uint8_t>>().toOptional();
         }
 
         std::shared_ptr<api::BitcoinLikeScriptChunk> BitcoinLikeScriptChunkApi::next() {
@@ -108,5 +108,5 @@ namespace ledger {
             return std::make_shared<BitcoinLikeScriptApi>(result.getValue());
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

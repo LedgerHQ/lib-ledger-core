@@ -28,65 +28,59 @@
  *
  */
 
-
-#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
-
 #include <api/ErrorCode.hpp>
 #include <utils/Exception.hpp>
 #include <wallet/common/database/OperationDatabaseHelper.h>
-
-#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 #include <wallet/cosmos/CosmosLikeMessage.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 
 namespace ledger {
     namespace core {
 
         CosmosLikeOperation::CosmosLikeOperation(const std::shared_ptr<OperationApi> &baseOp) : _txApi(std::make_shared<CosmosLikeTransactionApi>(baseOp->getBackend().cosmosTransaction.getValue().tx)),
-                                                                                                _msgApi(std::make_shared<CosmosLikeMessage>(baseOp->getBackend().cosmosTransaction.getValue().msg))
-        {
+                                                                                                _msgApi(std::make_shared<CosmosLikeMessage>(baseOp->getBackend().cosmosTransaction.getValue().msg)) {
         }
 
-        CosmosLikeOperation::CosmosLikeOperation(ledger::core::cosmos::Transaction const& tx,
-                                                 ledger::core::cosmos::Message const& msg,
-                                                 ledger::core::cosmos::MessageLog const& messageLog) :
-            _txApi(std::make_shared<CosmosLikeTransactionApi>(tx)),
-            _msgApi(std::make_shared<CosmosLikeMessage>(msg)),
-            _messageLog(messageLog)
-        {}
+        CosmosLikeOperation::CosmosLikeOperation(ledger::core::cosmos::Transaction const &tx,
+                                                 ledger::core::cosmos::Message const &msg,
+                                                 ledger::core::cosmos::MessageLog const &messageLog) : _txApi(std::make_shared<CosmosLikeTransactionApi>(tx)),
+                                                                                                       _msgApi(std::make_shared<CosmosLikeMessage>(msg)),
+                                                                                                       _messageLog(messageLog) {}
 
-        void CosmosLikeOperation::setTransactionData(ledger::core::cosmos::Transaction const& tx) {
+        void CosmosLikeOperation::setTransactionData(ledger::core::cosmos::Transaction const &tx) {
             if (_txApi == nullptr) {
                 _txApi = std::make_shared<CosmosLikeTransactionApi>(tx);
             }
             std::static_pointer_cast<CosmosLikeTransactionApi>(_txApi)->setRawData(tx);
         }
 
-        void CosmosLikeOperation::setMessageData(ledger::core::cosmos::Message const& msg) {
+        void CosmosLikeOperation::setMessageData(ledger::core::cosmos::Message const &msg) {
             if (_msgApi == nullptr) {
                 _msgApi = std::make_shared<CosmosLikeMessage>(msg);
             }
             std::static_pointer_cast<CosmosLikeMessage>(_msgApi)->setRawData(msg);
         }
 
-		std::shared_ptr<api::CosmosLikeTransaction> CosmosLikeOperation::getTransaction() {
+        std::shared_ptr<api::CosmosLikeTransaction> CosmosLikeOperation::getTransaction() {
             return _txApi;
         }
 
-		std::shared_ptr<api::CosmosLikeMessage> CosmosLikeOperation::getMessage() {
-			return _msgApi;
-		}
+        std::shared_ptr<api::CosmosLikeMessage> CosmosLikeOperation::getMessage() {
+            return _msgApi;
+        }
 
         const std::shared_ptr<api::CosmosLikeTransaction> CosmosLikeOperation::getTransaction() const {
             return _txApi;
         }
 
-		const std::shared_ptr<api::CosmosLikeMessage> CosmosLikeOperation::getMessage() const {
-			return _msgApi;
-		}
+        const std::shared_ptr<api::CosmosLikeMessage> CosmosLikeOperation::getMessage() const {
+            return _msgApi;
+        }
 
-        const ledger::core::cosmos::MessageLog& CosmosLikeOperation::getMessageLog() const {
-			return _messageLog;
-		}
+        const ledger::core::cosmos::MessageLog &CosmosLikeOperation::getMessageLog() const {
+            return _messageLog;
+        }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

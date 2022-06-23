@@ -32,19 +32,20 @@
 #define LEDGER_CORE_BIGINT_H
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER)
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
-#include <string>
-#include <vector>
+#include "../utils/endian.h"
+
 #include <bigd.h>
 #include <memory>
+#include <string>
 #include <traits/arithmetic.hpp>
-#include "../utils/endian.h"
+#include <vector>
 
 namespace ledger {
 
@@ -55,8 +56,7 @@ namespace ledger {
          * @headerfile BigInt.h <ledger/core/math/BigInt.h>
          */
         class BigInt {
-
-        public:
+          public:
             static LIBCORE_EXPORT const BigInt ZERO;
             static LIBCORE_EXPORT const BigInt ONE;
             static LIBCORE_EXPORT const BigInt TEN;
@@ -80,26 +80,26 @@ namespace ledger {
              * @param str The number encoded in hexadecimal (e.g. "E0A1B3")
              * @return An instance of BigInt
              */
-            static LIBCORE_EXPORT BigInt* from_hex(const std::string& str);
+            static LIBCORE_EXPORT BigInt *from_hex(const std::string &str);
             /**
-            * Creates a new BigInt from the given hexadecimal encoded string.
-            * @param str The number encoded in hexadecimal (e.g. "E0A1B3")
-            */
-            static LIBCORE_EXPORT BigInt fromHex(const std::string& str);
+             * Creates a new BigInt from the given hexadecimal encoded string.
+             * @param str The number encoded in hexadecimal (e.g. "E0A1B3")
+             */
+            static LIBCORE_EXPORT BigInt fromHex(const std::string &str);
             /**
              * Creates a new BigInt from the given decimal encoded string.
              * @param str The number encoded in decimal (e.g. "125")
              * @return
              */
-            static LIBCORE_EXPORT BigInt* from_dec(const std::string& str);
+            static LIBCORE_EXPORT BigInt *from_dec(const std::string &str);
             /**
-            * Creates a new BigInt from the given decimal encoded string.
-            * @param str The number encoded in decimal (e.g. "125")
-            * @return
-            */
-            static LIBCORE_EXPORT BigInt fromDecimal(const std::string& str);
+             * Creates a new BigInt from the given decimal encoded string.
+             * @param str The number encoded in decimal (e.g. "125")
+             * @return
+             */
+            static LIBCORE_EXPORT BigInt fromDecimal(const std::string &str);
 
-            static LIBCORE_EXPORT BigInt fromString(const std::string& str);
+            static LIBCORE_EXPORT BigInt fromString(const std::string &str);
 
             /**
              * Creates a new BigInt from the given floating number string.
@@ -107,26 +107,25 @@ namespace ledger {
              * @param scaleFactor The power of ten to apply on float representation to get the integer version.
              * @return
              */
-            static LIBCORE_EXPORT BigInt fromFloatString(const std::string& str, int scaleFactor);
+            static LIBCORE_EXPORT BigInt fromFloatString(const std::string &str, int scaleFactor);
 
             template <typename T>
             static BigInt fromScalar(T value) {
-              BigInt result;
-              result.assignScalar<T>(value);
-              return result;
+                BigInt result;
+                result.assignScalar<T>(value);
+                return result;
             }
 
-        private:
-            BigInt(const std::string& str, int radix);
-
+          private:
+            BigInt(const std::string &str, int radix);
 
             /// Check that all characters are digits.
-            static bool all_digits(std::string const& s);
+            static bool all_digits(std::string const &s);
 
-        public:
+          public:
             BigInt();
-            BigInt(const BigInt& cpy);
-            BigInt(BigInt&& mov);
+            BigInt(const BigInt &cpy);
+            BigInt(BigInt &&mov);
 
             /**
              * Initializes a new BigInt with the given big endian data.
@@ -135,7 +134,7 @@ namespace ledger {
              * @param negative true if the number is negative false otherwise
              */
             BigInt(const void *data, size_t length, bool negative);
-            BigInt(const std::vector<uint8_t>& data, bool negative);
+            BigInt(const std::vector<uint8_t> &data, bool negative);
 
             /**
              * Initializes a new BigInt with the runtime int.
@@ -152,7 +151,7 @@ namespace ledger {
              * @param str
              * @return
              */
-            BigInt(const std::string& str);
+            BigInt(const std::string &str);
 
             /**
              * Converts the BigInt to int
@@ -176,7 +175,7 @@ namespace ledger {
              * @return
              */
             std::string toString() const;
-            std::string to_string() const {return toString();};
+            std::string to_string() const { return toString(); };
 
             /**
              * Serializes the BigInt into a hexadecimal std::string.
@@ -190,28 +189,28 @@ namespace ledger {
              */
             std::vector<uint8_t> toByteArray() const;
 
-            BigInt operator+(const BigInt& rhs) const;
-            BigInt operator-(const BigInt& rhs) const;
-            BigInt operator*(const BigInt& rhs) const;
-            BigInt operator/(const BigInt& rhs) const;
-            BigInt operator%(const BigInt& rhs) const;
+            BigInt operator+(const BigInt &rhs) const;
+            BigInt operator-(const BigInt &rhs) const;
+            BigInt operator*(const BigInt &rhs) const;
+            BigInt operator/(const BigInt &rhs) const;
+            BigInt operator%(const BigInt &rhs) const;
 
-            BigInt& operator++();
-            BigInt  operator++(int);
-            BigInt& operator--();
-            BigInt  operator--(int);
+            BigInt &operator++();
+            BigInt operator++(int);
+            BigInt &operator--();
+            BigInt operator--(int);
 
-            BigInt& operator=(const BigInt&);
-            BigInt& operator=(BigInt&& a);
+            BigInt &operator=(const BigInt &);
+            BigInt &operator=(BigInt &&a);
 
-            bool operator<(const BigInt&) const;
-            bool operator<=(const BigInt&) const;
-            bool operator==(const BigInt&) const;
-            bool operator!=(const BigInt&) const;
-            bool operator>(const BigInt&) const;
-            bool operator>=(const BigInt&) const;
+            bool operator<(const BigInt &) const;
+            bool operator<=(const BigInt &) const;
+            bool operator==(const BigInt &) const;
+            bool operator!=(const BigInt &) const;
+            bool operator>(const BigInt &) const;
+            bool operator>=(const BigInt &) const;
 
-            int compare(const BigInt&) const;
+            int compare(const BigInt &) const;
 
             BigInt pow(unsigned short p) const;
 
@@ -222,10 +221,10 @@ namespace ledger {
             BigInt negative() const;
             BigInt positive() const;
 
-            BigInt& assignI64(int64_t value);
+            BigInt &assignI64(int64_t value);
 
             template <typename T, isUnsigned<T> = true>
-            BigInt& assignScalar(T value) {
+            BigInt &assignScalar(T value) {
                 auto bytes = endianness::scalar_type_to_array<T>(value, endianness::Endianness::BIG);
                 bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(value));
                 std::free(bytes);
@@ -233,7 +232,7 @@ namespace ledger {
             }
 
             template <typename T, isSigned<T> = true>
-            BigInt& assignScalar(T value) {
+            BigInt &assignScalar(T value) {
                 auto bytes = endianness::scalar_type_to_array<T>(std::abs(value), endianness::Endianness::BIG);
                 bdConvFromOctets(_bigd, reinterpret_cast<const unsigned char *>(bytes), sizeof(value));
                 std::free(bytes);
@@ -243,11 +242,11 @@ namespace ledger {
 
             virtual ~BigInt();
 
-        private:
+          private:
             BIGD _bigd;
             bool _negative;
         };
-    }
+    } // namespace core
 
-}
-#endif //LEDGER_CORE_BIGINT_H
+} // namespace ledger
+#endif // LEDGER_CORE_BIGINT_H

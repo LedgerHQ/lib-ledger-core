@@ -28,13 +28,12 @@
  *
  */
 
-
 #include "EthereumLikeBlockApi.h"
 
 namespace ledger {
     namespace core {
 
-        EthereumLikeBlockApi::EthereumLikeBlockApi(const Block& block) {
+        EthereumLikeBlockApi::EthereumLikeBlockApi(const Block &block) {
             _block = block;
         }
 
@@ -49,5 +48,5 @@ namespace ledger {
         std::chrono::system_clock::time_point EthereumLikeBlockApi::getTime() {
             return _block.time;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

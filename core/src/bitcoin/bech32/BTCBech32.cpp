@@ -29,8 +29,9 @@
  */
 
 #include "BTCBech32.h"
-#include <utils/Exception.hpp>
+
 #include <collections/vector.hpp>
+#include <utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
@@ -38,13 +39,13 @@ namespace ledger {
             const uint32_t bech32mParam = 0x2bc830a3;
         }
 
-        uint64_t BTCBech32::polymod(const std::vector<uint8_t>& values) const {
+        uint64_t BTCBech32::polymod(const std::vector<uint8_t> &values) const {
             uint32_t chk = 1;
             for (size_t i = 0; i < values.size(); ++i) {
                 uint8_t top = chk >> 25;
-                chk = (chk & 0x1ffffff) << 5 ^ values[i];
-                auto index = 0;
-                for (auto& gen : _bech32Params.generator) {
+                chk         = (chk & 0x1ffffff) << 5 ^ values[i];
+                auto index  = 0;
+                for (auto &gen : _bech32Params.generator) {
                     chk ^= (-((top >> index) & 1) & gen);
                     index++;
                 }
@@ -52,20 +53,20 @@ namespace ledger {
             return chk;
         }
 
-        std::vector<uint8_t> BTCBech32::expandHrp(const std::string& hrp) const {
+        std::vector<uint8_t> BTCBech32::expandHrp(const std::string &hrp) const {
             std::vector<uint8_t> ret;
             ret.resize(hrp.size() * 2 + 1);
             for (size_t i = 0; i < hrp.size(); ++i) {
-                unsigned char c = hrp[i];
-                ret[i] = c >> 5;
+                unsigned char c         = hrp[i];
+                ret[i]                  = c >> 5;
                 ret[i + hrp.size() + 1] = c & 0x1f;
             }
             ret[hrp.size()] = 0;
             return ret;
         }
 
-        std::string BTCBech32::encode(const std::vector<uint8_t>& hash,
-                                      const std::vector<uint8_t>& version) const {
+        std::string BTCBech32::encode(const std::vector<uint8_t> &hash,
+                                      const std::vector<uint8_t> &version) const {
             std::vector<uint8_t> data(hash);
             int fromBits = 8, toBits = 5;
             bool pad = true;
@@ -84,9 +85,9 @@ namespace ledger {
         }
 
         std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
-        BTCBech32::decode(const std::string& str) const {
-            const auto decoded = decodeBech32Raw(str);
-            const auto& decoded_payload = decoded.second;
+        BTCBech32::decode(const std::string &str) const {
+            const auto decoded          = decodeBech32Raw(str);
+            const auto &decoded_payload = decoded.second;
             if (decoded_payload.size() < 1) {
                 throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : invalid Bech32 format");
             }
@@ -117,7 +118,7 @@ namespace ledger {
             }
             std::vector<uint8_t> converted;
             int fromBits = 5, toBits = 8;
-            bool pad = false;
+            bool pad          = false;
             const auto result = Bech32::convertBits(std::vector<uint8_t>(decoded_address.begin() + 1, decoded_address.end()),
                                                     fromBits,
                                                     toBits,
@@ -129,12 +130,11 @@ namespace ledger {
             }
 
             if ((converted.size() == 20 && version == _bech32Params.P2WPKHVersion) ||
-                (converted.size() == 32 && (version == _bech32Params.P2WSHVersion
-                                            || version == _bech32Params.P2TRVersion))) {
+                (converted.size() == 32 && (version == _bech32Params.P2WSHVersion || version == _bech32Params.P2TRVersion))) {
                 return std::make_pair(version, converted);
             }
 
             throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid Bech32 format, data length and version missmatch");
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

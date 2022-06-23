@@ -31,24 +31,24 @@
 #ifndef LEDGER_CORE_BITCOINLIKEACCOUNTDATABASE_H
 #define LEDGER_CORE_BITCOINLIKEACCOUNTDATABASE_H
 
-#include "BitcoinLikeAccountDatabaseEntry.h"
 #include "../explorers/BitcoinLikeBlockchainExplorer.hpp"
+#include "BitcoinLikeAccountDatabaseEntry.h"
+
 #include <database/DatabaseSessionPool.hpp>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeAccountDatabase {
-        public:
-            BitcoinLikeAccountDatabase(const std::string& walletUid, int32_t index);
+          public:
+            BitcoinLikeAccountDatabase(const std::string &walletUid, int32_t index);
             std::string getAccountUid() {
                 return _accountUid;
             };
 
-        private:
+          private:
             std::string _accountUid;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BITCOINLIKEACCOUNTDATABASE_H
+#endif // LEDGER_CORE_BITCOINLIKEACCOUNTDATABASE_H

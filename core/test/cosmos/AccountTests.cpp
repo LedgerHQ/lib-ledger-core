@@ -30,24 +30,23 @@
  *
  */
 
-#include <gtest/gtest.h>
-
 #include "../integration/BaseFixture.h"
-#include <wallet/cosmos/CosmosLikeWallet.hpp>
+
+#include <gtest/gtest.h>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
 
 struct CosmosAccounts : public BaseFixture {
-
 };
 
 TEST_F(CosmosAccounts, DISABLED_FirstATOMAccountInfo) {
     auto const currency = currencies::ATOM;
-    auto pool = newDefaultPool();
+    auto pool           = newDefaultPool();
     backend->enableQueryLogging(true);
 
     auto wallet = uv::wait(pool->createWallet(randomWalletName(), currency.name, api::DynamicObject::newInstance()));
-    auto info = uv::wait(wallet->getNextAccountCreationInfo());
+    auto info   = uv::wait(wallet->getNextAccountCreationInfo());
 
     EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners.size(), 1);

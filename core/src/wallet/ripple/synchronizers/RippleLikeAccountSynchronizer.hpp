@@ -28,118 +28,110 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKEACCOUNTSYNCHRONIZER_H
 #define LEDGER_CORE_RIPPLELIKEACCOUNTSYNCHRONIZER_H
 
-#include <wallet/ripple/keychains/RippleLikeKeychain.h>
-#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/pool/WalletPool.hpp>
 #include <async/DedicatedContext.hpp>
 #include <events/ProgressNotifier.h>
-
 #include <memory>
 #include <mutex>
+#include <wallet/pool/WalletPool.hpp>
+#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
+#include <wallet/ripple/keychains/RippleLikeKeychain.h>
 
 namespace ledger {
-namespace core {
+    namespace core {
 
-class RippleLikeAccount;
+        class RippleLikeAccount;
 
-struct AccountSynchronizationBatchSavedState {
-    std::string blockHash;
-    uint32_t blockHeight;
+        struct AccountSynchronizationBatchSavedState {
+            std::string blockHash;
+            uint32_t blockHeight;
 
-    AccountSynchronizationBatchSavedState() : blockHash(""), blockHeight(0)
-    {}
+            AccountSynchronizationBatchSavedState() : blockHash(""), blockHeight(0) {}
 
-    template <class Archive>
-    void serialize(Archive &archive)
-    {
-        archive(blockHash, blockHeight);
-    };
-};
+            template <class Archive>
+            void serialize(Archive &archive) {
+                archive(blockHash, blockHeight);
+            };
+        };
 
-struct AccountSynchronizationSavedState {
-    uint32_t halfBatchSize;
-    std::vector<AccountSynchronizationBatchSavedState> batches;
-    std::map<std::string, std::string> pendingTxsHash;
+        struct AccountSynchronizationSavedState {
+            uint32_t halfBatchSize;
+            std::vector<AccountSynchronizationBatchSavedState> batches;
+            std::map<std::string, std::string> pendingTxsHash;
 
-    AccountSynchronizationSavedState() : halfBatchSize(0)
-    {}
+            AccountSynchronizationSavedState() : halfBatchSize(0) {}
 
-    template <class Archive>
-    void serialize(Archive &archive)
-    {
-        archive(halfBatchSize, batches, pendingTxsHash);
-    }
-};
+            template <class Archive>
+            void serialize(Archive &archive) {
+                archive(halfBatchSize, batches, pendingTxsHash);
+            }
+        };
 
-struct AccountSynchronizationContext {
-    Option<uint32_t> reorgBlockHeight;
-    uint32_t lastBlockHeight = 0;
-    uint32_t newOperations = 0;
-};
+        struct AccountSynchronizationContext {
+            Option<uint32_t> reorgBlockHeight;
+            uint32_t lastBlockHeight = 0;
+            uint32_t newOperations   = 0;
+        };
 
-struct SynchronizationBuddy {
-    std::shared_ptr<Preferences> preferences;
-    std::shared_ptr<spdlog::logger> logger;
-    std::chrono::system_clock::time_point startDate;
-    std::shared_ptr<AbstractWallet> wallet;
-    std::shared_ptr<DynamicObject> configuration;
-    uint32_t halfBatchSize;
-    std::shared_ptr<RippleLikeKeychain> keychain;
-    Option<AccountSynchronizationSavedState> savedState;
-    std::shared_ptr<RippleLikeAccount> account;
-    std::map<std::string, std::string> transactionsToDrop;
-    AccountSynchronizationContext context;
-    std::string synchronizationTag;
-};
+        struct SynchronizationBuddy {
+            std::shared_ptr<Preferences> preferences;
+            std::shared_ptr<spdlog::logger> logger;
+            std::chrono::system_clock::time_point startDate;
+            std::shared_ptr<AbstractWallet> wallet;
+            std::shared_ptr<DynamicObject> configuration;
+            uint32_t halfBatchSize;
+            std::shared_ptr<RippleLikeKeychain> keychain;
+            Option<AccountSynchronizationSavedState> savedState;
+            std::shared_ptr<RippleLikeAccount> account;
+            std::map<std::string, std::string> transactionsToDrop;
+            AccountSynchronizationContext context;
+            std::string synchronizationTag;
+        };
 
-class RippleLikeAccountSynchronizer :
-    public DedicatedContext,
-    public std::enable_shared_from_this<RippleLikeAccountSynchronizer>
-{
-public:
-    RippleLikeAccountSynchronizer(
-        const std::shared_ptr<WalletPool> &pool,
-        const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer);
+        class RippleLikeAccountSynchronizer : public DedicatedContext,
+                                              public std::enable_shared_from_this<RippleLikeAccountSynchronizer> {
+          public:
+            RippleLikeAccountSynchronizer(
+                const std::shared_ptr<WalletPool> &pool,
+                const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer);
 
-    std::shared_ptr<ProgressNotifier<AccountSynchronizationContext>>
-    synchronizeAccount(const std::shared_ptr<RippleLikeAccount> &account);
+            std::shared_ptr<ProgressNotifier<AccountSynchronizationContext>>
+            synchronizeAccount(const std::shared_ptr<RippleLikeAccount> &account);
 
-    Future<AccountSynchronizationContext>
-    performSynchronization(const std::shared_ptr<RippleLikeAccount>& account);
+            Future<AccountSynchronizationContext>
+            performSynchronization(const std::shared_ptr<RippleLikeAccount> &account);
 
-    Future<Unit> synchronizeBatches(
-        uint32_t currentBatchIndex,
-        std::shared_ptr<SynchronizationBuddy> buddy);
+            Future<Unit> synchronizeBatches(
+                uint32_t currentBatchIndex,
+                std::shared_ptr<SynchronizationBuddy> buddy);
 
-    Future<bool> synchronizeBatch(
-        uint32_t currentBatchIndex,
-        std::shared_ptr<SynchronizationBuddy> buddy,
-        bool hadTransactions = false);
+            Future<bool> synchronizeBatch(
+                uint32_t currentBatchIndex,
+                std::shared_ptr<SynchronizationBuddy> buddy,
+                bool hadTransactions = false);
 
-    Future<Unit> synchronizeMempool(const std::shared_ptr<SynchronizationBuddy>& buddy);
+            Future<Unit> synchronizeMempool(const std::shared_ptr<SynchronizationBuddy> &buddy);
 
-    void updateCurrentBlock(
-        std::shared_ptr<SynchronizationBuddy> &buddy,
-        const std::shared_ptr<api::ExecutionContext> &context);
+            void updateCurrentBlock(
+                std::shared_ptr<SynchronizationBuddy> &buddy,
+                const std::shared_ptr<api::ExecutionContext> &context);
 
-    void updateTransactionsToDrop(
-        soci::session &sql,
-        std::shared_ptr<SynchronizationBuddy> &buddy,
-        const std::string &accountUid);
+            void updateTransactionsToDrop(
+                soci::session &sql,
+                std::shared_ptr<SynchronizationBuddy> &buddy,
+                const std::string &accountUid);
 
-private:
-    std::shared_ptr<RippleLikeBlockchainExplorer> _explorer;
-    std::shared_ptr<ProgressNotifier<AccountSynchronizationContext>> _notifier;
-    std::mutex _lock;
-    std::shared_ptr<RippleLikeAccount> _currentAccount;
-    std::shared_ptr<Preferences> _internalPreferences;
-};
+          private:
+            std::shared_ptr<RippleLikeBlockchainExplorer> _explorer;
+            std::shared_ptr<ProgressNotifier<AccountSynchronizationContext>> _notifier;
+            std::mutex _lock;
+            std::shared_ptr<RippleLikeAccount> _currentAccount;
+            std::shared_ptr<Preferences> _internalPreferences;
+        };
 
-} // namespace core
+    } // namespace core
 } // namespace ledger
 
 #endif // LEDGER_CORE_RIPPLELIKEACCOUNTSYNCHRONIZER_H

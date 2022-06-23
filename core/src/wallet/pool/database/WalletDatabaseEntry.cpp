@@ -29,6 +29,7 @@
  *
  */
 #include "WalletDatabaseEntry.hpp"
+
 #include <crypto/SHA256.hpp>
 
 std::string

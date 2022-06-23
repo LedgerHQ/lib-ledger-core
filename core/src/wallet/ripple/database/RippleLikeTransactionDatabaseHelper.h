@@ -28,19 +28,17 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKETRANSACTIONDATABASEHELPER_H
 #define LEDGER_CORE_RIPPLELIKETRANSACTIONDATABASEHELPER_H
 
-
-#include <string>
 #include <soci.h>
+#include <string>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 
 namespace ledger {
     namespace core {
         class RippleLikeTransactionDatabaseHelper {
-        public:
+          public:
             static bool getTransactionByHash(soci::session &sql,
                                              const std::string &hash,
                                              RippleLikeBlockchainExplorerTransaction &tx);
@@ -59,11 +57,11 @@ namespace ledger {
                                               const std::string &accountUid,
                                               const RippleLikeBlockchainExplorerTransaction &tx);
 
-            static void eraseDataSince( soci::session &sql,
-                                const std::string &accountUid,
-                                const std::chrono::system_clock::time_point & date);
+            static void eraseDataSince(soci::session &sql,
+                                       const std::string &accountUid,
+                                       const std::chrono::system_clock::time_point &date);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_RIPPLELIKETRANSACTIONDATABASEHELPER_H
+#endif // LEDGER_CORE_RIPPLELIKETRANSACTIONDATABASEHELPER_H

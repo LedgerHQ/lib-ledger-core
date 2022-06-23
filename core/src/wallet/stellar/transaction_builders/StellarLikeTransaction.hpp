@@ -32,38 +32,37 @@
 #ifndef LEDGER_CORE_STELLARLIKETRANSACTION_HPP
 #define LEDGER_CORE_STELLARLIKETRANSACTION_HPP
 
+#include <api/Currency.hpp>
 #include <api/StellarLikeTransaction.hpp>
 #include <wallet/stellar/xdr/models.hpp>
-#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
         class StellarLikeTransaction : public virtual api::StellarLikeTransaction {
-        public:
+          public:
             explicit StellarLikeTransaction(
-                    const api::Currency& currency,
-                    stellar::xdr::TransactionEnvelope&& envelope) : _envelope(envelope), _currency(currency) {};
+                const api::Currency &currency,
+                stellar::xdr::TransactionEnvelope &&envelope) : _envelope(envelope), _currency(currency){};
             explicit StellarLikeTransaction(
-                    const api::Currency& currency,
-                    const stellar::xdr::TransactionEnvelope& envelope) : _envelope(envelope), _currency(currency) {};
+                const api::Currency &currency,
+                const stellar::xdr::TransactionEnvelope &envelope) : _envelope(envelope), _currency(currency){};
 
-            static std::shared_ptr<api::StellarLikeTransaction> parseRawTransaction(const api::Currency & currency,
-                                                                                    const std::vector<uint8_t> & rawTransaction);
+            static std::shared_ptr<api::StellarLikeTransaction> parseRawTransaction(const api::Currency &currency,
+                                                                                    const std::vector<uint8_t> &rawTransaction);
 
-            static std::shared_ptr<api::StellarLikeTransaction> parseSignatureBase(const api::Currency & currency,
-                                                                                   const std::vector<uint8_t> & rawTransaction);
+            static std::shared_ptr<api::StellarLikeTransaction> parseSignatureBase(const api::Currency &currency,
+                                                                                   const std::vector<uint8_t> &rawTransaction);
 
             std::vector<uint8_t> toRawTransaction() override;
 
             std::vector<uint8_t> toSignatureBase() override;
 
-            const stellar::xdr::TransactionEnvelope& envelope() const { return _envelope; };
+            const stellar::xdr::TransactionEnvelope &envelope() const { return _envelope; };
 
             std::shared_ptr<api::StellarLikeMemo> getMemo() override;
 
             void putSignature(const std::vector<uint8_t> &signature,
-                              const std::shared_ptr<api::Address>& address) override;
-
+                              const std::shared_ptr<api::Address> &address) override;
 
             std::shared_ptr<api::Address> getSourceAccount() override;
 
@@ -74,21 +73,21 @@ namespace ledger {
             bool isEnvelopeV1() const;
             bool isEnvelopeV0() const;
 
-            const stellar::xdr::TransactionV0Envelope& getEnvelopeV0() const;
-            const stellar::xdr::TransactionV1Envelope& getEnvelopeV1() const;
+            const stellar::xdr::TransactionV0Envelope &getEnvelopeV0() const;
+            const stellar::xdr::TransactionV1Envelope &getEnvelopeV1() const;
 
-            stellar::xdr::TransactionV0Envelope& getEnvelopeV0();
-            stellar::xdr::TransactionV1Envelope& getEnvelopeV1();
+            stellar::xdr::TransactionV0Envelope &getEnvelopeV0();
+            stellar::xdr::TransactionV1Envelope &getEnvelopeV1();
 
             std::string getCorrelationId() override;
-            std::string setCorrelationId(const std::string& newId) override;
-        private:
+            std::string setCorrelationId(const std::string &newId) override;
+
+          private:
             stellar::xdr::TransactionEnvelope _envelope;
             api::Currency _currency;
             std::string _correlationId;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_STELLARLIKETRANSACTION_HPP
+#endif // LEDGER_CORE_STELLARLIKETRANSACTION_HPP

@@ -29,47 +29,44 @@
  *
  */
 
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
+#include <ledger/core/async/Future.hpp>
 #include <ledger/core/net/WebSocketClient.h>
 #include <ledger/core/utils/Option.hpp>
-#include <ledger/core/async/Future.hpp>
 #include <net/WebSocketConnection.h>
 
 using namespace ledger::core;
 using namespace testing;
 
 class MockApiWebSocketClient : public api::WebSocketClient {
-public:
-    MOCK_METHOD2(connect, void (const std::string & url, const std::shared_ptr<api::WebSocketConnection> & connection));
-    MOCK_METHOD2(send, void (const std::shared_ptr<api::WebSocketConnection> & connection, const std::string & data));
-    MOCK_METHOD1(disconnect, void (const std::shared_ptr<api::WebSocketConnection> & connection));
+  public:
+    MOCK_METHOD2(connect, void(const std::string &url, const std::shared_ptr<api::WebSocketConnection> &connection));
+    MOCK_METHOD2(send, void(const std::shared_ptr<api::WebSocketConnection> &connection, const std::string &data));
+    MOCK_METHOD1(disconnect, void(const std::shared_ptr<api::WebSocketConnection> &connection));
 };
 
 class MockHandler {
-public:
-    MOCK_METHOD4(Handle, void (WebSocketEventType,
-                            const std::shared_ptr<WebSocketConnection>& connection,
-                            const Option<std::string>& message,
-                            Option<api::ErrorCode>));
+  public:
+    MOCK_METHOD4(Handle, void(WebSocketEventType, const std::shared_ptr<WebSocketConnection> &connection, const Option<std::string> &message, Option<api::ErrorCode>));
 };
 
 class WebSocketClientTest : public Test {
-public:
-    WebSocketClientTest() 
-        : engine(std::make_shared<MockApiWebSocketClient>())
-        , handler([&h = mockHandler](WebSocketEventType a,
-                                    const std::shared_ptr<WebSocketConnection>& b,
-                                    const Option<std::string>& c,
-                                    Option<api::ErrorCode> d) { h.Handle(a,b,c,d); }) {};
-public:
+  public:
+    WebSocketClientTest()
+        : engine(std::make_shared<MockApiWebSocketClient>()), handler([&h = mockHandler](WebSocketEventType a,
+                                                                                         const std::shared_ptr<WebSocketConnection> &b,
+                                                                                         const Option<std::string> &c,
+                                                                                         Option<api::ErrorCode> d) { h.Handle(a, b, c, d); }){};
+
+  public:
     void TearDown() override {
         // there are circular dependencies between WebSocketClient and WebSocketConnection
         // so without connection.close() there is a leak
-        Mock::AllowLeak(engine.get());    
+        Mock::AllowLeak(engine.get());
     }
 
-    const std::string url = "uri://some_address";
+    const std::string url     = "uri://some_address";
     const std::string message = "Hello from websocket";
     MockHandler mockHandler;
     std::shared_ptr<MockApiWebSocketClient> engine;
@@ -78,7 +75,7 @@ public:
 };
 
 TEST_F(WebSocketClientTest, InjectionIsDone) {
-    //Injection happened once
+    // Injection happened once
     EXPECT_CALL(*engine, connect(StrEq(url), _)).Times(1);
     // callback was not called
     EXPECT_CALL(mockHandler, Handle(_, _, _, _)).Times(0);
@@ -90,13 +87,14 @@ TEST_F(WebSocketClientTest, InjectionIsDone) {
 
 TEST_F(WebSocketClientTest, ConnectSuccedsSync) {
     EXPECT_CALL(*engine, connect(_, _))
-        .WillOnce(Invoke([connID = connectionID](Unused, const std::shared_ptr<api::WebSocketConnection>& connImpl) {
+        .WillOnce(Invoke([connID = connectionID](Unused, const std::shared_ptr<api::WebSocketConnection> &connImpl) {
             connImpl->onConnect(connID);
         }));
     EXPECT_CALL(mockHandler, Handle(WebSocketEventType::CONNECT,
                                     _,
                                     Option<std::string>::NONE,
-                                    Option<api::ErrorCode>::NONE)).Times(1);
+                                    Option<api::ErrorCode>::NONE))
+        .Times(1);
     EXPECT_CALL(mockHandler, Handle(WebSocketEventType::CLOSE, _, _, _)).Times(0);
 
     WebSocketClient client(engine);
@@ -111,14 +109,15 @@ TEST_F(WebSocketClientTest, ConnectFailed) {
     const std::string errorMessge("Can't connect");
     api::ErrorCode errorCode = api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST;
     EXPECT_CALL(*engine, connect(_, _))
-        .WillOnce(Invoke([errorCode, errorMessge](Unused, const std::shared_ptr<api::WebSocketConnection>& connImpl) {
+        .WillOnce(Invoke([errorCode, errorMessge](Unused, const std::shared_ptr<api::WebSocketConnection> &connImpl) {
             connImpl->onError(errorCode, errorMessge);
         }));
     EXPECT_CALL(mockHandler, Handle(WebSocketEventType::CONNECT, _, _, _)).Times(0);
     EXPECT_CALL(mockHandler, Handle(WebSocketEventType::CLOSE,
                                     _,
                                     _,
-                                    Option<api::ErrorCode>(errorCode))).Times(1);
+                                    Option<api::ErrorCode>(errorCode)))
+        .Times(1);
 
     WebSocketClient client(engine);
     auto connectionFtr = client.connect(url, handler);
@@ -131,14 +130,15 @@ TEST_F(WebSocketClientTest, ConnectFailed) {
 
 TEST_F(WebSocketClientTest, SendOK) {
     EXPECT_CALL(*engine, connect(_, _))
-        .WillOnce(Invoke([connID = connectionID](Unused, const std::shared_ptr<api::WebSocketConnection>& connImpl) {
+        .WillOnce(Invoke([connID = connectionID](Unused, const std::shared_ptr<api::WebSocketConnection> &connImpl) {
             connImpl->onConnect(connID);
         }));
     EXPECT_CALL(*engine, send(_, StrEq(message))).Times(1);
     EXPECT_CALL(mockHandler, Handle(WebSocketEventType::CONNECT,
                                     _,
                                     Option<std::string>::NONE,
-                                    Option<api::ErrorCode>::NONE)).Times(1);
+                                    Option<api::ErrorCode>::NONE))
+        .Times(1);
     EXPECT_CALL(mockHandler, Handle(WebSocketEventType::CLOSE, _, _, _)).Times(0);
 
     WebSocketClient client(engine);
@@ -150,17 +150,17 @@ TEST_F(WebSocketClientTest, SendError) {
     const std::string errorMessage("Can't reach the host");
     api::ErrorCode errorCode = api::ErrorCode::NO_INTERNET_CONNECTIVITY;
     EXPECT_CALL(*engine, connect(_, _))
-        .WillOnce(Invoke([connID = connectionID](Unused, const std::shared_ptr<api::WebSocketConnection>& connImpl) {
+        .WillOnce(Invoke([connID = connectionID](Unused, const std::shared_ptr<api::WebSocketConnection> &connImpl) {
             connImpl->onConnect(connID);
         }));
-    EXPECT_CALL(*engine, send(_, StrEq(message))).
-        WillOnce(Invoke([errorCode, errorMessage](const std::shared_ptr<api::WebSocketConnection>& connImpl, const std::string& msg) {
-            connImpl->onError(errorCode, errorMessage);
-        }));
+    EXPECT_CALL(*engine, send(_, StrEq(message))).WillOnce(Invoke([errorCode, errorMessage](const std::shared_ptr<api::WebSocketConnection> &connImpl, const std::string &msg) {
+        connImpl->onError(errorCode, errorMessage);
+    }));
     EXPECT_CALL(mockHandler, Handle(WebSocketEventType::CONNECT,
                                     _,
                                     Option<std::string>::NONE,
-                                    Option<api::ErrorCode>::NONE)).Times(1);
+                                    Option<api::ErrorCode>::NONE))
+        .Times(1);
     EXPECT_CALL(mockHandler, Handle(WebSocketEventType::CLOSE, _, _, _)).Times(1);
 
     WebSocketClient client(engine);
@@ -170,17 +170,17 @@ TEST_F(WebSocketClientTest, SendError) {
 
 TEST_F(WebSocketClientTest, EchoTest) {
     EXPECT_CALL(*engine, connect(_, _))
-        .WillOnce(Invoke([connID = connectionID](Unused, const std::shared_ptr<api::WebSocketConnection>& connImpl) {
+        .WillOnce(Invoke([connID = connectionID](Unused, const std::shared_ptr<api::WebSocketConnection> &connImpl) {
             connImpl->onConnect(connID);
         }));
-    EXPECT_CALL(*engine, send(_, StrEq(message))).
-        WillOnce(Invoke([](const std::shared_ptr<api::WebSocketConnection>& connImpl, const std::string& msg) {
-            connImpl->onMessage(msg);
-        }));
+    EXPECT_CALL(*engine, send(_, StrEq(message))).WillOnce(Invoke([](const std::shared_ptr<api::WebSocketConnection> &connImpl, const std::string &msg) {
+        connImpl->onMessage(msg);
+    }));
     EXPECT_CALL(mockHandler, Handle(WebSocketEventType::CONNECT,
                                     _,
                                     Option<std::string>::NONE,
-                                    Option<api::ErrorCode>::NONE)).Times(1);
+                                    Option<api::ErrorCode>::NONE))
+        .Times(1);
     EXPECT_CALL(mockHandler, Handle(WebSocketEventType::CLOSE, _, _, _)).Times(0);
     EXPECT_CALL(mockHandler, Handle(WebSocketEventType::RECEIVE, _, Option<std::string>(message), Option<api::ErrorCode>::NONE)).Times(1);
 

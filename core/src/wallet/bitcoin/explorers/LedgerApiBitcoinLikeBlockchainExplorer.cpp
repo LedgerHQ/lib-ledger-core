@@ -29,38 +29,40 @@
  *
  */
 
-#include <api/ErrorCode.hpp>
 #include "LedgerApiBitcoinLikeBlockchainExplorer.hpp"
+
+#include <api/ErrorCode.hpp>
 #include <api_impl/BigIntImpl.hpp>
 namespace ledger {
     namespace core {
 
         LedgerApiBitcoinLikeBlockchainExplorer::LedgerApiBitcoinLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
                                                                                        const std::shared_ptr<HttpClient> &http,
-                                                                                       const api::BitcoinLikeNetworkParameters& parameters,
-                                                                                       const std::shared_ptr<api::DynamicObject>& configuration) :
-                DedicatedContext(context),
-                BitcoinLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
-            _http = http;
-            _parameters = parameters;
+                                                                                       const api::BitcoinLikeNetworkParameters &parameters,
+                                                                                       const std::shared_ptr<api::DynamicObject> &configuration) : DedicatedContext(context),
+                                                                                                                                                   BitcoinLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
+            _http            = http;
+            _parameters      = parameters;
             _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v2");
         }
 
-        Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
+        Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) {
             std::stringstream body;
-            body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
+            body << "{"
+                 << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
             auto bodyString = body.str();
             std::unordered_map<std::string, std::string> headers;
-            if(!correlationId.empty()) {
+            if (!correlationId.empty()) {
                 headers["X-Correlation-ID"] = correlationId;
             }
             return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send", getExplorerVersion(), getNetworkParameters().Identifier),
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
-                               headers
-            ).json().template map<String>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) -> String {
-                auto& json = *std::get<1>(result);
-                return json["result"].GetString();
-            });
+                               headers)
+                .json()
+                .template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
+                    auto &json = *std::get<1>(result);
+                    return json["result"].GetString();
+                });
         }
 
         Future<void *> LedgerApiBitcoinLikeBlockchainExplorer::startSession() {
@@ -71,11 +73,11 @@ namespace ledger {
             return killLedgerApiSession(session);
         }
 
-        Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
+        Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) {
             return pushLedgerApiTransaction(transaction, correlationId);
         }
 
-        Future<Bytes> LedgerApiBitcoinLikeBlockchainExplorer::getRawTransaction(const String& transactionHash) {
+        Future<Bytes> LedgerApiBitcoinLikeBlockchainExplorer::getRawTransaction(const String &transactionHash) {
             return getLedgerApiRawTransaction(transactionHash);
         }
 
@@ -96,7 +98,7 @@ namespace ledger {
             return getLedgerApiTransactionByHash(transactionHash);
         }
 
-        Future<int64_t > LedgerApiBitcoinLikeBlockchainExplorer::getTimestamp() const {
+        Future<int64_t> LedgerApiBitcoinLikeBlockchainExplorer::getTimestamp() const {
             return getLedgerApiTimestamp();
         }
 
@@ -114,28 +116,29 @@ namespace ledger {
 
         Future<std::vector<std::shared_ptr<api::BigInt>>> LedgerApiBitcoinLikeBlockchainExplorer::getFees() {
             bool parseNumbersAsString = true;
-            auto networkId = getNetworkParameters().Identifier;
+            auto networkId            = getNetworkParameters().Identifier;
             return _http->GET(fmt::format("/blockchain/{}/{}/fees", getExplorerVersion(), networkId))
-                    .json(parseNumbersAsString).map<std::vector<std::shared_ptr<api::BigInt>>>(getExplorerContext(), [networkId] (const HttpRequest::JsonResult& result) {
-                        auto& json = *std::get<1>(result);
-                        if (!json.IsObject()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get fees for {}", networkId);
-                        }
+                .json(parseNumbersAsString)
+                .map<std::vector<std::shared_ptr<api::BigInt>>>(getExplorerContext(), [networkId](const HttpRequest::JsonResult &result) {
+                    auto &json = *std::get<1>(result);
+                    if (!json.IsObject()) {
+                        throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get fees for {}", networkId);
+                    }
 
-                        // Here we filter fields returned by this endpoint,
-                        // if the field's key is a number (number of confirmations) then it's an acceptable fee
-                        auto isValid = [] (const std::string &field) -> bool {
-                            return !field.empty() && std::find_if(field.begin(), field.end(), [](char c) { return !std::isdigit(c); }) == field.end();
-                        };
-                        std::vector<std::shared_ptr<api::BigInt>> fees;
-                        for (auto& item : json.GetObject()) {
-                            if (item.name.IsString() && item.value.IsString() && isValid(item.name.GetString())){
-                                fees.push_back(std::make_shared<api::BigIntImpl>(BigInt::fromString(item.value.GetString())));
-                            }
+                    // Here we filter fields returned by this endpoint,
+                    // if the field's key is a number (number of confirmations) then it's an acceptable fee
+                    auto isValid = [](const std::string &field) -> bool {
+                        return !field.empty() && std::find_if(field.begin(), field.end(), [](char c) { return !std::isdigit(c); }) == field.end();
+                    };
+                    std::vector<std::shared_ptr<api::BigInt>> fees;
+                    for (auto &item : json.GetObject()) {
+                        if (item.name.IsString() && item.value.IsString() && isValid(item.name.GetString())) {
+                            fees.push_back(std::make_shared<api::BigIntImpl>(BigInt::fromString(item.value.GetString())));
                         }
-                        return fees;
-                    });
+                    }
+                    return fees;
+                });
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

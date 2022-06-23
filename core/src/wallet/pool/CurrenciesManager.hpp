@@ -31,21 +31,21 @@
 #ifndef LEDGER_CORE_CURRENCIESMANAGER_HPP
 #define LEDGER_CORE_CURRENCIESMANAGER_HPP
 
-#include <async/DedicatedContext.hpp>
-#include <api/Currency.hpp>
 #include "WalletPool.hpp"
+
+#include <api/Currency.hpp>
+#include <async/DedicatedContext.hpp>
 
 namespace ledger {
     namespace core {
-        class CurrenciesManager : public DedicatedContext, public std::enable_shared_from_this<CurrenciesManager>{
-        public:
-            CurrenciesManager(const std::shared_ptr<WalletPool>& pool);
+        class CurrenciesManager : public DedicatedContext, public std::enable_shared_from_this<CurrenciesManager> {
+          public:
+            CurrenciesManager(const std::shared_ptr<WalletPool> &pool);
             Future<std::vector<api::Currency>> getAllBitcoinLikeCurrencies();
-        public:
 
+          public:
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_CURRENCIESMANAGER_HPP
+#endif // LEDGER_CORE_CURRENCIESMANAGER_HPP

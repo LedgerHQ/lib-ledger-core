@@ -35,49 +35,50 @@
 #include <jni/jni/djinni_support.hpp>
 #endif
 
-#include <functional>
-#include "optional.hpp"
-#include "Option.hpp"
 #include "Exception.hpp"
-#include <typeinfo>
-#include <stdexcept>
+#include "Option.hpp"
+#include "optional.hpp"
+
 #include <boost/exception/diagnostic_information.hpp>
+#include <functional>
+#include <stdexcept>
+#include <typeinfo>
 #include <utils/Try.hpp>
 
 namespace ledger {
     namespace core {
         template <typename T>
         class Try {
-        public:
-            Try() {
+          public:
+            Try(){
 
             };
 
-            Try(const T&v) {
+            Try(const T &v) {
                 _value = optional<T>(v);
             }
 
-            Try(api::ErrorCode code, const std::string& message) {
+            Try(api::ErrorCode code, const std::string &message) {
                 fail(code, message);
             }
 
-            void fail(api::ErrorCode code, const std::string& message) {
+            void fail(api::ErrorCode code, const std::string &message) {
                 _exception = Exception(code, message);
             }
 
-            void fail(const Exception& ex) {
+            void fail(const Exception &ex) {
                 _exception = ex;
             }
 
-            void success(const T& v) {
+            void success(const T &v) {
                 _value = v;
             }
 
-            const T& getValue() const {
+            const T &getValue() const {
                 return _value.value();
             }
 
-            const Exception& getFailure() const {
+            const Exception &getFailure() const {
                 return _exception.value();
             }
 
@@ -103,14 +104,14 @@ namespace ledger {
                 return Option<Exception>();
             }
 
-            const T& getOrThrow() const {
+            const T &getOrThrow() const {
                 if (isFailure())
                     throw getFailure();
                 return getValue();
             }
 
             template <class U>
-            const T& getOrThrowException() const {
+            const T &getOrThrowException() const {
                 if (isFailure())
                     throw U(getFailure().getMessage());
                 return getValue();
@@ -122,30 +123,31 @@ namespace ledger {
                 return *this;
             }
 
-//            friend std::ostream &operator<<(std::ostream &os, const Try<T> &d) {
-//                if (d.isSuccess()) {
-//                    os << "Success(" << d.getFailure() << ")";
-//                } else {
-//                    os << "Failure(" << d.getFailure() << ")";
-//                }
-//            }
+            //            friend std::ostream &operator<<(std::ostream &os, const Try<T> &d) {
+            //                if (d.isSuccess()) {
+            //                    os << "Success(" << d.getFailure() << ")";
+            //                } else {
+            //                    os << "Failure(" << d.getFailure() << ")";
+            //                }
+            //            }
 
-            ~Try() {
+            ~Try(){
 
             };
-        private:
+
+          private:
             optional<Exception> _exception;
             optional<T> _value;
 
-        public:
-            static const Try<T> from(std::function<T ()> lambda) {
+          public:
+            static const Try<T> from(std::function<T()> lambda) {
                 Try<T> result;
                 try {
                     result.success(lambda());
-                } catch (const Exception& ex) {
+                } catch (const Exception &ex) {
                     result.fail(ex);
 #ifdef TARGET_JNI
-                } catch (const djinni::jni_exception& ex) {
+                } catch (const djinni::jni_exception &ex) {
                     result.fail(api::ErrorCode::RUNTIME_ERROR, ex.get_backtrace());
 #endif
                 } catch (...) {
@@ -158,12 +160,11 @@ namespace ledger {
         template <typename T>
         using TryPtr = Try<std::shared_ptr<T>>;
 
-        template<typename T>
-        Try<T> make_try(std::function<T ()> lambda) {
+        template <typename T>
+        Try<T> make_try(std::function<T()> lambda) {
             return Try<T>::from(lambda);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_TRY_HPP
+#endif // LEDGER_CORE_TRY_HPP

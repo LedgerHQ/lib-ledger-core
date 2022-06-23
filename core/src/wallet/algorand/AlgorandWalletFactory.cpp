@@ -29,133 +29,126 @@
  */
 
 #include "AlgorandWalletFactory.hpp"
-#include "AlgorandWallet.hpp"
-#include "AlgorandNetworks.hpp"
 
-#include <utils/Assert.hpp>
+#include "AlgorandNetworks.hpp"
+#include "AlgorandWallet.hpp"
 
 #include <api/AlgorandBlockchainExplorerEngines.hpp>
 #include <api/Configuration.hpp>
 #include <api/SynchronizationEngines.hpp>
+#include <utils/Assert.hpp>
 
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
 
-    // Aliases for long constants names
-    const std::string ALGORAND_API_ENDPOINT = "https://algorand.coin.ledger.com";
-    const std::string ALGORAND_NODE_EXPLORER = api::AlgorandBlockchainExplorerEngines::ALGORAND_NODE;
+            // Aliases for long constants names
+            const std::string ALGORAND_API_ENDPOINT  = "https://algorand.coin.ledger.com";
+            const std::string ALGORAND_NODE_EXPLORER = api::AlgorandBlockchainExplorerEngines::ALGORAND_NODE;
 
-    WalletFactory::WalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool>& pool) :
-        AbstractWalletFactory(currency, pool)
-    {}
+            WalletFactory::WalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool) : AbstractWalletFactory(currency, pool) {}
 
-    std::shared_ptr<AbstractWallet> WalletFactory::build(const WalletDatabaseEntry &entry) {
-        auto pool = getPool();
-        pool->logger()->info("Building wallet instance '{}' for {} with parameters: {}",
-            entry.name,
-            entry.currencyName,
-            entry.configuration->dump());
+            std::shared_ptr<AbstractWallet> WalletFactory::build(const WalletDatabaseEntry &entry) {
+                auto pool = getPool();
+                pool->logger()->info("Building wallet instance '{}' for {} with parameters: {}",
+                                     entry.name,
+                                     entry.currencyName,
+                                     entry.configuration->dump());
 
-        // Retrieve the API key from env variable, if set
-        if (const auto apiKey = std::getenv(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY.c_str())) {
-            entry.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY, apiKey);
-        }
+                // Retrieve the API key from env variable, if set
+                if (const auto apiKey = std::getenv(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY.c_str())) {
+                    entry.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY, apiKey);
+                }
 
-        // Make sure the currency is Algorand-like
-        assertCurrency(
-            networks::isAlgorandCurrency(entry.currencyName),
-            fmt::format("Currency '{}' is not an Algorand currency.", entry.currencyName)
-        );
+                // Make sure the currency is Algorand-like
+                assertCurrency(
+                    networks::isAlgorandCurrency(entry.currencyName),
+                    fmt::format("Currency '{}' is not an Algorand currency.", entry.currencyName));
 
-        // Configure explorer
-        auto explorer = getExplorer(entry.currencyName, entry.configuration);
-        if (explorer == nullptr) {
-            throw make_exception(api::ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE,
-                                 "Engine '{}' is not a supported explorer engine.",
-                                 entry.configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE).value_or("undefined"));
-        }
+                // Configure explorer
+                auto explorer = getExplorer(entry.currencyName, entry.configuration);
+                if (explorer == nullptr) {
+                    throw make_exception(api::ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE,
+                                         "Engine '{}' is not a supported explorer engine.",
+                                         entry.configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE).value_or("undefined"));
+                }
 
-        // Configure synchronizer
-        auto syncEngine = entry.configuration->getString(api::Configuration::SYNCHRONIZATION_ENGINE)
-                                               .value_or(api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION);
-        Option<AlgorandAccountSynchronizerFactory> synchronizerFactory;
-        {
-            if (syncEngine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
-                std::weak_ptr<WalletPool> weakPool = pool;
-                synchronizerFactory = Option<AlgorandAccountSynchronizerFactory>([weakPool, explorer]() {
-                    auto pool = weakPool.lock();
-                    if (!pool) {
-                        throw make_exception(api::ErrorCode::NULL_POINTER, "Pool was released.");
+                // Configure synchronizer
+                auto syncEngine = entry.configuration->getString(api::Configuration::SYNCHRONIZATION_ENGINE)
+                                      .value_or(api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION);
+                Option<AlgorandAccountSynchronizerFactory> synchronizerFactory;
+                {
+                    if (syncEngine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
+                        std::weak_ptr<WalletPool> weakPool = pool;
+                        synchronizerFactory                = Option<AlgorandAccountSynchronizerFactory>([weakPool, explorer]() {
+                            auto pool = weakPool.lock();
+                            if (!pool) {
+                                throw make_exception(api::ErrorCode::NULL_POINTER, "Pool was released.");
+                            }
+                            return std::make_shared<AccountSynchronizer>(pool, explorer);
+                        });
                     }
-                    return std::make_shared<AccountSynchronizer>(pool, explorer);
-                });
+                }
+
+                if (synchronizerFactory.isEmpty()) {
+                    throw make_exception(api::ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE,
+                                         "Engine '{}' is not a supported synchronization engine.",
+                                         syncEngine);
+                }
+
+                // Sets the derivation scheme
+                DerivationScheme scheme(entry.configuration->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
+                                            .value_or("44'/<coin_type>'/<account>'/<node>/<address>"));
+
+                // Build wallet
+                return std::make_shared<Wallet>(
+                    entry.name,
+                    getCurrency(),
+                    pool,
+                    entry.configuration,
+                    scheme,
+                    explorer,
+                    synchronizerFactory.getValue());
             }
-        }
 
-        if (synchronizerFactory.isEmpty()) {
-            throw make_exception(api::ErrorCode::UNKNOWN_SYNCHRONIZATION_ENGINE,
-                                "Engine '{}' is not a supported synchronization engine.",
-                                syncEngine);
-        }
+            std::shared_ptr<BlockchainExplorer>
+            WalletFactory::getExplorer(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration) {
+                auto it = _runningExplorers.begin();
+                while (it != _runningExplorers.end()) {
+                    auto explorer = it->lock();
+                    if (explorer != nullptr) {
+                        if (explorer->match(configuration))
+                            return explorer;
+                        it++;
+                    } else {
+                        it = _runningExplorers.erase(it);
+                    }
+                }
 
-        // Sets the derivation scheme
-        DerivationScheme scheme(entry.configuration->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
-                                                    .value_or("44'/<coin_type>'/<account>'/<node>/<address>"));
+                std::shared_ptr<BlockchainExplorer> explorer = nullptr;
 
-        // Build wallet
-        return std::make_shared<Wallet>(
-            entry.name,
-            getCurrency(),
-            pool,
-            entry.configuration,
-            scheme,
-            explorer,
-            synchronizerFactory.getValue()
-        );
-    }
+                auto engine                                  = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE).value_or(ALGORAND_NODE_EXPLORER);
+                if (engine == ALGORAND_NODE_EXPLORER) {
+                    auto &networkParams = networks::getAlgorandNetworkParameters(getCurrency().name);
+                    auto pool           = getPool();
+                    auto http           = pool->getHttpClient(
+                                  configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value_or(ALGORAND_API_ENDPOINT));
+                    auto context = pool->getDispatcher()->getSerialExecutionContext(
+                        fmt::format("{}-{}-explorer", ALGORAND_NODE_EXPLORER, networkParams.genesisHash));
 
-    std::shared_ptr<BlockchainExplorer>
-    WalletFactory::getExplorer(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration) {
+                    explorer = std::make_shared<BlockchainExplorer>(context,
+                                                                    http,
+                                                                    networkParams,
+                                                                    configuration);
+                }
 
-        auto it = _runningExplorers.begin();
-        while (it != _runningExplorers.end()) {
-            auto explorer = it->lock();
-            if (explorer != nullptr) {
-                if (explorer->match(configuration))
-                    return explorer;
-                it++;
-            } else {
-                it = _runningExplorers.erase(it);
+                if (explorer) {
+                    _runningExplorers.push_back(explorer);
+                }
+
+                return explorer;
             }
-        }
 
-        std::shared_ptr<BlockchainExplorer> explorer = nullptr;
-
-        auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE).value_or(ALGORAND_NODE_EXPLORER);
-        if (engine == ALGORAND_NODE_EXPLORER) {
-            auto &networkParams = networks::getAlgorandNetworkParameters(getCurrency().name);
-            auto pool = getPool();
-            auto http = pool->getHttpClient(
-                configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value_or(ALGORAND_API_ENDPOINT)
-            );
-            auto context = pool->getDispatcher()->getSerialExecutionContext(
-                    fmt::format("{}-{}-explorer", ALGORAND_NODE_EXPLORER, networkParams.genesisHash)
-            );
-
-            explorer = std::make_shared<BlockchainExplorer>(context,
-                                                            http,
-                                                            networkParams,
-                                                            configuration);
-        }
-
-        if (explorer) {
-            _runningExplorers.push_back(explorer);
-        }
-
-        return explorer;
-    }
-
-}
-}
-}
+        } // namespace algorand
+    }     // namespace core
+} // namespace ledger

@@ -31,48 +31,46 @@
 #ifndef LEDGER_CORE_SEQUENCE_HPP
 #define LEDGER_CORE_SEQUENCE_HPP
 
-#include <vector>
-#include <list>
 #include "../utils/Exception.hpp"
+
 #include <iterator>
+#include <list>
+#include <vector>
 
 namespace ledger {
     namespace core {
         template <typename T, typename Container>
         class Sequence {
-        public:
+          public:
             Sequence() {
-
             }
 
-            Sequence(const Container& container) : _container(container) {
-
+            Sequence(const Container &container) : _container(container) {
             }
 
             /// Type-safe indexed getter.
-            optional<T&> get(size_t index) {
+            optional<T &> get(size_t index) {
                 if (index < size()) {
                     return this->operator[](index);
                 } else {
-                    return optional<T&>();
+                    return optional<T &>();
                 }
             }
 
             /// Type-safe indexed getter.
-            optional<const T&> get(size_t index) const {
+            optional<const T &> get(size_t index) const {
                 if (index < size()) {
                     return this->operator[](index);
                 } else {
-                    return optional<const T&>();
+                    return optional<const T &>();
                 }
             }
 
-
-            T& operator[](size_t index) {
+            T &operator[](size_t index) {
                 return _container[index];
             }
 
-            const T& operator[](size_t index) const {
+            const T &operator[](size_t index) const {
                 return _container[index];
             }
 
@@ -88,29 +86,29 @@ namespace ledger {
                 _container.erase(it);
             }
 
-            Sequence<T, Container>& operator+=(const T& v) {
+            Sequence<T, Container> &operator+=(const T &v) {
                 _container.push_back(v);
                 return *this;
             }
 
-            Container& getContainer() {
+            Container &getContainer() {
                 return _container;
             }
 
-            const Container& getContainer() const {
+            const Container &getContainer() const {
                 return _container;
             }
 
-            template<typename Result>
-            Option<Result> join(std::function<Result (const T&, const Option<Result>&)> f) const {
+            template <typename Result>
+            Option<Result> join(std::function<Result(const T &, const Option<Result> &)> f) const {
                 Option<T> carry;
-                for (auto& item : _container) {
-                   carry = Option<T>(f(item, carry));
+                for (auto &item : _container) {
+                    carry = Option<T>(f(item, carry));
                 }
                 return carry;
             }
 
-        private:
+          private:
             Container _container;
         };
 
@@ -120,7 +118,7 @@ namespace ledger {
         template <typename T>
         using List = Sequence<T, std::vector<T>>;
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_SEQUENCE_HPP
+#endif // LEDGER_CORE_SEQUENCE_HPP

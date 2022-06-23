@@ -41,21 +41,21 @@ namespace ledger {
             ss << _condition;
             if (!isTail()) {
                 switch (getOperatorForNextFilter()) {
-                    case QueryFilterOperator::OP_AND :
-                        ss << " AND ";
-                        break;
-                    case QueryFilterOperator::OP_AND_NOT :
-                        ss << " AND NOT ";
-                        break;
-                    case QueryFilterOperator::OP_OR :
-                        ss << " OR ";
-                        break;
-                    case QueryFilterOperator::OP_OR_NOT :
-                        ss << " OR NOT ";
-                        break;
+                case QueryFilterOperator::OP_AND:
+                    ss << " AND ";
+                    break;
+                case QueryFilterOperator::OP_AND_NOT:
+                    ss << " AND NOT ";
+                    break;
+                case QueryFilterOperator::OP_OR:
+                    ss << " OR ";
+                    break;
+                case QueryFilterOperator::OP_OR_NOT:
+                    ss << " OR NOT ";
+                    break;
                 }
                 getNext()->toString(ss);
             }
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

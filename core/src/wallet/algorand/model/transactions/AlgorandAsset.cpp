@@ -30,98 +30,80 @@
 #include "AlgorandAsset.hpp"
 
 namespace ledger {
-namespace core {
-namespace algorand {
-namespace model {
+    namespace core {
+        namespace algorand {
+            namespace model {
 
-    AssetConfigTxnFields AssetConfigTxnFields::create(AssetParams assetParams)
-    {
-        return AssetConfigTxnFields(assetParams, Option<uint64_t>());
-    }
+                AssetConfigTxnFields AssetConfigTxnFields::create(AssetParams assetParams) {
+                    return AssetConfigTxnFields(assetParams, Option<uint64_t>());
+                }
 
-    AssetConfigTxnFields AssetConfigTxnFields::reconfigure(AssetParams assetParams, uint64_t assetId)
-    {
-        return AssetConfigTxnFields(assetParams, assetId);
-    }
+                AssetConfigTxnFields AssetConfigTxnFields::reconfigure(AssetParams assetParams, uint64_t assetId) {
+                    return AssetConfigTxnFields(assetParams, assetId);
+                }
 
-    AssetConfigTxnFields AssetConfigTxnFields::destroy(uint64_t assetId)
-    {
-        return AssetConfigTxnFields(Option<AssetParams>(), assetId);
-    }
+                AssetConfigTxnFields AssetConfigTxnFields::destroy(uint64_t assetId) {
+                    return AssetConfigTxnFields(Option<AssetParams>(), assetId);
+                }
 
-    AssetConfigTxnFields::AssetConfigTxnFields(
-            Option<AssetParams> assetParams,
-            Option<uint64_t> assetId)
-        : assetParams(std::move(assetParams))
-        , assetId(std::move(assetId))
-    {}
+                AssetConfigTxnFields::AssetConfigTxnFields(
+                    Option<AssetParams> assetParams,
+                    Option<uint64_t> assetId)
+                    : assetParams(std::move(assetParams)), assetId(std::move(assetId)) {}
 
+                AssetTransferTxnFields AssetTransferTxnFields::transfer(
+                    uint64_t assetAmount,
+                    Option<Address> assetCloseTo,
+                    Address assetReceiver,
+                    uint64_t assetId) {
+                    return AssetTransferTxnFields(
+                        assetAmount,
+                        std::move(assetCloseTo),
+                        std::move(assetReceiver),
+                        Option<Address>(),
+                        assetId);
+                }
 
-    AssetTransferTxnFields AssetTransferTxnFields::transfer(
-            uint64_t assetAmount,
-            Option<Address> assetCloseTo,
-            Address assetReceiver,
-            uint64_t assetId)
-    {
-        return AssetTransferTxnFields(
-                assetAmount,
-                std::move(assetCloseTo),
-                std::move(assetReceiver),
-                Option<Address>(),
-                assetId);
-    }
+                AssetTransferTxnFields AssetTransferTxnFields::clawback(
+                    uint64_t assetAmount,
+                    Option<Address> assetCloseTo,
+                    Address assetReceiver,
+                    Address assetSender,
+                    uint64_t assetId) {
+                    return AssetTransferTxnFields(
+                        assetAmount,
+                        std::move(assetCloseTo),
+                        std::move(assetReceiver),
+                        std::move(assetSender),
+                        assetId);
+                }
 
-    AssetTransferTxnFields AssetTransferTxnFields::clawback(
-            uint64_t assetAmount,
-            Option<Address> assetCloseTo,
-            Address assetReceiver,
-            Address assetSender,
-            uint64_t assetId)
-    {
-        return AssetTransferTxnFields(
-                assetAmount,
-                std::move(assetCloseTo),
-                std::move(assetReceiver),
-                std::move(assetSender),
-                assetId);
-    }
+                AssetTransferTxnFields AssetTransferTxnFields::optIn(
+                    Address assetReceiver,
+                    uint64_t assetId) {
+                    return AssetTransferTxnFields(
+                        Option<uint64_t>(),
+                        Option<Address>(),
+                        std::move(assetReceiver),
+                        Option<Address>(),
+                        assetId);
+                }
 
-    AssetTransferTxnFields AssetTransferTxnFields::optIn(
-            Address assetReceiver,
-            uint64_t assetId)
-    {
-        return AssetTransferTxnFields(
-                Option<uint64_t>(),
-                Option<Address>(),
-                std::move(assetReceiver),
-                Option<Address>(),
-                assetId);
-    }
+                AssetTransferTxnFields::AssetTransferTxnFields(
+                    Option<uint64_t> assetAmount,
+                    Option<Address> assetCloseTo,
+                    Address assetReceiver,
+                    Option<Address> assetSender,
+                    uint64_t assetId)
+                    : assetAmount(std::move(assetAmount)), assetCloseTo(std::move(assetCloseTo)), assetReceiver(std::move(assetReceiver)), assetSender(std::move(assetSender)), assetId(assetId) {}
 
-    AssetTransferTxnFields::AssetTransferTxnFields(
-            Option<uint64_t> assetAmount,
-            Option<Address> assetCloseTo,
-            Address assetReceiver,
-            Option<Address> assetSender,
-            uint64_t assetId)
-        : assetAmount(std::move(assetAmount))
-        , assetCloseTo(std::move(assetCloseTo))
-        , assetReceiver(std::move(assetReceiver))
-        , assetSender(std::move(assetSender))
-        , assetId(assetId)
-    {}
+                AssetFreezeTxnFields::AssetFreezeTxnFields(
+                    bool assetFrozen,
+                    Address frozenAddress,
+                    uint64_t assetId)
+                    : assetFrozen(assetFrozen), frozenAddress(std::move(frozenAddress)), assetId(assetId) {}
 
-    AssetFreezeTxnFields::AssetFreezeTxnFields(
-            bool assetFrozen,
-            Address frozenAddress,
-            uint64_t assetId)
-        : assetFrozen(assetFrozen)
-        , frozenAddress(std::move(frozenAddress))
-        , assetId(assetId)
-    {}
-
-} // namespace model
-} // namespace algorand
-} // namespace core
+            } // namespace model
+        }     // namespace algorand
+    }         // namespace core
 } // namespace ledger
-

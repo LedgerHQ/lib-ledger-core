@@ -28,25 +28,25 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKETRANSACTIONPARSER_H
 #define LEDGER_CORE_TEZOSLIKETRANSACTIONPARSER_H
 
 #include "TezosLikeBlockParser.h"
-#include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
+
 #include <collections/collections.hpp>
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 #include <net/HttpClient.hpp>
 #include <rapidjson/reader.h>
 #include <stack>
+#include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
 
 namespace ledger {
     namespace core {
         class TezosLikeBlockchainExplorer;
 
         class TezosLikeTransactionParser {
-        public:
+          public:
             typedef TezosLikeBlockchainExplorerTransaction Result;
 
             TezosLikeTransactionParser(std::string &lastKey);
@@ -84,7 +84,8 @@ namespace ledger {
             std::string &getLastKey() {
                 return _lastKey;
             };
-        private:
+
+          private:
             std::string &_lastKey;
             TezosLikeBlockchainExplorerTransaction *_transaction;
 
@@ -92,6 +93,6 @@ namespace ledger {
             uint32_t _arrayDepth;
             TezosLikeBlockParser _blockParser;
         };
-    }
-}
-#endif //LEDGER_CORE_TEZOSLIKETRANSACTIONPARSER_H
+    } // namespace core
+} // namespace ledger
+#endif // LEDGER_CORE_TEZOSLIKETRANSACTIONPARSER_H

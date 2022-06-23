@@ -29,17 +29,18 @@
  *
  */
 #include "TransactionParser.hpp"
+
 #include "utils/DateUtils.hpp"
 
-#define PROXY_PARSE(method, ...)                                    \
- auto& currentObject = _hierarchy.top();                            \
- if (currentObject == "block") {                                    \
-    return _blockParser.method(__VA_ARGS__);                        \
- } else if (currentObject == "inputs") {                            \
-    return _inputParser.method(__VA_ARGS__);                        \
- } else if (currentObject == "outputs") {                           \
-    return _outputParser.method(__VA_ARGS__);                        \
- } else                                                             \
+#define PROXY_PARSE(method, ...)                  \
+    auto &currentObject = _hierarchy.top();       \
+    if (currentObject == "block") {               \
+        return _blockParser.method(__VA_ARGS__);  \
+    } else if (currentObject == "inputs") {       \
+        return _inputParser.method(__VA_ARGS__);  \
+    } else if (currentObject == "outputs") {      \
+        return _outputParser.method(__VA_ARGS__); \
+    } else
 
 namespace ledger {
     namespace core {
@@ -56,7 +57,7 @@ namespace ledger {
                 _hierarchy.push(_lastKey);
             }
 
-            auto& currentObject = _hierarchy.top();
+            auto &currentObject = _hierarchy.top();
 
             if (currentObject == "inputs") {
                 BitcoinLikeBlockchainExplorerInput input;
@@ -81,7 +82,7 @@ namespace ledger {
         }
 
         bool TransactionParser::EndObject(rapidjson::SizeType memberCount) {
-            auto& currentObject = _hierarchy.top();
+            auto &currentObject = _hierarchy.top();
 
             if (_arrayDepth == 0) {
                 _hierarchy.pop();
@@ -163,24 +164,20 @@ namespace ledger {
                     if (_transaction->hash.empty()) {
                         _transaction->hash = value;
                     }
-                }
-                else if (_lastKey == "id") {
+                } else if (_lastKey == "id") {
                     _transaction->hash = value;
-                }
-                else if (_lastKey == "received_at") {
+                } else if (_lastKey == "received_at") {
                     _transaction->receivedAt = DateUtils::fromJSON(value);
                 } else if (_lastKey == "fees") {
-                    BigInt intValue = BigInt::fromString(value);
+                    BigInt intValue    = BigInt::fromString(value);
                     _transaction->fees = Option<BigInt>(intValue);
                 }
-                
+
                 return true;
             }
         }
 
-        TransactionParser::TransactionParser(std::string& lastKey) :
-            _lastKey(lastKey), _blockParser(lastKey), _inputParser(lastKey), _outputParser(lastKey)
-        {
+        TransactionParser::TransactionParser(std::string &lastKey) : _lastKey(lastKey), _blockParser(lastKey), _inputParser(lastKey), _outputParser(lastKey) {
             _arrayDepth = 0;
         }
 
@@ -188,5 +185,5 @@ namespace ledger {
             _transaction = transaction;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

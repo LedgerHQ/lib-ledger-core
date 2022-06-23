@@ -28,39 +28,38 @@
  *
  */
 
-
 #include "TezosLikeTransactionBuilder.h"
+
+#include <api/TezosConfigurationDefaults.hpp>
+#include <api/TezosCurve.hpp>
 #include <api/TezosLikeTransactionCallback.hpp>
-#include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
+#include <api/TezosOperationTag.hpp>
 #include <bytes/zarith/zarith.h>
 #include <math/Base58.hpp>
-#include <api/TezosConfigurationDefaults.hpp>
-#include <api/TezosOperationTag.hpp>
-#include <api/TezosCurve.hpp>
+#include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
 
 namespace ledger {
     namespace core {
 
         TezosLikeTransactionBuilder::TezosLikeTransactionBuilder(
-                const std::string &senderAddress,
-                const std::shared_ptr<api::ExecutionContext> &context,
-                const api::Currency &currency,
-                const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
-                const std::shared_ptr<spdlog::logger> &logger,
-                const TezosLikeTransactionBuildFunction &buildFunction,
-                const std::string &protocolUpdate) :
-                _senderAddress(senderAddress), _context(context),
-                _currency(currency), _explorer(explorer),
-                _build(buildFunction), _logger(logger){
+            const std::string &senderAddress,
+            const std::shared_ptr<api::ExecutionContext> &context,
+            const api::Currency &currency,
+            const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
+            const std::shared_ptr<spdlog::logger> &logger,
+            const TezosLikeTransactionBuildFunction &buildFunction,
+            const std::string &protocolUpdate) : _senderAddress(senderAddress), _context(context),
+                                                 _currency(currency), _explorer(explorer),
+                                                 _build(buildFunction), _logger(logger) {
             _request.wipe = false;
         }
 
         TezosLikeTransactionBuilder::TezosLikeTransactionBuilder(const TezosLikeTransactionBuilder &cpy) {
             _currency = cpy._currency;
-            _build = cpy._build;
-            _request = cpy._request;
-            _context = cpy._context;
-            _logger = cpy._logger;
+            _build    = cpy._build;
+            _request  = cpy._request;
+            _context  = cpy._context;
+            _logger   = cpy._logger;
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder>
@@ -72,7 +71,7 @@ namespace ledger {
         std::shared_ptr<api::TezosLikeTransactionBuilder>
         TezosLikeTransactionBuilder::sendToAddress(const std::shared_ptr<api::Amount> &amount,
                                                    const std::string &address) {
-            _request.value = std::make_shared<BigInt>(amount->toString());
+            _request.value     = std::make_shared<BigInt>(amount->toString());
             _request.toAddress = address;
             return shared_from_this();
         }
@@ -80,14 +79,14 @@ namespace ledger {
         std::shared_ptr<api::TezosLikeTransactionBuilder>
         TezosLikeTransactionBuilder::wipeToAddress(const std::string &address) {
             _request.toAddress = address;
-            _request.wipe = true;
+            _request.wipe      = true;
             return shared_from_this();
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder>
         TezosLikeTransactionBuilder::setFees(const std::shared_ptr<api::Amount> &fees) {
             _request.transactionFees = std::make_shared<BigInt>(fees->toString());
-            _request.revealFees = std::make_shared<BigInt>(fees->toString());
+            _request.revealFees      = std::make_shared<BigInt>(fees->toString());
             return shared_from_this();
         }
 
@@ -110,14 +109,14 @@ namespace ledger {
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder>
-        TezosLikeTransactionBuilder::setGasLimit(const std::shared_ptr<api::Amount> & gasLimit) {
+        TezosLikeTransactionBuilder::setGasLimit(const std::shared_ptr<api::Amount> &gasLimit) {
             _request.transactionGasLimit = std::make_shared<BigInt>(gasLimit->toString());
-            _request.revealGasLimit = std::make_shared<BigInt>(gasLimit->toString());
+            _request.revealGasLimit      = std::make_shared<BigInt>(gasLimit->toString());
             return shared_from_this();
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder>
-        TezosLikeTransactionBuilder::setStorageLimit(const std::shared_ptr<api::BigInt> & storageLimit) {
+        TezosLikeTransactionBuilder::setStorageLimit(const std::shared_ptr<api::BigInt> &storageLimit) {
             _request.storageLimit = std::make_shared<BigInt>(storageLimit->toString(10));
             return shared_from_this();
         }
@@ -141,25 +140,21 @@ namespace ledger {
         std::shared_ptr<api::TezosLikeTransaction>
         api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(const api::Currency &currency,
                                                                       const std::vector<uint8_t> &rawTransaction,
-                                                                      const std::string& protocolUpdate) {
-            
+                                                                      const std::string &protocolUpdate) {
             return ::ledger::core::TezosLikeTransactionBuilder::parseRawTransaction(currency,
                                                                                     rawTransaction,
                                                                                     false,
-                                                                                    protocolUpdate
-            );
+                                                                                    protocolUpdate);
         }
 
         std::shared_ptr<api::TezosLikeTransaction>
         api::TezosLikeTransactionBuilder::parseRawSignedTransaction(const api::Currency &currency,
                                                                     const std::vector<uint8_t> &rawTransaction,
-                                                                    const std::string& protocolUpdate) {
-            
+                                                                    const std::string &protocolUpdate) {
             return ::ledger::core::TezosLikeTransactionBuilder::parseRawTransaction(currency,
                                                                                     rawTransaction,
                                                                                     true,
-                                                                                    protocolUpdate
-            );
+                                                                                    protocolUpdate);
         }
 
         // Reference: https://www.ocamlpro.com/2018/11/21/an-introduction-to-tezos-rpcs-signing-operations/
@@ -169,25 +164,24 @@ namespace ledger {
                                                          bool isSigned,
                                                          const std::string &protocolUpdate) {
             auto isBabylonActivated = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON;
-            
-            auto params = currency.tezosLikeNetworkParameters.value();
-            auto tx = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
-          
+
+            auto params             = currency.tezosLikeNetworkParameters.value();
+            auto tx                 = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
+
             if (isSigned) {
-                //if signed remove the signature
+                // if signed remove the signature
                 if (rawTransaction.size() > 64) {
-                    auto raw = std::vector<uint8_t>{rawTransaction.begin(), rawTransaction.end()-64};
+                    auto raw = std::vector<uint8_t>{rawTransaction.begin(), rawTransaction.end() - 64};
+                    tx->setRawTx(raw);
+                }
+            } else {
+                // if not signed remove the watermark:
+                if (rawTransaction.size() > 1) {
+                    auto raw = std::vector<uint8_t>{rawTransaction.begin() + 1, rawTransaction.end()};
                     tx->setRawTx(raw);
                 }
             }
-            else { 
-                //if not signed remove the watermark:
-                if (rawTransaction.size() > 1) {
-                    auto raw = std::vector<uint8_t>{rawTransaction.begin() + 1, rawTransaction.end()};
-                    tx->setRawTx(raw);  
-                }
-            }
-         
+
             BytesReader reader(rawTransaction);
             if (!isSigned) {
                 // Watermark: Generic-Operation
@@ -197,10 +191,10 @@ namespace ledger {
             // Block Hash
             auto blockHashBytes = reader.read(32);
 
-            auto config = std::make_shared<DynamicObject>();
+            auto config         = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params.Identifier);
             // Magic bytes (or version ?)
-            std::vector<uint8_t> blockPrefix {0x01, 0x34};
+            std::vector<uint8_t> blockPrefix{0x01, 0x34};
             auto blockHash = Base58::encodeWithChecksum(vector::concat(blockPrefix, blockHashBytes), config);
             tx->setBlockHash(blockHash);
 
@@ -208,7 +202,7 @@ namespace ledger {
             auto offset = static_cast<uint8_t>(isBabylonActivated ? 100 : 0);
             do {
                 // Operation Tag
-                OpTag = reader.readNextByte();
+                OpTag                   = reader.readNextByte();
                 const auto operationTag = static_cast<api::TezosOperationTag>(OpTag - offset);
                 tx->setType(operationTag);
                 // sender hash160
@@ -220,8 +214,8 @@ namespace ledger {
                     // First curve code ...
                     senderCurveCode = reader.readNextByte();
                     // then hash160 ...
-                    senderHash160 = reader.read(20);
-                    version = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(senderCurveCode));
+                    senderHash160   = reader.read(20);
+                    version         = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(senderCurveCode));
                 } else {
                     auto isSenderOriginated = reader.readNextByte();
                     if (isSenderOriginated) {
@@ -234,18 +228,17 @@ namespace ledger {
                         // Otherwise first curve code ...
                         senderCurveCode = reader.readNextByte();
                         // then hash160 ...
-                        senderHash160 = reader.read(20);
-                        version = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(senderCurveCode));
+                        senderHash160   = reader.read(20);
+                        version         = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(senderCurveCode));
                     }
                 }
                 tx->setSender(std::make_shared<TezosLikeAddress>(currency, senderHash160, version, Option<std::string>()),
-                                static_cast<api::TezosCurve>(senderCurveCode));
+                              static_cast<api::TezosCurve>(senderCurveCode));
 
                 // Fee
-                if(operationTag == api::TezosOperationTag::OPERATION_TAG_REVEAL) {
+                if (operationTag == api::TezosOperationTag::OPERATION_TAG_REVEAL) {
                     tx->setRevealFees(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
-                }
-                else {
+                } else {
                     tx->setTransactionFees(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
                 }
                 // Counter
@@ -253,129 +246,126 @@ namespace ledger {
                 tx->setCounter(counter);
 
                 // Gas Limit
-                if(operationTag == api::TezosOperationTag::OPERATION_TAG_REVEAL) {
+                if (operationTag == api::TezosOperationTag::OPERATION_TAG_REVEAL) {
                     tx->setRevealGasLimit(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
-                }
-                else {
-                    tx->setTransactionGasLimit(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));    
+                } else {
+                    tx->setTransactionGasLimit(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
                 }
                 // Storage Limit
                 tx->setStorage(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
 
                 // Offset introduced by Babylon
-                
+
                 switch (operationTag) {
-                    case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
-                        auto curveCode = reader.readNextByte();
-                        std::vector<uint8_t> pubKey;
-                        switch (curveCode) {
-                            case static_cast<uint8_t>(api::TezosCurve::ED25519):
-                                pubKey = reader.read(32);
-                                break;
-                            default:
-                                pubKey = reader.read(33);
-                                break;
-                        }
-                        tx->setSigningPubKey(pubKey);
-                        tx->setValue(std::make_shared<BigInt>(BigInt::ZERO));
-                        tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
-                                                                        std::vector<uint8_t>(),
-                                                                        std::vector<uint8_t>(),
-                                                                        Option<std::string>()),
-                                        static_cast<api::TezosCurve>(curveCode));
-                        tx->reveal(true); 
+                case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
+                    auto curveCode = reader.readNextByte();
+                    std::vector<uint8_t> pubKey;
+                    switch (curveCode) {
+                    case static_cast<uint8_t>(api::TezosCurve::ED25519):
+                        pubKey = reader.read(32);
                         break;
-                    }
-                    case api::TezosOperationTag::OPERATION_TAG_TRANSACTION: {
-                        // Amount
-                        tx->setValue(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
-
-                        // Get Receiver
-                        // Originated
-                        std::vector<uint8_t> receiverHash160, receiverVersion;
-
-                        auto isReceiverOriginated = reader.readNextByte();
-
-                        if (!isReceiverOriginated) {
-                            // Curve code
-                            auto receiverCurveCode = reader.readNextByte();
-                            // 20 bytes of publicKey hash
-                            receiverHash160 = reader.read(20);
-                            receiverVersion = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(receiverCurveCode));
-                            tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
-                                                                        receiverHash160,
-                                                                        receiverVersion,
-                                                                        Option<std::string>()),
-                                            static_cast<api::TezosCurve>(receiverCurveCode));
-                        } else {
-                            // 20 bytes of publicKey hash
-                            receiverHash160 = reader.read(20);
-                            // Padding
-                            reader.readNextByte();
-                            receiverVersion = params.OriginatedPrefix;
-                            tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
-                                                                        receiverHash160,
-                                                                        receiverVersion,
-                                                                        Option<std::string>()));
-                        }
-
-                        // Additional parameters
-                        auto haveAdditionalParams = reader.readNextByte();
-                        if (haveAdditionalParams) {
-                            auto sizeAdditionals = reader.readNextBeUint();
-                            auto additionals = reader.read(sizeAdditionals);
-                        }
-                        break;
-                    }
-                    case api::TezosOperationTag::OPERATION_TAG_ORIGINATION: {
-                        tx->setValue(std::make_shared<BigInt>(BigInt::ZERO));
-                        tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
-                                                                        std::vector<uint8_t>(),
-                                                                        std::vector<uint8_t>(),
-                                                                        Option<std::string>()));
-                        if (!isBabylonActivated) {
-                            auto managerCurveCode = reader.readNextByte();
-                            // manager hash160
-                            auto managerHash160 = reader.read(20);
-                            if (managerHash160 != senderHash160) {
-                                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Origination error: Manager is different from sender");
-                            }
-                        }
-                        // Balance
-                        tx->setBalance(BigInt::fromHex(hex::toString(zarith::zParse(reader))));
-                        // Is spendable? Is delegatable? Presence of delegate block? Presence of script block?
-                        reader.read(4);
-                        break;
-                    }
-                    case api::TezosOperationTag::OPERATION_TAG_DELEGATION: {
-                        tx->setValue(std::make_shared<BigInt>(BigInt::ZERO));
-                        auto hasDelegationData = reader.readNextByte();
-                        if (hasDelegationData) {
-                            // Curve Code
-                            auto delegateCurveCode = reader.readNextByte();
-                            // Delegate hash160
-                            auto delegateHash160 = reader.read(20);
-                            tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
-                                                                            delegateHash160,
-                                                                            TezosLikeAddress::getPrefixFromImplicitVersion(
-                                                                                    params.ImplicitPrefix,
-                                                                                    api::TezosCurve(delegateCurveCode)
-                                                                            ), // can't delegate to originated account (TBC)
-                                                                            Option<std::string>()));
-                        }
-                        break;
-                    }
                     default:
+                        pubKey = reader.read(33);
                         break;
+                    }
+                    tx->setSigningPubKey(pubKey);
+                    tx->setValue(std::make_shared<BigInt>(BigInt::ZERO));
+                    tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
+                                                                       std::vector<uint8_t>(),
+                                                                       std::vector<uint8_t>(),
+                                                                       Option<std::string>()),
+                                    static_cast<api::TezosCurve>(curveCode));
+                    tx->reveal(true);
+                    break;
+                }
+                case api::TezosOperationTag::OPERATION_TAG_TRANSACTION: {
+                    // Amount
+                    tx->setValue(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
+
+                    // Get Receiver
+                    // Originated
+                    std::vector<uint8_t> receiverHash160, receiverVersion;
+
+                    auto isReceiverOriginated = reader.readNextByte();
+
+                    if (!isReceiverOriginated) {
+                        // Curve code
+                        auto receiverCurveCode = reader.readNextByte();
+                        // 20 bytes of publicKey hash
+                        receiverHash160        = reader.read(20);
+                        receiverVersion        = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(receiverCurveCode));
+                        tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
+                                                                           receiverHash160,
+                                                                           receiverVersion,
+                                                                           Option<std::string>()),
+                                        static_cast<api::TezosCurve>(receiverCurveCode));
+                    } else {
+                        // 20 bytes of publicKey hash
+                        receiverHash160 = reader.read(20);
+                        // Padding
+                        reader.readNextByte();
+                        receiverVersion = params.OriginatedPrefix;
+                        tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
+                                                                           receiverHash160,
+                                                                           receiverVersion,
+                                                                           Option<std::string>()));
+                    }
+
+                    // Additional parameters
+                    auto haveAdditionalParams = reader.readNextByte();
+                    if (haveAdditionalParams) {
+                        auto sizeAdditionals = reader.readNextBeUint();
+                        auto additionals     = reader.read(sizeAdditionals);
+                    }
+                    break;
+                }
+                case api::TezosOperationTag::OPERATION_TAG_ORIGINATION: {
+                    tx->setValue(std::make_shared<BigInt>(BigInt::ZERO));
+                    tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
+                                                                       std::vector<uint8_t>(),
+                                                                       std::vector<uint8_t>(),
+                                                                       Option<std::string>()));
+                    if (!isBabylonActivated) {
+                        auto managerCurveCode = reader.readNextByte();
+                        // manager hash160
+                        auto managerHash160   = reader.read(20);
+                        if (managerHash160 != senderHash160) {
+                            throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Origination error: Manager is different from sender");
+                        }
+                    }
+                    // Balance
+                    tx->setBalance(BigInt::fromHex(hex::toString(zarith::zParse(reader))));
+                    // Is spendable? Is delegatable? Presence of delegate block? Presence of script block?
+                    reader.read(4);
+                    break;
+                }
+                case api::TezosOperationTag::OPERATION_TAG_DELEGATION: {
+                    tx->setValue(std::make_shared<BigInt>(BigInt::ZERO));
+                    auto hasDelegationData = reader.readNextByte();
+                    if (hasDelegationData) {
+                        // Curve Code
+                        auto delegateCurveCode = reader.readNextByte();
+                        // Delegate hash160
+                        auto delegateHash160   = reader.read(20);
+                        tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
+                                                                           delegateHash160,
+                                                                           TezosLikeAddress::getPrefixFromImplicitVersion(
+                                                                               params.ImplicitPrefix,
+                                                                               api::TezosCurve(delegateCurveCode)), // can't delegate to originated account (TBC)
+                                                                           Option<std::string>()));
+                    }
+                    break;
+                }
+                default:
+                    break;
                 }
 
                 // Sorry, I really had to do this way..
-                if(operationTag != api::TezosOperationTag::OPERATION_TAG_REVEAL) {
+                if (operationTag != api::TezosOperationTag::OPERATION_TAG_REVEAL) {
                     tx->setOperationTypeInTransaction(operationTag);
                 }
 
-            } while(isSigned ? reader.available()-64 > 0 : reader.available() > 0 );
-
+            } while (isSigned ? reader.available() - 64 > 0 : reader.available() > 0);
 
             // Parse signature
             if (isSigned) {
@@ -384,5 +374,5 @@ namespace ledger {
 
             return tx;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

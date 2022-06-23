@@ -30,11 +30,13 @@
  */
 
 #include "StellarLikeWalletFactory.hpp"
-#include <wallet/stellar/StellarLikeWallet.hpp>
+
 #include "StellarLikeKeychainFactory.hpp"
-#include <wallet/pool/WalletPool.hpp>
-#include <wallet/stellar/explorers/HorizonBlockchainExplorer.hpp>
+
 #include <api/StellarConfiguration.hpp>
+#include <wallet/pool/WalletPool.hpp>
+#include <wallet/stellar/StellarLikeWallet.hpp>
+#include <wallet/stellar/explorers/HorizonBlockchainExplorer.hpp>
 #include <wallet/stellar/synchronizers/StellarLikeBlockchainExplorerAccountSynchronizer.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
@@ -44,13 +46,12 @@ namespace ledger {
 
         StellarLikeWalletFactory::StellarLikeWalletFactory(const api::Currency &currency,
                                                            const std::shared_ptr<WalletPool> &pool)
-                : AbstractWalletFactory(currency, pool) {
-
+            : AbstractWalletFactory(currency, pool) {
         }
 
         std::shared_ptr<AbstractWallet> StellarLikeWalletFactory::build(const WalletDatabaseEntry &entry) {
             StellarLikeWalletParams params;
-            auto currency = getPool()->getCurrency(entry.currencyName).getOrElse([&] () -> api::Currency {
+            auto currency = getPool()->getCurrency(entry.currencyName).getOrElse([&]() -> api::Currency {
                 throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' not found", entry.currencyName);
             });
 
@@ -58,10 +59,10 @@ namespace ledger {
             DerivationScheme scheme(STRING(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'"));
 
             // Configure keychain factory
-            params.keychainFactory = std::make_shared<StellarLikeKeychainFactory>();
+            params.keychainFactory     = std::make_shared<StellarLikeKeychainFactory>();
 
             // Configure explorer
-            params.blockchainExplorer = getExplorer(entry);
+            params.blockchainExplorer  = getExplorer(entry);
             // Configure observer
 
             // Configure synchronizer
@@ -72,24 +73,24 @@ namespace ledger {
         }
 
         template <>
-        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::STELLAR>(const api::Currency& currency,
-                const std::shared_ptr<WalletPool>& pool) {
+        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::STELLAR>(const api::Currency &currency,
+                                                                                      const std::shared_ptr<WalletPool> &pool) {
             return std::make_shared<StellarLikeWalletFactory>(currency, pool);
         }
 
-        std::shared_ptr<StellarLikeBlockchainExplorer> StellarLikeWalletFactory::getExplorer(const WalletDatabaseEntry& entry) {
+        std::shared_ptr<StellarLikeBlockchainExplorer> StellarLikeWalletFactory::getExplorer(const WalletDatabaseEntry &entry) {
             auto engine = STRING(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::StellarConfiguration::HORIZON_EXPLORER_ENGINE);
             std::shared_ptr<StellarLikeBlockchainExplorer> explorer;
             if (engine == api::StellarConfiguration::HORIZON_EXPLORER_ENGINE) {
                 auto baseUrl = STRING(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, api::StellarConfiguration::HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL);
-                explorer = std::make_shared<HorizonBlockchainExplorer>(getPool()->getDispatcher()->getSerialExecutionContext("stellar_explorer"), getPool()->getHttpClient(baseUrl), entry.configuration);
+                explorer     = std::make_shared<HorizonBlockchainExplorer>(getPool()->getDispatcher()->getSerialExecutionContext("stellar_explorer"), getPool()->getHttpClient(baseUrl), entry.configuration);
             }
             return explorer;
         }
 
-        inline std::shared_ptr<api::ExecutionContext> StellarLikeWalletFactory::getContext(const WalletDatabaseEntry& entry) {
+        inline std::shared_ptr<api::ExecutionContext> StellarLikeWalletFactory::getContext(const WalletDatabaseEntry &entry) {
             return getPool()->getDispatcher()->getSerialExecutionContext(fmt::format("stellar:{}", entry.name));
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

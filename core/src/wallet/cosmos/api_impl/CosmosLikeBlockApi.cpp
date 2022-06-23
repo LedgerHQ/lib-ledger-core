@@ -31,26 +31,22 @@
 #include <wallet/cosmos/api_impl/CosmosLikeBlockApi.hpp>
 
 namespace ledger {
-namespace core {
+    namespace core {
 
-CosmosLikeBlockApi::CosmosLikeBlockApi(const Block &block)
-{
-    _block = block;
-}
+        CosmosLikeBlockApi::CosmosLikeBlockApi(const Block &block) {
+            _block = block;
+        }
 
-std::string CosmosLikeBlockApi::getHash()
-{
-    return _block.hash;
-}
+        std::string CosmosLikeBlockApi::getHash() {
+            return _block.hash;
+        }
 
-int64_t CosmosLikeBlockApi::getHeight()
-{
-    return _block.height;
-}
+        int64_t CosmosLikeBlockApi::getHeight() {
+            return _block.height;
+        }
 
-std::chrono::system_clock::time_point CosmosLikeBlockApi::getTime()
-{
-    return _block.time;
-}
-}  // namespace core
-}  // namespace ledger
+        std::chrono::system_clock::time_point CosmosLikeBlockApi::getTime() {
+            return _block.time;
+        }
+    } // namespace core
+} // namespace ledger

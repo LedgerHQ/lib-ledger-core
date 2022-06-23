@@ -32,16 +32,16 @@
 #ifndef LEDGER_CORE_STELLARLIKEACCOUNT_HPP
 #define LEDGER_CORE_STELLARLIKEACCOUNT_HPP
 
-#include <wallet/common/AbstractAccount.hpp>
-#include <api/StellarLikeAccount.hpp>
-#include <wallet/stellar/keychains/StellarLikeKeychain.hpp>
-#include "synchronizers/StellarLikeAccountSynchronizer.h"
 #include "explorers/StellarLikeBlockchainExplorer.hpp"
-#include <api/StellarLikeTransactionBuilder.hpp>
+#include "synchronizers/StellarLikeAccountSynchronizer.h"
+
+#include <api/StellarLikeAccount.hpp>
+#include <api/StellarLikeAccountSignerListCallback.hpp>
 #include <api/StellarLikeFeeStats.hpp>
 #include <api/StellarLikeFeeStatsCallback.hpp>
-#include <api/StellarLikeAccountSignerListCallback.hpp>
-
+#include <api/StellarLikeTransactionBuilder.hpp>
+#include <wallet/common/AbstractAccount.hpp>
+#include <wallet/stellar/keychains/StellarLikeKeychain.hpp>
 
 namespace ledger {
     namespace core {
@@ -64,8 +64,8 @@ namespace ledger {
         class StellarLikeWallet;
 
         class StellarLikeAccount : public api::StellarLikeAccount, public AbstractAccount {
-        public:
-            StellarLikeAccount(const std::shared_ptr<StellarLikeWallet>& wallet, const StellarLikeAccountParams& params);
+          public:
+            StellarLikeAccount(const std::shared_ptr<StellarLikeWallet> &wallet, const StellarLikeAccountParams &params);
             bool isSynchronizing() override;
             std::shared_ptr<api::EventBus> synchronize() override;
             std::string getRestoreKey() override;
@@ -81,8 +81,8 @@ namespace ledger {
             void interpretTransaction(const stellar::Transaction &tx, std::vector<Operation> &out);
             Try<int> bulkInsert(const std::vector<Operation> &operations);
 
-            int putLedger(soci::session& sql, stellar::Ledger& ledger);
-            void updateAccountInfo(soci::session& sql, stellar::Account& account);
+            int putLedger(soci::session &sql, stellar::Ledger &ledger);
+            void updateAccountInfo(soci::session &sql, stellar::Account &account);
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
@@ -95,10 +95,10 @@ namespace ledger {
             Future<std::string> broadcastRawTransaction(const std::vector<uint8_t> &tx);
 
             void broadcastTransaction(const std::shared_ptr<api::StellarLikeTransaction> &tx,
-                                         const std::shared_ptr<api::StringCallback> &callback) override;
+                                      const std::shared_ptr<api::StringCallback> &callback) override;
             Future<std::string> broadcastTransaction(const std::shared_ptr<api::StellarLikeTransaction> &tx);
 
-            const StellarLikeAccountParams& params() const { return _params; };
+            const StellarLikeAccountParams &params() const { return _params; };
 
             void getBaseReserve(const std::shared_ptr<api::AmountCallback> &callback) override;
             FuturePtr<Amount> getBaseReserve();
@@ -114,18 +114,17 @@ namespace ledger {
 
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
-        protected:
+          protected:
             std::shared_ptr<StellarLikeAccount> getSelf();
 
-        private:
+          private:
             std::shared_ptr<StellarLikeWallet> _wallet;
             const StellarLikeAccountParams _params;
             std::mutex _synchronizationLock;
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             uint64_t _currentLedgerHeight;
-
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_STELLARLIKEACCOUNT_HPP
+#endif // LEDGER_CORE_STELLARLIKEACCOUNT_HPP

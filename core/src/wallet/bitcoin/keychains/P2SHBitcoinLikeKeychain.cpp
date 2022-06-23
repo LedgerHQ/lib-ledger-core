@@ -29,31 +29,31 @@
  *
  */
 #include "P2SHBitcoinLikeKeychain.hpp"
+
 #include <api/KeychainEngines.hpp>
 namespace ledger {
     namespace core {
 
         P2SHBitcoinLikeKeychain::P2SHBitcoinLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
-                                                           const api::Currency &params,
-                                                           int account,
-                                                           const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                                                           const std::shared_ptr<Preferences> &preferences)
-                : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences)
-        {
+                                                         const api::Currency &params,
+                                                         int account,
+                                                         const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
+                                                         const std::shared_ptr<Preferences> &preferences)
+            : CommonBitcoinLikeKeychains(configuration, params, account, xpub, preferences) {
             _keychainEngine = api::KeychainEngines::BIP49_P2SH;
             getAllObservableAddresses(0, _observableRange);
         }
 
         int32_t P2SHBitcoinLikeKeychain::getOutputSizeAsSignedTxInput() const {
             int32_t result = 0;
-            //witness
-            //1 byte for number of stack elements
+            // witness
+            // 1 byte for number of stack elements
             result += 1;
-            //72 byte for signature (length + signature)
+            // 72 byte for signature (length + signature)
             result += 72;
-            //40 byte of hash script (length + script)
+            // 40 byte of hash script (length + script)
             result += 40;
             return result;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

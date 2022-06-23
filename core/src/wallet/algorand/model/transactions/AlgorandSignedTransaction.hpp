@@ -31,44 +31,41 @@
 
 #include "AlgorandTransaction.hpp"
 
-#include <utils/Option.hpp>
-
 #include <cstdint>
+#include <utils/Option.hpp>
 #include <vector>
 
 namespace ledger {
-namespace core {
-namespace algorand {
-namespace model {
+    namespace core {
+        namespace algorand {
+            namespace model {
 
-    class SignedTransaction
-    {
-    public:
-        explicit SignedTransaction(Transaction txn);
-        explicit SignedTransaction(std::vector<uint8_t> sig, Transaction txn);
+                class SignedTransaction {
+                  public:
+                    explicit SignedTransaction(Transaction txn);
+                    explicit SignedTransaction(std::vector<uint8_t> sig, Transaction txn);
 
-        const Option<std::vector<uint8_t>>& getSig() const;
-        const Transaction& getTxn() const;
+                    const Option<std::vector<uint8_t>> &getSig() const;
+                    const Transaction &getTxn() const;
 
-        std::vector<uint8_t> serialize() const;
-        static std::vector<uint8_t> serializeFromTxAndSig(
-                const std::vector<uint8_t>& rawUnsignedTransaction,
-                const std::vector<uint8_t>& signature);
+                    std::vector<uint8_t> serialize() const;
+                    static std::vector<uint8_t> serializeFromTxAndSig(
+                        const std::vector<uint8_t> &rawUnsignedTransaction,
+                        const std::vector<uint8_t> &signature);
 
-        void setSignature(const std::vector<uint8_t>& signature);
+                    void setSignature(const std::vector<uint8_t> &signature);
 
-        const std::string& getType() const;
+                    const std::string &getType() const;
 
-    private:
-        SignedTransaction(Option<std::vector<uint8_t>> sig, Transaction txn);
+                  private:
+                    SignedTransaction(Option<std::vector<uint8_t>> sig, Transaction txn);
 
-    public:
-        Option<std::vector<uint8_t>> sig;
-        Transaction txn;
-    };
+                  public:
+                    Option<std::vector<uint8_t>> sig;
+                    Transaction txn;
+                };
 
-} // namespace model
+            } // namespace model
+        }     // namespace algorand
+    }         // namespace core
 } // namespace ledger
-} // namespace core
-} // namespace algorand
-

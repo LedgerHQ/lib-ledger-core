@@ -31,16 +31,17 @@
 #ifndef LEDGER_CORE_SECP256K1POINT_HPP
 #define LEDGER_CORE_SECP256K1POINT_HPP
 
-#include <include/secp256k1.h>
 #include "../math/BigInt.h"
+
 #include <cstdint>
+#include <include/secp256k1.h>
 
 namespace ledger {
     namespace core {
 
         class SECP256k1Context {
-        public:
-            secp256k1_context* ptr;
+          public:
+            secp256k1_context *ptr;
             SECP256k1Context() {
                 ptr = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
             }
@@ -50,24 +51,25 @@ namespace ledger {
         };
 
         class SECP256k1Point {
-        public:
-            SECP256k1Point(const std::vector<uint8_t>& p);
-            SECP256k1Point operator+(const SECP256k1Point& p) const;
-            SECP256k1Point generatorMultiply(const std::vector<uint8_t>& n) const;
-            SECP256k1Point(const SECP256k1Point& p);
+          public:
+            SECP256k1Point(const std::vector<uint8_t> &p);
+            SECP256k1Point operator+(const SECP256k1Point &p) const;
+            SECP256k1Point generatorMultiply(const std::vector<uint8_t> &n) const;
+            SECP256k1Point(const SECP256k1Point &p);
             std::vector<uint8_t> toByteArray(bool compressed = true) const;
-            SECP256k1Point& operator=(const SECP256k1Point& p);
+            SECP256k1Point &operator=(const SECP256k1Point &p);
             bool isAtInfinity() const;
             ~SECP256k1Point();
-        protected:
+
+          protected:
             SECP256k1Point();
             void ensurePubkeyIsNotNull() const;
 
-        private:
-            secp256k1_pubkey* _pubKey;
+          private:
+            secp256k1_pubkey *_pubKey;
             static SECP256k1Context _context;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_SECP256K1POINT_HPP
+#endif // LEDGER_CORE_SECP256K1POINT_HPP

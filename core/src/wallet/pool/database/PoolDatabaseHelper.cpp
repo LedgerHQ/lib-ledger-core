@@ -29,7 +29,7 @@
  *
  */
 #include "PoolDatabaseHelper.hpp"
-#include <utils/DateUtils.hpp>
+
 #include <database/soci-date.h>
 #include <utils/DateUtils.hpp>
 
@@ -39,17 +39,16 @@ namespace ledger {
     namespace core {
 
         void PoolDatabaseHelper::putWallet(soci::session &sql, const WalletDatabaseEntry &wallet) {
-
             auto serializeConfig = wallet.configuration->serialize();
-            auto configuration = hex::toString(serializeConfig);
-            auto now = DateUtils::now();
+            auto configuration   = hex::toString(serializeConfig);
+            auto now             = DateUtils::now();
             if (!walletExists(sql, wallet)) {
                 sql << "INSERT INTO wallets VALUES(:uid, :name, :currency_name, :pool_name, :configuration, :now)",
-                        use(wallet.uid), use(wallet.name), use(wallet.currencyName), use(wallet.poolName), use(configuration),
-                        use(now);
+                    use(wallet.uid), use(wallet.name), use(wallet.currencyName), use(wallet.poolName), use(configuration),
+                    use(now);
             } else {
                 sql << "UPDATE wallets SET configuration = :configuration WHERE uid = :uid",
-                use(configuration), use(wallet.uid);
+                    use(configuration), use(wallet.uid);
             }
         }
 
@@ -59,14 +58,13 @@ namespace ledger {
             return count;
         }
 
-        int64_t PoolDatabaseHelper::getWallets(soci::session &sql, const WalletPool &pool, int64_t offset,
-                                               std::vector<WalletDatabaseEntry> &wallets) {
-            rowset<row> rows = (sql.prepare <<  "SELECT uid, name, currency_name, configuration FROM wallets WHERE pool_name = :pool "
-                                                "ORDER BY created_at "
-                                                "LIMIT :count OFFSET :offset", use(pool.getName()), use(wallets.size()), use(offset)
-            );
-            int64_t index = 0;
-            for (auto& row : rows) {
+        int64_t PoolDatabaseHelper::getWallets(soci::session &sql, const WalletPool &pool, int64_t offset, std::vector<WalletDatabaseEntry> &wallets) {
+            rowset<row> rows = (sql.prepare << "SELECT uid, name, currency_name, configuration FROM wallets WHERE pool_name = :pool "
+                                               "ORDER BY created_at "
+                                               "LIMIT :count OFFSET :offset",
+                                use(pool.getName()), use(wallets.size()), use(offset));
+            int64_t index    = 0;
+            for (auto &row : rows) {
                 WalletDatabaseEntry entry;
                 inflateWalletEntry(row, pool, entry);
                 wallets[index] = entry;
@@ -75,30 +73,28 @@ namespace ledger {
             return index;
         }
 
-        bool PoolDatabaseHelper::getWallet(soci::session &sql, const WalletPool &pool, const std::string &walletName,
-                                           WalletDatabaseEntry &entry) {
-            auto walletUid = WalletDatabaseEntry::createWalletUid(pool.getName(), walletName);
+        bool PoolDatabaseHelper::getWallet(soci::session &sql, const WalletPool &pool, const std::string &walletName, WalletDatabaseEntry &entry) {
+            auto walletUid   = WalletDatabaseEntry::createWalletUid(pool.getName(), walletName);
             rowset<row> rows = (sql.prepare << "SELECT uid, name, currency_name, configuration FROM wallets WHERE uid = :uid", use(walletUid));
-            for (auto& row : rows) {
+            for (auto &row : rows) {
                 inflateWalletEntry(row, pool, entry);
                 return true;
             }
             return false;
         }
 
-        void
-        PoolDatabaseHelper::inflateWalletEntry(soci::row &row, const WalletPool &pool, WalletDatabaseEntry &entry) {
-            entry.uid = row.get<std::string>(0);
-            entry.name = row.get<std::string>(1);
-            entry.currencyName = row.get<std::string>(2);
-            entry.poolName = pool.getName();
+        void PoolDatabaseHelper::inflateWalletEntry(soci::row &row, const WalletPool &pool, WalletDatabaseEntry &entry) {
+            entry.uid             = row.get<std::string>(0);
+            entry.name            = row.get<std::string>(1);
+            entry.currencyName    = row.get<std::string>(2);
+            entry.poolName        = pool.getName();
             auto serializedConfig = hex::toByteArray(row.get<std::string>(3));
-            entry.configuration = std::static_pointer_cast<ledger::core::DynamicObject>(DynamicObject::load(serializedConfig));
+            entry.configuration   = std::static_pointer_cast<ledger::core::DynamicObject>(DynamicObject::load(serializedConfig));
         }
 
         bool PoolDatabaseHelper::insertPool(soci::session &sql, const WalletPool &pool) {
             auto count = 0;
-            auto now = DateUtils::toJSON(DateUtils::now());
+            auto now   = DateUtils::toJSON(DateUtils::now());
             sql << "SELECT COUNT(*) FROM pools WHERE name = :name", use(pool.getName()), into(count);
             if (count == 0) {
                 sql << "INSERT INTO pools VALUES(:name, :created_at)", use(pool.getName()), use(now);
@@ -120,8 +116,8 @@ namespace ledger {
             return true;
         }
 
-        void  PoolDatabaseHelper::removeWalletByName(soci::session& sql, const std::string& name) {
+        void PoolDatabaseHelper::removeWalletByName(soci::session &sql, const std::string &name) {
             sql << "DELETE FROM wallets WHERE name = :name", use(name);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

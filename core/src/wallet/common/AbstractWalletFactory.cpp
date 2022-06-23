@@ -29,16 +29,16 @@
  *
  */
 #include "AbstractWalletFactory.hpp"
+
+#include <wallet/algorand/AlgorandWalletFactory.hpp>
 #include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
 #include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
 #include <wallet/ethereum/factories/EthereumLikeWalletFactory.h>
 #include <wallet/ripple/factories/RippleLikeWalletFactory.h>
 #include <wallet/tezos/factories/TezosLikeWalletFactory.h>
-#include <wallet/algorand/AlgorandWalletFactory.hpp>
 
 namespace ledger {
     namespace core {
-
 
         AbstractWalletFactory::AbstractWalletFactory(const api::Currency &currency,
                                                      const std::shared_ptr<WalletPool> &pool) : _pool(pool) {
@@ -57,48 +57,48 @@ namespace ledger {
         }
 
         template <>
-        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::BITCOIN>(const api::Currency& currency,
-                                                                                      const std::shared_ptr<WalletPool>& pool) {
+        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::BITCOIN>(const api::Currency &currency,
+                                                                                      const std::shared_ptr<WalletPool> &pool) {
             return std::make_shared<BitcoinLikeWalletFactory>(currency, pool);
         }
 
         template <>
         std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::COSMOS>(
-            const api::Currency &currency, const std::shared_ptr<WalletPool> &pool)
-        {
+            const api::Currency &currency,
+            const std::shared_ptr<WalletPool> &pool) {
             return std::make_shared<CosmosLikeWalletFactory>(currency, pool);
         }
 
         template <>
-        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::ETHEREUM>(const api::Currency& currency,
-                                                                                      const std::shared_ptr<WalletPool>& pool) {
+        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::ETHEREUM>(const api::Currency &currency,
+                                                                                       const std::shared_ptr<WalletPool> &pool) {
             return std::make_shared<EthereumLikeWalletFactory>(currency, pool);
         }
 
         template <>
-        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::RIPPLE>(const api::Currency& currency,
-                                                                                      const std::shared_ptr<WalletPool>& pool) {
+        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::RIPPLE>(const api::Currency &currency,
+                                                                                     const std::shared_ptr<WalletPool> &pool) {
             return std::make_shared<RippleLikeWalletFactory>(currency, pool);
         }
 
         template <>
-        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::TEZOS>(const api::Currency& currency,
-                                                                                    const std::shared_ptr<WalletPool>& pool) {
+        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::TEZOS>(const api::Currency &currency,
+                                                                                    const std::shared_ptr<WalletPool> &pool) {
             return std::make_shared<TezosLikeWalletFactory>(currency, pool);
         }
 
         template <>
-        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::ALGORAND>(const api::Currency& currency,
-                                                                                    const std::shared_ptr<WalletPool>& pool) {
+        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::ALGORAND>(const api::Currency &currency,
+                                                                                       const std::shared_ptr<WalletPool> &pool) {
             return std::make_shared<algorand::WalletFactory>(currency, pool);
         }
 
         template <>
-        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::MONERO>(const api::Currency& currency,
-                                                                                      const std::shared_ptr<WalletPool>& pool) {
-            //TODO IMPLEMENT MONERO FACTORY
+        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::MONERO>(const api::Currency &currency,
+                                                                                     const std::shared_ptr<WalletPool> &pool) {
+            // TODO IMPLEMENT MONERO FACTORY
             return nullptr;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

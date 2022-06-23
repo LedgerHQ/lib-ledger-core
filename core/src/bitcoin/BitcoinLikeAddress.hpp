@@ -34,17 +34,18 @@
 #include "../api/BitcoinLikeAddress.hpp"
 #include "../api/BitcoinLikeNetworkParameters.hpp"
 #include "../utils/optional.hpp"
-#include <wallet/common/AbstractAddress.h>
+
 #include <api/BitcoinLikeExtendedPublicKey.hpp>
 #include <collections/DynamicObject.hpp>
+#include <wallet/common/AbstractAddress.h>
 namespace ledger {
     namespace core {
         class BitcoinLikeAddress : public api::BitcoinLikeAddress, public AbstractAddress {
-        public:
-            BitcoinLikeAddress(const api::Currency& currency,
-                               const std::vector<uint8_t>& hash160,
+          public:
+            BitcoinLikeAddress(const api::Currency &currency,
+                               const std::vector<uint8_t> &hash160,
                                const std::string &keychainEngine,
-                               const Option<std::string>& derivationPath = Option<std::string>());
+                               const Option<std::string> &derivationPath = Option<std::string>());
             virtual std::vector<uint8_t> getVersion() override;
             virtual std::vector<uint8_t> getHash160() override;
             virtual api::BitcoinLikeNetworkParameters getNetworkParameters() override;
@@ -60,17 +61,16 @@ namespace ledger {
             std::string toString() override;
             std::string getStringAddress() const;
 
-            const std::string& getKeychainEngine() const;
+            const std::string &getKeychainEngine() const;
 
-            static std::shared_ptr<AbstractAddress> parse(const std::string& address, const api::Currency& currency,
-                                                          const Option<std::string>& derivationPath = Option<std::string>());
-            static std::shared_ptr<BitcoinLikeAddress> fromBase58(const std::string& address,
-                                                                  const api::Currency& currency,
-                                                                  const Option<std::string>& derivationPath = Option<std::string>());
+            static std::shared_ptr<AbstractAddress> parse(const std::string &address, const api::Currency &currency, const Option<std::string> &derivationPath = Option<std::string>());
+            static std::shared_ptr<BitcoinLikeAddress> fromBase58(const std::string &address,
+                                                                  const api::Currency &currency,
+                                                                  const Option<std::string> &derivationPath = Option<std::string>());
 
-            static std::shared_ptr<BitcoinLikeAddress> fromBech32(const std::string& address,
-                                                                  const api::Currency& currency,
-                                                                  const Option<std::string>& derivationPath = Option<std::string>());
+            static std::shared_ptr<BitcoinLikeAddress> fromBech32(const std::string &address,
+                                                                  const api::Currency &currency,
+                                                                  const Option<std::string> &derivationPath = Option<std::string>());
 
             static std::string fromPublicKey(const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &pubKey,
                                              const api::Currency &currency,
@@ -86,7 +86,7 @@ namespace ledger {
                                                                const api::Currency &currency,
                                                                const std::string &keychainEngine);
 
-        private:
+          private:
             std::string toBase58Impl() const;
             std::string toBech32Impl() const;
 
@@ -100,8 +100,7 @@ namespace ledger {
             const Option<std::string> _derivationPath;
             const std::string _keychainEngine;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BITCOINLIKEADDRESS_HPP
+#endif // LEDGER_CORE_BITCOINLIKEADDRESS_HPP

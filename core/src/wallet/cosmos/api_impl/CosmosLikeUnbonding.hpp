@@ -31,71 +31,61 @@
 #pragma once
 
 #include <algorithm>
-
 #include <api/CosmosLikeUnbonding.hpp>
 #include <api/CosmosLikeUnbondingEntry.hpp>
 #include <api_impl/BigIntImpl.hpp>
 #include <wallet/cosmos/cosmos.hpp>
 
 namespace ledger {
-namespace core {
-class CosmosLikeUnbondingEntry : public api::CosmosLikeUnbondingEntry {
-   public:
-    CosmosLikeUnbondingEntry(cosmos::UnbondingEntry entry) : _unbondingEntryData(std::move(entry))
-    {
-    }
+    namespace core {
+        class CosmosLikeUnbondingEntry : public api::CosmosLikeUnbondingEntry {
+          public:
+            CosmosLikeUnbondingEntry(cosmos::UnbondingEntry entry) : _unbondingEntryData(std::move(entry)) {
+            }
 
-    std::shared_ptr<api::BigInt> getCreationHeight() override
-    {
-        return std::make_shared<api::BigIntImpl>(_unbondingEntryData.creationHeight);
-    }
-    std::shared_ptr<api::BigInt> getInitialBalance() override
-    {
-        return std::make_shared<api::BigIntImpl>(_unbondingEntryData.initialBalance);
-    }
-    std::shared_ptr<api::BigInt> getBalance() override
-    {
-        return std::make_shared<api::BigIntImpl>(_unbondingEntryData.balance);
-    }
-    std::chrono::system_clock::time_point getCompletionTime() override
-    {
-        return _unbondingEntryData.completionTime;
-    }
+            std::shared_ptr<api::BigInt> getCreationHeight() override {
+                return std::make_shared<api::BigIntImpl>(_unbondingEntryData.creationHeight);
+            }
+            std::shared_ptr<api::BigInt> getInitialBalance() override {
+                return std::make_shared<api::BigIntImpl>(_unbondingEntryData.initialBalance);
+            }
+            std::shared_ptr<api::BigInt> getBalance() override {
+                return std::make_shared<api::BigIntImpl>(_unbondingEntryData.balance);
+            }
+            std::chrono::system_clock::time_point getCompletionTime() override {
+                return _unbondingEntryData.completionTime;
+            }
 
-   private:
-    cosmos::UnbondingEntry _unbondingEntryData;
-};
+          private:
+            cosmos::UnbondingEntry _unbondingEntryData;
+        };
 
-class CosmosLikeUnbonding : public api::CosmosLikeUnbonding {
-   public:
-    CosmosLikeUnbonding(cosmos::Unbonding unbonding) : _unbondingData(std::move(unbonding))
-    {
-    }
+        class CosmosLikeUnbonding : public api::CosmosLikeUnbonding {
+          public:
+            CosmosLikeUnbonding(cosmos::Unbonding unbonding) : _unbondingData(std::move(unbonding)) {
+            }
 
-    std::string getDelegatorAddress() override
-    {
-        return _unbondingData.delegatorAddress;
-    }
-    std::string getValidatorAddress() override
-    {
-        return _unbondingData.validatorAddress;
-    }
-    std::vector<std::shared_ptr<api::CosmosLikeUnbondingEntry>> getEntries() override
-    {
-        auto result = std::vector<std::shared_ptr<api::CosmosLikeUnbondingEntry>>();
-        std::transform(
-            _unbondingData.entries.cbegin(),
-            _unbondingData.entries.cend(),
-            std::back_inserter(result),
-            [](const cosmos::UnbondingEntry &entry)
-                -> std::shared_ptr<api::CosmosLikeUnbondingEntry> {
-                return std::make_shared<CosmosLikeUnbondingEntry>(entry);
-            });
-        return result;
-    }
+            std::string getDelegatorAddress() override {
+                return _unbondingData.delegatorAddress;
+            }
+            std::string getValidatorAddress() override {
+                return _unbondingData.validatorAddress;
+            }
+            std::vector<std::shared_ptr<api::CosmosLikeUnbondingEntry>> getEntries() override {
+                auto result = std::vector<std::shared_ptr<api::CosmosLikeUnbondingEntry>>();
+                std::transform(
+                    _unbondingData.entries.cbegin(),
+                    _unbondingData.entries.cend(),
+                    std::back_inserter(result),
+                    [](const cosmos::UnbondingEntry &entry)
+                        -> std::shared_ptr<api::CosmosLikeUnbondingEntry> {
+                        return std::make_shared<CosmosLikeUnbondingEntry>(entry);
+                    });
+                return result;
+            }
 
-   private:
-    cosmos::Unbonding _unbondingData;
-};
-}  // namespace core
-}  // namespace ledger
+          private:
+            cosmos::Unbonding _unbondingData;
+        };
+    } // namespace core
+} // namespace ledger

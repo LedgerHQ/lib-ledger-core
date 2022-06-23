@@ -31,15 +31,16 @@
 #ifndef LEDGER_CORE_BITCOINLIKEINPUTAPI_H
 #define LEDGER_CORE_BITCOINLIKEINPUTAPI_H
 
+#include "../explorers/BitcoinLikeBlockchainExplorer.hpp"
+
 #include <api/BitcoinLikeInput.hpp>
 #include <wallet/common/api_impl/OperationApi.h>
-#include "../explorers/BitcoinLikeBlockchainExplorer.hpp"
 
 namespace ledger {
     namespace core {
         class BitcoinLikeInputApi : public api::BitcoinLikeInput {
-        public:
-            BitcoinLikeInputApi(const std::shared_ptr<OperationApi>& operation, int32_t inputIndex);
+          public:
+            BitcoinLikeInputApi(const std::shared_ptr<OperationApi> &operation, int32_t inputIndex);
             optional<std::string> getAddress() override;
             std::shared_ptr<api::Amount> getValue() override;
             bool isCoinbase() override;
@@ -69,14 +70,14 @@ namespace ledger {
 
             void setP2PKHSigScript(const std::vector<uint8_t> &signature) override;
 
-        private:
-            inline BitcoinLikeBlockchainExplorerInput& getInput();
+          private:
+            inline BitcoinLikeBlockchainExplorerInput &getInput();
 
-        private:
+          private:
             std::shared_ptr<OperationApi> _operation;
             int32_t _inputIndex;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKEINPUTAPI_H
+#endif // LEDGER_CORE_BITCOINLIKEINPUTAPI_H

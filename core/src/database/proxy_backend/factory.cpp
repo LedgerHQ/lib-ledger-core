@@ -30,19 +30,20 @@
  */
 
 #include "soci-proxy.h"
+
 #include <connection-parameters.h>
 
 using namespace soci;
 using namespace ledger::core;
 
-proxy_session_backend* proxy_backend_factory::make_session(const soci::connection_parameters &parameters) const {
+proxy_session_backend *proxy_backend_factory::make_session(const soci::connection_parameters &parameters) const {
     auto pool = get_pool(parameters);
     return new proxy_session_backend(pool->getConnection());
 }
 
 proxy_backend_factory::~proxy_backend_factory() {}
 
-const std::shared_ptr<api::DatabaseEngine>& proxy_backend_factory::getEngine() const {
+const std::shared_ptr<api::DatabaseEngine> &proxy_backend_factory::getEngine() const {
     return _engine;
 }
 
@@ -51,6 +52,6 @@ proxy_backend_factory::get_pool(connection_parameters const &parameters) const {
     return _engine->connect(parameters.get_connect_string());
 }
 
-SOCI_PROXY_DECL backend_factory const* soci::factory_proxy(const std::shared_ptr<api::DatabaseEngine>& engine) {
+SOCI_PROXY_DECL backend_factory const *soci::factory_proxy(const std::shared_ptr<api::DatabaseEngine> &engine) {
     return new proxy_backend_factory(engine);
 }

@@ -32,26 +32,22 @@
 #include <math/BaseConverter.hpp>
 
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
 
-    B64String::B64String(std::string b64)
-            : b64(std::move(b64))
-    {}
+            B64String::B64String(std::string b64)
+                : b64(std::move(b64)) {}
 
-    const std::string& B64String::getRawString() const
-    {
-        return b64;
-    }
+            const std::string &B64String::getRawString() const {
+                return b64;
+            }
 
-    std::vector<uint8_t> B64String::toBinary() const
-    {
-        std::vector<uint8_t> binary;
-        BaseConverter::decode(b64, BaseConverter::BASE64_RFC4648, binary);
-        return binary;
-    }
+            std::vector<uint8_t> B64String::toBinary() const {
+                std::vector<uint8_t> binary;
+                BaseConverter::decode(b64, BaseConverter::BASE64_RFC4648, binary);
+                return binary;
+            }
 
+        } // namespace algorand
+    }     // namespace core
 } // namespace ledger
-} // namespace core
-} // namespace algorand
-

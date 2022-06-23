@@ -28,15 +28,15 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RLPDECODER_H
 #define LEDGER_CORE_RLPDECODER_H
 
-#include <tuple>
-#include <vector>
-#include <string>
 #include "../../utils/Exception.hpp"
 #include "RLPEncoder.h"
+
+#include <string>
+#include <tuple>
+#include <vector>
 
 namespace ledger {
     namespace core {
@@ -48,14 +48,14 @@ namespace ledger {
         using rlp_tuple = std::tuple<int, int, RLP_TYPES>;
 
         class RLPDecoder {
-        public:
+          public:
             static std::shared_ptr<RLPEncoder> decode(const std::vector<uint8_t> &data,
                                                       std::shared_ptr<RLPEncoder> &parent);
             static std::shared_ptr<RLPEncoder> decode(const std::vector<uint8_t> &data);
             static rlp_tuple decodeLength(const std::vector<uint8_t> &data);
             static uint32_t toInteger(std::vector<uint8_t> &data);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_RLPDECODER_H
+#endif // LEDGER_CORE_RLPDECODER_H

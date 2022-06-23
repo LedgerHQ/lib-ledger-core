@@ -28,29 +28,29 @@
  *
  */
 
-
 #include "EthereumLikeTransactionApi.h"
-#include <wallet/common/Amount.h>
-#include <wallet/common/AbstractAccount.hpp>
-#include <wallet/common/AbstractWallet.hpp>
-#include <ethereum/EthereumLikeAddress.h>
-#include <bytes/BytesWriter.h>
+
 #include <bytes/BytesReader.h>
+#include <bytes/BytesWriter.h>
 #include <bytes/RLP/RLPListEncoder.h>
 #include <bytes/RLP/RLPStringEncoder.h>
+#include <ethereum/EthereumLikeAddress.h>
 #include <utils/hex.h>
+#include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/AbstractWallet.hpp>
+#include <wallet/common/Amount.h>
 
 namespace ledger {
     namespace core {
 
-        EthereumLikeTransactionApi::EthereumLikeTransactionApi(const api::Currency& currency) {
+        EthereumLikeTransactionApi::EthereumLikeTransactionApi(const api::Currency &currency) {
             _currency = currency;
-            _status = 0;
+            _status   = 0;
         }
 
-        EthereumLikeTransactionApi::EthereumLikeTransactionApi(const std::shared_ptr<OperationApi>& operation) {
-            auto& tx = operation->getBackend().ethereumTransaction.getValue();
-            _time = tx.receivedAt;
+        EthereumLikeTransactionApi::EthereumLikeTransactionApi(const std::shared_ptr<OperationApi> &operation) {
+            auto &tx = operation->getBackend().ethereumTransaction.getValue();
+            _time    = tx.receivedAt;
 
             if (tx.block.nonEmpty()) {
                 _block = std::make_shared<EthereumLikeBlockApi>(tx.block.getValue());
@@ -58,37 +58,37 @@ namespace ledger {
                 _block = nullptr;
             }
 
-            _hash = tx.hash;
+            _hash        = tx.hash;
 
-            _currency = operation->getAccount()->getWallet()->getCurrency();
+            _currency    = operation->getAccount()->getWallet()->getCurrency();
 
-            _gasPrice = std::make_shared<Amount>(_currency, 0, tx.gasPrice);
-            _gasLimit = std::make_shared<Amount>(_currency, 0, tx.gasLimit);
-            _gasUsed = std::make_shared<Amount>(_currency, 0, tx.gasUsed.getValue());
-            _value = std::make_shared<Amount>(_currency, 0, tx.value);
+            _gasPrice    = std::make_shared<Amount>(_currency, 0, tx.gasPrice);
+            _gasLimit    = std::make_shared<Amount>(_currency, 0, tx.gasLimit);
+            _gasUsed     = std::make_shared<Amount>(_currency, 0, tx.gasUsed.getValue());
+            _value       = std::make_shared<Amount>(_currency, 0, tx.value);
 
-            _nonce = std::make_shared<BigInt>((int64_t)tx.nonce);
-            _data = tx.inputData;
-            _status = tx.status;
-            _receiver = EthereumLikeAddress::fromEIP55(tx.receiver, _currency);
-            _sender = EthereumLikeAddress::fromEIP55(tx.sender, _currency);
+            _nonce       = std::make_shared<BigInt>((int64_t)tx.nonce);
+            _data        = tx.inputData;
+            _status      = tx.status;
+            _receiver    = EthereumLikeAddress::fromEIP55(tx.receiver, _currency);
+            _sender      = EthereumLikeAddress::fromEIP55(tx.sender, _currency);
 
             auto vBigInt = BigInt(_currency.ethereumLikeNetworkParameters.value().ChainID) * BigInt(2) + BigInt(36);
-            _vSignature = hex::toByteArray(vBigInt.toHexString());
+            _vSignature  = hex::toByteArray(vBigInt.toHexString());
         }
 
         std::string EthereumLikeTransactionApi::getHash() {
             return _hash;
         }
-        
+
         int32_t EthereumLikeTransactionApi::getNonce() {
             return (int32_t)_nonce->toUint64();
         }
-        
+
         std::shared_ptr<api::Amount> EthereumLikeTransactionApi::getGasPrice() {
             return _gasPrice;
         }
-        
+
         std::shared_ptr<api::Amount> EthereumLikeTransactionApi::getGasLimit() {
             return _gasLimit;
         }
@@ -107,13 +107,13 @@ namespace ledger {
         std::shared_ptr<api::Amount> EthereumLikeTransactionApi::getValue() {
             return _value;
         }
-        
+
         std::experimental::optional<std::vector<uint8_t>> EthereumLikeTransactionApi::getData() {
             return _data;
         }
 
         int32_t EthereumLikeTransactionApi::getStatus() {
-           return _block ? _status : 1;
+            return _block ? _status : 1;
         }
 
         std::chrono::system_clock::time_point EthereumLikeTransactionApi::getDate() {
@@ -128,42 +128,42 @@ namespace ledger {
             return _correlationId;
         }
 
-        std::string EthereumLikeTransactionApi::setCorrelationId(const std::string& newId)  {
-            auto oldId = _correlationId;
+        std::string EthereumLikeTransactionApi::setCorrelationId(const std::string &newId) {
+            auto oldId     = _correlationId;
             _correlationId = newId;
             return oldId;
         }
 
-        void EthereumLikeTransactionApi::setSignature(const std::vector<uint8_t> & vSignature, const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) {
+        void EthereumLikeTransactionApi::setSignature(const std::vector<uint8_t> &vSignature, const std::vector<uint8_t> &rSignature, const std::vector<uint8_t> &sSignature) {
             _vSignature = vSignature;
             _rSignature = rSignature;
             _sSignature = sSignature;
         }
 
-        void EthereumLikeTransactionApi::setDERSignature(const std::vector<uint8_t> & signature) {
+        void EthereumLikeTransactionApi::setDERSignature(const std::vector<uint8_t> &signature) {
             BytesReader reader(signature);
-            //DER prefix
+            // DER prefix
             reader.readNextByte();
-            //Total length
+            // Total length
             reader.readNextVarInt();
-            //Nb of elements for R
+            // Nb of elements for R
             reader.readNextByte();
-            //R length
-            auto rSize = reader.readNextVarInt();
+            // R length
+            auto rSize  = reader.readNextVarInt();
             _rSignature = reader.read(rSize);
-            //Nb of elements for S
+            // Nb of elements for S
             reader.readNextByte();
-            //S length
-            auto sSize = reader.readNextVarInt();
+            // S length
+            auto sSize  = reader.readNextVarInt();
             _sSignature = reader.read(sSize);
         }
 
-        void EthereumLikeTransactionApi::setVSignature(const std::vector<uint8_t> & vSignature) {
+        void EthereumLikeTransactionApi::setVSignature(const std::vector<uint8_t> &vSignature) {
             _vSignature = vSignature;
         }
 
         std::vector<uint8_t> EthereumLikeTransactionApi::serialize() {
-            //Construct RLP object from tx
+            // Construct RLP object from tx
             RLPListEncoder txList;
             std::vector<uint8_t> empty;
             if (_nonce->toUint64() == 0) {
@@ -175,8 +175,8 @@ namespace ledger {
             txList.append(hex::toByteArray(gasPrice.toHexString()));
             BigInt gasLimit(_gasLimit->toString());
             txList.append(hex::toByteArray(gasLimit.toHexString()));
-            auto receiver = _receiver->toEIP55();
-            auto sReceiver = receiver.substr(2,receiver.size() - 2);
+            auto receiver  = _receiver->toEIP55();
+            auto sReceiver = receiver.substr(2, receiver.size() - 2);
             txList.append(hex::toByteArray(sReceiver));
             BigInt value(_value->toString());
             if (_value->toBigInt()->intValue() == 0) {
@@ -202,7 +202,7 @@ namespace ledger {
             return writer.toByteArray();
         }
 
-        EthereumLikeTransactionApi & EthereumLikeTransactionApi::setGasPrice(const std::shared_ptr<BigInt>& gasPrice) {
+        EthereumLikeTransactionApi &EthereumLikeTransactionApi::setGasPrice(const std::shared_ptr<BigInt> &gasPrice) {
             if (!gasPrice) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "EthereumLikeTransactionApi::setGasPrice: Invalid Gas Price");
             }
@@ -210,7 +210,7 @@ namespace ledger {
             return *this;
         }
 
-        EthereumLikeTransactionApi & EthereumLikeTransactionApi::setGasLimit(const std::shared_ptr<BigInt>& gasLimit) {
+        EthereumLikeTransactionApi &EthereumLikeTransactionApi::setGasLimit(const std::shared_ptr<BigInt> &gasLimit) {
             if (!gasLimit) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "EthereumLikeTransactionApi::setGasLimit: Invalid Gas Limit");
             }
@@ -218,7 +218,7 @@ namespace ledger {
             return *this;
         }
 
-        EthereumLikeTransactionApi & EthereumLikeTransactionApi::setNonce(const std::shared_ptr<BigInt>& nonce) {
+        EthereumLikeTransactionApi &EthereumLikeTransactionApi::setNonce(const std::shared_ptr<BigInt> &nonce) {
             if (!nonce) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "EthereumLikeTransactionApi::setGasLimit: Invalid Nonce");
             }
@@ -226,7 +226,7 @@ namespace ledger {
             return *this;
         }
 
-        EthereumLikeTransactionApi & EthereumLikeTransactionApi::setValue(const std::shared_ptr<BigInt>& value) {
+        EthereumLikeTransactionApi &EthereumLikeTransactionApi::setValue(const std::shared_ptr<BigInt> &value) {
             if (!value) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "EthereumLikeTransactionApi::setGasLimit: Invalid Value");
             }
@@ -235,26 +235,25 @@ namespace ledger {
             return *this;
         }
 
-        EthereumLikeTransactionApi & EthereumLikeTransactionApi::setData(const std::vector<uint8_t> &data) {
+        EthereumLikeTransactionApi &EthereumLikeTransactionApi::setData(const std::vector<uint8_t> &data) {
             _data = data;
             return *this;
         }
 
-        EthereumLikeTransactionApi & EthereumLikeTransactionApi::setStatus(int32_t status) {
+        EthereumLikeTransactionApi &EthereumLikeTransactionApi::setStatus(int32_t status) {
             _status = status;
             return *this;
         }
 
-        EthereumLikeTransactionApi & EthereumLikeTransactionApi::setReceiver(const std::string &receiver) {
+        EthereumLikeTransactionApi &EthereumLikeTransactionApi::setReceiver(const std::string &receiver) {
             _receiver = EthereumLikeAddress::fromEIP55(receiver, _currency);
             return *this;
         }
 
-        EthereumLikeTransactionApi & EthereumLikeTransactionApi::setSender(const std::string &sender) {
+        EthereumLikeTransactionApi &EthereumLikeTransactionApi::setSender(const std::string &sender) {
             _sender = EthereumLikeAddress::fromEIP55(sender, _currency);
             return *this;
         }
 
-        
-    }
-}
+    } // namespace core
+} // namespace ledger

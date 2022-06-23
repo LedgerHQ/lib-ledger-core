@@ -31,20 +31,21 @@
 #ifndef LEDGER_CORE_MAPLIKE_HPP
 #define LEDGER_CORE_MAPLIKE_HPP
 
-#include <unordered_map>
+#include "../utils/Exception.hpp"
 #include "../utils/Option.hpp"
 #include "../utils/Try.hpp"
-#include "../utils/Exception.hpp"
-#include <fmt/format.h>
 #include "Sequence.hpp"
+
+#include <fmt/format.h>
+#include <unordered_map>
 
 namespace ledger {
     namespace core {
-        template<typename K, typename V, typename Container>
+        template <typename K, typename V, typename Container>
         class MapLike {
-        public:
+          public:
             MapLike() {}
-            MapLike(std::initializer_list<std::pair<const K, V>> il) : _container(il) {};
+            MapLike(std::initializer_list<std::pair<const K, V>> il) : _container(il){};
             MapLike(const Container &base) {
                 _container = base;
             };
@@ -57,7 +58,7 @@ namespace ledger {
                 _container = std::move(map._container);
             }
 
-            MapLike<K, V, Container>& operator=(const MapLike<K, V, Container>& map) {
+            MapLike<K, V, Container> &operator=(const MapLike<K, V, Container> &map) {
                 _container = map._container;
                 return *this;
             };
@@ -69,7 +70,7 @@ namespace ledger {
             V &at(const K &key) {
                 try {
                     return _container.at(key);
-                } catch (const std::out_of_range& e) {
+                } catch (const std::out_of_range &e) {
                     throw Exception(api::ErrorCode::OUT_OF_RANGE, fmt::format("Key \"{}\" not found in map.", key));
                 }
             }
@@ -77,7 +78,7 @@ namespace ledger {
             const V &at(const K &key) const {
                 try {
                     return _container.at(key);
-                } catch (const std::out_of_range& e) {
+                } catch (const std::out_of_range &e) {
                     throw Exception(api::ErrorCode::OUT_OF_RANGE, fmt::format("Key \"{}\" not found in map.", key));
                 }
             }
@@ -131,20 +132,20 @@ namespace ledger {
                 return _container.size();
             }
 
-            Container& getContainer() {
+            Container &getContainer() {
                 return _container;
             }
 
-            const Container& getContainer() const {
+            const Container &getContainer() const {
                 return _container;
             }
 
-        private:
+          private:
             Container _container;
         };
 
-        template<typename K, typename V>
+        template <typename K, typename V>
         using Map = MapLike<K, V, std::unordered_map<K, V>>;
-    }
-}
-#endif //LEDGER_CORE_MAPLIKE_HPP
+    } // namespace core
+} // namespace ledger
+#endif // LEDGER_CORE_MAPLIKE_HPP

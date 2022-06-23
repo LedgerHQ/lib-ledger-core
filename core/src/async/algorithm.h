@@ -32,6 +32,7 @@
 #define LEDGER_CORE_ALGORITHM_H
 
 #include "Future.hpp"
+
 #include <utils/ImmediateExecutionContext.hpp>
 
 namespace ledger {
@@ -41,36 +42,36 @@ namespace ledger {
             namespace internals {
 
                 template <class T>
-                Future<Unit> sequence_go(const std::shared_ptr<api::ExecutionContext>& context, int index, const std::vector< Future<T> >& futures, std::vector<T>* buffer) {
-                if (index >= futures.size())
-                return Future<Unit>::successful(unit);
-                else {
-                Future<T> fut = futures[index];
-                return fut.template flatMap<Unit>(context, [context, buffer, index, futures](const T &r) -> Future<Unit> {
-                buffer->push_back(r);
-                return sequence_go(context, index + 1, futures, buffer);
-            });
-        }
-    }
+                Future<Unit> sequence_go(const std::shared_ptr<api::ExecutionContext> &context, int index, const std::vector<Future<T>> &futures, std::vector<T> *buffer) {
+                    if (index >= futures.size())
+                        return Future<Unit>::successful(unit);
+                    else {
+                        Future<T> fut = futures[index];
+                        return fut.template flatMap<Unit>(context, [context, buffer, index, futures](const T &r) -> Future<Unit> {
+                            buffer->push_back(r);
+                            return sequence_go(context, index + 1, futures, buffer);
+                        });
+                    }
+                }
 
-}
+            } // namespace internals
 
             template <class T>
-            Future< std::vector<T> > sequence(const std::shared_ptr<api::ExecutionContext>& context, const std::vector< Future<T> >& futures) {
-            auto buffer = new std::vector<T>();
-            return internals::sequence_go<T>(context, 0, futures, buffer).template map< std::vector<T> >(context, [buffer] (const Unit&) -> std::vector<T> {
-            auto res = *buffer;
-            delete buffer;
-            return res;
-            });
+            Future<std::vector<T>> sequence(const std::shared_ptr<api::ExecutionContext> &context, const std::vector<Future<T>> &futures) {
+                auto buffer = new std::vector<T>();
+                return internals::sequence_go<T>(context, 0, futures, buffer).template map<std::vector<T>>(context, [buffer](const Unit &) -> std::vector<T> {
+                    auto res = *buffer;
+                    delete buffer;
+                    return res;
+                });
             }
 
-        }
-    }
-}
+        } // namespace async
+    }     // namespace core
+} // namespace ledger
 
 #define BEGIN_ASYNC_WHILE()
 
 #define ASYNC_FOREACH()
 
-#endif //LEDGER_CORE_ALGORITHM_H
+#endif // LEDGER_CORE_ALGORITHM_H

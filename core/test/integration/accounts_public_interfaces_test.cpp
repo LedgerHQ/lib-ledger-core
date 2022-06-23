@@ -29,16 +29,17 @@
  *
  */
 
-#include "BaseFixture.h"
 #include "../fixtures/medium_xpub_fixtures.h"
 #include "../fixtures/testnet_xpub_fixtures.h"
-#include <wallet/common/OperationQuery.h>
+#include "BaseFixture.h"
+
 #include <api/KeychainEngines.hpp>
-#include <utils/DateUtils.hpp>
 #include <iostream>
+#include <utils/DateUtils.hpp>
+#include <wallet/common/OperationQuery.h>
 using namespace std;
 class AccountsPublicInterfaceTest : public BaseFixture {
-public:
+  public:
     void SetUp() override {
         BaseFixture::SetUp();
         walletName = randomWalletName();
@@ -46,14 +47,14 @@ public:
     }
 
     void recreate() {
-        pool = newDefaultPool();
+        pool   = newDefaultPool();
         wallet = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
     }
 
     void TearDown() override {
         BaseFixture::TearDown();
         uv::wait(pool->deleteWallet(walletName));
-        pool = nullptr;
+        pool   = nullptr;
         wallet = nullptr;
     }
 
@@ -63,7 +64,7 @@ public:
 };
 
 TEST_F(AccountsPublicInterfaceTest, GetAddressOnEmptyAccount) {
-    auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
+    auto account   = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto addresses = uv::wait(account->getFreshPublicAddresses());
     EXPECT_EQ(addresses.size(), 20);
     EXPECT_EQ(addresses.front()->toString(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
@@ -76,9 +77,9 @@ TEST_F(AccountsPublicInterfaceTest, GetBalanceOnEmptyAccount) {
 }
 
 TEST_F(AccountsPublicInterfaceTest, GetBalanceOnAccountWithSomeTxs) {
-    auto account = ledger::testing::medium_xpub::inflate(pool, wallet);
-    auto balance = uv::wait(account->getBalance());
-    auto utxos = uv::wait(account->getUTXO());
+    auto account   = ledger::testing::medium_xpub::inflate(pool, wallet);
+    auto balance   = uv::wait(account->getBalance());
+    auto utxos     = uv::wait(account->getUTXO());
     auto uxtoCount = uv::wait(account->getUTXOCount());
     EXPECT_EQ(balance->toLong(), 143590816L);
     EXPECT_EQ(utxos.size(), 8);
@@ -86,42 +87,42 @@ TEST_F(AccountsPublicInterfaceTest, GetBalanceOnAccountWithSomeTxs) {
 }
 
 TEST_F(AccountsPublicInterfaceTest, GetBalanceHistoryOnAccountWithSomeTxs) {
-    auto account = ledger::testing::medium_xpub::inflate(pool, wallet);
-    auto fromDate = "2017-10-12T13:38:23Z";
-    auto toDate = DateUtils::toJSON(DateUtils::now());
+    auto account        = ledger::testing::medium_xpub::inflate(pool, wallet);
+    auto fromDate       = "2017-10-12T13:38:23Z";
+    auto toDate         = DateUtils::toJSON(DateUtils::now());
     auto balanceHistory = uv::wait(account->getBalanceHistory(fromDate, toDate, api::TimePeriod::MONTH));
-    auto balance = uv::wait(account->getBalance());
+    auto balance        = uv::wait(account->getBalance());
     EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), balance->toLong());
 }
 
 TEST_F(AccountsPublicInterfaceTest, QueryOperations) {
-    auto account = ledger::testing::medium_xpub::inflate(pool, wallet);
-    auto query = std::dynamic_pointer_cast<ledger::core::OperationQuery>(account->queryOperations()->limit(100)->partial());
+    auto account    = ledger::testing::medium_xpub::inflate(pool, wallet);
+    auto query      = std::dynamic_pointer_cast<ledger::core::OperationQuery>(account->queryOperations()->limit(100)->partial());
     auto operations = uv::wait(query->execute());
     EXPECT_EQ(operations.size(), 100);
 }
 
 TEST_F(AccountsPublicInterfaceTest, QueryOperationsOnEmptyAccount) {
-    auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
-    auto query = std::dynamic_pointer_cast<ledger::core::OperationQuery>(account->queryOperations()->limit(100)->partial());
+    auto account    = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
+    auto query      = std::dynamic_pointer_cast<ledger::core::OperationQuery>(account->queryOperations()->limit(100)->partial());
     auto operations = uv::wait(query->execute());
     EXPECT_EQ(operations.size(), 0);
 }
 
 TEST_F(AccountsPublicInterfaceTest, GetTestnetUnits) {
     auto configuration = DynamicObject::newInstance();
-    configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
-    wallet = uv::wait(pool->createWallet("my_wallet_testnet", "bitcoin_testnet", configuration));
+    configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
+    wallet        = uv::wait(pool->createWallet("my_wallet_testnet", "bitcoin_testnet", configuration));
     auto currency = pool->getCurrency("bitcoin");
     EXPECT_EQ(currency->name, "bitcoin");
-    cout<<">>>> Get account"<<endl;
+    cout << ">>>> Get account" << endl;
     auto account = ledger::testing::testnet_xpub::inflate(pool, wallet);
-    cout<<">>>> Get balance"<<endl;
+    cout << ">>>> Get balance" << endl;
     auto balance = uv::wait(account->getBalance());
-    cout<<">>>> Get balance toLong"<<endl;
+    cout << ">>>> Get balance toLong" << endl;
     auto balanceLong = balance->toLong();
-    //EXPECT_EQ(balanceLong, 100L);
-    //auto balance = uv::wait(account->getBalance());
-    //auto balance =
-    //EXPECT_EQ();
+    // EXPECT_EQ(balanceLong, 100L);
+    // auto balance = uv::wait(account->getBalance());
+    // auto balance =
+    // EXPECT_EQ();
 }

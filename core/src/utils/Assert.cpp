@@ -36,5 +36,5 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::UNSUPPORTED_CURRENCY, errorMessage);
             }
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

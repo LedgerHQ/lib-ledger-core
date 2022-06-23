@@ -28,9 +28,10 @@
  * SOFTWARE.
  *
  */
+#include "CurrencyBuilder.hpp"
+
 #include <api/Wallet.hpp>
 #include <api/WalletType.hpp>
-#include "CurrencyBuilder.hpp"
 
 namespace ledger {
     namespace core {
@@ -45,45 +46,44 @@ namespace ledger {
         }
 
         CurrencyBuilder &CurrencyBuilder::forkOfBitcoin(api::BitcoinLikeNetworkParameters params) {
-            _type = api::WalletType::BITCOIN;
+            _type    = api::WalletType::BITCOIN;
             _bitcoin = params;
             return *this;
         }
 
         CurrencyBuilder &CurrencyBuilder::forkOfCosmos(api::CosmosLikeNetworkParameters params) {
-            _type = api::WalletType::COSMOS;
+            _type   = api::WalletType::COSMOS;
             _cosmos = params;
             return *this;
         }
 
-
         CurrencyBuilder &CurrencyBuilder::forkOfEthereum(api::EthereumLikeNetworkParameters params) {
-            _type = api::WalletType::ETHEREUM;
+            _type     = api::WalletType::ETHEREUM;
             _ethereum = params;
             return *this;
         }
 
         CurrencyBuilder &CurrencyBuilder::forkOfRipple(api::RippleLikeNetworkParameters params) {
-            _type = api::WalletType::RIPPLE;
+            _type   = api::WalletType::RIPPLE;
             _ripple = params;
             return *this;
         }
 
-        CurrencyBuilder& CurrencyBuilder::forkOfTezos(api::TezosLikeNetworkParameters params) {
-            _type = api::WalletType::TEZOS;
+        CurrencyBuilder &CurrencyBuilder::forkOfTezos(api::TezosLikeNetworkParameters params) {
+            _type  = api::WalletType::TEZOS;
             _tezos = params;
             return *this;
         }
 
         CurrencyBuilder &CurrencyBuilder::forkOfStellar(const api::StellarLikeNetworkParameters &params) {
-            _type = api::WalletType::STELLAR;
+            _type    = api::WalletType::STELLAR;
             _stellar = params;
 
             return *this;
         }
 
         CurrencyBuilder &CurrencyBuilder::forkOfAlgorand(const api::AlgorandNetworkParameters &params) {
-            _type = api::WalletType::ALGORAND;
+            _type     = api::WalletType::ALGORAND;
             _algorand = params;
 
             return *this;
@@ -103,9 +103,8 @@ namespace ledger {
             return *this;
         }
 
-        CurrencyBuilder &CurrencyBuilder::unit(const std::string &name, int magnitude, const std::string &symbol,
-                                               const std::string &code) {
-            api::CurrencyUnit u(name, symbol, code, (int32_t) magnitude);
+        CurrencyBuilder &CurrencyBuilder::unit(const std::string &name, int magnitude, const std::string &symbol, const std::string &code) {
+            api::CurrencyUnit u(name, symbol, code, (int32_t)magnitude);
             _units.push_back(u);
             return *this;
         }
@@ -114,9 +113,9 @@ namespace ledger {
             return unit(name, magnitude, code, code);
         }
 
-        CurrencyBuilder Currency(const std::string& name) {
+        CurrencyBuilder Currency(const std::string &name) {
             return CurrencyBuilder(name);
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -28,58 +28,56 @@
  *
  */
 
-
 #include "ApiRippleLikeBlockchainExplorer.h"
 
 namespace ledger {
     namespace core {
 
         ApiRippleLikeBlockchainExplorer::ApiRippleLikeBlockchainExplorer(
-                const std::shared_ptr<api::ExecutionContext> &context,
-                const std::shared_ptr<HttpClient> &http,
-                const api::RippleLikeNetworkParameters &parameters,
-                const std::shared_ptr<api::DynamicObject> &configuration) :
-                DedicatedContext(context),
-                RippleLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
-            _http = http;
-            _parameters = parameters;
+            const std::shared_ptr<api::ExecutionContext> &context,
+            const std::shared_ptr<HttpClient> &http,
+            const api::RippleLikeNetworkParameters &parameters,
+            const std::shared_ptr<api::DynamicObject> &configuration) : DedicatedContext(context),
+                                                                        RippleLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
+            _http            = http;
+            _parameters      = parameters;
             _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v2");
         }
 
         Future<String>
-        ApiRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
+        ApiRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) {
             throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Missing implementation of pushTransaction method for Ripple API");
         }
 
         Future<std::shared_ptr<BigInt>>
         ApiRippleLikeBlockchainExplorer::getBalance(const std::vector<RippleLikeKeychain::Address> &addresses) {
-
             if (addresses.size() != 1) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "ApiRippleLikeBlockchainExplorer::getBalance can only be called with one address");
             }
 
             std::string addressesStr = addresses[0]->toBase58();
-            auto size = addresses.size();
+            auto size                = addresses.size();
 
             return _http->GET(fmt::format("/{}/accounts/{}/balances", _explorerVersion, addressesStr))
-                    .json().mapPtr<BigInt>(getContext(), [addressesStr, size](const HttpRequest::JsonResult &result) {
-                        auto &json = *std::get<1>(result);
-                        if (!json.IsObject() || !json.HasMember("balances") ||
-                            !json["balances"].IsArray()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}",
-                                                 addressesStr);
+                .json()
+                .mapPtr<BigInt>(getContext(), [addressesStr, size](const HttpRequest::JsonResult &result) {
+                    auto &json = *std::get<1>(result);
+                    if (!json.IsObject() || !json.HasMember("balances") ||
+                        !json["balances"].IsArray()) {
+                        throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}",
+                                             addressesStr);
+                    }
+                    std::string strBalance;
+                    auto size = json["balances"].Size();
+                    // Find XRP balance
+                    for (int i = 0; i < size; i++) {
+                        if (json["balances"][i]["currency"] == "XRP") {
+                            strBalance = json["balances"][i]["value"].GetString();
+                            break;
                         }
-                        std::string strBalance;
-                        auto size = json["balances"].Size();
-                        //Find XRP balance
-                        for (int i = 0; i < size; i++) {
-                            if (json["balances"][i]["currency"] == "XRP") {
-                                strBalance = json["balances"][i]["value"].GetString();
-                                break;
-                            }
-                        }
-                        return std::make_shared<BigInt>(strBalance);
-                    });
+                    }
+                    return std::make_shared<BigInt>(strBalance);
+                });
         }
 
         Future<std::shared_ptr<BigInt>>
@@ -114,14 +112,14 @@ namespace ledger {
             throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Missing implementation of getRawTransaction method for Ripple API");
         }
 
-        Future<String> ApiRippleLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
+        Future<String> ApiRippleLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) {
             return pushLedgerApiTransaction(transaction, correlationId);
         }
 
         FuturePtr<RippleLikeBlockchainExplorer::TransactionsBulk>
         ApiRippleLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
-                                                               Option<std::string> fromBlockHash,
-                                                               Option<void *> session) {
+                                                         Option<std::string> fromBlockHash,
+                                                         Option<void *> session) {
             auto joinedAddresses = Array<std::string>(addresses).join(strings::mkString(",")).getValueOr("");
             std::string params;
             std::unordered_map<std::string, std::string> headers;
@@ -135,31 +133,31 @@ namespace ledger {
                 params = params + "blockHash=" + fromBlockHash.getValue();
             }
             return _http->GET(fmt::format("/{}/accounts/{}/transactions{}", getExplorerVersion(), joinedAddresses, params), headers)
-                    .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, RippleLikeTransactionsBulkParser>())
-                    .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash] (const Either<Exception, std::shared_ptr<TransactionsBulk>>& result) {
-                        if (result.isLeft()) {
-                            // Only case where we should emit block not found error
-                            if (!fromBlockHash.isEmpty() && result.getLeft().getErrorCode() == api::ErrorCode::HTTP_ERROR) {
-                                throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Unable to find block with hash {}", fromBlockHash.getValue());
-                            } else {
-                                throw result.getLeft();
-                            }
+                .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, RippleLikeTransactionsBulkParser>())
+                .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash](const Either<Exception, std::shared_ptr<TransactionsBulk>> &result) {
+                    if (result.isLeft()) {
+                        // Only case where we should emit block not found error
+                        if (!fromBlockHash.isEmpty() && result.getLeft().getErrorCode() == api::ErrorCode::HTTP_ERROR) {
+                            throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Unable to find block with hash {}", fromBlockHash.getValue());
                         } else {
-                            return result.getRight();
+                            throw result.getLeft();
                         }
-                    });
+                    } else {
+                        return result.getRight();
+                    }
+                });
         }
 
         FuturePtr<Block> ApiRippleLikeBlockchainExplorer::getCurrentBlock() const {
             return _http->GET(fmt::format("/{}/ledgers", getExplorerVersion()))
-                    .template json<Block, Exception>(LedgerApiParser<Block, RippleLikeBlockParser>())
-                    .template mapPtr<Block>(getExplorerContext(), [] (const Either<Exception, std::shared_ptr<Block>>& result) {
-                        if (result.isLeft()) {
-                            throw result.getLeft();
-                        } else {
-                            return result.getRight();
-                        }
-                    });
+                .template json<Block, Exception>(LedgerApiParser<Block, RippleLikeBlockParser>())
+                .template mapPtr<Block>(getExplorerContext(), [](const Either<Exception, std::shared_ptr<Block>> &result) {
+                    if (result.isLeft()) {
+                        throw result.getLeft();
+                    } else {
+                        return result.getRight();
+                    }
+                });
         }
 
         FuturePtr<RippleLikeBlockchainExplorerTransaction>
@@ -182,5 +180,5 @@ namespace ledger {
         std::string ApiRippleLikeBlockchainExplorer::getExplorerVersion() const {
             return _explorerVersion;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

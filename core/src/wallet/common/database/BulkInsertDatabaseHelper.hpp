@@ -32,28 +32,28 @@
 #ifndef LEDGER_CORE_BULKINSERTDATABASEHELPER_HPP
 #define LEDGER_CORE_BULKINSERTDATABASEHELPER_HPP
 
+#include <database/PreparedStatement.hpp>
 #include <soci.h>
 #include <wallet/common/Operation.h>
-#include <database/PreparedStatement.hpp>
 
 namespace ledger {
     namespace core {
         struct OperationBinding {
-            std::vector <std::string> type;
-            std::vector <std::string> senders;
-            std::vector <std::string> receivers;
-            std::vector <std::string> amount;
-            std::vector <std::string> fees;
-            std::vector <Option<std::string>> blockUid;
-            std::vector <std::string> serializedTrust;
+            std::vector<std::string> type;
+            std::vector<std::string> senders;
+            std::vector<std::string> receivers;
+            std::vector<std::string> amount;
+            std::vector<std::string> fees;
+            std::vector<Option<std::string>> blockUid;
+            std::vector<std::string> serializedTrust;
 
-            std::vector <std::string> uid;
-            std::vector <std::string> accountUid;
-            std::vector <std::string> walletUid;
-            std::vector <std::chrono::system_clock::time_point> date;
-            std::vector <std::string> currencyName;
+            std::vector<std::string> uid;
+            std::vector<std::string> accountUid;
+            std::vector<std::string> walletUid;
+            std::vector<std::chrono::system_clock::time_point> date;
+            std::vector<std::string> currencyName;
 
-            void update(const Operation& operation);
+            void update(const Operation &operation);
             void reset();
         };
 
@@ -69,12 +69,12 @@ namespace ledger {
         };
 
         class BulkInsertDatabaseHelper {
-        public:
+          public:
             static const StatementDeclaration<OperationBinding> UPSERT_OPERATION;
             static const StatementDeclaration<BlockBinding> UPSERT_BLOCK;
-            static void updateBlock(soci::session& sql, const Block& block);
+            static void updateBlock(soci::session &sql, const Block &block);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_BULKINSERTDATABASEHELPER_HPP
+#endif // LEDGER_CORE_BULKINSERTDATABASEHELPER_HPP

@@ -41,10 +41,11 @@ namespace ledger {
 
             constexpr uint64_t RIPPLE_EPOCH_SECONDS = 946684800;
 
-            template<typename T>
+            template <typename T>
             using IsClock = std::enable_if_t<std::is_same<T, std::chrono::system_clock>::value ||
-                                             std::is_same<T, std::chrono::high_resolution_clock>::value ||
-                                             std::is_same<T, std::chrono::steady_clock>::value, bool>;
+                                                 std::is_same<T, std::chrono::high_resolution_clock>::value ||
+                                                 std::is_same<T, std::chrono::steady_clock>::value,
+                                             bool>;
 
             /**
              * Convert a XRP timestamp to a C++ time point. Rippled is using another epoch time than UNIX
@@ -58,9 +59,8 @@ namespace ledger {
             auto toTimePoint(uint64_t timestamp) {
                 return std::chrono::time_point<T>(std::chrono::seconds(timestamp + RIPPLE_EPOCH_SECONDS));
             }
-        }
-    }
-}
+        } // namespace xrp_utils
+    }     // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_TIME_HPP
+#endif // LEDGER_CORE_TIME_HPP

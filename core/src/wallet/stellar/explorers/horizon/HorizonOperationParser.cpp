@@ -30,6 +30,7 @@
  */
 
 #include "HorizonOperationParser.hpp"
+
 #include <utils/DateUtils.hpp>
 
 using namespace ledger::core;
@@ -89,10 +90,9 @@ namespace ledger {
             return true;
         }
 
-        bool
-        HorizonOperationParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+        bool HorizonOperationParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             if (_path.match(TYPE_MATCHER)) {
-                _operation->type = (stellar::OperationType) BigInt::fromString(std::string(str, length)).toInt();
+                _operation->type = (stellar::OperationType)BigInt::fromString(std::string(str, length)).toInt();
             }
             return true;
         }
@@ -161,5 +161,5 @@ namespace ledger {
             _path = path;
             _assetParser.setPathView(path);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

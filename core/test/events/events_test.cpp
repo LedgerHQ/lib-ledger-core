@@ -29,36 +29,35 @@
  *
  */
 
-#include <gtest/gtest.h>
-#include <src/events/EventBus.hpp>
 #include <UvThreadDispatcher.hpp>
-#include <src/events/LambdaEventReceiver.hpp>
-#include <src/events/Event.hpp>
+#include <gtest/gtest.h>
 #include <src/collections/DynamicObject.hpp>
+#include <src/events/Event.hpp>
+#include <src/events/EventBus.hpp>
+#include <src/events/LambdaEventReceiver.hpp>
 
 using namespace ledger::core;
 
 TEST(Events, SimpleCase) {
-    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
+    auto dispatcher     = std::make_shared<uv::UvThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
-    auto receiver = make_receiver(
-            [&] (const std::shared_ptr<api::Event>& event) {
-                EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
-                dispatcher->stop();
-            }
-    );
-    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+    auto receiver       = make_receiver(
+        [&](const std::shared_ptr<api::Event> &event) {
+            EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
+            dispatcher->stop();
+        });
+    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
     eventPublisher->post(make_event(api::EventCode::SYNCHRONIZATION_STARTED, nullptr));
     dispatcher->waitUntilStopped();
 }
 
 TEST(Events, SimpleCaseWithPayload) {
-    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
+    auto dispatcher     = std::make_shared<uv::UvThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
-    auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
+    auto receiver       = make_receiver([&](const std::shared_ptr<api::Event> &event) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
         EXPECT_EQ(event->getPayload()->getString("hello"), Option<std::string>("world").toOptional());
         auto before = event->getPayload()->dump();
@@ -67,7 +66,7 @@ TEST(Events, SimpleCaseWithPayload) {
         dispatcher->stop();
     });
 
-    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
     auto payload = std::make_shared<DynamicObject>();
     payload->putString("hello", "world");
@@ -76,45 +75,46 @@ TEST(Events, SimpleCaseWithPayload) {
 }
 
 TEST(Events, StickyEvent) {
-    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
+    auto dispatcher     = std::make_shared<uv::UvThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
     eventPublisher->postSticky(make_event(api::EventCode::SYNCHRONIZATION_STARTED, nullptr), 0);
-    auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
+    auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
         dispatcher->stop();
     });
-    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+    eventPublisher->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
     dispatcher->waitUntilStopped();
 }
 
 TEST(Events, Relay) {
-    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
+    auto dispatcher     = std::make_shared<uv::UvThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
-    auto relay = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
+    auto relay          = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
     relay->relay(eventPublisher->getEventBus());
-    auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
+    auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
         dispatcher->stop();
     });
     relay->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
-    dispatcher->getMainExecutionContext()->delay(make_runnable([=] () {
-        eventPublisher->post(make_event(api::EventCode::SYNCHRONIZATION_STARTED, nullptr));
-    }), 20);
+    dispatcher->getMainExecutionContext()->delay(make_runnable([=]() {
+                                                     eventPublisher->post(make_event(api::EventCode::SYNCHRONIZATION_STARTED, nullptr));
+                                                 }),
+                                                 20);
     dispatcher->waitUntilStopped();
 }
 
 TEST(Events, EventFilter) {
-    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
+    auto dispatcher     = std::make_shared<uv::UvThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
-    eventPublisher->setFilter([] (const std::shared_ptr<api::Event>& event) -> bool {
+    eventPublisher->setFilter([](const std::shared_ptr<api::Event> &event) -> bool {
         return event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED;
     });
 
-    auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
+    auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
         dispatcher->stop();
     });

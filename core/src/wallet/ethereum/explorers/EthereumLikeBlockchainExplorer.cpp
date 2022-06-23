@@ -28,15 +28,15 @@
  *
  */
 
-
 #include "EthereumLikeBlockchainExplorer.h"
+
 #include <api/Configuration.hpp>
 
 namespace ledger {
     namespace core {
         EthereumLikeBlockchainExplorer::EthereumLikeBlockchainExplorer(const std::shared_ptr<ledger::core::api::DynamicObject> &configuration,
-                                                                     const std::vector<std::string> &matchableKeys) : ConfigurationMatchable(matchableKeys) {
+                                                                       const std::vector<std::string> &matchableKeys) : ConfigurationMatchable(matchableKeys) {
             setConfiguration(configuration);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

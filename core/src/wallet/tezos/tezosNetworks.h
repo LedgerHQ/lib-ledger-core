@@ -28,17 +28,15 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSNETWORKS_H
 #define LEDGER_CORE_TEZOSNETWORKS_H
 
-
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER) && _MSC_VER <= 1900
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 #include <api/TezosLikeNetworkParameters.hpp>
@@ -48,22 +46,19 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::TezosLikeNetworkParameters getTezosLikeNetworkParameters(const std::string &networkName);
             extern LIBCORE_EXPORT const std::vector<api::TezosLikeNetworkParameters> ALL_TEZOS;
 
-            template<class Archive>
-            void serialize(Archive & archive,
-                           api::TezosLikeNetworkParameters & p)
-            {
+            template <class Archive>
+            void serialize(Archive &archive,
+                           api::TezosLikeNetworkParameters &p) {
                 archive(
-                        p.Identifier,
-                        p.MessagePrefix,
-                        p.XPUBVersion,
-                        p.AdditionalTIPs,
-                        p.TimestampDelay
-                );
+                    p.Identifier,
+                    p.MessagePrefix,
+                    p.XPUBVersion,
+                    p.AdditionalTIPs,
+                    p.TimestampDelay);
             }
 
-        }
-    }
-}
+        } // namespace networks
+    }     // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_TEZOSNETWORKS_H
+#endif // LEDGER_CORE_TEZOSNETWORKS_H

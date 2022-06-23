@@ -31,27 +31,27 @@
 #ifndef LEDGER_CORE_SERIALIZATION_HPP
 #define LEDGER_CORE_SERIALIZATION_HPP
 
-#include <vector>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <cereal/archives/binary.hpp>
 #include <cereal/external/base64.hpp>
 #include <sstream>
+#include <vector>
 
 namespace ledger {
     namespace core {
         namespace serialization {
 
             template <typename T>
-            void load(const std::vector<uint8_t>& src, T& dest) {
-                boost::iostreams::array_source my_vec_source(reinterpret_cast<const char*>(&src[0]), src.size());
+            void load(const std::vector<uint8_t> &src, T &dest) {
+                boost::iostreams::array_source my_vec_source(reinterpret_cast<const char *>(&src[0]), src.size());
                 boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
                 ::cereal::BinaryInputArchive archive(is);
                 archive(dest);
             }
 
             template <typename T>
-            void save(T& src, std::vector<uint8_t>& dest) {
+            void save(T &src, std::vector<uint8_t> &dest) {
                 std::stringstream is;
                 ::cereal::BinaryOutputArchive archive(is);
                 archive(src);
@@ -60,26 +60,25 @@ namespace ledger {
             };
 
             template <typename T>
-            void loadBase64(const std::string& str, T& dest) {
+            void loadBase64(const std::string &str, T &dest) {
                 auto decoded = cereal::base64::decode(str);
                 std::vector<uint8_t> data;
                 data.reserve(decoded.size());
-                for (auto& c : decoded) {
-                    data.push_back((uint8_t) c);
+                for (auto &c : decoded) {
+                    data.push_back((uint8_t)c);
                 }
                 load(data, dest);
             }
 
             template <typename T>
-            void saveBase64(T& src, std::string& dest) {
+            void saveBase64(T &src, std::string &dest) {
                 std::vector<uint8_t> data;
                 save(src, data);
                 dest = cereal::base64::encode((const unsigned char *)data.data(), data.size());
             }
 
-        }
-    }
-}
+        } // namespace serialization
+    }     // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_SERIALIZATION_HPP
+#endif // LEDGER_CORE_SERIALIZATION_HPP

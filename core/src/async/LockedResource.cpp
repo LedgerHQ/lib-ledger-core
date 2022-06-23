@@ -28,5 +28,6 @@
  * SOFTWARE.
  *
  */
-#include <bigd.h>
 #include "LockedResource.hpp"
+
+#include <bigd.h>

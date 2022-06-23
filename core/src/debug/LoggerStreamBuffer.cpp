@@ -35,13 +35,13 @@ int ledger::core::LoggerStreamBuffer::overflow(int c) {
         _logger->info("[{}] {}", _tag, _buffer.str());
         std::stringstream().swap(_buffer);
     } else {
-        _buffer.put((char_type) c);
+        _buffer.put((char_type)c);
     }
     return c;
 }
 
 ledger::core::LoggerStreamBuffer::LoggerStreamBuffer(const std::string &tag,
                                                      const std::shared_ptr<spdlog::logger> &logger) {
-    _tag = tag;
+    _tag    = tag;
     _logger = logger;
 }

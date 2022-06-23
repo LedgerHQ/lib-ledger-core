@@ -32,24 +32,24 @@
 #ifndef LEDGER_CORE_OPERATION_H
 #define LEDGER_CORE_OPERATION_H
 
-#include <string>
+#include "Block.h"
+#include "TrustIndicator.h"
+
+#include <api/Operation.hpp>
+#include <api/OperationType.hpp>
 #include <api/WalletType.hpp>
 #include <chrono>
-#include <vector>
 #include <math/BigInt.h>
-#include <utils/Option.hpp>
-#include "TrustIndicator.h"
 #include <memory>
+#include <string>
+#include <utils/Option.hpp>
+#include <vector>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/CosmosLikeOperationQuery.hpp>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
-#include <api/OperationType.hpp>
-#include <api/Operation.hpp>
-#include "Block.h"
 #include <wallet/stellar/stellar.hpp>
-#include <memory>
+#include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
 
 namespace ledger {
     namespace core {
@@ -82,26 +82,25 @@ namespace ledger {
 
             void refreshUid(const std::string &additional = "");
 
-            Operation() = default;
-            Operation(Operation const&) = default;
+            Operation()                             = default;
+            Operation(Operation const &)            = default;
 
-            Operation(Operation&&) = default;
+            Operation(Operation &&)                 = default;
 
-            Operation& operator=(Operation const&) = default;
-            Operation& operator=(Operation&&) = default;
+            Operation &operator=(Operation const &) = default;
+            Operation &operator=(Operation &&)      = default;
 
             template <typename CoinOperationType>
-            static std::string computeTransactionId(const std::string& txHash, const CoinOperationType& coinOperationType, const std::string& additional = "");
-            static std::string computeTransactionId(const std::string& txHash, const std::string& additional = "");
-
+            static std::string computeTransactionId(const std::string &txHash, const CoinOperationType &coinOperationType, const std::string &additional = "");
+            static std::string computeTransactionId(const std::string &txHash, const std::string &additional = "");
         };
 
         template <typename CoinOperationType>
-        std::string Operation::computeTransactionId(const std::string& txHash, const CoinOperationType& coinOperationType, const std::string& additional) {
+        std::string Operation::computeTransactionId(const std::string &txHash, const CoinOperationType &coinOperationType, const std::string &additional) {
             auto hashAndCoinOpType = fmt::format("{}+{}", txHash, api::to_string(coinOperationType));
             return computeTransactionId(hashAndCoinOpType, additional);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_OPERATION_H
+#endif // LEDGER_CORE_OPERATION_H

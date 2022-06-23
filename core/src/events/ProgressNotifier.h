@@ -32,52 +32,51 @@
 #define LEDGER_CORE_PROGRESSNOTIFIER_H
 
 #include <api/ExecutionContext.hpp>
-#include <functional>
-#include <utils/Option.hpp>
-#include <utils/Exception.hpp>
-#include <list>
 #include <async/Future.hpp>
 #include <async/Promise.hpp>
+#include <functional>
+#include <list>
 #include <mutex>
+#include <utils/Exception.hpp>
+#include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {
 
-        using ProgressHandler = std::function<void (const std::string&, double)>;
+        using ProgressHandler = std::function<void(const std::string &, double)>;
 
         template <typename T>
         class ProgressNotifier {
-        public:
+          public:
             ProgressNotifier() {
-
             }
 
-            ProgressNotifier(const ProgressNotifier& notifier) = delete;
+            ProgressNotifier(const ProgressNotifier &notifier) = delete;
 
-            void setProgress(const std::string& step, double progress) {
+            void setProgress(const std::string &step, double progress) {
                 std::lock_guard<std::mutex> lock(_mutex);
                 _lastStep = step;
-                for (auto& handler : _handlers) {
+                for (auto &handler : _handlers) {
                     auto callback = handler.second;
-                    Future<Unit>::async(handler.first, [step, progress, callback] () {
+                    Future<Unit>::async(handler.first, [step, progress, callback]() {
                         callback(step, std::max(progress, 1.0));
                         return unit;
                     });
                 }
             };
 
-            void success(const T& result) {
+            void success(const T &result) {
                 setProgress(_lastStep, 1.0);
                 std::lock_guard<std::mutex> lock(_mutex);
                 _promise.success(result);
             }
 
-            void failure(const Exception& exception) {
+            void failure(const Exception &exception) {
                 std::lock_guard<std::mutex> lock(_mutex);
                 _promise.failure(exception);
             }
 
-            void onProgress(const std::shared_ptr<api::ExecutionContext>& context, const ProgressHandler& handler) const {
+            void onProgress(const std::shared_ptr<api::ExecutionContext> &context, const ProgressHandler &handler) const {
                 std::lock_guard<std::mutex> lock(_mutex);
                 _handlers.push_back(std::make_pair(context, handler));
             }
@@ -85,14 +84,14 @@ namespace ledger {
             Future<T> getFuture() const {
                 return _promise.getFuture();
             }
-        private:
+
+          private:
             mutable std::list<std::pair<std::shared_ptr<api::ExecutionContext>, ProgressHandler>> _handlers;
             Promise<T> _promise;
             std::string _lastStep;
             mutable std::mutex _mutex;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_PROGRESSNOTIFIER_H
+#endif // LEDGER_CORE_PROGRESSNOTIFIER_H

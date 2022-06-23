@@ -29,21 +29,22 @@
  *
  */
 #include "Amount.h"
+
 #include <utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
 
         Amount::Amount(const api::Currency &currency, int32_t unitIndex, BigInt &&value) : ManagedObject<Amount>() {
-            _currency = currency;
+            _currency  = currency;
             _unitIndex = unitIndex;
-            _value = value;
+            _value     = value;
         }
 
         Amount::Amount(const api::Currency &currency, int32_t unitIndex, const BigInt &value) : ManagedObject<Amount>() {
-            _currency = currency;
+            _currency  = currency;
             _unitIndex = unitIndex;
-            _value = value;
+            _value     = value;
         }
 
         std::shared_ptr<api::BigInt> Amount::toBigInt() {
@@ -60,14 +61,13 @@ namespace ledger {
 
         std::shared_ptr<api::Amount> Amount::toUnit(const api::CurrencyUnit &unit) {
             auto index = 0;
-            for (auto& u : _currency.units) {
+            for (auto &u : _currency.units) {
                 if (u.code == unit.code && u.name == unit.name && u.numberOfDecimal == unit.numberOfDecimal &&
                     u.symbol == unit.symbol) {
                     return std::make_shared<Amount>(
-                            _currency,
-                            index,
-                            _value
-                    );
+                        _currency,
+                        index,
+                        _value);
                 }
                 index += 1;
             }
@@ -76,7 +76,7 @@ namespace ledger {
 
         std::string Amount::toString() {
             auto magnitude = getMagnitude();
-            BigInt value = _value;
+            BigInt value   = _value;
             while (magnitude > 0) {
                 value = value / BigInt(10);
                 magnitude -= 1;
@@ -86,7 +86,7 @@ namespace ledger {
 
         int64_t Amount::toLong() {
             auto magnitude = getMagnitude();
-            BigInt value = _value;
+            BigInt value   = _value;
             while (magnitude > 0) {
                 value = value / BigInt(10);
                 magnitude -= 1;
@@ -103,7 +103,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Amount> Amount::toMagnitude(int32_t magnitude) {
-            for (auto& unit : getCurrency().units) {
+            for (auto &unit : getCurrency().units) {
                 if (unit.numberOfDecimal == magnitude) {
                     return toUnit(unit);
                 }
@@ -120,7 +120,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Amount> api::Amount::fromLong(const Currency &currency, int64_t value) {
-            ledger::core::BigInt  v(value);
+            ledger::core::BigInt v(value);
             return std::make_shared<ledger::core::Amount>(currency, 0, v);
         }
 
@@ -129,5 +129,5 @@ namespace ledger {
             return std::make_shared<ledger::core::Amount>(currency, 0, v);
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

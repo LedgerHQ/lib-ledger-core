@@ -28,14 +28,14 @@
  *
  */
 
-
 #pragma once
 
-#include <chrono>
-#include <unordered_map>
-#include <mutex>
-#include <iostream>
 #include "Option.hpp"
+
+#include <chrono>
+#include <iostream>
+#include <mutex>
+#include <unordered_map>
 /*
  * A really simple implementation of TTL cache
  */
@@ -43,8 +43,8 @@ namespace ledger {
     namespace core {
         template <typename K, typename V, typename Duration = std::chrono::seconds>
         class TTLCache {
-        public:
-            TTLCache(const Duration &ttl) : _ttl(ttl) {};
+          public:
+            TTLCache(const Duration &ttl) : _ttl(ttl){};
 
             Option<V> get(const K &key) {
                 std::lock_guard<std::mutex> lock(_lock);
@@ -62,11 +62,9 @@ namespace ledger {
             void put(const K &key, const V &value) {
                 std::lock_guard<std::mutex> lock(_lock);
                 _cache.insert(
-                        { key,
-                          { value,
-                            getNowDurationSinceEpoch()
-                          }
-                        });
+                    {key,
+                     {value,
+                      getNowDurationSinceEpoch()}});
             }
 
             void erase(const K &key) {
@@ -74,7 +72,7 @@ namespace ledger {
                 _cache.erase(key);
             }
 
-        private:
+          private:
             Duration getNowDurationSinceEpoch() {
                 return std::chrono::duration_cast<Duration>(std::chrono::steady_clock::now().time_since_epoch());
             }
@@ -82,5 +80,5 @@ namespace ledger {
             std::unordered_map<K, std::pair<V, Duration>> _cache;
             std::mutex _lock;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger

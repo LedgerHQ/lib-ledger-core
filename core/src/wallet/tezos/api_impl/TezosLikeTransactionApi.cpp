@@ -28,43 +28,42 @@
  *
  */
 
-
 #include "TezosLikeTransactionApi.h"
-#include <wallet/common/Amount.h>
-#include <wallet/common/AbstractAccount.hpp>
-#include <wallet/common/AbstractWallet.hpp>
-#include <tezos/TezosLikeAddress.h>
-#include <bytes/BytesWriter.h>
-#include <bytes/BytesReader.h>
-#include <crypto/DER.hpp>
-#include <utils/hex.h>
-#include <api_impl/BigIntImpl.hpp>
-#include <wallet/tezos/tezosNetworks.h>
-#include <math/Base58.hpp>
-#include <bytes/zarith/zarith.h>
-#include <api/TezosCurve.hpp>
-#include <tezos/TezosLikeExtendedPublicKey.h>
+
 #include <api/TezosConfigurationDefaults.hpp>
+#include <api/TezosCurve.hpp>
+#include <api_impl/BigIntImpl.hpp>
+#include <bytes/BytesReader.h>
+#include <bytes/BytesWriter.h>
+#include <bytes/zarith/zarith.h>
+#include <crypto/DER.hpp>
+#include <math/Base58.hpp>
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
+#include <tezos/TezosLikeAddress.h>
+#include <tezos/TezosLikeExtendedPublicKey.h>
+#include <utils/hex.h>
+#include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/AbstractWallet.hpp>
+#include <wallet/common/Amount.h>
+#include <wallet/tezos/tezosNetworks.h>
 namespace ledger {
     namespace core {
 
         TezosLikeTransactionApi::TezosLikeTransactionApi(const api::Currency &currency,
-                                                         const std::string &protocolUpdate) :
-                _currency(currency),
-                _protocolUpdate(protocolUpdate),
-                _needReveal(false){
-            _block = std::make_shared<TezosLikeBlockApi>(Block{});
-            _type = api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
+                                                         const std::string &protocolUpdate) : _currency(currency),
+                                                                                              _protocolUpdate(protocolUpdate),
+                                                                                              _needReveal(false) {
+            _block  = std::make_shared<TezosLikeBlockApi>(Block{});
+            _type   = api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
             _status = 0;
         }
 
         TezosLikeTransactionApi::TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation,
                                                          const std::string &protocolUpdate) : _needReveal(false) {
             auto &tx = operation->getBackend().tezosTransaction.getValue();
-            _time = tx.receivedAt;
+            _time    = tx.receivedAt;
 
             if (tx.block.nonEmpty()) {
                 _block = std::make_shared<TezosLikeBlockApi>(tx.block.getValue());
@@ -72,24 +71,24 @@ namespace ledger {
                 _block = nullptr;
             }
 
-            _hash = tx.hash;
+            _hash                = tx.hash;
 
-            _currency = operation->getAccount()->getWallet()->getCurrency();
+            _currency            = operation->getAccount()->getWallet()->getCurrency();
 
-            _transactionFees = std::make_shared<Amount>(_currency, 0, tx.fees);
+            _transactionFees     = std::make_shared<Amount>(_currency, 0, tx.fees);
             _transactionGasLimit = std::make_shared<Amount>(_currency, 0, tx.gas_limit);
-            _value = std::make_shared<Amount>(_currency, 0, tx.value);
+            _value               = std::make_shared<Amount>(_currency, 0, tx.value);
 
-            _receiver = TezosLikeAddress::fromBase58(tx.receiver, _currency);
-            _sender = TezosLikeAddress::fromBase58(tx.sender, _currency);
+            _receiver            = TezosLikeAddress::fromBase58(tx.receiver, _currency);
+            _sender              = TezosLikeAddress::fromBase58(tx.sender, _currency);
 
-            _type = tx.type;
+            _type                = tx.type;
 
-            _revealedPubKey = tx.publicKey;
-            _revealFees = std::make_shared<Amount>(_currency, 0, tx.fees);
-            _revealGasLimit = std::make_shared<Amount>(_currency, 0, tx.gas_limit);
+            _revealedPubKey      = tx.publicKey;
+            _revealFees          = std::make_shared<Amount>(_currency, 0, tx.fees);
+            _revealGasLimit      = std::make_shared<Amount>(_currency, 0, tx.gas_limit);
 
-            _status = tx.status;
+            _status              = tx.status;
         }
 
         api::TezosOperationTag TezosLikeTransactionApi::getType() const {
@@ -186,13 +185,13 @@ namespace ledger {
             // TODO: extract this into a setDERSignature method
             if (signature.size() != SIGNATURE_SIZE_BYTES) {
                 auto der = DER::fromRaw(signature);
-                decoded = der.toBytes();
+                decoded  = der.toBytes();
             }
 
             // Decoded bytes-only signature should be 64 bytes
             if (decoded.size() != SIGNATURE_SIZE_BYTES) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::setSignature: XTZ signature should have a length of 64 bytes.");
-            }                
+            }
             _signature = decoded;
             // // This is a DER format signature
             // if (signature.size() == 70) {
@@ -221,13 +220,13 @@ namespace ledger {
                     writer.writeByteArray(_signature);
                 }
                 return writer.toByteArray();
-            }         
+            }
 
             // Block Hash
             auto params = _currency.tezosLikeNetworkParameters.value_or(networks::getTezosLikeNetworkParameters("tezos"));
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params.Identifier);
-            auto decoded = Base58::checkAndDecode(_block->getHash(), config);
+            auto decoded   = Base58::checkAndDecode(_block->getHash(), config);
             // Remove 2 first bytes (of version)
             auto blockHash = std::vector<uint8_t>{decoded.getValue().begin() + 2, decoded.getValue().end()};
             writer.writeByteArray(blockHash);
@@ -262,9 +261,8 @@ namespace ledger {
                 // manager account needs revelation
                 if (type == api::TezosOperationTag::OPERATION_TAG_REVEAL && _sender->toBase58().find("KT1") == 0) {
                     auto senderContractID = vector::concat(
-                            {static_cast<uint8_t>(_managerCurve)},
-                            TezosLikeAddress::fromBase58(_managerAddress, _currency, Option<std::string>())->getHash160()
-                    );
+                        {static_cast<uint8_t>(_managerCurve)},
+                        TezosLikeAddress::fromBase58(_managerAddress, _currency, Option<std::string>())->getHash160());
                     writer.writeByteArray(senderContractID);
                 } else {
                     auto senderContractID = vector::concat({static_cast<uint8_t>(_senderCurve)}, _sender->getHash160());
@@ -274,14 +272,11 @@ namespace ledger {
                 // Originated
                 auto isSenderOriginated = _sender->toBase58().find("KT1") == 0;
                 writer.writeByte(static_cast<uint8_t>(isSenderOriginated));
-                auto senderContractID = isSenderOriginated ?
-                                        vector::concat(_sender->getHash160(), {0x00}) :
-                                        vector::concat({static_cast<uint8_t>(_senderCurve)}, _sender->getHash160());
+                auto senderContractID = isSenderOriginated ? vector::concat(_sender->getHash160(), {0x00}) : vector::concat({static_cast<uint8_t>(_senderCurve)}, _sender->getHash160());
                 writer.writeByteArray(senderContractID);
             }
 
-            if (type != api::TezosOperationTag::OPERATION_TAG_REVEAL)
-            {
+            if (type != api::TezosOperationTag::OPERATION_TAG_REVEAL) {
                 // Fee
                 auto bigIntFess = BigInt::fromString(_transactionFees->toBigInt()->toString(10));
                 writer.writeByteArray(zarith::zSerializeNumber(bigIntFess.toByteArray()));
@@ -300,14 +295,13 @@ namespace ledger {
                 // No storage for reveal
                 auto storage = _storage->toByteArray();
                 writer.writeByteArray(zarith::zSerializeNumber(storage));
-            }
-            else {
+            } else {
                 // Fee
                 auto bigIntFess = BigInt::fromString(_revealFees->toBigInt()->toString(10));
                 writer.writeByteArray(zarith::zSerializeNumber(bigIntFess.toByteArray()));
 
                 // Counter
-                auto localCounter =  *_counter;
+                auto localCounter = *_counter;
                 writer.writeByteArray(zarith::zSerializeNumber(localCounter.toByteArray()));
 
                 // Gas Limit
@@ -320,79 +314,76 @@ namespace ledger {
                 writer.writeByteArray(zarith::zSerializeNumber(storage));
             }
 
-            switch(type) {
-                case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
-                    if (!_signingPubKey.empty()) {
-                        writer.writeByte(static_cast<uint8_t>(_senderCurve));
-                        writer.writeByteArray(_signingPubKey);
-                    } else if (!_revealedPubKey.empty()) {
-                        auto pKey = TezosLikeExtendedPublicKey::fromBase58(_currency, _revealedPubKey, Option<std::string>(""));
-                        writer.writeByte(static_cast<uint8_t>(_senderCurve));
-                        writer.writeByteArray(pKey->derivePublicKey(""));
-                    }
-                    break;
+            switch (type) {
+            case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
+                if (!_signingPubKey.empty()) {
+                    writer.writeByte(static_cast<uint8_t>(_senderCurve));
+                    writer.writeByteArray(_signingPubKey);
+                } else if (!_revealedPubKey.empty()) {
+                    auto pKey = TezosLikeExtendedPublicKey::fromBase58(_currency, _revealedPubKey, Option<std::string>(""));
+                    writer.writeByte(static_cast<uint8_t>(_senderCurve));
+                    writer.writeByteArray(pKey->derivePublicKey(""));
                 }
-                case api::TezosOperationTag::OPERATION_TAG_TRANSACTION: {
-                    // Amount
-                    auto bigIntValue = BigInt::fromString(_value->toBigInt()->toString(10));
-                    writer.writeByteArray(zarith::zSerializeNumber(bigIntValue.toByteArray()));
+                break;
+            }
+            case api::TezosOperationTag::OPERATION_TAG_TRANSACTION: {
+                // Amount
+                auto bigIntValue = BigInt::fromString(_value->toBigInt()->toString(10));
+                writer.writeByteArray(zarith::zSerializeNumber(bigIntValue.toByteArray()));
 
-                    // Set Receiver
-                    // Originated
-                    auto isReceiverOriginated = _receiver->toBase58().find("KT1") == 0;
-                    writer.writeByte(static_cast<uint8_t>(isReceiverOriginated));
-                    auto receiverContractID = isReceiverOriginated ?
-                                              vector::concat(_receiver->getHash160(), {0x00}) :
-                                              vector::concat({static_cast<uint8_t>(_receiverCurve)}, _receiver->getHash160());
-                    writer.writeByteArray(receiverContractID);
+                // Set Receiver
+                // Originated
+                auto isReceiverOriginated = _receiver->toBase58().find("KT1") == 0;
+                writer.writeByte(static_cast<uint8_t>(isReceiverOriginated));
+                auto receiverContractID = isReceiverOriginated ? vector::concat(_receiver->getHash160(), {0x00}) : vector::concat({static_cast<uint8_t>(_receiverCurve)}, _receiver->getHash160());
+                writer.writeByteArray(receiverContractID);
 
-                    // Additional parameters
-                    writer.writeByte(0x00);
-                    break;
+                // Additional parameters
+                writer.writeByte(0x00);
+                break;
+            }
+            case api::TezosOperationTag::OPERATION_TAG_ORIGINATION: {
+                if (!isBabylonActivated) {
+                    writer.writeByte(static_cast<uint8_t>(_senderCurve));
+                    writer.writeByteArray(_sender->getHash160());
                 }
-                case api::TezosOperationTag::OPERATION_TAG_ORIGINATION: {
-                    if (!isBabylonActivated) {
-                        writer.writeByte(static_cast<uint8_t >(_senderCurve));
-                        writer.writeByteArray(_sender->getHash160());
-                    }
-                    // Balance
-                    writer.writeByteArray(zarith::zSerializeNumber(_balance.toByteArray()));
-                    // Is spendable ?
+                // Balance
+                writer.writeByteArray(zarith::zSerializeNumber(_balance.toByteArray()));
+                // Is spendable ?
+                writer.writeByte(0xFF);
+                // Is delegatable ?
+                writer.writeByte(0xFF);
+                // Presence of field "delegate" ?
+                writer.writeByte(0x00);
+                // Presence of field "script" ?
+                writer.writeByte(0x00);
+                break;
+            }
+            case api::TezosOperationTag::OPERATION_TAG_DELEGATION: {
+                if (_receiver && !_receiver->getHash160().empty()) {
+                    // Delegate is always implicit account (TBC)
                     writer.writeByte(0xFF);
-                    // Is delegatable ?
-                    writer.writeByte(0xFF);
-                    // Presence of field "delegate" ?
+                    writer.writeByte(static_cast<uint8_t>(_receiverCurve));
+                    writer.writeByteArray(_receiver->getHash160());
+                } else {
                     writer.writeByte(0x00);
-                    // Presence of field "script" ?
-                    writer.writeByte(0x00);
-                    break;
                 }
-                case api::TezosOperationTag::OPERATION_TAG_DELEGATION: {
-                    if (_receiver && !_receiver->getHash160().empty()) {
-                        // Delegate is always implicit account (TBC)
-                        writer.writeByte(0xFF);
-                        writer.writeByte(static_cast<uint8_t >(_receiverCurve));
-                        writer.writeByteArray(_receiver->getHash160());
-                    } else {
-                        writer.writeByte(0x00);
-                    }
-                    break;
-                }
-                default:
-                    break;
+                break;
+            }
+            default:
+                break;
             }
             return writer.toByteArray();
         }
 
-        std::vector<uint8_t> TezosLikeTransactionApi::serializeForDryRun(const std::vector<uint8_t>& chainId) {
+        std::vector<uint8_t> TezosLikeTransactionApi::serializeForDryRun(const std::vector<uint8_t> &chainId) {
             BytesWriter writer;
             writer.writeByteArray(serialize());
             writer.writeByteArray(chainId);
             return writer.toByteArray();
         }
 
-        std::string TezosLikeTransactionApi::serializeJsonForDryRun(const std::string &chainID)
-        {
+        std::string TezosLikeTransactionApi::serializeJsonForDryRun(const std::string &chainID) {
             using namespace rapidjson;
 
             Value vString(kStringType);
@@ -427,126 +418,125 @@ namespace ledger {
                     if (_needReveal) {
                         Value revealOp(kObjectType);
                         {
-                        static const auto transaction_type = "reveal";
-                        vString.SetString(
-                            transaction_type,
-                            static_cast<SizeType>(std::strlen(transaction_type)),
-                            allocator);
-                        revealOp.AddMember("kind", vString, allocator);
+                            static const auto transaction_type = "reveal";
+                            vString.SetString(
+                                transaction_type,
+                                static_cast<SizeType>(std::strlen(transaction_type)),
+                                allocator);
+                            revealOp.AddMember("kind", vString, allocator);
 
-                        const auto source = _sender->toBase58();
-                        vString.SetString(
-                            source.c_str(), static_cast<SizeType>(source.length()), allocator);
-                        revealOp.AddMember("source", vString, allocator);
+                            const auto source = _sender->toBase58();
+                            vString.SetString(
+                                source.c_str(), static_cast<SizeType>(source.length()), allocator);
+                            revealOp.AddMember("source", vString, allocator);
 
-                        if (_revealedPubKey.empty()) {
-                            if (_signingPubKey.empty()) {
-                                throw make_exception(
-                                    api::ErrorCode::UNSUPPORTED_OPERATION,
-                                    "Json serialization of reveal operation is available only if "
-                                    "revealed_pubkey or signing_pubkey is set.");
+                            if (_revealedPubKey.empty()) {
+                                if (_signingPubKey.empty()) {
+                                    throw make_exception(
+                                        api::ErrorCode::UNSUPPORTED_OPERATION,
+                                        "Json serialization of reveal operation is available only if "
+                                        "revealed_pubkey or signing_pubkey is set.");
+                                }
                             }
-                        }
-                        const auto pub_key = _revealedPubKey.empty()
-                                                 ? TezosLikeExtendedPublicKey::fromRaw(
-                                                       _currency,
-                                                       optional<std::vector<uint8_t>>(),
-                                                       _signingPubKey,
-                                                       std::vector<uint8_t>(0, 32),
-                                                       "",
-                                                       _senderCurve)
-                                                       ->toBase58()
-                                                 : _revealedPubKey;
-                        vString.SetString(
-                            pub_key.c_str(), static_cast<SizeType>(pub_key.length()), allocator);
-                        revealOp.AddMember("public_key", vString, allocator);
+                            const auto pub_key = _revealedPubKey.empty()
+                                                     ? TezosLikeExtendedPublicKey::fromRaw(
+                                                           _currency,
+                                                           optional<std::vector<uint8_t>>(),
+                                                           _signingPubKey,
+                                                           std::vector<uint8_t>(0, 32),
+                                                           "",
+                                                           _senderCurve)
+                                                           ->toBase58()
+                                                     : _revealedPubKey;
+                            vString.SetString(
+                                pub_key.c_str(), static_cast<SizeType>(pub_key.length()), allocator);
+                            revealOp.AddMember("public_key", vString, allocator);
 
-                        static const auto fee = "10000";
-                        vString.SetString(fee, static_cast<SizeType>(std::strlen(fee)), allocator);
-                        revealOp.AddMember("fee", vString, allocator);
+                            static const auto fee = "10000";
+                            vString.SetString(fee, static_cast<SizeType>(std::strlen(fee)), allocator);
+                            revealOp.AddMember("fee", vString, allocator);
 
-                        const auto counter = _counter->toString();
-                        vString.SetString(
-                            counter.c_str(), static_cast<SizeType>(counter.length()), allocator);
-                        revealOp.AddMember("counter", vString, allocator);
+                            const auto counter = _counter->toString();
+                            vString.SetString(
+                                counter.c_str(), static_cast<SizeType>(counter.length()), allocator);
+                            revealOp.AddMember("counter", vString, allocator);
 
-                        static const auto storage = "1000";
-                        vString.SetString(
-                            storage, static_cast<SizeType>(std::strlen(storage)), allocator);
-                        revealOp.AddMember("storage_limit", vString, allocator);
+                            static const auto storage = "1000";
+                            vString.SetString(
+                                storage, static_cast<SizeType>(std::strlen(storage)), allocator);
+                            revealOp.AddMember("storage_limit", vString, allocator);
 
-                        static const auto gas = "100000";
-                        vString.SetString(gas, static_cast<SizeType>(std::strlen(gas)), allocator);
-                        revealOp.AddMember("gas_limit", vString, allocator);
-
+                            static const auto gas = "100000";
+                            vString.SetString(gas, static_cast<SizeType>(std::strlen(gas)), allocator);
+                            revealOp.AddMember("gas_limit", vString, allocator);
                         }
                         opContents.PushBack(revealOp, allocator);
                     }
 
                     Value innerOp(kObjectType);
                     {
-                    switch (_type) {
-                    case api::TezosOperationTag::OPERATION_TAG_TRANSACTION: {
-                        static const auto transaction_type = "transaction";
-                        vString.SetString(
-                            transaction_type,
-                            static_cast<SizeType>(std::strlen(transaction_type)),
-                            allocator);
-                        innerOp.AddMember("kind", vString, allocator);
+                        switch (_type) {
+                        case api::TezosOperationTag::OPERATION_TAG_TRANSACTION: {
+                            static const auto transaction_type = "transaction";
+                            vString.SetString(
+                                transaction_type,
+                                static_cast<SizeType>(std::strlen(transaction_type)),
+                                allocator);
+                            innerOp.AddMember("kind", vString, allocator);
 
-                        const auto source = _sender->toBase58();
-                        vString.SetString(
-                            source.c_str(), static_cast<SizeType>(source.length()), allocator);
-                        innerOp.AddMember("source", vString, allocator);
+                            const auto source = _sender->toBase58();
+                            vString.SetString(
+                                source.c_str(), static_cast<SizeType>(source.length()), allocator);
+                            innerOp.AddMember("source", vString, allocator);
 
-                        const auto destination = _receiver->toBase58();
-                        vString.SetString(
-                            destination.c_str(), static_cast<SizeType>(destination.length()), allocator);
-                        innerOp.AddMember("destination", vString, allocator);
+                            const auto destination = _receiver->toBase58();
+                            vString.SetString(
+                                destination.c_str(), static_cast<SizeType>(destination.length()), allocator);
+                            innerOp.AddMember("destination", vString, allocator);
 
-                        static const auto fee = "1";
-                        vString.SetString(fee, static_cast<SizeType>(std::strlen(fee)), allocator);
-                        innerOp.AddMember("fee", vString, allocator);
+                            static const auto fee = "1";
+                            vString.SetString(fee, static_cast<SizeType>(std::strlen(fee)), allocator);
+                            innerOp.AddMember("fee", vString, allocator);
 
-                        // Increment the counter if the reveal was prepended
-                        const auto counter = (_needReveal ? (*_counter)+BigInt::ONE : *_counter).toString();
-                        vString.SetString(
-                            counter.c_str(), static_cast<SizeType>(counter.length()), allocator);
-                        innerOp.AddMember("counter", vString, allocator);
+                            // Increment the counter if the reveal was prepended
+                            const auto counter = (_needReveal ? (*_counter) + BigInt::ONE : *_counter).toString();
+                            vString.SetString(
+                                counter.c_str(), static_cast<SizeType>(counter.length()), allocator);
+                            innerOp.AddMember("counter", vString, allocator);
 
-                        const auto amount = (_value->toLong() != 0) ?  _value->toBigInt()->toString(10) : "1";
-                        vString.SetString(
-                            amount.c_str(), static_cast<SizeType>(amount.length()), allocator);
-                        innerOp.AddMember("amount", vString, allocator);
+                            const auto amount = (_value->toLong() != 0) ? _value->toBigInt()->toString(10) : "1";
+                            vString.SetString(
+                                amount.c_str(), static_cast<SizeType>(amount.length()), allocator);
+                            innerOp.AddMember("amount", vString, allocator);
 
-                        static const auto storage = "1000";
-                        vString.SetString(
-                            storage, static_cast<SizeType>(std::strlen(storage)), allocator);
-                        innerOp.AddMember("storage_limit", vString, allocator);
+                            static const auto storage = "1000";
+                            vString.SetString(
+                                storage, static_cast<SizeType>(std::strlen(storage)), allocator);
+                            innerOp.AddMember("storage_limit", vString, allocator);
 
-                        static const auto gas = "100000";
-                        vString.SetString(gas, static_cast<SizeType>(std::strlen(gas)), allocator);
-                        innerOp.AddMember("gas_limit", vString, allocator);
-                        break;
-                    }
-                    case api::TezosOperationTag::OPERATION_TAG_ORIGINATION: {
+                            static const auto gas = "100000";
+                            vString.SetString(gas, static_cast<SizeType>(std::strlen(gas)), allocator);
+                            innerOp.AddMember("gas_limit", vString, allocator);
+                            break;
+                        }
+                        case api::TezosOperationTag::OPERATION_TAG_ORIGINATION: {
                             throw make_exception(
                                 api::ErrorCode::UNSUPPORTED_OPERATION,
                                 "Json serialization of origination operation is unavailable.");
-                        break;
-                    }
-                    case api::TezosOperationTag::OPERATION_TAG_DELEGATION: {
+                            break;
+                        }
+                        case api::TezosOperationTag::OPERATION_TAG_DELEGATION: {
                             throw make_exception(
                                 api::ErrorCode::UNSUPPORTED_OPERATION,
                                 "Json serialization of delegation operation is unavailable.");
-                        break;
-                    }
-                    default:
+                            break;
+                        }
+                        default:
                             throw make_exception(
                                 api::ErrorCode::UNSUPPORTED_OPERATION,
                                 "Json serialization of unknown operation type is unavailable.");
-                        break;
-                    }
+                            break;
+                        }
                     }
                     opContents.PushBack(innerOp, allocator);
                 }
@@ -556,7 +546,7 @@ namespace ledger {
 
             tx.AddMember("operation", opObject, allocator);
 
-// Example of valid payload in raw string
+            // Example of valid payload in raw string
             /*
             R"json({"chain_id": "NetXdQprcVkpaWU", "operation": {
 "branch": "BLq1UohguxXEdrvgxc4a4utkD1J8K4GTz2cypJqdN2nq8m1jbqW",
@@ -604,14 +594,14 @@ namespace ledger {
         TezosLikeTransactionApi &
         TezosLikeTransactionApi::setSender(const std::shared_ptr<api::TezosLikeAddress> &sender, api::TezosCurve curve) {
             _senderCurve = curve;
-            _sender = sender;
+            _sender      = sender;
             return *this;
         }
 
         TezosLikeTransactionApi &
         TezosLikeTransactionApi::setReceiver(const std::shared_ptr<api::TezosLikeAddress> &receiver, api::TezosCurve curve) {
             _receiverCurve = curve;
-            _receiver = receiver;
+            _receiver      = receiver;
             return *this;
         }
 
@@ -630,7 +620,7 @@ namespace ledger {
             return *this;
         }
 
-        TezosLikeTransactionApi & TezosLikeTransactionApi::setTransactionGasLimit(const std::shared_ptr<BigInt> &gasLimit) {
+        TezosLikeTransactionApi &TezosLikeTransactionApi::setTransactionGasLimit(const std::shared_ptr<BigInt> &gasLimit) {
             if (!gasLimit) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::setTransactionGasLimit: Invalid Gas Limit");
             }
@@ -638,7 +628,7 @@ namespace ledger {
             return *this;
         }
 
-        TezosLikeTransactionApi & TezosLikeTransactionApi::setRevealGasLimit(const std::shared_ptr<BigInt> &gasLimit) {
+        TezosLikeTransactionApi &TezosLikeTransactionApi::setRevealGasLimit(const std::shared_ptr<BigInt> &gasLimit) {
             if (!gasLimit) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::setRevealGasLimit: Invalid Gas Limit");
             }
@@ -646,7 +636,7 @@ namespace ledger {
             return *this;
         }
 
-        TezosLikeTransactionApi & TezosLikeTransactionApi::setCounter(const std::shared_ptr<BigInt> &counter) {
+        TezosLikeTransactionApi &TezosLikeTransactionApi::setCounter(const std::shared_ptr<BigInt> &counter) {
             if (!counter) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::setCounter: Invalid Counter");
             }
@@ -654,7 +644,7 @@ namespace ledger {
             return *this;
         }
 
-        TezosLikeTransactionApi & TezosLikeTransactionApi::setStorage(const std::shared_ptr<BigInt>& storage) {
+        TezosLikeTransactionApi &TezosLikeTransactionApi::setStorage(const std::shared_ptr<BigInt> &storage) {
             if (!storage) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::setStorage: Invalid Storage");
             }
@@ -662,19 +652,19 @@ namespace ledger {
             return *this;
         }
 
-        TezosLikeTransactionApi & TezosLikeTransactionApi::setType(api::TezosOperationTag type) {
+        TezosLikeTransactionApi &TezosLikeTransactionApi::setType(api::TezosOperationTag type) {
             _type = type;
             return *this;
         }
 
-        TezosLikeTransactionApi & TezosLikeTransactionApi::setBalance(const BigInt &balance) {
+        TezosLikeTransactionApi &TezosLikeTransactionApi::setBalance(const BigInt &balance) {
             _balance = balance;
             return *this;
         }
 
-        TezosLikeTransactionApi & TezosLikeTransactionApi::setManagerAddress(const std::string &managerAddress, api::TezosCurve curve) {
+        TezosLikeTransactionApi &TezosLikeTransactionApi::setManagerAddress(const std::string &managerAddress, api::TezosCurve curve) {
             _managerAddress = managerAddress;
-            _managerCurve = curve;
+            _managerCurve   = curve;
             return *this;
         }
 
@@ -682,7 +672,7 @@ namespace ledger {
             return _managerAddress;
         }
 
-        TezosLikeTransactionApi & TezosLikeTransactionApi::setRawTx(const std::vector<uint8_t> &rawTx) {
+        TezosLikeTransactionApi &TezosLikeTransactionApi::setRawTx(const std::vector<uint8_t> &rawTx) {
             _rawTx = rawTx;
             return *this;
         }
@@ -695,25 +685,25 @@ namespace ledger {
         bool TezosLikeTransactionApi::toReveal() const {
             return _needReveal;
         }
-        
+
         std::string TezosLikeTransactionApi::getCorrelationId() {
             return _correlationId;
         }
 
-        std::string TezosLikeTransactionApi::setCorrelationId(const std::string& newId)  {
-            auto oldId = _correlationId;
+        std::string TezosLikeTransactionApi::setCorrelationId(const std::string &newId) {
+            auto oldId     = _correlationId;
             _correlationId = newId;
             return oldId;
         }
-        
+
         api::TezosOperationTag TezosLikeTransactionApi::getOperationTypeInTransaction() const {
             return _operationTypeInTransaction;
         }
 
-        TezosLikeTransactionApi& TezosLikeTransactionApi::setOperationTypeInTransaction(api::TezosOperationTag type) {
+        TezosLikeTransactionApi &TezosLikeTransactionApi::setOperationTypeInTransaction(api::TezosOperationTag type) {
             _operationTypeInTransaction = type;
             return *this;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -36,8 +36,8 @@
 
 namespace ledger {
     namespace core {
-        using BitcoinLikeApiUtxoVector = std::vector<std::shared_ptr<api::BitcoinLikeOutput>>;
+        using BitcoinLikeApiUtxoVector   = std::vector<std::shared_ptr<api::BitcoinLikeOutput>>;
         using BitcoinLikeApiOutputVector = BitcoinLikeApiUtxoVector;
-    }
-}
-#endif //LEDGER_CORE_TYPES_H
+    } // namespace core
+} // namespace ledger
+#endif // LEDGER_CORE_TYPES_H

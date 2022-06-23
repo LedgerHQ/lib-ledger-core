@@ -31,18 +31,18 @@
 #ifndef LEDGER_CORE_OPERATIONQUERY_H
 #define LEDGER_CORE_OPERATIONQUERY_H
 
-#include <api/OperationQuery.hpp>
-#include <api/OperationOrderKey.hpp>
-#include <api/OperationCount.hpp>
-#include <database/query/QueryBuilder.h>
-#include <database/DatabaseSessionPool.hpp>
-#include <async/DedicatedContext.hpp>
-#include "Operation.h"
 #include "../common/api_impl/OperationApi.h"
 #include "AbstractAccount.hpp"
-#include <unordered_map>
+#include "Operation.h"
 #include "api_impl/OperationApi.h"
 
+#include <api/OperationCount.hpp>
+#include <api/OperationOrderKey.hpp>
+#include <api/OperationQuery.hpp>
+#include <async/DedicatedContext.hpp>
+#include <database/DatabaseSessionPool.hpp>
+#include <database/query/QueryBuilder.h>
+#include <unordered_map>
 #include <wallet/algorand/operations/AlgorandOperation.hpp>
 
 namespace ledger {
@@ -53,14 +53,12 @@ namespace ledger {
         }
 
         class AbstractAccount;
-        class OperationQuery : public api::OperationQuery, public std::enable_shared_from_this<OperationQuery>,
-                               public DedicatedContext {
-        public:
-            OperationQuery( const std::shared_ptr<api::QueryFilter>& headFilter,
-                            const std::shared_ptr<DatabaseSessionPool>& pool,
-                            const std::shared_ptr<api::ExecutionContext>& context,
-                            const std::shared_ptr<api::ExecutionContext>& mainContext
-            );
+        class OperationQuery : public api::OperationQuery, public std::enable_shared_from_this<OperationQuery>, public DedicatedContext {
+          public:
+            OperationQuery(const std::shared_ptr<api::QueryFilter> &headFilter,
+                           const std::shared_ptr<DatabaseSessionPool> &pool,
+                           const std::shared_ptr<api::ExecutionContext> &context,
+                           const std::shared_ptr<api::ExecutionContext> &mainContext);
             std::shared_ptr<api::OperationQuery> addOrder(api::OperationOrderKey key, bool descending) override;
             std::shared_ptr<api::QueryFilter> filter() override;
             std::shared_ptr<api::OperationQuery> offset(int32_t from) override;
@@ -73,22 +71,22 @@ namespace ledger {
             void count(const std::shared_ptr<api::OperationCountListCallback> &callback) override;
             Future<std::vector<api::OperationCount>> count();
 
-            std::shared_ptr<OperationQuery> registerAccount(const  std::shared_ptr<AbstractAccount>& account);
+            std::shared_ptr<OperationQuery> registerAccount(const std::shared_ptr<AbstractAccount> &account);
 
-        private:
-            void performExecute(std::vector<std::shared_ptr<api::Operation>>& operations);
-            void performCount(std::vector<api::OperationCount>& operations);
-            void inflateCompleteTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
-            void inflateBitcoinLikeTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
-            void inflateCosmosLikeTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
-            void inflateRippleLikeTransaction(soci::session& sql, OperationApi& operation);
-            void inflateTezosLikeTransaction(soci::session& sql, OperationApi& operation);
-            void inflateEthereumLikeTransaction(soci::session& sql, OperationApi& operation);
-            void inflateMoneroLikeTransaction(soci::session& sql, OperationApi& operation);
-            void inflateStellarLikeTransaction(soci::session& sql, OperationApi& operation);
-            void inflateAlgorandLikeTransaction(soci::session& sql, algorand::Operation &operation);
+          private:
+            void performExecute(std::vector<std::shared_ptr<api::Operation>> &operations);
+            void performCount(std::vector<api::OperationCount> &operations);
+            void inflateCompleteTransaction(soci::session &sql, const std::string &accountUid, OperationApi &operation);
+            void inflateBitcoinLikeTransaction(soci::session &sql, const std::string &accountUid, OperationApi &operation);
+            void inflateCosmosLikeTransaction(soci::session &sql, const std::string &accountUid, OperationApi &operation);
+            void inflateRippleLikeTransaction(soci::session &sql, OperationApi &operation);
+            void inflateTezosLikeTransaction(soci::session &sql, OperationApi &operation);
+            void inflateEthereumLikeTransaction(soci::session &sql, OperationApi &operation);
+            void inflateMoneroLikeTransaction(soci::session &sql, OperationApi &operation);
+            void inflateStellarLikeTransaction(soci::session &sql, OperationApi &operation);
+            void inflateAlgorandLikeTransaction(soci::session &sql, algorand::Operation &operation);
 
-        protected:
+          protected:
             virtual soci::rowset<soci::row> performExecute(soci::session &sql);
             virtual soci::rowset<soci::row> performCount(soci::session &sql);
             QueryBuilder _builder;
@@ -98,8 +96,7 @@ namespace ledger {
             std::shared_ptr<DatabaseSessionPool> _pool;
             std::unordered_map<std::string, std::shared_ptr<AbstractAccount>> _accounts;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_OPERATIONQUERY_H
+#endif // LEDGER_CORE_OPERATIONQUERY_H

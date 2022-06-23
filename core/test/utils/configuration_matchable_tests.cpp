@@ -36,11 +36,11 @@ using namespace ledger::core;
 
 TEST(ConfigurationMatchable, MatchSameConfWithMultipleKeys) {
     auto conf = api::DynamicObject::newInstance()
-            ->putString("string", "hey")
-            ->putInt("int", 12)
-            ->putLong("long", 12L << 32)
-            ->putBoolean("bool", false)
-            ->putData("data", {0x42, 0x42 >> 1, 0x42 >> 2});
+                    ->putString("string", "hey")
+                    ->putInt("int", 12)
+                    ->putLong("long", 12L << 32)
+                    ->putBoolean("bool", false)
+                    ->putData("data", {0x42, 0x42 >> 1, 0x42 >> 2});
     ConfigurationMatchable matchable({"string", "int", "long", "bool", "data"});
     matchable.setConfiguration(conf);
     EXPECT_TRUE(matchable.match(conf));
@@ -48,16 +48,16 @@ TEST(ConfigurationMatchable, MatchSameConfWithMultipleKeys) {
 
 TEST(ConfigurationMatchable, MatchDifferentConfWithMultipleKeys) {
     auto conf = api::DynamicObject::newInstance()
-            ->putString("string", "hey")
-            ->putInt("int", 12)
-            ->putLong("long", 12L << 32)
-            ->putBoolean("bool", false)
-            ->putData("data", {0x42, 0x42 >> 1, 0x42 >> 2});
+                    ->putString("string", "hey")
+                    ->putInt("int", 12)
+                    ->putLong("long", 12L << 32)
+                    ->putBoolean("bool", false)
+                    ->putData("data", {0x42, 0x42 >> 1, 0x42 >> 2});
     auto conf2 = api::DynamicObject::newInstance()
-            ->putString("string", "ho")
-            ->putLong("long", 13L << 32)
-            ->putBoolean("bool", false)
-            ->putData("data", {0x42, 0x42 >> 1, 0x42 >> 2});
+                     ->putString("string", "ho")
+                     ->putLong("long", 13L << 32)
+                     ->putBoolean("bool", false)
+                     ->putData("data", {0x42, 0x42 >> 1, 0x42 >> 2});
     ConfigurationMatchable matchable({"string", "int", "long", "bool", "data"});
     matchable.setConfiguration(conf);
     EXPECT_FALSE(matchable.match(conf2));

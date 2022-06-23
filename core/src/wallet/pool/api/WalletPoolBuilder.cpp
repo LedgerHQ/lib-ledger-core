@@ -29,12 +29,14 @@
  *
  */
 #include "WalletPoolBuilder.hpp"
+
 #include "WalletPoolApi.hpp"
 
-namespace ledger { namespace core {
+namespace ledger {
+    namespace core {
 
         WalletPoolBuilder::WalletPoolBuilder() {
-            _backend = api::DatabaseBackend::getSqlite3Backend();
+            _backend       = api::DatabaseBackend::getSqlite3Backend();
             _configuration = nullptr;
         }
 
@@ -104,12 +106,11 @@ namespace ledger { namespace core {
                 _configuration,
                 _externalPreferencesBackend,
                 _internalPreferencesBackend,
-                listener
-            );
+                listener);
         }
 
-        std::shared_ptr <api::WalletPoolBuilder>
-        WalletPoolBuilder::setConfiguration(const std::shared_ptr<api::DynamicObject> &configuration)  {
+        std::shared_ptr<api::WalletPoolBuilder>
+        WalletPoolBuilder::setConfiguration(const std::shared_ptr<api::DynamicObject> &configuration) {
             _configuration = configuration;
             return shared_from_this();
         }
@@ -129,7 +130,5 @@ namespace ledger { namespace core {
         std::shared_ptr<api::WalletPoolBuilder> api::WalletPoolBuilder::createInstance() {
             return std::make_shared<ledger::core::WalletPoolBuilder>();
         }
-    }
-}
-
-
+    } // namespace core
+} // namespace ledger

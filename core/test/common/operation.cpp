@@ -29,15 +29,15 @@
  *
  */
 
-#include <gtest/gtest.h>
 #include "wallet/common/Operation.h"
+
+#include <gtest/gtest.h>
 
 using namespace ledger::core;
 
-
 TEST(Operation, TezosUidIsValid) {
     Operation op{};
-    op.tezosTransaction = TezosLikeBlockchainExplorerTransaction{};
+    op.tezosTransaction       = TezosLikeBlockchainExplorerTransaction{};
     op.tezosTransaction->hash = "123";
 
     // start as transaction type (no additional)
@@ -56,22 +56,21 @@ TEST(Operation, TezosUidIsValid) {
     EXPECT_EQ(op.uid, "cdd40b9116abc9830fd12cd38a4801fadf519fc11746f66bedc0c5062eee9774");
 }
 
-
 TEST(Operation, TransactionIdFormat) {
-
-    const std::string baseHash = {"test"};
+    const std::string baseHash   = {"test"};
     const std::string additional = {"add"};
-    const auto opType = ledger::core::api::TezosOperationTag::OPERATION_TAG_TRANSACTION;;
+    const auto opType            = ledger::core::api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
+    ;
 
     // simple case
     EXPECT_EQ(Operation::computeTransactionId(baseHash), baseHash);
 
     // with additional
-    EXPECT_EQ(Operation::computeTransactionId(baseHash, additional), baseHash+"+"+additional);
+    EXPECT_EQ(Operation::computeTransactionId(baseHash, additional), baseHash + "+" + additional);
 
     // with operation type
-    EXPECT_EQ(Operation::computeTransactionId(baseHash, opType, additional), baseHash+"+"+api::to_string(opType)+"+"+additional);
+    EXPECT_EQ(Operation::computeTransactionId(baseHash, opType, additional), baseHash + "+" + api::to_string(opType) + "+" + additional);
 
     // now without additional
-    EXPECT_EQ(Operation::computeTransactionId(baseHash, opType), baseHash+"+"+api::to_string(opType));
+    EXPECT_EQ(Operation::computeTransactionId(baseHash, opType), baseHash + "+" + api::to_string(opType));
 }

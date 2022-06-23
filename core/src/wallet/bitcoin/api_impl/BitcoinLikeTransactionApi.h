@@ -31,18 +31,19 @@
 #ifndef LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H
 #define LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H
 
-#include <api/BitcoinLikeTransaction.hpp>
-#include <wallet/common/api_impl/OperationApi.h>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include "BitcoinLikeBlockApi.h"
 #include "BitcoinLikeInputApi.h"
 #include "BitcoinLikeOutputApi.h"
+
 #include <api/BitcoinLikeBlock.hpp>
-#include "BitcoinLikeBlockApi.h"
-#include <api/EstimatedSize.hpp>
-#include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
-#include <api/KeychainEngines.hpp>
 #include <api/BitcoinLikeSignature.hpp>
 #include <api/BitcoinLikeSignatureState.hpp>
+#include <api/BitcoinLikeTransaction.hpp>
+#include <api/EstimatedSize.hpp>
+#include <api/KeychainEngines.hpp>
+#include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/common/api_impl/OperationApi.h>
 
 namespace ledger {
     namespace core {
@@ -63,28 +64,27 @@ namespace ledger {
                                      int32_t outputIndex_,
                                      std::vector<std::vector<uint8_t>> pubKeys_,
                                      BitcoinLikeBlockchainExplorerOutput output_) : sequence(sequence_),
-                                                                                      address(address_),
-                                                                                      previousTxHash(previousTxHash_),
-                                                                                      outputIndex(outputIndex_),
-                                                                                      pubKeys(pubKeys_) {
-                output.value = output_.value;
-                output.index = output_.index;
-                output.address = output_.address;
-                output.script = output_.script;
+                                                                                    address(address_),
+                                                                                    previousTxHash(previousTxHash_),
+                                                                                    outputIndex(outputIndex_),
+                                                                                    pubKeys(pubKeys_) {
+                output.value           = output_.value;
+                output.index           = output_.index;
+                output.address         = output_.address;
+                output.script          = output_.script;
                 output.transactionHash = output_.transactionHash;
-                output.time = output_.time;
-
+                output.time            = output_.time;
             }
         };
 
         class BytesWriter;
 
         class BitcoinLikeTransactionApi : public api::BitcoinLikeTransaction {
-        public:
+          public:
             explicit BitcoinLikeTransactionApi(const api::Currency &currency,
-                                               const std::string &correlationid = "",
+                                               const std::string &correlationid  = "",
                                                const std::string &keychainEngine = api::KeychainEngines::BIP32_P2PKH,
-                                               uint64_t currentBlockHeight = 0);
+                                               uint64_t currentBlockHeight       = 0);
 
             explicit BitcoinLikeTransactionApi(const std::shared_ptr<OperationApi> &operation);
 
@@ -114,15 +114,15 @@ namespace ledger {
 
             std::string getCorrelationId() override;
 
-            std::string setCorrelationId(const std::string& newId) override;
+            std::string setCorrelationId(const std::string &newId) override;
 
             std::vector<uint8_t> serializeOutputs() override;
 
             int32_t getVersion() override;
-            
-            api::BitcoinLikeSignatureState setSignatures(const std::vector<api::BitcoinLikeSignature> & signatures, bool override = false) override;
 
-            api::BitcoinLikeSignatureState setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures, bool override = false) override;
+            api::BitcoinLikeSignatureState setSignatures(const std::vector<api::BitcoinLikeSignature> &signatures, bool override = false) override;
+
+            api::BitcoinLikeSignatureState setDERSignatures(const std::vector<std::vector<uint8_t>> &signatures, bool override = false) override;
 
             BitcoinLikeTransactionApi &addInput(const std::shared_ptr<BitcoinLikeWritableInputApi> &input);
 
@@ -135,7 +135,6 @@ namespace ledger {
             BitcoinLikeTransactionApi &setTimestamp(uint32_t timestamp);
 
             BitcoinLikeTransactionApi &setHash(const std::string &hash);
-
 
             static std::shared_ptr<api::BitcoinLikeTransaction> parseRawTransaction(const api::Currency &currency,
                                                                                     const std::vector<uint8_t> &rawTransaction,
@@ -152,9 +151,8 @@ namespace ledger {
                                                    const std::string &keychainEngine);
 
             static int64_t computeDustAmount(const api::Currency &currency, int32_t size);
-       
 
-        private:
+          private:
             inline bool isWriteable() const;
 
             inline bool isReadOnly() const;
@@ -167,7 +165,7 @@ namespace ledger {
 
             inline void serializeEpilogue(BytesWriter &out);
 
-        private:
+          private:
             int32_t _version;
             std::vector<std::shared_ptr<api::BitcoinLikeInput>> _inputs;
             std::vector<std::shared_ptr<api::BitcoinLikeOutput>> _outputs;
@@ -184,8 +182,7 @@ namespace ledger {
             uint64_t _currentBlockHeight;
             std::string _correlationId;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H
+#endif // LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H

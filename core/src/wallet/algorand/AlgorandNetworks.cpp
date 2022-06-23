@@ -33,30 +33,28 @@
 #include <utils/Exception.hpp>
 
 namespace ledger {
-namespace core {
-namespace networks {
+    namespace core {
+        namespace networks {
 
-    const std::unordered_map<std::string, api::AlgorandNetworkParameters> ALGORAND_NETWORKS() {
-        static const std::unordered_map<std::string, api::AlgorandNetworkParameters> ALL_ALGORAND({
-            {"algorand", api::AlgorandNetworkParameters("mainnet-v1.0","wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8=")},
-            {"algorand-testnet", api::AlgorandNetworkParameters("testnet-v1.0", "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=")}
-        });
-        return ALL_ALGORAND;
-    }
+            const std::unordered_map<std::string, api::AlgorandNetworkParameters> ALGORAND_NETWORKS() {
+                static const std::unordered_map<std::string, api::AlgorandNetworkParameters> ALL_ALGORAND({{"algorand", api::AlgorandNetworkParameters("mainnet-v1.0", "wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8=")},
+                                                                                                           {"algorand-testnet", api::AlgorandNetworkParameters("testnet-v1.0", "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=")}});
+                return ALL_ALGORAND;
+            }
 
-    const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName) {
-        if (isAlgorandCurrency(networkName)) {
-            return ALGORAND_NETWORKS().at(networkName);
-        } else {
-            throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
-        }
-    }
+            const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName) {
+                if (isAlgorandCurrency(networkName)) {
+                    return ALGORAND_NETWORKS().at(networkName);
+                } else {
+                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
+                }
+            }
 
-    const bool isAlgorandCurrency(const std::string &networkName) {
-        auto algorand_networks = ALGORAND_NETWORKS();
-        return algorand_networks.find(networkName) != algorand_networks.end();
-    }
+            const bool isAlgorandCurrency(const std::string &networkName) {
+                auto algorand_networks = ALGORAND_NETWORKS();
+                return algorand_networks.find(networkName) != algorand_networks.end();
+            }
 
-} // namespace networks
-} // namespace core
+        } // namespace networks
+    }     // namespace core
 } // namespace ledger

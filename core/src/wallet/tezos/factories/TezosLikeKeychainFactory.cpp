@@ -28,8 +28,8 @@
  *
  */
 
-
 #include "TezosLikeKeychainFactory.h"
+
 #include <tezos/TezosLikeExtendedPublicKey.h>
 
 namespace ledger {
@@ -37,10 +37,10 @@ namespace ledger {
 
         std::shared_ptr<TezosLikeKeychain>
         TezosLikeKeychainFactory::build(const DerivationPath &path,
-                                        const std::shared_ptr<DynamicObject>& configuration,
-                                        const api::AccountCreationInfo& info,
-                                        const std::shared_ptr<Preferences>& accountPreferences,
-                                        const api::Currency& currency) {
+                                        const std::shared_ptr<DynamicObject> &configuration,
+                                        const api::AccountCreationInfo &info,
+                                        const std::shared_ptr<Preferences> &accountPreferences,
+                                        const api::Currency &currency) {
             if (info.publicKeys.empty()) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeKeychainFactory cannot find public keys ");
             }
@@ -52,14 +52,14 @@ namespace ledger {
 
         std::shared_ptr<TezosLikeKeychain>
         TezosLikeKeychainFactory::restore(const DerivationPath &path,
-                                          const std::shared_ptr<DynamicObject>& configuration,
+                                          const std::shared_ptr<DynamicObject> &configuration,
                                           const std::string &publicKey,
-                                          const std::shared_ptr<Preferences>& accountPreferences,
-                                          const api::Currency& currency) {
+                                          const std::shared_ptr<Preferences> &accountPreferences,
+                                          const api::Currency &currency) {
             return std::make_shared<TezosLikeKeychain>(configuration,
                                                        currency,
                                                        hex::toByteArray(publicKey),
                                                        accountPreferences);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

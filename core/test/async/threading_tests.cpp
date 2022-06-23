@@ -29,21 +29,20 @@
  *
  */
 
-
 #ifdef _WIN32
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #else
-    #include <pthread.h>
+#include <pthread.h>
 #endif
-#include <gtest/gtest.h>
 #include <UvThreadDispatcher.hpp>
 #include <chrono>
+#include <gtest/gtest.h>
 
 using namespace ledger::core;
 using namespace std::chrono;
 
-unsigned long getCurrentThreadId(){
+unsigned long getCurrentThreadId() {
 #ifdef _WIN32
     return (unsigned long)GetCurrentThreadId();
 #else
@@ -53,10 +52,10 @@ unsigned long getCurrentThreadId(){
 
 TEST(Threading, DoSomethingOnSerialQueue) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    int var = 0;
+    int var         = 0;
 
     auto mainThread = getCurrentThreadId();
-    dispatcher->getThreadPoolExecutionContext("worker")->execute(make_runnable([&] () {
+    dispatcher->getThreadPoolExecutionContext("worker")->execute(make_runnable([&]() {
         EXPECT_NE(mainThread, getCurrentThreadId());
         var = 1;
         dispatcher->stop();
@@ -64,22 +63,23 @@ TEST(Threading, DoSomethingOnSerialQueue) {
 
     dispatcher->waitUntilStopped();
     EXPECT_EQ(var, 1);
-    EXPECT_EQ(dispatcher->getThreadPoolExecutionContext("worker"), dispatcher->getThreadPoolExecutionContext("worker"));   
+    EXPECT_EQ(dispatcher->getThreadPoolExecutionContext("worker"), dispatcher->getThreadPoolExecutionContext("worker"));
 }
 
 TEST(Threading, DoSomethingOnSerialQueueWithDelay) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
 
-    uint64_t before = duration_cast< milliseconds >(system_clock::now().time_since_epoch()).count();
-    uint64_t after = before;
+    uint64_t before = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    uint64_t after  = before;
 
     auto mainThread = getCurrentThreadId();
 
-    dispatcher->getSerialExecutionContext("worker")->delay(make_runnable([&] () {
-        EXPECT_NE(mainThread, getCurrentThreadId());
-        after = duration_cast< milliseconds >(system_clock::now().time_since_epoch()).count();
-        dispatcher->stop();
-    }), 1000);
+    dispatcher->getSerialExecutionContext("worker")->delay(make_runnable([&]() {
+                                                               EXPECT_NE(mainThread, getCurrentThreadId());
+                                                               after = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+                                                               dispatcher->stop();
+                                                           }),
+                                                           1000);
 
     dispatcher->waitUntilStopped();
 
@@ -89,20 +89,20 @@ TEST(Threading, DoSomethingOnSerialQueueWithDelay) {
 
 TEST(Threading, DoSomethingOnThreadPoolSerialQueue) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>(2);
-    auto cpt = 0;
+    auto cpt        = 0;
     std::mutex mutex;
     std::condition_variable condition;
 
     auto mainThread = getCurrentThreadId();
     unsigned long threadId1, threadId2, threadId3;
 
-    auto getThreadId = [&] (auto context, unsigned long & threadId) {
-        context->execute(make_runnable([&] () {
-        std::unique_lock<std::mutex> lock(mutex);
-        threadId = getCurrentThreadId();
-        ++ cpt;
-        condition.notify_all();
-    }));
+    auto getThreadId = [&](auto context, unsigned long &threadId) {
+        context->execute(make_runnable([&]() {
+            std::unique_lock<std::mutex> lock(mutex);
+            threadId = getCurrentThreadId();
+            ++cpt;
+            condition.notify_all();
+        }));
     };
 
     getThreadId(dispatcher->getThreadPoolExecutionContext("worker-1"), threadId1);
@@ -110,10 +110,10 @@ TEST(Threading, DoSomethingOnThreadPoolSerialQueue) {
     getThreadId(dispatcher->getThreadPoolExecutionContext("worker-3"), threadId3);
 
     std::unique_lock<std::mutex> lock(mutex);
-    condition.wait(lock, [&] () {
+    condition.wait(lock, [&]() {
         return (cpt == 3);
     });
-    
+
     EXPECT_NE(mainThread, threadId1);
     EXPECT_NE(mainThread, threadId2);
     EXPECT_NE(mainThread, threadId3);

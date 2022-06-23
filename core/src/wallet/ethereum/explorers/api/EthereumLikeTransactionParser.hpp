@@ -31,22 +31,22 @@
 #define LEDGER_CORE_ETHEREUMLIKETRANSACTIONPARSER_HPP
 
 #include "EthereumLikeBlockParser.hpp"
+
 #include <collections/collections.hpp>
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 #include <net/HttpClient.hpp>
 #include <rapidjson/reader.h>
 #include <stack>
-
 
 namespace ledger {
     namespace core {
         class EthereumLikeBlockchainExplorer;
         class EthereumLikeTransactionParser {
-        public:
+          public:
             typedef EthereumLikeBlockchainExplorerTransaction Result;
-            EthereumLikeTransactionParser(std::string& lastKey);
-            void init(EthereumLikeBlockchainExplorerTransaction* transaction);
+            EthereumLikeTransactionParser(std::string &lastKey);
+            void init(EthereumLikeBlockchainExplorerTransaction *transaction);
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -54,24 +54,23 @@ namespace ledger {
             bool Int64(int64_t i);
             bool Uint64(uint64_t i);
             bool Double(double d);
-            bool RawNumber(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
-            bool String(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
+            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
             bool StartObject();
-            bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy);
+            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
             bool EndObject(rapidjson::SizeType memberCount);
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
 
-        private:
-            std::string& _lastKey;
-            EthereumLikeBlockchainExplorerTransaction* _transaction;
+          private:
+            std::string &_lastKey;
+            EthereumLikeBlockchainExplorerTransaction *_transaction;
 
             std::stack<std::string> _hierarchy;
             uint32_t _arrayDepth;
             EthereumLikeBlockParser _blockParser;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_ETHEREUMLIKETRANSACTIONPARSER_HPP
+#endif // LEDGER_CORE_ETHEREUMLIKETRANSACTIONPARSER_HPP

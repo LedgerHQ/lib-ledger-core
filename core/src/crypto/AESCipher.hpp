@@ -32,28 +32,29 @@
 #pragma once
 
 #include "../api/RandomNumberGenerator.hpp"
-#include <memory>
-#include <string>
-#include <ostream>
-#include <istream>
 #include "../bytes/BytesReader.h"
 #include "../bytes/BytesWriter.h"
 
+#include <istream>
+#include <memory>
+#include <ostream>
+#include <string>
+
 namespace ledger {
- namespace core {
-     class AESCipher {
-     public:
-         AESCipher(const std::shared_ptr<api::RandomNumberGenerator>& rng, const std::string& password, const std::string &salt, uint32_t iter);
+    namespace core {
+        class AESCipher {
+          public:
+            AESCipher(const std::shared_ptr<api::RandomNumberGenerator> &rng, const std::string &password, const std::string &salt, uint32_t iter);
 
-         void encrypt(std::istream *input, std::ostream *output);
-         void decrypt(std::istream *input, std::ostream *output) const ;
+            void encrypt(std::istream *input, std::ostream *output);
+            void decrypt(std::istream *input, std::ostream *output) const;
 
-         void encrypt(BytesReader& input, BytesWriter& output);
-         void decrypt(BytesReader& input, BytesWriter& output) const;
+            void encrypt(BytesReader &input, BytesWriter &output);
+            void decrypt(BytesReader &input, BytesWriter &output) const;
 
-     private:
-         std::shared_ptr<api::RandomNumberGenerator> _rng;
-         std::vector<uint8_t> _key;
-     };
- }
-}
+          private:
+            std::shared_ptr<api::RandomNumberGenerator> _rng;
+            std::vector<uint8_t> _key;
+        };
+    } // namespace core
+} // namespace ledger

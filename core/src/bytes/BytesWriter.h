@@ -31,10 +31,11 @@
 
 #pragma once
 
+#include "../math/BigInt.h"
+#include "../utils/endian.h"
+
 #include <cstdio>
 #include <vector>
-#include "../utils/endian.h"
-#include "../math/BigInt.h"
 
 namespace ledger {
     namespace core {
@@ -42,17 +43,16 @@ namespace ledger {
          * Helper class to write byte array. Each write call returns a reference on "this" in order to chain writings.
          */
         class BytesWriter {
-
-        public:
+          public:
             BytesWriter(size_t size);
-            BytesWriter() {};
+            BytesWriter(){};
 
             /**
              * Write a single byte into the writer.
              * @param byte
              * @return
              */
-            inline BytesWriter& writeByte(uint8_t byte)  {
+            inline BytesWriter &writeByte(uint8_t byte) {
                 _bytes.push_back(byte);
                 return *this;
             }
@@ -62,7 +62,8 @@ namespace ledger {
              * @param value
              * @return
              */
-            template<typename T> BytesWriter& writeBeValue(const T value) {
+            template <typename T>
+            BytesWriter &writeBeValue(const T value) {
                 auto ptr = reinterpret_cast<const uint8_t *>(&value);
                 if (!ledger::core::endianness::isSystemBigEndian()) {
                     auto i = sizeof(value);
@@ -83,7 +84,8 @@ namespace ledger {
              * @param value
              * @return
              */
-            template<typename T> BytesWriter& writeLeValue(const T value) {
+            template <typename T>
+            BytesWriter &writeLeValue(const T value) {
                 auto ptr = reinterpret_cast<const uint8_t *>(&value);
                 if (ledger::core::endianness::isSystemBigEndian()) {
                     auto i = sizeof(value);
@@ -104,7 +106,7 @@ namespace ledger {
              * @param data
              * @return
              */
-            BytesWriter& writeByteArray(const std::vector<uint8_t>& data);
+            BytesWriter &writeByteArray(const std::vector<uint8_t> &data);
 
             /**
              * Write a byte array in reverse order.
@@ -118,31 +120,31 @@ namespace ledger {
              * @param i
              * @return
              */
-            BytesWriter& writeBeBigInt(const BigInt& i);
+            BytesWriter &writeBeBigInt(const BigInt &i);
             /**
              * Write a BigInt into the writer using big endian bytes ordering.
              * @param i
              * @return
              */
-            BytesWriter& writeLeBigInt(const BigInt& i);
+            BytesWriter &writeLeBigInt(const BigInt &i);
             /**
              * Writes a string into the writer.
              * @param str
              * @return
              */
-            BytesWriter& writeString(const std::string& str);
+            BytesWriter &writeString(const std::string &str);
             /**
              * Writes a var int into the writer.
              * @param i
              * @return
              */
-            BytesWriter& writeVarInt(uint64_t i);
+            BytesWriter &writeVarInt(uint64_t i);
             /**
              * Writes a var string into the writer.
              * @param str
              * @return
              */
-            BytesWriter& writeVarString(const std::string& str);
+            BytesWriter &writeVarString(const std::string &str);
 
             /**
              * Returns the serialized data.
@@ -150,8 +152,8 @@ namespace ledger {
              */
             std::vector<uint8_t> toByteArray() const;
 
-        private:
+          private:
             std::vector<uint8_t> _bytes;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger

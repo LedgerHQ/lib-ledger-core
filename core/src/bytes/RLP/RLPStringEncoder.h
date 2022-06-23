@@ -28,33 +28,34 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RLPSTRINGENCODER_H
 #define LEDGER_CORE_RLPSTRINGENCODER_H
 
-#include "RLPEncoder.h"
-#include <string>
-#include "../BytesWriter.h"
 #include "../../utils/Exception.hpp"
+#include "../BytesWriter.h"
+#include "RLPEncoder.h"
+
+#include <string>
 
 namespace ledger {
     namespace core {
         class RLPStringEncoder final : public RLPEncoder {
-        public:
+          public:
             RLPStringEncoder(const std::string &data);
             RLPStringEncoder(const std::vector<uint8_t> &data);
-            std::vector<uint8_t> encode() override ;
-            void append(const std::string &str) override ;
-            void append(const std::vector<uint8_t> &data) override ;
-            void append(const std::shared_ptr<RLPEncoder> &child) override ;
-            bool isList() override ;
-            std::string toString() override ;
-            std::vector<std::shared_ptr<RLPEncoder>> getChildren() override ;
-        private:
+            std::vector<uint8_t> encode() override;
+            void append(const std::string &str) override;
+            void append(const std::vector<uint8_t> &data) override;
+            void append(const std::shared_ptr<RLPEncoder> &child) override;
+            bool isList() override;
+            std::string toString() override;
+            std::vector<std::shared_ptr<RLPEncoder>> getChildren() override;
+
+          private:
             std::vector<uint8_t> _data;
         };
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_RLPSTRINGENCODER_H
+#endif // LEDGER_CORE_RLPSTRINGENCODER_H

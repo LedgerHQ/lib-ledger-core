@@ -29,12 +29,13 @@
  *
  */
 #include "BitcoinLikeOutputApi.h"
-#include <utils/hex.h>
-#include <wallet/common/Amount.h>
-#include <wallet/common/AbstractAccount.hpp>
+
 #include <utils/Exception.hpp>
-#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
+#include <utils/hex.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
+#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
+#include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/Amount.h>
 
 namespace ledger {
     namespace core {
@@ -42,12 +43,12 @@ namespace ledger {
         BitcoinLikeOutputApi::BitcoinLikeOutputApi(const std::shared_ptr<OperationApi> &operation,
                                                    int32_t outputIndex) : _backend(operation) {
             _outputIndex = outputIndex;
-            _currency = operation->getAccount()->getWallet()->getCurrency();
+            _currency    = operation->getAccount()->getWallet()->getCurrency();
         }
 
-        BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorerOutput &output, const api::Currency& currency) : _backend(output) {
+        BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorerOutput &output, const api::Currency &currency) : _backend(output) {
             _outputIndex = static_cast<int32_t>(output.index);
-            _currency = currency;
+            _currency    = currency;
         }
 
         std::string BitcoinLikeOutputApi::getTransactionHash() {
@@ -82,7 +83,8 @@ namespace ledger {
         const BitcoinLikeBlockchainExplorerOutput &BitcoinLikeOutputApi::getOutput() const {
             if (_backend.isLeft())
                 return _backend.getLeft()->getBackend().bitcoinTransaction.getValue().outputs[_outputIndex];
-            return _backend.getRight();;
+            return _backend.getRight();
+            ;
         }
 
         std::shared_ptr<api::BitcoinLikeScript> BitcoinLikeOutputApi::parseScript() {
@@ -103,7 +105,7 @@ namespace ledger {
         BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorerOutput &output,
                                                    const api::Currency &currency,
                                                    const std::shared_ptr<api::DerivationPath> &path)
-                : BitcoinLikeOutputApi(output, currency) {
+            : BitcoinLikeOutputApi(output, currency) {
             _path = path;
         }
 
@@ -114,5 +116,5 @@ namespace ledger {
         bool BitcoinLikeOutputApi::isReplaceable() const {
             return getOutput().replaceable;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

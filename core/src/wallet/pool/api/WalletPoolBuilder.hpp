@@ -31,18 +31,16 @@
 #ifndef LEDGER_CORE_WALLETPOOLBUILDER_HPP
 #define LEDGER_CORE_WALLETPOOLBUILDER_HPP
 
-#include <unordered_map>
-
-#include <api/WalletPoolBuilder.hpp>
 #include <api/WalletPool.hpp>
+#include <api/WalletPoolBuilder.hpp>
+#include <unordered_map>
 #include <utils/optional.hpp>
 
 namespace ledger {
 
     namespace core {
         class WalletPoolBuilder : public api::WalletPoolBuilder, public std::enable_shared_from_this<WalletPoolBuilder> {
-
-        public:
+          public:
             virtual std::shared_ptr<api::WalletPoolBuilder> setPassword(const std::string &password) override;
 
             WalletPoolBuilder();
@@ -81,7 +79,7 @@ namespace ledger {
 
             virtual void build(const std::shared_ptr<api::WalletPoolCallback> &listener) override;
 
-        private:
+          private:
             std::shared_ptr<api::HttpClient> _httpClient;
             std::shared_ptr<api::WebSocketClient> _webSocketClient;
             std::shared_ptr<api::PathResolver> _pathResolver;
@@ -95,8 +93,7 @@ namespace ledger {
             std::shared_ptr<api::PreferencesBackend> _externalPreferencesBackend;
             std::shared_ptr<api::PreferencesBackend> _internalPreferencesBackend;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_WALLETPOOLBUILDER_HPP
+#endif // LEDGER_CORE_WALLETPOOLBUILDER_HPP

@@ -32,9 +32,9 @@
 #ifndef LEDGER_CORE_BITCOINLIKESCRIPTAPI_H
 #define LEDGER_CORE_BITCOINLIKESCRIPTAPI_H
 
+#include <api/BitcoinLikeOperator.hpp>
 #include <api/BitcoinLikeScript.hpp>
 #include <api/BitcoinLikeScriptChunk.hpp>
-#include <api/BitcoinLikeOperator.hpp>
 #include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
 
 namespace ledger {
@@ -42,8 +42,8 @@ namespace ledger {
 
         class BitcoinLikeScriptApi;
         class BitcoinLikeScriptChunkApi : public api::BitcoinLikeScriptChunk {
-        public:
-            BitcoinLikeScriptChunkApi(const std::shared_ptr<BitcoinLikeScriptApi>& script, int index);
+          public:
+            BitcoinLikeScriptChunkApi(const std::shared_ptr<BitcoinLikeScriptApi> &script, int index);
             bool isOperator() override;
 
             bool isPushedData() override;
@@ -56,26 +56,25 @@ namespace ledger {
 
             bool hasNext() override;
 
-            inline const ledger::core::BitcoinLikeScriptChunk& getChunk() const;
+            inline const ledger::core::BitcoinLikeScriptChunk &getChunk() const;
 
-        private:
+          private:
             int _index;
             std::shared_ptr<BitcoinLikeScriptApi> _script;
-            const ledger::core::BitcoinLikeScriptChunk& _chunk;
+            const ledger::core::BitcoinLikeScriptChunk &_chunk;
         };
 
         class BitcoinLikeScriptApi : public api::BitcoinLikeScript, public std::enable_shared_from_this<BitcoinLikeScriptApi> {
-        public:
-            explicit BitcoinLikeScriptApi(const ledger::core::BitcoinLikeScript& script);
+          public:
+            explicit BitcoinLikeScriptApi(const ledger::core::BitcoinLikeScript &script);
             std::shared_ptr<api::BitcoinLikeScriptChunk> head() override;
             std::string toString() override;
-            const ledger::core::BitcoinLikeScript& getScript() const;
+            const ledger::core::BitcoinLikeScript &getScript() const;
 
-        private:
+          private:
             ledger::core::BitcoinLikeScript _script;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BITCOINLIKESCRIPTAPI_H
+#endif // LEDGER_CORE_BITCOINLIKESCRIPTAPI_H

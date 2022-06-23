@@ -30,18 +30,17 @@
  */
 
 #include <gtest/gtest.h>
-#include <ledger/core/crypto/SHA256.hpp>
-#include <ledger/core/crypto/SHA512.hpp>
-#include <ledger/core/crypto/RIPEMD160.hpp>
-#include <ledger/core/utils/hex.h>
-#include <ledger/core/crypto/HMAC.hpp>
-#include <ledger/core/crypto/HASH160.hpp>
 #include <ledger/core/crypto/BLAKE.h>
+#include <ledger/core/crypto/HASH160.hpp>
+#include <ledger/core/crypto/HMAC.hpp>
 #include <ledger/core/crypto/HashAlgorithm.h>
 #include <ledger/core/crypto/Keccak.h>
+#include <ledger/core/crypto/RIPEMD160.hpp>
+#include <ledger/core/crypto/SHA256.hpp>
+#include <ledger/core/crypto/SHA512.hpp>
+#include <ledger/core/utils/hex.h>
 
 using namespace ledger::core;
-
 
 TEST(Digests, SHA256_Strings_to_String) {
     EXPECT_EQ(SHA256::stringToHexHash("abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno"), "2ff100b36c386c65a1afc462ad53e25479bec9498ed00aa5a04de584bc25301b");
@@ -69,26 +68,24 @@ TEST(Digests, SHA512_bytes_to_String) {
 
 TEST(Digests, RIPEMD160) {
     std::vector<std::vector<std::string>> fixtures = {
-            {"", "9c1185a5c5e9fc54612808977ee8f548b2258d31"},
-            {"a", "0bdc9d2d256b3ee9daae347be6f4dc835a467ffe"},
-            {"abc", "8eb208f7e05d987a9b044a8e98c6b087f15a0bfc"},
-            {"message digest", 	"5d0689ef49d2fae572b881b123a85ffa21595f36"}
-    };
-    for (auto& i : fixtures) {
+        {"", "9c1185a5c5e9fc54612808977ee8f548b2258d31"},
+        {"a", "0bdc9d2d256b3ee9daae347be6f4dc835a467ffe"},
+        {"abc", "8eb208f7e05d987a9b044a8e98c6b087f15a0bfc"},
+        {"message digest", "5d0689ef49d2fae572b881b123a85ffa21595f36"}};
+    for (auto &i : fixtures) {
         EXPECT_EQ(RIPEMD160::hash(std::vector<uint8_t>(i[0].begin(), i[0].end())), hex::toByteArray(i[1]));
     }
 }
 
 TEST(Digest, HMACSHA256) {
     std::vector<std::vector<std::string>> fixtures = {
-            {"0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b", "4869205468657265", "b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7"},
-            {"4a656665", "7768617420646f2079612077616e7420666f72206e6f7468696e673f", "5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843"},
-            {"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", "773ea91e36800e46854db8ebd09181a72959098b3ef8c122d9635514ced565fe"},
-            {"0102030405060708090a0b0c0d0e0f10111213141516171819", "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd", "82558a389a443c0ea4cc819899f2083a85f0faa3e578f8077a2e3ff46729665b"}
-    };
+        {"0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b", "4869205468657265", "b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7"},
+        {"4a656665", "7768617420646f2079612077616e7420666f72206e6f7468696e673f", "5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843"},
+        {"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", "773ea91e36800e46854db8ebd09181a72959098b3ef8c122d9635514ced565fe"},
+        {"0102030405060708090a0b0c0d0e0f10111213141516171819", "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd", "82558a389a443c0ea4cc819899f2083a85f0faa3e578f8077a2e3ff46729665b"}};
 
-    for (auto& i : fixtures) {
-        auto hash = hex::toString(HMAC::sha256(hex::toByteArray(i[0]), hex::toByteArray(i[1])));
+    for (auto &i : fixtures) {
+        auto hash     = hex::toString(HMAC::sha256(hex::toByteArray(i[0]), hex::toByteArray(i[1])));
         auto expected = i[2];
         EXPECT_EQ(hash, expected);
     }
@@ -102,8 +99,7 @@ TEST(Digest, HASH160) {
 }
 
 TEST(Digest, BLAKE256) {
-
-    auto input1 = hex::toByteArray("");
+    auto input1    = hex::toByteArray("");
     auto output256 = BLAKE::blake256(input1);
     EXPECT_EQ(hex::toString(output256), "716f6e863f744b9ac22c97ec7b76ea5f5908bc5b2f67c61510bfc4751384ea7a");
 
@@ -124,7 +120,7 @@ TEST(Digest, BLAKE256) {
 }
 
 TEST(Digest, BLAKE2B) {
-    auto input1 = hex::toByteArray("");
+    auto input1    = hex::toByteArray("");
     auto output512 = BLAKE::blake2b(input1);
     EXPECT_EQ(hex::toString(output512), "786a02f742015903c6c6fd852552d272912f4740e15847618a86e217f71f5419d25e1031afee585313896444934eb04b903a685b1448b755d56f701afe9be2ce");
 
@@ -134,15 +130,13 @@ TEST(Digest, BLAKE2B) {
     EXPECT_EQ(hex::toString(output5121), "a8add4bdddfd93e4877d2746e62817b116364a1fa7bc148d95090bc7333b3673f82401cf7aa2e4cb1ecd90296e3f14cb5413f8ed77be73045b13914cdcd6a918");
 }
 TEST(Digest, Keccak256) {
-
     auto empty = hex::toByteArray("");
     auto check = Keccak::keccak256(empty);
     EXPECT_EQ(hex::toString(check), "c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470");
 
-    auto pk = hex::toByteArray("6e145ccef1033dea239875dd00dfb4fee6e3348b84985c92f103444683bae07b83b5c38e5e2b0c8529d7fa3f64d46daa1ece2d9ac14cab9477d042c84c32ccd0");
+    auto pk     = hex::toByteArray("6e145ccef1033dea239875dd00dfb4fee6e3348b84985c92f103444683bae07b83b5c38e5e2b0c8529d7fa3f64d46daa1ece2d9ac14cab9477d042c84c32ccd0");
     auto keccak = Keccak::keccak256(pk);
     EXPECT_EQ(hex::toString(keccak), "2a5bc342ed616b5ba5732269001d3f1ef827552ae1114027bd3ecf1f086ba0f9");
 
     EXPECT_EQ(hex::toString(Keccak::keccak256("Vires in numeris")), "d3f77a567fdf21bd226ddcebd5eb8df5f470c1bb77e307b6ffc1c80a24cf6495");
-
 }

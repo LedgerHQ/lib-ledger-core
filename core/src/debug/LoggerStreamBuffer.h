@@ -31,24 +31,25 @@
 #ifndef LEDGER_CORE_LOGGERSTREAMBUFFER_H
 #define LEDGER_CORE_LOGGERSTREAMBUFFER_H
 
-#include <sstream>
 #include "logger.hpp"
+
+#include <sstream>
 
 namespace ledger {
     namespace core {
         class LoggerStreamBuffer : public std::streambuf {
-        public:
-            LoggerStreamBuffer(const std::string& tag, const std::shared_ptr<spdlog::logger>& logger);
-        protected:
+          public:
+            LoggerStreamBuffer(const std::string &tag, const std::shared_ptr<spdlog::logger> &logger);
+
+          protected:
             int overflow(int c) override;
 
-        private:
+          private:
             std::stringstream _buffer;
             std::shared_ptr<spdlog::logger> _logger;
             std::string _tag;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_LOGGERSTREAMBUFFER_H
+#endif // LEDGER_CORE_LOGGERSTREAMBUFFER_H

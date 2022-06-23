@@ -30,15 +30,14 @@
  */
 
 #include <algorithm>
+#include <api/OperationType.hpp>
+#include <api/TimePeriod.hpp>
 #include <gtest/gtest.h>
 #include <iostream>
 #include <memory>
-#include <vector>
-
-#include <api/OperationType.hpp>
-#include <api/TimePeriod.hpp>
 #include <utils/DateUtils.hpp>
 #include <utils/Option.hpp>
+#include <vector>
 #include <wallet/common/BalanceHistory.hpp>
 
 using namespace ledger::core;
@@ -58,7 +57,7 @@ struct DummyOperation {
 };
 
 struct DummyOperationStrategy {
-    static inline system_clock::time_point date(DummyOperation& op) {
+    static inline system_clock::time_point date(DummyOperation &op) {
         return op.date;
     }
 
@@ -66,18 +65,18 @@ struct DummyOperationStrategy {
         return std::make_shared<int32_t>(v);
     }
 
-    static inline void update_balance(DummyOperation& op, int32_t& sum) {
+    static inline void update_balance(DummyOperation &op, int32_t &sum) {
         switch (op.ty) {
-            case api::OperationType::RECEIVE:
-                sum += op.amount;
-                break;
+        case api::OperationType::RECEIVE:
+            sum += op.amount;
+            break;
 
-            case api::OperationType::SEND:
-                sum -= op.amount;
-                break;
+        case api::OperationType::SEND:
+            sum -= op.amount;
+            break;
 
-            case api::OperationType::NONE:
-                break;
+        case api::OperationType::NONE:
+            break;
         }
     }
 };
@@ -85,8 +84,8 @@ struct DummyOperationStrategy {
 TEST(BalanceHistory, ZeroesOutOfRange) {
     // a basic collections of “operations” with nothing
     std::vector<DummyOperation> operations;
-    auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
-    auto end = DateUtils::fromJSON("2019-02-01T00:00:00Z");
+    auto start    = DateUtils::fromJSON("2019-01-01T00:00:00Z");
+    auto end      = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
     auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t>(
         start,
@@ -94,13 +93,12 @@ TEST(BalanceHistory, ZeroesOutOfRange) {
         api::TimePeriod::DAY,
         operations.cbegin(),
         operations.cend(),
-        0
-    );
+        0);
 
     auto size = balances.size();
     EXPECT_EQ(size, 31);
 
-    auto all_zero = all_of(balances.cbegin(), balances.cend(), [](shared_ptr<int32_t> const& balance) {
+    auto all_zero = all_of(balances.cbegin(), balances.cend(), [](shared_ptr<int32_t> const &balance) {
         return *balance == 0;
     });
     EXPECT_TRUE(all_zero);
@@ -111,12 +109,11 @@ TEST(BalanceHistory, CorrectBalancesPerHour) {
     std::vector<DummyOperation> operations = {
         DummyOperation(10, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-01T00:00:00Z")),
         DummyOperation(12, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-01T02:00:00Z")),
-        DummyOperation(5, api::OperationType::SEND,     DateUtils::fromJSON("2019-01-01T04:00:00Z")),
-        DummyOperation(3, api::OperationType::SEND,     DateUtils::fromJSON("2019-01-01T07:30:00Z"))
-    };
+        DummyOperation(5, api::OperationType::SEND, DateUtils::fromJSON("2019-01-01T04:00:00Z")),
+        DummyOperation(3, api::OperationType::SEND, DateUtils::fromJSON("2019-01-01T07:30:00Z"))};
 
-    auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
-    auto end =   DateUtils::fromJSON("2019-02-01T00:00:00Z");
+    auto start    = DateUtils::fromJSON("2019-01-01T00:00:00Z");
+    auto end      = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
     auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t>(
         start,
@@ -124,8 +121,7 @@ TEST(BalanceHistory, CorrectBalancesPerHour) {
         api::TimePeriod::HOUR,
         operations.cbegin(),
         operations.cend(),
-        0
-    );
+        0);
 
     auto size = balances.size();
     EXPECT_EQ(size, 744);
@@ -142,11 +138,10 @@ TEST(BalanceHistory, CorrectBalancesPerDay) {
         DummyOperation(10, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-01T00:00:00Z")),
         DummyOperation(12, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-01T00:01:00Z")),
         DummyOperation(5, api::OperationType::SEND, DateUtils::fromJSON("2019-01-02T04:00:00Z")),
-        DummyOperation(3, api::OperationType::SEND, DateUtils::fromJSON("2019-01-02T04:30:00Z"))
-    };
+        DummyOperation(3, api::OperationType::SEND, DateUtils::fromJSON("2019-01-02T04:30:00Z"))};
 
-    auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
-    auto end = DateUtils::fromJSON("2019-02-01T00:00:00Z");
+    auto start    = DateUtils::fromJSON("2019-01-01T00:00:00Z");
+    auto end      = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
     auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t>(
         start,
@@ -154,8 +149,7 @@ TEST(BalanceHistory, CorrectBalancesPerDay) {
         api::TimePeriod::DAY,
         operations.cbegin(),
         operations.cend(),
-        0
-    );
+        0);
 
     auto size = balances.size();
     EXPECT_EQ(size, 31);
@@ -170,11 +164,10 @@ TEST(BalanceHistory, CorrectBalancesPerDay2) {
         DummyOperation(10, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-01T00:00:00Z")),
         DummyOperation(12, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-04T01:00:00Z")),
         DummyOperation(5, api::OperationType::SEND, DateUtils::fromJSON("2019-01-19T04:00:00Z")),
-        DummyOperation(3, api::OperationType::SEND, DateUtils::fromJSON("2019-01-22T05:30:00Z"))
-    };
+        DummyOperation(3, api::OperationType::SEND, DateUtils::fromJSON("2019-01-22T05:30:00Z"))};
 
-    auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
-    auto end = DateUtils::fromJSON("2019-02-01T00:00:00Z");
+    auto start    = DateUtils::fromJSON("2019-01-01T00:00:00Z");
+    auto end      = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
     auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t>(
         start,
@@ -182,8 +175,7 @@ TEST(BalanceHistory, CorrectBalancesPerDay2) {
         api::TimePeriod::DAY,
         operations.cbegin(),
         operations.cend(),
-        0
-    );
+        0);
 
     auto size = balances.size();
     EXPECT_EQ(size, 31);

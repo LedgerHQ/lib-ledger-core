@@ -32,22 +32,21 @@
 #define LEDGER_CORE_BITCOINLIKEOPERATION_H
 
 #include <api/BitcoinLikeOperation.hpp>
+#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <wallet/common/Operation.h>
 #include <wallet/common/api_impl/OperationApi.h>
-#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeOperation : public api::BitcoinLikeOperation {
-        public:
-            BitcoinLikeOperation(const std::shared_ptr<OperationApi>& baseOp);
+          public:
+            BitcoinLikeOperation(const std::shared_ptr<OperationApi> &baseOp);
             std::shared_ptr<api::BitcoinLikeTransaction> getTransaction() override;
 
-        private:
+          private:
             std::shared_ptr<BitcoinLikeTransactionApi> _transaction;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BITCOINLIKEOPERATION_H
+#endif // LEDGER_CORE_BITCOINLIKEOPERATION_H

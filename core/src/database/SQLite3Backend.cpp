@@ -29,6 +29,7 @@
  *
  */
 #include "SQLite3Backend.hpp"
+
 #include <utils/Exception.hpp>
 
 using namespace soci;
@@ -65,8 +66,8 @@ namespace ledger {
             session.open(*soci::factory_sqlite3(), parameters);
         }
 
-        void SQLite3Backend::changePassword(const std::string & oldPassword,
-                                            const std::string & newPassword,
+        void SQLite3Backend::changePassword(const std::string &oldPassword,
+                                            const std::string &newPassword,
                                             soci::session &session) {
             if (_dbResolvedPath.empty()) {
                 throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Database should be initiated before changing password.");
@@ -90,5 +91,5 @@ namespace ledger {
             session.close();
             session.open(*soci::factory_sqlite3(), db_params);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

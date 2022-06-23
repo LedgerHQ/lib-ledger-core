@@ -39,7 +39,7 @@
 namespace ledger {
     namespace core {
         class HorizonFeeStatsParser {
-        public:
+          public:
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -55,14 +55,13 @@ namespace ledger {
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
             void init(stellar::FeeStats *feeStats);
-            void setPathView(const JsonParserPathView& path);
+            void setPathView(const JsonParserPathView &path);
 
-        private:
+          private:
             stellar::FeeStats *_feeStats;
             JsonParserPathView _path;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_HORIZONFEESTATSPARSER_HPP
+#endif // LEDGER_CORE_HORIZONFEESTATSPARSER_HPP

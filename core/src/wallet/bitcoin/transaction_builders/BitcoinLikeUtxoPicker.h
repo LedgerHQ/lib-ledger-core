@@ -32,55 +32,54 @@
 #ifndef LEDGER_CORE_BITCOINLIKEUTXOPICKER_H
 #define LEDGER_CORE_BITCOINLIKEUTXOPICKER_H
 
-#include <async/DedicatedContext.hpp>
 #include "BitcoinLikeTransactionBuilder.h"
-#include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
-#include <wallet/bitcoin/types.h>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
-#include <api/Currency.hpp>
-#include <async/Future.hpp>
+
 #include <api/BitcoinLikeOutput.hpp>
+#include <api/Currency.hpp>
+#include <async/DedicatedContext.hpp>
+#include <async/Future.hpp>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxo.hpp>
+#include <wallet/bitcoin/types.h>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeTransactionApi;
         class BitcoinLikeWritableInputApi;
         using BitcoinLikeGetUtxoFunction = std::function<Future<std::vector<BitcoinLikeUtxo>>()>;
-        using BitcoinLikeGetTxFunction = std::function<FuturePtr<BitcoinLikeBlockchainExplorerTransaction>(const std::string&)>;
+        using BitcoinLikeGetTxFunction   = std::function<FuturePtr<BitcoinLikeBlockchainExplorerTransaction>(const std::string &)>;
 
         class BitcoinLikeUtxoPicker : public DedicatedContext, public std::enable_shared_from_this<BitcoinLikeUtxoPicker> {
-        public:
+          public:
             BitcoinLikeUtxoPicker(
-                    const std::shared_ptr<api::ExecutionContext> &context,
-                    const api::Currency& currency
-            );
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const api::Currency &currency);
             virtual BitcoinLikeTransactionBuildFunction getBuildFunction(
-                    const BitcoinLikeGetUtxoFunction& getUtxo,
-                    const BitcoinLikeGetTxFunction& getTransaction,
-                    const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
-                    const std::shared_ptr<BitcoinLikeKeychain>& keychain,
-                    const uint64_t currentBlockHeight,
-                    const std::shared_ptr<spdlog::logger>& logger,
-                    bool partial);
-            const api::Currency& getCurrency() const;
+                const BitcoinLikeGetUtxoFunction &getUtxo,
+                const BitcoinLikeGetTxFunction &getTransaction,
+                const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer,
+                const std::shared_ptr<BitcoinLikeKeychain> &keychain,
+                const uint64_t currentBlockHeight,
+                const std::shared_ptr<spdlog::logger> &logger,
+                bool partial);
+            const api::Currency &getCurrency() const;
 
             struct Buddy {
                 Buddy(
-                        const BitcoinLikeTransactionBuildRequest& r,
-                        const BitcoinLikeGetUtxoFunction& g,
-                        const BitcoinLikeGetTxFunction& tx,
-                        const std::shared_ptr<BitcoinLikeBlockchainExplorer>& e,
-                        const std::shared_ptr<BitcoinLikeKeychain>& k,
-                        const std::shared_ptr<spdlog::logger>& l,
-                        std::shared_ptr<BitcoinLikeTransactionApi> t,
-                        bool partial) : request(r), explorer(e), keychain(k), transaction(t), getUtxo(g),
-                          getTransaction(tx), logger(l), isPartial(partial)
-                {
-                    if(request.wipe) {
+                    const BitcoinLikeTransactionBuildRequest &r,
+                    const BitcoinLikeGetUtxoFunction &g,
+                    const BitcoinLikeGetTxFunction &tx,
+                    const std::shared_ptr<BitcoinLikeBlockchainExplorer> &e,
+                    const std::shared_ptr<BitcoinLikeKeychain> &k,
+                    const std::shared_ptr<spdlog::logger> &l,
+                    std::shared_ptr<BitcoinLikeTransactionApi> t,
+                    bool partial) : request(r), explorer(e), keychain(k), transaction(t), getUtxo(g),
+                                    getTransaction(tx), logger(l), isPartial(partial) {
+                    if (request.wipe) {
                         outputAmount = ledger::core::BigInt::ZERO;
                     } else {
-                        for (auto& output : r.outputs)
+                        for (auto &output : r.outputs)
                             outputAmount = outputAmount + *std::get<0>(output);
                     }
                 }
@@ -95,22 +94,23 @@ namespace ledger {
                 BigInt changeAmount;
                 bool isPartial;
             };
-        protected:
-            virtual Future<Unit> fillInputs(const std::shared_ptr<Buddy>& buddy);
-            virtual Future<std::vector<BitcoinLikeUtxo>> filterInputs(const std::shared_ptr<Buddy>& buddy) = 0;
-            virtual Future<Unit> fillOutputs(const std::shared_ptr<Buddy>& buddy);
-            virtual Future<Unit> fillTransactionInfo(const std::shared_ptr<Buddy>& buddy);
 
-        private:
-            void fillInput(const std::shared_ptr<Buddy>& buddy, const BitcoinLikeUtxo& utxo, const uint32_t sequence);
-            BitcoinLikeGetUtxoFunction createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest& request,
+          protected:
+            virtual Future<Unit> fillInputs(const std::shared_ptr<Buddy> &buddy);
+            virtual Future<std::vector<BitcoinLikeUtxo>> filterInputs(const std::shared_ptr<Buddy> &buddy) = 0;
+            virtual Future<Unit> fillOutputs(const std::shared_ptr<Buddy> &buddy);
+            virtual Future<Unit> fillTransactionInfo(const std::shared_ptr<Buddy> &buddy);
+
+          private:
+            void fillInput(const std::shared_ptr<Buddy> &buddy, const BitcoinLikeUtxo &utxo, const uint32_t sequence);
+            BitcoinLikeGetUtxoFunction createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest &request,
                                                                   const std::shared_ptr<BitcoinLikeKeychain> &keychain,
-                                                                  const BitcoinLikeGetUtxoFunction& getUtxo);
-        protected:
+                                                                  const BitcoinLikeGetUtxoFunction &getUtxo);
+
+          protected:
             api::Currency _currency;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BITCOINLIKEUTXOPICKER_H
+#endif // LEDGER_CORE_BITCOINLIKEUTXOPICKER_H

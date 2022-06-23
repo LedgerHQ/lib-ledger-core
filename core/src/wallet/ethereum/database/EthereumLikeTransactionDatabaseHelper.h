@@ -28,18 +28,17 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMLIKETRANSACTIONDATABASEHELPER_H
 #define LEDGER_CORE_ETHEREUMLIKETRANSACTIONDATABASEHELPER_H
 
-#include <string>
 #include <soci.h>
+#include <string>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 
 namespace ledger {
     namespace core {
         class EthereumLikeTransactionDatabaseHelper {
-        public:
+          public:
             static bool getTransactionByHash(soci::session &sql,
                                              const std::string &hash,
                                              EthereumLikeBlockchainExplorerTransaction &tx);
@@ -49,20 +48,20 @@ namespace ledger {
                                            EthereumLikeBlockchainExplorerTransaction &tx);
 
             static bool transactionExists(soci::session &sql,
-                                   const std::string &ethTxUid);
+                                          const std::string &ethTxUid);
 
-            static std::string createEthereumTransactionUid(const std::string& accountUid,
-                                                     const std::string& txHash);
+            static std::string createEthereumTransactionUid(const std::string &accountUid,
+                                                            const std::string &txHash);
 
-            static std::string putTransaction(soci::session& sql,
+            static std::string putTransaction(soci::session &sql,
                                               const std::string &accountUid,
                                               const EthereumLikeBlockchainExplorerTransaction &tx);
 
-            static void eraseDataSince( soci::session &sql,
-                                        const std::string &accountUid,
-                                        const std::chrono::system_clock::time_point & date);
+            static void eraseDataSince(soci::session &sql,
+                                       const std::string &accountUid,
+                                       const std::chrono::system_clock::time_point &date);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_ETHEREUMLIKETRANSACTIONDATABASEHELPER_H
+#endif // LEDGER_CORE_ETHEREUMLIKETRANSACTIONDATABASEHELPER_H

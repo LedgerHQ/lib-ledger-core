@@ -31,41 +31,44 @@
 #ifndef LEDGER_CORE_SOCI_NUMBER_H
 #define LEDGER_CORE_SOCI_NUMBER_H
 
-#include <soci.h>
 #include <boost/lexical_cast.hpp>
-#include <utils/Exception.hpp>
 #include <math/BigInt.h>
+#include <soci.h>
+#include <utils/Exception.hpp>
 
 namespace soci {
 
     template <>
     struct type_conversion<ledger::core::BigInt> {
         typedef long long base_type;
-        static void from_base(base_type const & in, indicator ind, ledger::core::BigInt& out) {
+        static void from_base(base_type const &in, indicator ind, ledger::core::BigInt &out) {
             out = std::move(ledger::core::BigInt::fromScalar(in));
         }
 
-        static void to_base(ledger::core::BigInt const & in, base_type & out, indicator & ind) {
+        static void to_base(ledger::core::BigInt const &in, base_type &out, indicator &ind) {
             out = (base_type)in.toUint64();
         }
-
     };
 
-    template<typename T>
-    T get_number(const row& row, std::size_t pos) {
+    template <typename T>
+    T get_number(const row &row, std::size_t pos) {
         auto prop = row.get_properties(pos);
         switch (prop.get_data_type()) {
-            case dt_string:
-                return boost::lexical_cast<T>(row.get<std::string>(pos));
-            case dt_date: throw ledger::core::Exception(ledger::core::api::ErrorCode::RUNTIME_ERROR, "SQL date cannot be casted to number");
-            case dt_double: return (T) row.get<double>(pos);
-            case dt_integer: return (T) row.get<int>(pos);
-            case dt_long_long: return (T) row.get<long long>(pos);
-            case dt_unsigned_long_long: return (T) row.get<unsigned long long>(pos);
+        case dt_string:
+            return boost::lexical_cast<T>(row.get<std::string>(pos));
+        case dt_date:
+            throw ledger::core::Exception(ledger::core::api::ErrorCode::RUNTIME_ERROR, "SQL date cannot be casted to number");
+        case dt_double:
+            return (T)row.get<double>(pos);
+        case dt_integer:
+            return (T)row.get<int>(pos);
+        case dt_long_long:
+            return (T)row.get<long long>(pos);
+        case dt_unsigned_long_long:
+            return (T)row.get<unsigned long long>(pos);
         }
     };
 
-}
+} // namespace soci
 
-
-#endif //LEDGER_CORE_SOCI_NUMBER_H
+#endif // LEDGER_CORE_SOCI_NUMBER_H

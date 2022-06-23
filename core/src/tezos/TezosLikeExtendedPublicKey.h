@@ -31,24 +31,23 @@
 #ifndef LEDGER_CORE_TEZOSLIKEEXTENDEDPUBLICKEY_H
 #define LEDGER_CORE_TEZOSLIKEEXTENDEDPUBLICKEY_H
 
-#include <common/AbstractExtendedPublicKey.h>
-#include <api/TezosLikeExtendedPublicKey.hpp>
-#include <crypto/DeterministicPublicKey.hpp>
-#include <api/TezosLikeNetworkParameters.hpp>
-#include <memory>
-#include <utils/Option.hpp>
-#include <utils/DerivationPath.hpp>
 #include <api/Currency.hpp>
 #include <api/TezosCurve.hpp>
+#include <api/TezosLikeExtendedPublicKey.hpp>
+#include <api/TezosLikeNetworkParameters.hpp>
+#include <common/AbstractExtendedPublicKey.h>
+#include <crypto/DeterministicPublicKey.hpp>
+#include <memory>
 #include <tezos/TezosKey.h>
+#include <utils/DerivationPath.hpp>
+#include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {
         using TezosExtendedPublicKey = AbstractExtendedPublicKey<api::TezosLikeNetworkParameters>;
 
         class TezosLikeExtendedPublicKey : public TezosExtendedPublicKey, public api::TezosLikeExtendedPublicKey {
-        public:
-
+          public:
             TezosLikeExtendedPublicKey(const api::Currency &params,
                                        const DeterministicPublicKey &key,
                                        api::TezosCurve curve,
@@ -77,10 +76,9 @@ namespace ledger {
                                                                           const std::string &xpubBase58,
                                                                           const Option<std::string> &path);
 
-
             static const api::TezosCurve getCurveFromPrefix(std::string prefix);
 
-        protected:
+          protected:
             const api::TezosLikeNetworkParameters &params() const override {
                 return _currency.tezosLikeNetworkParameters.value();
             };
@@ -96,15 +94,15 @@ namespace ledger {
             const api::Currency &getCurrency() const override {
                 return _currency;
             };
-        private:
+
+          private:
             const api::Currency _currency;
             const DerivationPath _path;
             const DeterministicPublicKey _key;
             api::TezosCurve _curve;
-            TezosKeyType::Encoding  _encoding;
+            TezosKeyType::Encoding _encoding;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_TEZOSLIKEEXTENDEDPUBLICKEY_H
+#endif // LEDGER_CORE_TEZOSLIKEEXTENDEDPUBLICKEY_H

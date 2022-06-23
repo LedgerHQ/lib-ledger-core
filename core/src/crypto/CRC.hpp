@@ -39,10 +39,10 @@ namespace ledger {
     namespace core {
 
         class CRC {
-        public:
+          public:
             /**
-            * The CRC profile holds all constants and parameters used by the CRC calcultation algorithm for 16bits versions
-            */
+             * The CRC profile holds all constants and parameters used by the CRC calcultation algorithm for 16bits versions
+             */
             struct CRC16Profile;
 
             /**
@@ -56,11 +56,9 @@ namespace ledger {
              * @param profile The profile used by the algorithm.
              * @return The cyclic redundancy check of the given bytes.
              */
-            static uint16_t calculate(const std::vector<uint8_t>& bytes, CRC16Profile& profile);
-
+            static uint16_t calculate(const std::vector<uint8_t> &bytes, CRC16Profile &profile);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_CRC_HPP
+#endif // LEDGER_CORE_CRC_HPP

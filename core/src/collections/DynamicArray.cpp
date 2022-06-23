@@ -29,15 +29,17 @@
  *
  */
 #include "DynamicArray.hpp"
-#include <iterator>
+
 #include "DynamicObject.hpp"
 #include "DynamicValue.hpp"
-#include <cereal/cereal.hpp>
-#include <cereal/archives/portable_binary.hpp>
-#include <cereal/types/set.hpp>
-#include <cereal/types/memory.hpp>
+
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
+#include <cereal/archives/portable_binary.hpp>
+#include <cereal/cereal.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/set.hpp>
+#include <iterator>
 
 namespace ledger {
     namespace core {
@@ -138,7 +140,7 @@ namespace ledger {
         std::shared_ptr<api::DynamicArray> DynamicArray::concat(const std::shared_ptr<api::DynamicArray> &array) {
             if (!_readOnly) {
                 auto a = std::static_pointer_cast<DynamicArray>(array);
-                for (auto& v : a->_values.getContainer()) {
+                for (auto &v : a->_values.getContainer()) {
                     _values += DynamicValue(v);
                 }
             }
@@ -155,13 +157,13 @@ namespace ledger {
             ::cereal::PortableBinaryOutputArchive archive(is);
             archive(shared_from_this());
             auto savedState = is.str();
-            return std::vector<uint8_t>((const uint8_t *)savedState.data(),(const uint8_t *)savedState.data() + savedState.length());
+            return std::vector<uint8_t>((const uint8_t *)savedState.data(), (const uint8_t *)savedState.data() + savedState.length());
         }
 
         std::ostream &DynamicArray::dump(std::ostream &ss, int depth) const {
             auto index = 0;
 
-            for (auto& item : _values.getContainer()) {
+            for (auto &item : _values.getContainer()) {
                 ss << (" "_S * depth).str() << index << " -> ";
                 item.dump(ss, depth);
                 ss << std::endl;
@@ -178,7 +180,7 @@ namespace ledger {
         void DynamicArray::setReadOnly(bool enable) {
             _readOnly = enable;
 
-            for (auto& v : _values.getContainer()) {
+            for (auto &v : _values.getContainer()) {
                 // try to set the read-only attribute on the contained value as an array, and if it
                 // fails, try to do the same as if it were an object
                 auto array = v.get<std::shared_ptr<DynamicArray>>();
@@ -195,11 +197,11 @@ namespace ledger {
 
         std::shared_ptr<api::DynamicArray> api::DynamicArray::load(const std::vector<uint8_t> &serialized) {
             std::shared_ptr<ledger::core::DynamicArray> array;
-            boost::iostreams::array_source my_vec_source(reinterpret_cast<const char*>(&serialized[0]), serialized.size());
+            boost::iostreams::array_source my_vec_source(reinterpret_cast<const char *>(&serialized[0]), serialized.size());
             boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
             ::cereal::PortableBinaryInputArchive archive(is);
             archive(array);
             return array;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

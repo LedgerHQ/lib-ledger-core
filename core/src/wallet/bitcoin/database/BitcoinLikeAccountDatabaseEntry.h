@@ -39,7 +39,7 @@ namespace ledger {
             int32_t index;
             std::string xpub;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKEACCOUNTDATABASEENTRY_H
+#endif // LEDGER_CORE_BITCOINLIKEACCOUNTDATABASEENTRY_H

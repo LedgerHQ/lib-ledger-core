@@ -39,9 +39,9 @@ namespace ledger {
     namespace core {
 
         class JSONUtils {
-        public:
+          public:
             template <typename Parser>
-            static std::shared_ptr<typename Parser::Result> parse(const std::string& json) {
+            static std::shared_ptr<typename Parser::Result> parse(const std::string &json) {
                 LedgerApiParser<typename Parser::Result, Parser> parser;
                 parser.attach("", 200);
                 rapidjson::Reader reader;
@@ -55,7 +55,7 @@ namespace ledger {
             };
         };
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_JSONUTILS_H
+#endif // LEDGER_CORE_JSONUTILS_H

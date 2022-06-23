@@ -29,23 +29,23 @@
  *
  */
 
+#include <UvThreadDispatcher.hpp>
 #include <gtest/gtest.h>
+#include <iostream>
 #include <src/async/Future.hpp>
 #include <src/async/FutureUtils.hpp>
-#include <iostream>
-#include <UvThreadDispatcher.hpp>
 
 #undef foreach
 
 using namespace ledger::core;
-//using namespace ledger::qt;
+// using namespace ledger::qt;
 
 TEST(Future, OnCompleteSuccess) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<std::string>::async(queue, [] () -> std::string {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, []() -> std::string {
         return "Hello world";
-    }).onComplete(dispatcher->getMainExecutionContext(), [dispatcher] (const Try<std::string>& result) {
+    }).onComplete(dispatcher->getMainExecutionContext(), [dispatcher](const Try<std::string> &result) {
         EXPECT_TRUE(result.isSuccess());
         if (result.isSuccess()) {
             EXPECT_EQ("Hello world", result.getValue());
@@ -57,10 +57,10 @@ TEST(Future, OnCompleteSuccess) {
 
 TEST(Future, OnCompleteFailure) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<std::string>::async(queue, [] () -> std::string {
-       throw std::out_of_range("Not good");
-    }).onComplete(dispatcher->getMainExecutionContext(), [dispatcher] (const Try<std::string>& result) {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, []() -> std::string {
+        throw std::out_of_range("Not good");
+    }).onComplete(dispatcher->getMainExecutionContext(), [dispatcher](const Try<std::string> &result) {
         EXPECT_TRUE(result.isFailure());
         if (result.isFailure()) {
             EXPECT_EQ(api::ErrorCode::RUNTIME_ERROR, result.getFailure().getErrorCode());
@@ -72,12 +72,12 @@ TEST(Future, OnCompleteFailure) {
 
 TEST(Future, Map) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<std::string>::async(queue, [] () -> std::string {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, []() -> std::string {
         return "Hello world";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " from another thread";
-    }).foreach(dispatcher->getMainExecutionContext(), [dispatcher] (const std::string& value) {
+    }).map<std::string>(queue, [](const std::string &str) -> std::string {
+          return str + " from another thread";
+      }).foreach (dispatcher->getMainExecutionContext(), [dispatcher](const std::string &value) {
         EXPECT_EQ("Hello world from another thread", value);
         dispatcher->stop();
     });
@@ -86,12 +86,12 @@ TEST(Future, Map) {
 
 TEST(Future, MapToInt) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<std::string>::async(queue, [] () -> std::string {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, []() -> std::string {
         return "42";
-    }).map<int>(queue, [] (const std::string& str) -> int {
-        return std::atoi(str.c_str());
-    }).foreach(dispatcher->getMainExecutionContext(), [dispatcher] (const int& value) {
+    }).map<int>(queue, [](const std::string &str) -> int {
+          return std::atoi(str.c_str());
+      }).foreach (dispatcher->getMainExecutionContext(), [dispatcher](const int &value) {
         EXPECT_EQ(42, value);
         dispatcher->stop();
     });
@@ -101,14 +101,14 @@ TEST(Future, MapToInt) {
 
 TEST(Future, FlatMap) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<std::string>::async(queue, [] () -> std::string {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, []() -> std::string {
         return "Hello world";
-    }).flatMap<std::string>(queue, [queue] (const std::string& str) {
-        return Future<std::string>::async(queue, [str] () {
-            return str + " from another thread";
-        });
-    }).foreach(dispatcher->getMainExecutionContext(), [dispatcher] (const std::string& value) {
+    }).flatMap<std::string>(queue, [queue](const std::string &str) {
+          return Future<std::string>::async(queue, [str]() {
+              return str + " from another thread";
+          });
+      }).foreach (dispatcher->getMainExecutionContext(), [dispatcher](const std::string &value) {
         EXPECT_EQ("Hello world from another thread", value);
         dispatcher->stop();
     });
@@ -117,145 +117,162 @@ TEST(Future, FlatMap) {
 
 TEST(Future, MapChain) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<std::string>::async(queue, [] () -> std::string {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, []() -> std::string {
         return "Hello world";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " from";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " another";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " thread";
-    }).foreach(dispatcher->getMainExecutionContext(), [dispatcher] (const std::string& value) {
-        EXPECT_EQ("Hello world from another thread", value);
-        dispatcher->stop();
-    });
+    }).map<std::string>(queue, [](const std::string &str) -> std::string {
+          return str + " from";
+      }).map<std::string>(queue, [](const std::string &str) -> std::string {
+            return str + " another";
+        })
+        .map<std::string>(queue, [](const std::string &str) -> std::string {
+            return str + " thread";
+        })
+        .foreach (dispatcher->getMainExecutionContext(), [dispatcher](const std::string &value) {
+            EXPECT_EQ("Hello world from another thread", value);
+            dispatcher->stop();
+        });
     dispatcher->waitUntilStopped();
 }
 
 TEST(Future, MapChainRecover) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<std::string>::async(queue, [] () -> std::string {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, []() -> std::string {
         return "Hello world";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " from";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " another";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        throw std::out_of_range("Not good");
-    }).recover(queue, [] (const Exception& ex) {
-        return "Whew, we recovered !";
-    }).foreach(dispatcher->getMainExecutionContext(), [dispatcher] (const std::string& value) {
-        EXPECT_EQ("Whew, we recovered !", value);
-        dispatcher->stop();
-    });
+    }).map<std::string>(queue, [](const std::string &str) -> std::string {
+          return str + " from";
+      }).map<std::string>(queue, [](const std::string &str) -> std::string {
+            return str + " another";
+        })
+        .map<std::string>(queue, [](const std::string &str) -> std::string {
+            throw std::out_of_range("Not good");
+        })
+        .recover(queue, [](const Exception &ex) {
+            return "Whew, we recovered !";
+        })
+        .foreach (dispatcher->getMainExecutionContext(), [dispatcher](const std::string &value) {
+            EXPECT_EQ("Whew, we recovered !", value);
+            dispatcher->stop();
+        });
     dispatcher->waitUntilStopped();
 }
 
 TEST(Future, MapChainRecoverWith) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<std::string>::async(queue, [] () -> std::string {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, []() -> std::string {
         return "Hello world";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " from";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " another";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        throw std::out_of_range("Not good");
-    }).recoverWith(queue, [queue] (const Exception& ex) {
-        return Future<std::string>::async(queue, [] () {
-            return "Whew, we recovered !";
+    }).map<std::string>(queue, [](const std::string &str) -> std::string {
+          return str + " from";
+      }).map<std::string>(queue, [](const std::string &str) -> std::string {
+            return str + " another";
+        })
+        .map<std::string>(queue, [](const std::string &str) -> std::string {
+            throw std::out_of_range("Not good");
+        })
+        .recoverWith(queue, [queue](const Exception &ex) {
+            return Future<std::string>::async(queue, []() {
+                return "Whew, we recovered !";
+            });
+        })
+        .foreach (dispatcher->getMainExecutionContext(), [dispatcher](const std::string &value) {
+            EXPECT_EQ("Whew, we recovered !", value);
+            dispatcher->stop();
         });
-    }).foreach(dispatcher->getMainExecutionContext(), [dispatcher] (const std::string& value) {
-        EXPECT_EQ("Whew, we recovered !", value);
-        dispatcher->stop();
-    });
     dispatcher->waitUntilStopped();
 }
 
 TEST(Future, MapChainRecoverWithFail) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<std::string>::async(queue, [] () -> std::string {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, []() -> std::string {
         return "Hello world";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " from";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " another";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        throw std::out_of_range("Not good");
-    }).recoverWith(queue, [queue] (const Exception& ex) {
-        return Future<std::string>::async(queue, [] () -> std::string{
+    }).map<std::string>(queue, [](const std::string &str) -> std::string {
+          return str + " from";
+      }).map<std::string>(queue, [](const std::string &str) -> std::string {
+            return str + " another";
+        })
+        .map<std::string>(queue, [](const std::string &str) -> std::string {
             throw std::out_of_range("Not good");
+        })
+        .recoverWith(queue, [queue](const Exception &ex) {
+            return Future<std::string>::async(queue, []() -> std::string {
+                throw std::out_of_range("Not good");
+            });
+        })
+        .onComplete(dispatcher->getMainExecutionContext(), [dispatcher](const Try<std::string> &result) {
+            EXPECT_TRUE(result.isFailure());
+            dispatcher->stop();
         });
-    }).onComplete(dispatcher->getMainExecutionContext(), [dispatcher] (const Try<std::string>& result) {
-        EXPECT_TRUE(result.isFailure());
-        dispatcher->stop();
-    });
     dispatcher->waitUntilStopped();
 }
 
 TEST(Future, FailureProjection) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<std::string>::async(queue, [] () -> std::string {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, []() -> std::string {
         throw Exception(api::ErrorCode::ILLEGAL_STATE, "We shouldn't do that");
-    }).failed().foreach(dispatcher->getMainExecutionContext(), [dispatcher] (const Exception& ex) {
-        EXPECT_EQ(api::ErrorCode::ILLEGAL_STATE, ex.getErrorCode());
-        dispatcher->stop();
-    });
+    }).failed()
+        .foreach (dispatcher->getMainExecutionContext(), [dispatcher](const Exception &ex) {
+            EXPECT_EQ(api::ErrorCode::ILLEGAL_STATE, ex.getErrorCode());
+            dispatcher->stop();
+        });
     dispatcher->waitUntilStopped();
 }
 
 TEST(Future, MapChainFallback) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<std::string>::async(queue, [] () -> std::string {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, []() -> std::string {
         return "Hello world";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " from";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " another";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        throw std::out_of_range("Not good");
-    }).fallback("Whew, we recovered !").foreach(dispatcher->getMainExecutionContext(), [dispatcher] (const std::string& value) {
-        EXPECT_EQ("Whew, we recovered !", value);
-        dispatcher->stop();
-    });
+    }).map<std::string>(queue, [](const std::string &str) -> std::string {
+          return str + " from";
+      }).map<std::string>(queue, [](const std::string &str) -> std::string {
+            return str + " another";
+        })
+        .map<std::string>(queue, [](const std::string &str) -> std::string {
+            throw std::out_of_range("Not good");
+        })
+        .fallback("Whew, we recovered !")
+        .foreach (dispatcher->getMainExecutionContext(), [dispatcher](const std::string &value) {
+            EXPECT_EQ("Whew, we recovered !", value);
+            dispatcher->stop();
+        });
     dispatcher->waitUntilStopped();
 }
 
 TEST(Future, MapChainFallbackWith) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<std::string>::async(queue, [] () -> std::string {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<std::string>::async(queue, []() -> std::string {
         return "Hello world";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " from";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        return str + " another";
-    }).map<std::string>(queue, [] (const std::string& str) -> std::string {
-        throw std::out_of_range("Not good");
-    }).fallbackWith(Future<std::string>::async(queue, [] () {
-            return "Whew, we recovered !";
+    }).map<std::string>(queue, [](const std::string &str) -> std::string {
+          return str + " from";
+      }).map<std::string>(queue, [](const std::string &str) -> std::string {
+            return str + " another";
         })
-    ).foreach(dispatcher->getMainExecutionContext(), [dispatcher] (const std::string& value) {
-        EXPECT_EQ("Whew, we recovered !", value);
-        dispatcher->stop();
-    });
+        .map<std::string>(queue, [](const std::string &str) -> std::string {
+            throw std::out_of_range("Not good");
+        })
+        .fallbackWith(Future<std::string>::async(queue, []() {
+            return "Whew, we recovered !";
+        }))
+        .foreach (dispatcher->getMainExecutionContext(), [dispatcher](const std::string &value) {
+            EXPECT_EQ("Whew, we recovered !", value);
+            dispatcher->stop();
+        });
     dispatcher->waitUntilStopped();
 }
 
 TEST(Future, Filter) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<int>::async(queue, [] () {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<int>::async(queue, []() {
         return 42;
-    }).filter(queue, [] (const int& i) {
-        return i > 21;
-    }).onComplete(queue, [dispatcher] (const Try<int>& result) {
+    }).filter(queue, [](const int &i) {
+          return i > 21;
+      }).onComplete(queue, [dispatcher](const Try<int> &result) {
         EXPECT_TRUE(result.isSuccess());
         if (result.isSuccess())
             EXPECT_EQ(42, result.getValue());
@@ -266,12 +283,12 @@ TEST(Future, Filter) {
 
 TEST(Future, FilterFail) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<int>::async(queue, [] () {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<int>::async(queue, []() {
         return 42;
-    }).filter(queue, [] (const int& i) {
-        return i < 21;
-    }).onComplete(queue, [dispatcher] (const Try<int>& result) {
+    }).filter(queue, [](const int &i) {
+          return i < 21;
+      }).onComplete(queue, [dispatcher](const Try<int> &result) {
         EXPECT_TRUE(result.isFailure());
         if (result.isFailure())
             EXPECT_EQ(api::ErrorCode::NO_SUCH_ELEMENT, result.getFailure().getErrorCode());
@@ -281,14 +298,12 @@ TEST(Future, FilterFail) {
 }
 
 TEST(Future, ToSuccessOnlyCallback) {
-
     struct SuccessOnlyCallback {
-
         SuccessOnlyCallback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const int& i) {
+        void onCallback(const int &i) {
             EXPECT_EQ(i, 42);
             dispatcher->stop();
         }
@@ -297,22 +312,20 @@ TEST(Future, ToSuccessOnlyCallback) {
     };
 
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<int>::async(queue, [] () {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<int>::async(queue, []() {
         return 42;
     }).callback(queue, std::make_shared<SuccessOnlyCallback>(dispatcher));
     dispatcher->waitUntilStopped();
 }
 
 TEST(Future, ToCallbackSuccess) {
-
     struct Callback {
-
         Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const std::experimental::optional<int>& i, const std::experimental::optional<api::Error>& error) {
+        void onCallback(const std::experimental::optional<int> &i, const std::experimental::optional<api::Error> &error) {
             EXPECT_TRUE(!!i);
             EXPECT_TRUE(!error);
             EXPECT_EQ(i, 42);
@@ -323,22 +336,20 @@ TEST(Future, ToCallbackSuccess) {
     };
 
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<int>::async(queue, [] () {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<int>::async(queue, []() {
         return 42;
     }).callback(queue, std::make_shared<Callback>(dispatcher));
     dispatcher->waitUntilStopped();
 }
 
 TEST(Future, ToCallbackFailure) {
-
     struct Callback {
-
         Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const std::experimental::optional<int>& i, const std::experimental::optional<api::Error>& error) {
+        void onCallback(const std::experimental::optional<int> &i, const std::experimental::optional<api::Error> &error) {
             EXPECT_FALSE(!!i);
             EXPECT_FALSE(!error);
             EXPECT_EQ(error.value().code, api::ErrorCode::RUNTIME_ERROR);
@@ -349,8 +360,8 @@ TEST(Future, ToCallbackFailure) {
     };
 
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
-    Future<int>::async(queue, [] () -> int {
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
+    Future<int>::async(queue, []() -> int {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "Toto");
     }).callback(queue, std::make_shared<Callback>(dispatcher));
     dispatcher->waitUntilStopped();
@@ -358,12 +369,11 @@ TEST(Future, ToCallbackFailure) {
 
 TEST(Future, ExecuteAllThreadPoolOK) {
     struct Callback {
-
         Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const std::experimental::optional<std::vector<int>>& x, const std::experimental::optional<api::Error>& error) {
+        void onCallback(const std::experimental::optional<std::vector<int>> &x, const std::experimental::optional<api::Error> &error) {
             EXPECT_TRUE(!!x);
             EXPECT_TRUE(!error);
             auto vec = x.value();
@@ -375,10 +385,9 @@ TEST(Future, ExecuteAllThreadPoolOK) {
         std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     };
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getThreadPoolExecutionContext("queue");
+    auto queue      = dispatcher->getThreadPoolExecutionContext("queue");
     std::vector<Future<int>> futures;
-    for (int i = 0; i < 10; ++i)
-    {
+    for (int i = 0; i < 10; ++i) {
         auto f = Future<int>::async(queue, [i]() -> int {
             return i;
         });
@@ -392,12 +401,11 @@ TEST(Future, ExecuteAllThreadPoolOK) {
 
 TEST(Future, ExecuteAllSingleThreadOK) {
     struct Callback {
-
         Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const std::experimental::optional<std::vector<int>>& x, const std::experimental::optional<api::Error>& error) {
+        void onCallback(const std::experimental::optional<std::vector<int>> &x, const std::experimental::optional<api::Error> &error) {
             EXPECT_TRUE(!!x);
             EXPECT_TRUE(!error);
             auto vec = x.value();
@@ -409,10 +417,9 @@ TEST(Future, ExecuteAllSingleThreadOK) {
         std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     };
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
     std::vector<Future<int>> futures;
-    for (int i = 0; i < 10; ++i)
-    {
+    for (int i = 0; i < 10; ++i) {
         auto f = Future<int>::async(queue, [i]() -> int {
             return i;
         });
@@ -426,12 +433,11 @@ TEST(Future, ExecuteAllSingleThreadOK) {
 
 TEST(Future, ExecuteAllSingleThreadFail) {
     struct Callback {
-
         Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const std::experimental::optional<std::vector<int>>& x, const std::experimental::optional<api::Error>& error) {
+        void onCallback(const std::experimental::optional<std::vector<int>> &x, const std::experimental::optional<api::Error> &error) {
             EXPECT_FALSE(!!x);
             EXPECT_FALSE(!error);
             EXPECT_EQ(error.value().code, api::ErrorCode::RUNTIME_ERROR);
@@ -441,13 +447,11 @@ TEST(Future, ExecuteAllSingleThreadFail) {
         std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     };
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
     std::vector<Future<int>> futures;
-    for (int i = 0; i < 10; ++i)
-    {
+    for (int i = 0; i < 10; ++i) {
         auto f = Future<int>::async(queue, [i]() -> int {
-            if (i == 6)
-            {
+            if (i == 6) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Failed on 6");
             }
             return i;
@@ -462,12 +466,11 @@ TEST(Future, ExecuteAllSingleThreadFail) {
 
 TEST(Future, ExecuteAllThreadPoolFail) {
     struct Callback {
-
         Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const std::experimental::optional<std::vector<int>>& x, const std::experimental::optional<api::Error>& error) {
+        void onCallback(const std::experimental::optional<std::vector<int>> &x, const std::experimental::optional<api::Error> &error) {
             EXPECT_FALSE(!!x);
             EXPECT_FALSE(!error);
             EXPECT_EQ(error.value().code, api::ErrorCode::RUNTIME_ERROR);
@@ -477,13 +480,11 @@ TEST(Future, ExecuteAllThreadPoolFail) {
         std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     };
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto queue = dispatcher->getThreadPoolExecutionContext("queue");
+    auto queue      = dispatcher->getThreadPoolExecutionContext("queue");
     std::vector<Future<int>> futures;
-    for (int i = 0; i < 10; ++i)
-    {
+    for (int i = 0; i < 10; ++i) {
         auto f = Future<int>::async(queue, [i]() -> int {
-            if (i == 6)
-            {
+            if (i == 6) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Failed on 6");
             }
             return i;

@@ -29,8 +29,9 @@
  *
  */
 
-#include "gtest/gtest.h"
 #include "api/BigInt.hpp"
+
+#include "gtest/gtest.h"
 
 using namespace ledger::core::api;
 
@@ -66,5 +67,5 @@ TEST(BigIntApi, DivideTwoBigInt) {
 
 TEST(BigIntApi, FromDecimalString) {
     EXPECT_EQ("133713370000000000000000000000000000",
-            BigInt::fromDecimalString("1 337.1337", 32, ".")->toString(10));
+              BigInt::fromDecimalString("1 337.1337", 32, ".")->toString(10));
 }

@@ -30,28 +30,29 @@
  */
 
 #include "StellarLikeMemo.hpp"
+
 #include <api/StellarLikeMemoType.hpp>
-#include <fmt/format.h>
-#include <utils/hex.h>
-#include <utils/Exception.hpp>
 #include <api_impl/BigIntImpl.hpp>
+#include <fmt/format.h>
 #include <math/BaseConverter.hpp>
+#include <utils/Exception.hpp>
+#include <utils/hex.h>
 
 namespace ledger {
     namespace core {
 
         api::StellarLikeMemoType StellarLikeMemo::getMemoType() {
             switch (_memo.type) {
-                case stellar::xdr::MemoType::MEMO_NONE:
-                    return api::StellarLikeMemoType::MEMO_NONE;
-                case stellar::xdr::MemoType::MEMO_TEXT:
-                    return api::StellarLikeMemoType::MEMO_TEXT;
-                case stellar::xdr::MemoType::MEMO_ID:
-                    return api::StellarLikeMemoType::MEMO_ID;
-                case stellar::xdr::MemoType::MEMO_HASH:
-                    return api::StellarLikeMemoType::MEMO_HASH;
-                case stellar::xdr::MemoType::MEMO_RETURN:
-                    return api::StellarLikeMemoType::MEMO_RETURN;
+            case stellar::xdr::MemoType::MEMO_NONE:
+                return api::StellarLikeMemoType::MEMO_NONE;
+            case stellar::xdr::MemoType::MEMO_TEXT:
+                return api::StellarLikeMemoType::MEMO_TEXT;
+            case stellar::xdr::MemoType::MEMO_ID:
+                return api::StellarLikeMemoType::MEMO_ID;
+            case stellar::xdr::MemoType::MEMO_HASH:
+                return api::StellarLikeMemoType::MEMO_HASH;
+            case stellar::xdr::MemoType::MEMO_RETURN:
+                return api::StellarLikeMemoType::MEMO_RETURN;
             }
         }
 
@@ -64,41 +65,39 @@ namespace ledger {
         std::shared_ptr<api::BigInt> StellarLikeMemo::getMemoId() {
             if (_memo.type == stellar::xdr::MemoType::MEMO_ID)
                 return std::make_shared<api::BigIntImpl>(
-                        BigInt::fromScalar(boost::get<uint64_t>(_memo.content))
-                );
+                    BigInt::fromScalar(boost::get<uint64_t>(_memo.content)));
             throw make_exception(api::ErrorCode::INVALID_STELLAR_MEMO_TYPE, "Memo type is not MEMO_ID");
         }
 
         std::vector<uint8_t> StellarLikeMemo::getMemoHash() {
             if (_memo.type == stellar::xdr::MemoType::MEMO_HASH)
                 return std::vector<uint8_t>(
-                        boost::get<stellar::xdr::Hash>(_memo.content).begin(),
-                        boost::get<stellar::xdr::Hash>(_memo.content).end());
+                    boost::get<stellar::xdr::Hash>(_memo.content).begin(),
+                    boost::get<stellar::xdr::Hash>(_memo.content).end());
             throw make_exception(api::ErrorCode::INVALID_STELLAR_MEMO_TYPE, "Memo type is not MEMO_HASH");
         }
 
         std::vector<uint8_t> StellarLikeMemo::getMemoReturn() {
             if (_memo.type == stellar::xdr::MemoType::MEMO_RETURN)
                 return std::vector<uint8_t>(
-                        boost::get<stellar::xdr::Hash>(_memo.content).begin(),
-                        boost::get<stellar::xdr::Hash>(_memo.content).end());
+                    boost::get<stellar::xdr::Hash>(_memo.content).begin(),
+                    boost::get<stellar::xdr::Hash>(_memo.content).end());
             throw make_exception(api::ErrorCode::INVALID_STELLAR_MEMO_TYPE, "Memo type is not MEMO_RETURN");
         }
 
         std::string StellarLikeMemo::memoValuetoString() {
             switch (_memo.type) {
-                case stellar::xdr::MemoType::MEMO_NONE:
-                    return std::string();
-                case stellar::xdr::MemoType::MEMO_TEXT:
-                    return boost::get<std::string>(_memo.content);
-                case stellar::xdr::MemoType::MEMO_ID:
-                    return fmt::format("{}", boost::get<uint64_t>(_memo.content));
-                case stellar::xdr::MemoType::MEMO_HASH:
-                case stellar::xdr::MemoType::MEMO_RETURN:
-                    return hex::toString(std::vector<uint8_t>(
-                            boost::get<stellar::xdr::Hash>(_memo.content).begin(),
-                            boost::get<stellar::xdr::Hash>(_memo.content).end())
-                    );
+            case stellar::xdr::MemoType::MEMO_NONE:
+                return std::string();
+            case stellar::xdr::MemoType::MEMO_TEXT:
+                return boost::get<std::string>(_memo.content);
+            case stellar::xdr::MemoType::MEMO_ID:
+                return fmt::format("{}", boost::get<uint64_t>(_memo.content));
+            case stellar::xdr::MemoType::MEMO_HASH:
+            case stellar::xdr::MemoType::MEMO_RETURN:
+                return hex::toString(std::vector<uint8_t>(
+                    boost::get<stellar::xdr::Hash>(_memo.content).begin(),
+                    boost::get<stellar::xdr::Hash>(_memo.content).end()));
             }
         }
 
@@ -111,19 +110,18 @@ namespace ledger {
             Try<StellarLikeMemo> result;
 
             if (type == "text") {
-                memo.type = stellar::xdr::MemoType::MEMO_TEXT;
+                memo.type    = stellar::xdr::MemoType::MEMO_TEXT;
                 memo.content = content;
                 result.success(memo);
             } else if (type == "none") {
                 memo.type = stellar::xdr::MemoType::MEMO_NONE;
                 result.success(memo);
             } else if (type == "id") {
-                memo.type = stellar::xdr::MemoType::MEMO_ID;
+                memo.type    = stellar::xdr::MemoType::MEMO_ID;
                 memo.content = BigInt::fromString(content).toUint64();
                 result.success(memo);
             } else if (type == "return" || type == "hash") {
-                memo.type = type == "return" ?
-                        stellar::xdr::MemoType::MEMO_RETURN : stellar::xdr::MemoType::MEMO_HASH;
+                memo.type = type == "return" ? stellar::xdr::MemoType::MEMO_RETURN : stellar::xdr::MemoType::MEMO_HASH;
                 stellar::xdr::Hash hash;
                 std::vector<uint8_t> hashVector;
                 BaseConverter::decode(content, BaseConverter::BASE64_RFC4648, hashVector);
@@ -139,5 +137,5 @@ namespace ledger {
             }
             return result;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

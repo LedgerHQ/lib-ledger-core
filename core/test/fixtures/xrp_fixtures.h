@@ -3,41 +3,41 @@
 // DO NOT EDIT BY HAND!!!
 #ifndef LEDGER_FIXTURES_XRP
 #define LEDGER_FIXTURES_XRP
-#include <gtest/gtest.h>
-#include <UvThreadDispatcher.hpp>
-#include <src/database/DatabaseSessionPool.hpp>
-#include <NativePathResolver.hpp>
-#include <unordered_set>
-#include <src/wallet/pool/WalletPool.hpp>
 #include <CoutLogPrinter.hpp>
-#include <src/api/DynamicObject.hpp>
-#include <wallet/common/CurrencyBuilder.hpp>
-#include <wallet/ripple/explorers/api/RippleLikeTransactionParser.h>
-#include <wallet/ripple/RippleLikeWallet.h>
-#include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
-#include <wallet/common/database/AccountDatabaseHelper.h>
-#include <wallet/pool/database/PoolDatabaseHelper.hpp>
-#include <utils/JSONUtils.h>
-#include <wallet/ripple/RippleLikeAccount.h>
+#include <CppHttpLibClient.hpp>
+#include <NativePathResolver.hpp>
+#include <UvThreadDispatcher.hpp>
+#include <api/Account.hpp>
+#include <api/BigInt.hpp>
+#include <api/RippleLikeAccount.hpp>
 #include <api/RippleLikeOperation.hpp>
 #include <api/RippleLikeTransaction.hpp>
-#include <api/BigInt.hpp>
-#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
+#include <gtest/gtest.h>
 #include <soci.h>
+#include <src/api/DynamicObject.hpp>
+#include <src/database/DatabaseSessionPool.hpp>
+#include <src/wallet/pool/WalletPool.hpp>
+#include <unordered_set>
+#include <utils/JSONUtils.h>
 #include <utils/hex.h>
-#include <api/Account.hpp>
-#include <api/RippleLikeAccount.hpp>
+#include <wallet/common/CurrencyBuilder.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
+#include <wallet/pool/database/PoolDatabaseHelper.hpp>
+#include <wallet/ripple/RippleLikeAccount.h>
+#include <wallet/ripple/RippleLikeWallet.h>
+#include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
+#include <wallet/ripple/explorers/api/RippleLikeTransactionParser.h>
 
 namespace ledger {
-	namespace testing {
-		namespace xrp {
-			extern core::api::AccountCreationInfo XPUB_INFO;
-			extern const std::string TX_1;
+    namespace testing {
+        namespace xrp {
+            extern core::api::AccountCreationInfo XPUB_INFO;
+            extern const std::string TX_1;
 
-			std::shared_ptr<core::RippleLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet);
-		}
-	}
-}
+            std::shared_ptr<core::RippleLikeAccount> inflate(const std::shared_ptr<core::WalletPool> &pool, const std::shared_ptr<core::AbstractWallet> &wallet);
+        } // namespace xrp
+    }     // namespace testing
+} // namespace ledger
 
 #endif // LEDGER_FIXTURES_XRP

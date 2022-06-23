@@ -28,109 +28,104 @@
  */
 
 #include "AlgorandWallet.hpp"
+
 #include "AlgorandAccount.hpp"
 #include "AlgorandAddress.hpp"
-#include "model/AlgorandAccount.hpp"
 #include "database/AlgorandAccountDatabaseHelper.hpp"
+#include "model/AlgorandAccount.hpp"
 
-#include <wallet/pool/WalletPool.hpp>
 #include <api/ErrorCode.hpp>
 #include <wallet/common/database/AccountDatabaseHelper.h>
-
+#include <wallet/pool/WalletPool.hpp>
 
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
 
-    Wallet::Wallet(const std::string &name,
-                   const api::Currency &currency,
-                   const std::shared_ptr<WalletPool>& pool,
-                   const std::shared_ptr<DynamicObject> &configuration,
-                   const DerivationScheme &scheme,
-                   const std::shared_ptr<BlockchainExplorer> &explorer,
-                   const AccountSynchronizerFactory &synchronizerFactory) :
-        AbstractWallet(name, currency, pool, configuration, scheme),
-        _explorer(explorer),
-        _synchronizerFactory(synchronizerFactory)
-    {}
+            Wallet::Wallet(const std::string &name,
+                           const api::Currency &currency,
+                           const std::shared_ptr<WalletPool> &pool,
+                           const std::shared_ptr<DynamicObject> &configuration,
+                           const DerivationScheme &scheme,
+                           const std::shared_ptr<BlockchainExplorer> &explorer,
+                           const AccountSynchronizerFactory &synchronizerFactory) : AbstractWallet(name, currency, pool, configuration, scheme),
+                                                                                    _explorer(explorer),
+                                                                                    _synchronizerFactory(synchronizerFactory) {}
 
-    bool Wallet::isSynchronizing() {
-        return false;
-    }
-
-    std::shared_ptr<api::EventBus> Wallet::synchronize() {
-        return nullptr;
-    }
-
-    FuturePtr<ledger::core::api::Account>
-    Wallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
-
-        return async<std::shared_ptr<api::Account>>([=] () -> std::shared_ptr<api::Account> {
-            if (info.publicKeys.size() < 1) {
-                throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Missing pubkey in account creation info.");
+            bool Wallet::isSynchronizing() {
+                return false;
             }
 
-            soci::session sql(getDatabase()->getPool());
-            auto walletUid = getWalletUid();
-            if (ledger::core::AccountDatabaseHelper::accountExists(sql, walletUid, info.index)) {
-                throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {} already exists for wallet {}", info.index, walletUid);
+            std::shared_ptr<api::EventBus> Wallet::synchronize() {
+                return nullptr;
             }
 
-            const AccountDatabaseEntry accountData {
-                info.index,
-                algorand::Address::fromPublicKey(info.publicKeys[0])
-            };
+            FuturePtr<ledger::core::api::Account>
+            Wallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
+                return async<std::shared_ptr<api::Account>>([=]() -> std::shared_ptr<api::Account> {
+                    if (info.publicKeys.size() < 1) {
+                        throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Missing pubkey in account creation info.");
+                    }
 
-            soci::transaction tr(sql);
-            algorand::AccountDatabaseHelper::createAccount(sql, walletUid, accountData);
-            tr.commit();
+                    soci::session sql(getDatabase()->getPool());
+                    auto walletUid = getWalletUid();
+                    if (ledger::core::AccountDatabaseHelper::accountExists(sql, walletUid, info.index)) {
+                        throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {} already exists for wallet {}", info.index, walletUid);
+                    }
 
-             return std::make_shared<Account>(shared_from_this(),
-                                            accountData.index,
-                                            getCurrency(),
-                                            accountData.address,
-                                            _explorer,
-                                            _synchronizerFactory());
-        });
-    }
+                    const AccountDatabaseEntry accountData{
+                        info.index,
+                        algorand::Address::fromPublicKey(info.publicKeys[0])};
 
-    FuturePtr<ledger::core::api::Account>
-    Wallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
-        throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Algorand does not support account creation with extended key infos.");
-    }
+                    soci::transaction tr(sql);
+                    algorand::AccountDatabaseHelper::createAccount(sql, walletUid, accountData);
+                    tr.commit();
 
-    Future<api::ExtendedKeyAccountCreationInfo>
-    Wallet::getExtendedKeyAccountCreationInfo(int32_t accountIndex) {
-        throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Algorand does not support account creation with extended key infos.");
-    }
+                    return std::make_shared<Account>(shared_from_this(),
+                                                     accountData.index,
+                                                     getCurrency(),
+                                                     accountData.address,
+                                                     _explorer,
+                                                     _synchronizerFactory());
+                });
+            }
 
-    Future<api::AccountCreationInfo> Wallet::getAccountCreationInfo(int32_t accountIndex) {
-        auto scheme = getDerivationScheme();
-        auto path = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
-        return Future<api::AccountCreationInfo>::successful(api::AccountCreationInfo{accountIndex, {"main"}, {path.toString()}, {}, {}});
-    }
+            FuturePtr<ledger::core::api::Account>
+            Wallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
+                throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Algorand does not support account creation with extended key infos.");
+            }
 
-    std::shared_ptr<Wallet> Wallet::getSelf() {
-        return std::dynamic_pointer_cast<Wallet>(shared_from_this());
-    }
+            Future<api::ExtendedKeyAccountCreationInfo>
+            Wallet::getExtendedKeyAccountCreationInfo(int32_t accountIndex) {
+                throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Algorand does not support account creation with extended key infos.");
+            }
 
-    std::shared_ptr<AbstractAccount>
-    Wallet::createAccountInstance(soci::session &sql, const std::string &accountUid) {
-        AccountDatabaseEntry accountData;
-        algorand::AccountDatabaseHelper::queryAccount(sql, accountUid, accountData);
-        return std::make_shared<Account>(shared_from_this(),
-                                         accountData.index,
-                                         getCurrency(),
-                                         accountData.address,
-                                         _explorer,
-                                         _synchronizerFactory());
-    }
+            Future<api::AccountCreationInfo> Wallet::getAccountCreationInfo(int32_t accountIndex) {
+                auto scheme = getDerivationScheme();
+                auto path   = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
+                return Future<api::AccountCreationInfo>::successful(api::AccountCreationInfo{accountIndex, {"main"}, {path.toString()}, {}, {}});
+            }
 
-    bool Wallet::hasMultipleAddresses() const {
-        return false;
-    }
+            std::shared_ptr<Wallet> Wallet::getSelf() {
+                return std::dynamic_pointer_cast<Wallet>(shared_from_this());
+            }
 
-} // namespace algorand
-} // namespace core
+            std::shared_ptr<AbstractAccount>
+            Wallet::createAccountInstance(soci::session &sql, const std::string &accountUid) {
+                AccountDatabaseEntry accountData;
+                algorand::AccountDatabaseHelper::queryAccount(sql, accountUid, accountData);
+                return std::make_shared<Account>(shared_from_this(),
+                                                 accountData.index,
+                                                 getCurrency(),
+                                                 accountData.address,
+                                                 _explorer,
+                                                 _synchronizerFactory());
+            }
+
+            bool Wallet::hasMultipleAddresses() const {
+                return false;
+            }
+
+        } // namespace algorand
+    }     // namespace core
 } // namespace ledger
-

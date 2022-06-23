@@ -65,12 +65,12 @@ TEST(Dynamics, ValueSerialization) {
 TEST(Dynamics, Array) {
     auto array = DynamicArray::newInstance();
     array
-    ->pushBoolean(true)
-    ->pushDouble(12.6)
-    ->pushString("Hello World")
-    ->pushInt(12)
-    ->pushLong(16)
-    ->pushData({0x09, 0x03});
+        ->pushBoolean(true)
+        ->pushDouble(12.6)
+        ->pushString("Hello World")
+        ->pushInt(12)
+        ->pushLong(16)
+        ->pushData({0x09, 0x03});
 
     EXPECT_EQ(array->size(), 6);
     EXPECT_EQ(array->getBoolean(0).value(), true);
@@ -93,12 +93,12 @@ TEST(Dynamics, ArraySerialization) {
     {
         auto array = DynamicArray::newInstance();
         array
-        ->pushBoolean(true)
-        ->pushDouble(12.6)
-        ->pushString("Hello World")
-        ->pushInt(12)
-        ->pushLong(16)
-        ->pushData({0x09, 0x03});
+            ->pushBoolean(true)
+            ->pushDouble(12.6)
+            ->pushString("Hello World")
+            ->pushInt(12)
+            ->pushLong(16)
+            ->pushData({0x09, 0x03});
         serialized = array->serialize();
     }
     {
@@ -139,23 +139,23 @@ TEST(Dynamics, ObjectSerialization) {
     {
         auto object = DynamicObject::newInstance();
         object
-        ->putBoolean("boolean", true)
-        ->putDouble("double", 12.6)
-        ->putString("string", "Hello World")
-        ->putInt("int", 12)
-        ->putLong("long", 16)
-        ->putData("data", {0x09, 0x03});
-       serialized = object->serialize();
+            ->putBoolean("boolean", true)
+            ->putDouble("double", 12.6)
+            ->putString("string", "Hello World")
+            ->putInt("int", 12)
+            ->putLong("long", 16)
+            ->putData("data", {0x09, 0x03});
+        serialized = object->serialize();
     }
     {
         auto object = DynamicObject::load(serialized);
         object
-        ->putBoolean("boolean", true)
-        ->putDouble("double", 12.6)
-        ->putString("string", "Hello World")
-        ->putInt("int", 12)
-        ->putLong("long", 16)
-        ->putData("data", {0x09, 0x03});
+            ->putBoolean("boolean", true)
+            ->putDouble("double", 12.6)
+            ->putString("string", "Hello World")
+            ->putInt("int", 12)
+            ->putLong("long", 16)
+            ->putData("data", {0x09, 0x03});
         EXPECT_EQ(object->size(), 6);
         EXPECT_EQ(object->getBoolean("boolean").value(), true);
         EXPECT_EQ(object->getDouble("double").value(), 12.6);
@@ -170,21 +170,21 @@ TEST(Dynamics, ObjectSerialization) {
 TEST(Dynamics, ArrayWithObjects) {
     std::vector<uint8_t> serialized;
     {
-        auto array = DynamicArray::newInstance();
+        auto array  = DynamicArray::newInstance();
         auto object = DynamicObject::newInstance();
         object
-        ->putBoolean("boolean", true)
-        ->putDouble("double", 12.6)
-        ->putString("string", "Hello World")
-        ->putInt("int", 12)
-        ->putLong("long", 16)
-        ->putData("data", {0x09, 0x03});
+            ->putBoolean("boolean", true)
+            ->putDouble("double", 12.6)
+            ->putString("string", "Hello World")
+            ->putInt("int", 12)
+            ->putLong("long", 16)
+            ->putData("data", {0x09, 0x03});
         array->pushBoolean(false);
         array->pushObject(object);
         serialized = array->serialize();
     }
     {
-        auto array = DynamicArray::load(serialized);
+        auto array  = DynamicArray::load(serialized);
         auto object = array->getObject(1);
         EXPECT_EQ(object->size(), 6);
         EXPECT_EQ(object->getBoolean("boolean").value(), true);
@@ -201,20 +201,20 @@ TEST(Dynamics, ObjectWithArray) {
     std::vector<uint8_t> serialized;
     {
         auto object = DynamicObject::newInstance();
-        auto array = DynamicArray::newInstance();
+        auto array  = DynamicArray::newInstance();
         array
-        ->pushBoolean(true)
-        ->pushDouble(12.6)
-        ->pushString("Hello World")
-        ->pushInt(12)
-        ->pushLong(16)
-        ->pushData({0x09, 0x03});
+            ->pushBoolean(true)
+            ->pushDouble(12.6)
+            ->pushString("Hello World")
+            ->pushInt(12)
+            ->pushLong(16)
+            ->pushData({0x09, 0x03});
         object->putArray("array", array);
         serialized = object->serialize();
     }
     {
         auto object = DynamicObject::load(serialized);
-        auto array = object->getArray("array");
+        auto array  = object->getArray("array");
         EXPECT_EQ(array->size(), 6);
         EXPECT_EQ(array->getBoolean(0).value(), true);
         EXPECT_EQ(array->getDouble(1).value(), 12.6);
@@ -229,17 +229,17 @@ TEST(Dynamics, ObjectWithArray) {
 TEST(Dynamics, OverwriteDynamicObject) {
     auto object = std::make_shared<ledger::core::DynamicObject>();
     object->putBoolean("boolean", true)
-            ->putDouble("double", 12.6)
-            ->putString("string", "Hello World")
-            ->putInt("int", 12)
-            ->putLong("long", 16)
-            ->putData("data", {0x09, 0x03});
+        ->putDouble("double", 12.6)
+        ->putString("string", "Hello World")
+        ->putInt("int", 12)
+        ->putLong("long", 16)
+        ->putData("data", {0x09, 0x03});
 
     auto replacement = std::make_shared<ledger::core::DynamicObject>();
     replacement->putString("string", "Hello")
-            ->putInt("int", 1)
-            ->putData("data", {0x19, 0x90});
-    
+        ->putInt("int", 1)
+        ->putData("data", {0x19, 0x90});
+
     object->updateWithConfiguration(replacement);
 
     EXPECT_EQ(object->size(), 6);

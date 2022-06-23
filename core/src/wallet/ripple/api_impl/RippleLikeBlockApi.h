@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKEBLOCKAPI_H
 #define LEDGER_CORE_RIPPLELIKEBLOCKAPI_H
 
@@ -38,20 +37,19 @@
 namespace ledger {
     namespace core {
         class RippleLikeBlockApi : public api::RippleLikeBlock {
-        public:
-            RippleLikeBlockApi(const Block& block);
+          public:
+            RippleLikeBlockApi(const Block &block);
 
-            std::string getHash() override ;
+            std::string getHash() override;
 
-            int64_t getHeight() override ;
+            int64_t getHeight() override;
 
-            std::chrono::system_clock::time_point getTime() override ;
+            std::chrono::system_clock::time_point getTime() override;
 
-        private:
+          private:
             Block _block;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_RIPPLELIKEBLOCKAPI_H
+#endif // LEDGER_CORE_RIPPLELIKEBLOCKAPI_H

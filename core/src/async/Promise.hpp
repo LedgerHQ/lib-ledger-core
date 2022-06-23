@@ -31,77 +31,80 @@
 #ifndef LEDGER_CORE_PROMISE_HPP
 #define LEDGER_CORE_PROMISE_HPP
 
-#include "utils/Try.hpp"
-#include "utils/Option.hpp"
-#include "utils/Exception.hpp"
 #include "Future.hpp"
+#include "utils/Exception.hpp"
+#include "utils/Option.hpp"
+#include "utils/Try.hpp"
 
 namespace ledger {
     namespace core {
 
         template <typename T>
         class Promise {
-        public:
+          public:
             Promise() {
                 _deffer = std::make_shared<Deffered<T>>();
             };
-            Promise(const T& value) : Promise() {
+            Promise(const T &value) : Promise() {
                 success(value);
             };
 
-            Promise(const Exception& failure) : Promise() {
+            Promise(const Exception &failure) : Promise() {
                 this->failure(failure);
             };
 
-            void complete(const Try<T>& result) {
+            void complete(const Try<T> &result) {
                 _deffer->setResult(result);
             };
 
-            bool tryComplete(const Try<T>& result) {
-               return Try<Unit>::from([result, this] () {
-                   complete(result);
-                   return unit;
-               }).isSuccess();
+            bool tryComplete(const Try<T> &result) {
+                return Try<Unit>::from([result, this]() {
+                           complete(result);
+                           return unit;
+                       })
+                    .isSuccess();
             }
 
-            void completeWith(const Future<T>& future) {
+            void completeWith(const Future<T> &future) {
                 auto deffer = _deffer;
                 Future<T> f = future;
-                f.onComplete(ImmediateExecutionContext::INSTANCE, [deffer] (const Try<T>& result) {
+                f.onComplete(ImmediateExecutionContext::INSTANCE, [deffer](const Try<T> &result) {
                     deffer->setResult(result);
                 });
             };
 
-            void tryCompleteWith(const Future<T>& future) {
+            void tryCompleteWith(const Future<T> &future) {
                 auto deffer = _deffer;
                 Future<T> f = future;
-                f.onComplete(ImmediateExecutionContext::INSTANCE, [deffer] (const Try<T>& result) {
-                    Try<Unit>::from([result, deffer] () {
+                f.onComplete(ImmediateExecutionContext::INSTANCE, [deffer](const Try<T> &result) {
+                    Try<Unit>::from([result, deffer]() {
                         deffer->setResult(result);
                         return unit;
                     });
                 });
             }
 
-            bool trySuccess(const T& value) {
-                return Try<Unit>::from([value, this] () {
-                    success(value);
-                    return unit;
-                }).isSuccess();
+            bool trySuccess(const T &value) {
+                return Try<Unit>::from([value, this]() {
+                           success(value);
+                           return unit;
+                       })
+                    .isSuccess();
             }
 
-            bool tryFailure(const Exception& exception) {
-                return Try<Unit>::from([exception, this] () {
-                    failure(exception);
-                    return unit;
-                }).isSuccess();
+            bool tryFailure(const Exception &exception) {
+                return Try<Unit>::from([exception, this]() {
+                           failure(exception);
+                           return unit;
+                       })
+                    .isSuccess();
             }
 
-            void success(const T& value) {
+            void success(const T &value) {
                 _deffer->setValue(value);
             };
 
-            void failure(const Exception& exception) {
+            void failure(const Exception &exception) {
                 _deffer->setError(exception);
             };
 
@@ -113,14 +116,13 @@ namespace ledger {
                 return Future<T>(_deffer);
             };
 
-        private:
+          private:
             std::shared_ptr<Deffered<T>> _deffer;
         };
 
         template <typename T>
         using PromisePtr = Promise<std::shared_ptr<T>>;
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_PROMISE_HPP
+#endif // LEDGER_CORE_PROMISE_HPP

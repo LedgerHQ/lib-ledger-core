@@ -30,10 +30,12 @@
  */
 
 #include "URL.h"
-#include <sstream>
-#include <iomanip>
-#include <cctype>
+
 #include "hex.h"
+
+#include <cctype>
+#include <iomanip>
+#include <sstream>
 
 namespace ledger {
     namespace core {
@@ -41,7 +43,7 @@ namespace ledger {
             std::string encodeUrlQuery(const std::string &urlQuery) {
                 std::ostringstream out;
                 out.fill('0');
-                for (const auto& c : urlQuery) {
+                for (const auto &c : urlQuery) {
                     if (std::isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
                         out << c;
                     } else {
@@ -50,6 +52,6 @@ namespace ledger {
                 }
                 return out.str();
             }
-        }
-    }
-}
+        } // namespace url
+    }     // namespace core
+} // namespace ledger

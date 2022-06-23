@@ -31,8 +31,6 @@
 #ifndef LEDGER_CORE_COSMOSLIKEEXTENDEDPUBLICKEY_H
 #define LEDGER_CORE_COSMOSLIKEEXTENDEDPUBLICKEY_H
 
-#include <memory>
-
 #include <api/CosmosBech32Type.hpp>
 #include <api/CosmosCurve.hpp>
 #include <api/CosmosLikeAddress.hpp>
@@ -41,88 +39,84 @@
 #include <api/Currency.hpp>
 #include <common/AbstractExtendedPublicKey.h>
 #include <crypto/DeterministicPublicKey.hpp>
+#include <memory>
 #include <utils/DerivationPath.hpp>
 #include <utils/Option.hpp>
 #include <wallet/cosmos/CosmosNetworks.hpp>
 
 namespace ledger {
-namespace core {
-using CosmosExtendedPublicKey = AbstractExtendedPublicKey<api::CosmosLikeNetworkParameters>;
+    namespace core {
+        using CosmosExtendedPublicKey = AbstractExtendedPublicKey<api::CosmosLikeNetworkParameters>;
 
-class CosmosLikeExtendedPublicKey :
-    public CosmosExtendedPublicKey,
-    public api::CosmosLikeExtendedPublicKey {
-   public:
-    CosmosLikeExtendedPublicKey(
-        const api::Currency &params,
-        const DeterministicPublicKey &key,
-        api::CosmosCurve curve,
-        api::CosmosBech32Type type,
-        const DerivationPath &path = DerivationPath("m/"));
+        class CosmosLikeExtendedPublicKey : public CosmosExtendedPublicKey,
+                                            public api::CosmosLikeExtendedPublicKey {
+          public:
+            CosmosLikeExtendedPublicKey(
+                const api::Currency &params,
+                const DeterministicPublicKey &key,
+                api::CosmosCurve curve,
+                api::CosmosBech32Type type,
+                const DerivationPath &path = DerivationPath("m/"));
 
-    std::shared_ptr<api::CosmosLikeAddress> derive(const std::string &path) override;
+            std::shared_ptr<api::CosmosLikeAddress> derive(const std::string &path) override;
 
-    std::shared_ptr<CosmosLikeExtendedPublicKey> derive(const DerivationPath &path);
+            std::shared_ptr<CosmosLikeExtendedPublicKey> derive(const DerivationPath &path);
 
-    std::vector<uint8_t> derivePublicKey(const std::string &path) override;
+            std::vector<uint8_t> derivePublicKey(const std::string &path) override;
 
-    std::vector<uint8_t> deriveHash160(const std::string &path) override;
+            std::vector<uint8_t> deriveHash160(const std::string &path) override;
 
-    std::string toBech32() override;
+            std::string toBech32() override;
 
-    std::string toBase58() override;
+            std::string toBase58() override;
 
-    std::string getRootPath() override;
+            std::string getRootPath() override;
 
-    static std::shared_ptr<CosmosLikeExtendedPublicKey> fromRaw(
-        const api::Currency &params,
-        const optional<std::vector<uint8_t>> &parentPublicKey,
-        const std::vector<uint8_t> &publicKey,
-        const std::vector<uint8_t> &chainCode,
-        const std::string &path,
-        api::CosmosCurve curve,
-        api::CosmosBech32Type type = api::CosmosBech32Type::PUBLIC_KEY);
+            static std::shared_ptr<CosmosLikeExtendedPublicKey> fromRaw(
+                const api::Currency &params,
+                const optional<std::vector<uint8_t>> &parentPublicKey,
+                const std::vector<uint8_t> &publicKey,
+                const std::vector<uint8_t> &chainCode,
+                const std::string &path,
+                api::CosmosCurve curve,
+                api::CosmosBech32Type type = api::CosmosBech32Type::PUBLIC_KEY);
 
-    static std::shared_ptr<CosmosLikeExtendedPublicKey> fromBase58(
-        const api::Currency &currency,
-        const std::string &xpub,
-        const Option<std::string> &path,
-        api::CosmosBech32Type type = api::CosmosBech32Type::PUBLIC_KEY_VAL);
+            static std::shared_ptr<CosmosLikeExtendedPublicKey> fromBase58(
+                const api::Currency &currency,
+                const std::string &xpub,
+                const Option<std::string> &path,
+                api::CosmosBech32Type type = api::CosmosBech32Type::PUBLIC_KEY_VAL);
 
-    static std::shared_ptr<CosmosLikeExtendedPublicKey> fromBech32(
-        const api::Currency &currency,
-        const std::string &bech32PubKey,
-        const Option<std::string> &path);
+            static std::shared_ptr<CosmosLikeExtendedPublicKey> fromBech32(
+                const api::Currency &currency,
+                const std::string &bech32PubKey,
+                const Option<std::string> &path);
 
-   protected:
-    virtual const api::CosmosLikeNetworkParameters &params() const override
-    {
-        return _currency.cosmosLikeNetworkParameters.value();
-    };
+          protected:
+            virtual const api::CosmosLikeNetworkParameters &params() const override {
+                return _currency.cosmosLikeNetworkParameters.value();
+            };
 
-    const DeterministicPublicKey &getKey() const override
-    {
-        return _key;
-    };
+            const DeterministicPublicKey &getKey() const override {
+                return _key;
+            };
 
-    const DerivationPath &getPath() const override
-    {
-        return _path;
-    };
+            const DerivationPath &getPath() const override {
+                return _path;
+            };
 
-    const api::Currency &getCurrency() const override
-    {
-        return _currency;
-    };
+            const api::Currency &getCurrency() const override {
+                return _currency;
+            };
 
-   private:
-    const api::Currency _currency;
-    const DerivationPath _path;
-    const DeterministicPublicKey _key;
-    api::CosmosCurve _curve;
-    api::CosmosBech32Type _type;
-};
-}  // namespace core
-}  // namespace ledger
+          private:
+            const api::Currency _currency;
+            const DerivationPath _path;
+            const DeterministicPublicKey _key;
+            api::CosmosCurve _curve;
+            api::CosmosBech32Type _type;
+        };
+    } // namespace core
+} // namespace ledger
 
-#endif  // LEDGER_CORE_COSMOSLIKEEXTENDEDPUBLICKEY_H
+#endif // LEDGER_CORE_COSMOSLIKEEXTENDEDPUBLICKEY_H

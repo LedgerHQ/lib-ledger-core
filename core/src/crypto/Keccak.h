@@ -31,19 +31,17 @@
 #ifndef LEDGER_CORE_KECCAK_H
 #define LEDGER_CORE_KECCAK_H
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace ledger {
     namespace core {
         class Keccak {
-        public:
+          public:
             static std::vector<uint8_t> keccak256(const std::vector<uint8_t> &data);
             static std::vector<uint8_t> keccak256(const std::string &input);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-
-#endif //LEDGER_CORE_KECCAK_H
+#endif // LEDGER_CORE_KECCAK_H

@@ -31,34 +31,35 @@
 #ifndef LEDGER_CORE_ABSTRACTACCOUNT_HPP
 #define LEDGER_CORE_ABSTRACTACCOUNT_HPP
 
-#include <api/Account.hpp>
 #include "AbstractWallet.hpp"
 #include "OperationQuery.h"
-#include <async/Future.hpp>
-#include <wallet/common/Amount.h>
-#include <events/EventPublisher.hpp>
+
+#include <api/Account.hpp>
+#include <api/Address.hpp>
+#include <api/AddressListCallback.hpp>
+#include <api/AlgorandAccount.hpp>
+#include <api/AmountListCallback.hpp>
+#include <api/BitcoinLikeAccount.hpp>
 #include <api/Block.hpp>
 #include <api/BlockCallback.hpp>
-#include <api/BitcoinLikeAccount.hpp>
 #include <api/CosmosLikeAccount.hpp>
+#include <api/ErrorCodeCallback.hpp>
 #include <api/EthereumLikeAccount.hpp>
 #include <api/RippleLikeAccount.hpp>
 #include <api/TezosLikeAccount.hpp>
-#include <api/AlgorandAccount.hpp>
-#include <api/AddressListCallback.hpp>
-#include <api/Address.hpp>
-#include <api/AmountListCallback.hpp>
-#include <api/ErrorCodeCallback.hpp>
 #include <api/TimePeriod.hpp>
+#include <async/Future.hpp>
+#include <events/EventPublisher.hpp>
 #include <mutex>
+#include <wallet/common/Amount.h>
 
 namespace ledger {
     namespace core {
         class AbstractAccount : public DedicatedContext, public api::Account, public std::enable_shared_from_this<AbstractAccount> {
-        public:
+          public:
             using AddressList = std::vector<std::shared_ptr<api::Address>>;
 
-            AbstractAccount(const std::shared_ptr<AbstractWallet>& wallet, int32_t index);
+            AbstractAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index);
             int32_t getIndex() const;
             int32_t getIndex() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
@@ -80,7 +81,7 @@ namespace ledger {
             virtual std::shared_ptr<Preferences> getInternalPreferences() const;
             virtual std::shared_ptr<Preferences> getExternalPreferences() const;
             virtual std::shared_ptr<spdlog::logger> logger() const;
-            virtual const std::string& getAccountUid() const;
+            virtual const std::string &getAccountUid() const;
             virtual std::shared_ptr<AbstractWallet> getWallet() const;
             virtual std::shared_ptr<AbstractWallet> getWallet();
             const std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
@@ -93,13 +94,13 @@ namespace ledger {
 
             void getFreshPublicAddresses(const std::shared_ptr<api::AddressListCallback> &callback) override;
             virtual Future<AddressList> getFreshPublicAddresses() = 0;
-            void getBalanceHistory(const std::string & start,
-                                   const std::string & end,
+            void getBalanceHistory(const std::string &start,
+                                   const std::string &end,
                                    api::TimePeriod precision,
-                                   const std::shared_ptr<api::AmountListCallback> & callback) override;
-            virtual Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::string & start,
-                                                                                   const std::string & end,
-                                                                                   api::TimePeriod precision) = 0;
+                                   const std::shared_ptr<api::AmountListCallback> &callback) override;
+            virtual Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::string &start,
+                                                                                        const std::string &end,
+                                                                                        api::TimePeriod precision) = 0;
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
@@ -108,22 +109,22 @@ namespace ledger {
 
             std::shared_ptr<api::EventBus> getEventBus() override;
 
-            void emitDeletedOperationEvent(std::string const& uid);
+            void emitDeletedOperationEvent(std::string const &uid);
             virtual void emitEventsNow();
 
-            void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
-            virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
-            void eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point & date);
+            void eraseDataSince(const std::chrono::system_clock::time_point &date, const std::shared_ptr<api::ErrorCodeCallback> &callback) override;
+            virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point &date) = 0;
+            void eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date);
 
-        protected:
-            void emitNewOperationEvent(const Operation& operation);
-            void emitNewOperationsEvent(const std::vector<Operation>& operations);
-            void emitNewBlockEvent(const Block& block);
-            void pushEvent(const std::shared_ptr<api::Event>& event);
+          protected:
+            void emitNewOperationEvent(const Operation &operation);
+            void emitNewOperationsEvent(const std::vector<Operation> &operations);
+            void emitNewBlockEvent(const Block &block);
+            void pushEvent(const std::shared_ptr<api::Event> &event);
 
-        private:
-            api::WalletType  _type;
-            int32_t  _index;
+          private:
+            api::WalletType _type;
+            int32_t _index;
             std::string _uid;
             std::shared_ptr<spdlog::logger> _logger;
             std::shared_ptr<api::Logger> _loggerApi;
@@ -136,10 +137,8 @@ namespace ledger {
             std::mutex _eventsLock;
             std::list<std::shared_ptr<api::Event>> _events;
             std::shared_ptr<api::Event> _batchedOperationsEvent;
-
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_ABSTRACTACCOUNT_HPP
+#endif // LEDGER_CORE_ABSTRACTACCOUNT_HPP

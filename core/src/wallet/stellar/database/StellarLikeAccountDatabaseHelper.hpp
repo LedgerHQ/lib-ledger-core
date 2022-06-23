@@ -32,28 +32,26 @@
 #ifndef LEDGER_CORE_STELLARLIKEACCOUNTDATABASEHELPER_HPP
 #define LEDGER_CORE_STELLARLIKEACCOUNTDATABASEHELPER_HPP
 
-#include <wallet/stellar/stellar.hpp>
 #include <soci.h>
+#include <wallet/stellar/stellar.hpp>
 
 namespace ledger {
     namespace core {
         class StellarLikeAccountDatabaseHelper {
-        public:
+          public:
             StellarLikeAccountDatabaseHelper() = delete;
 
-            static bool getAccount(soci::session& sql, const std::string& accountUid, stellar::Account& out);
-            static void getAccountBalances(soci::session& sql, const std::string& accountUid, stellar::Account& out);
-            static void putAccount(soci::session& sql, const std::string& walletUid, int32_t accountIndex, const stellar::Account& in);
-            static void createAccount(soci::session& sql, const std::string& walletUid, int32_t accountIndex, const stellar::Account& in);
+            static bool getAccount(soci::session &sql, const std::string &accountUid, stellar::Account &out);
+            static void getAccountBalances(soci::session &sql, const std::string &accountUid, stellar::Account &out);
+            static void putAccount(soci::session &sql, const std::string &walletUid, int32_t accountIndex, const stellar::Account &in);
+            static void createAccount(soci::session &sql, const std::string &walletUid, int32_t accountIndex, const stellar::Account &in);
 
-            static void getAccountSigners(soci::session& sql, const std::string& accountUid, std::vector<stellar::AccountSigner>& signers);
-            static void putAccountSigner(soci::session& sql, const std::string& accountUid, const stellar::AccountSigner& signer);
-            static bool putAccountBalance(soci::session& sql, const std::string& accountUid, const stellar::Balance& balance);
-            static std::string createAccountBalanceUid(const std::string& accountUid, const std::string& assetUid);
-
+            static void getAccountSigners(soci::session &sql, const std::string &accountUid, std::vector<stellar::AccountSigner> &signers);
+            static void putAccountSigner(soci::session &sql, const std::string &accountUid, const stellar::AccountSigner &signer);
+            static bool putAccountBalance(soci::session &sql, const std::string &accountUid, const stellar::Balance &balance);
+            static std::string createAccountBalanceUid(const std::string &accountUid, const std::string &assetUid);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_STELLARLIKEACCOUNTDATABASEHELPER_HPP
+#endif // LEDGER_CORE_STELLARLIKEACCOUNTDATABASEHELPER_HPP

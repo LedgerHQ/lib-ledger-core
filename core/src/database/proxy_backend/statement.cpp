@@ -30,33 +30,32 @@
  */
 
 #include "soci-proxy.h"
+
+#include <iostream>
 #include <utils/Exception.hpp>
 #include <utils/Try.hpp>
-#include <iostream>
 
 using namespace soci;
 using namespace ledger::core;
 
-
-
 void proxy_statement_backend::alloc() {
- // Do nothing
+    // Do nothing
     SP_PRINT("ALLOC STATEMENT " << this)
 }
 
 void proxy_statement_backend::clean_up() {
     try {
-    SP_PRINT("CLEAN UP STATEMENT " << this)
-    if (_stmt) {
-        _stmt->close();
-        _stmt = nullptr;
-    }
-    SP_PRINT("CLEAN UP STATEMENT done " << this)
-    if (_results) {
-        _results->close();
-        _results = nullptr;
-    }
-    SP_PRINT("CLEAN UP STATEMENT result done" << this)
+        SP_PRINT("CLEAN UP STATEMENT " << this)
+        if (_stmt) {
+            _stmt->close();
+            _stmt = nullptr;
+        }
+        SP_PRINT("CLEAN UP STATEMENT done " << this)
+        if (_results) {
+            _results->close();
+            _results = nullptr;
+        }
+        SP_PRINT("CLEAN UP STATEMENT result done" << this)
     } catch (...) {
         // Ignore
     }
@@ -74,7 +73,7 @@ bool proxy_statement_backend::reset_if_necessary() {
 
 void proxy_statement_backend::prepare(std::string const &query, details::statement_type eType) {
     SP_PRINT("PREPARE " << query)
-    make_try<Unit>([&, this] () {
+    make_try<Unit>([&, this]() {
         if (!_stmt) {
             _stmt = _session.get_connection()->prepareStatement(query, eType == details::statement_type::st_repeatable_query);
         } else {
@@ -87,14 +86,14 @@ void proxy_statement_backend::prepare(std::string const &query, details::stateme
 details::statement_backend::exec_fetch_result proxy_statement_backend::execute(int number) {
     SP_PRINT("EXECUTE ASK FOR " << number << " ROWS")
     return make_try<details::statement_backend::exec_fetch_result>([&, this] {
-        reset_if_necessary();
-        _results = _stmt->execute();
-        if (number == 0) {
-            return _results->hasNext() ? ef_success : ef_no_data;
-        }
-        else
-            return fetch(number);
-    }).getOrThrowException<soci_error>();
+               reset_if_necessary();
+               _results = _stmt->execute();
+               if (number == 0) {
+                   return _results->hasNext() ? ef_success : ef_no_data;
+               } else
+                   return fetch(number);
+           })
+        .getOrThrowException<soci_error>();
 }
 
 details::statement_backend::exec_fetch_result proxy_statement_backend::fetch(int number) {
@@ -148,37 +147,38 @@ std::string proxy_statement_backend::rewrite_for_procedure_call(std::string cons
 
 int proxy_statement_backend::prepare_for_describe() {
     SP_PRINT("PREPARE FOR DESCRIBE")
-    return make_try<int >([&, this] () {
-        return _stmt->getColumnCount();
-    }).getOrThrowException<soci_error>();
+    return make_try<int>([&, this]() {
+               return _stmt->getColumnCount();
+           })
+        .getOrThrowException<soci_error>();
 }
 
 void proxy_statement_backend::describe_column(int colNum, data_type &dtype, std::string &columnName) {
     SP_PRINT("DESCRIBE COLUMN " << colNum)
-    make_try<Unit>([&, this] () {
+    make_try<Unit>([&, this]() {
         auto col = _stmt->describeColumn(colNum);
         switch (col->getType()) {
-            case api::DatabaseValueType::STRING:
-                dtype = data_type::dt_string;
-                break;
-            case api::DatabaseValueType::DATE:
-                dtype = data_type::dt_date;
-                break;
-            case api::DatabaseValueType::DOUBLE:
-                dtype = data_type::dt_double;
-                break;
-            case api::DatabaseValueType::INTEGER:
-                dtype = data_type::dt_integer;
-                break;
-            case api::DatabaseValueType::LONG_LONG:
-                dtype = data_type::dt_long_long;
-                break;
-            case api::DatabaseValueType::UNSIGNED_LONG_LONG:
-                dtype = data_type::dt_unsigned_long_long;
-                break;
-            case api::DatabaseValueType::BLOB:
-                dtype = data_type::dt_string;
-                break;
+        case api::DatabaseValueType::STRING:
+            dtype = data_type::dt_string;
+            break;
+        case api::DatabaseValueType::DATE:
+            dtype = data_type::dt_date;
+            break;
+        case api::DatabaseValueType::DOUBLE:
+            dtype = data_type::dt_double;
+            break;
+        case api::DatabaseValueType::INTEGER:
+            dtype = data_type::dt_integer;
+            break;
+        case api::DatabaseValueType::LONG_LONG:
+            dtype = data_type::dt_long_long;
+            break;
+        case api::DatabaseValueType::UNSIGNED_LONG_LONG:
+            dtype = data_type::dt_unsigned_long_long;
+            break;
+        case api::DatabaseValueType::BLOB:
+            dtype = data_type::dt_string;
+            break;
         }
         columnName = col->getName();
         return unit;
@@ -204,5 +204,3 @@ details::vector_use_type_backend *proxy_statement_backend::make_vector_use_type_
     SP_PRINT("MAKE VECTOR USE TYPE BACKEND")
     throw soci_error("Unsupported feature used, bulk operation on SOCI");
 }
-
-

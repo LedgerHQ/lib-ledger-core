@@ -31,54 +31,54 @@
 #ifndef LEDGER_CORE_LOCKEDRESOURCE_HPP
 #define LEDGER_CORE_LOCKEDRESOURCE_HPP
 
-#include <memory>
 #include "../api/Lock.hpp"
+
+#include <memory>
 
 namespace ledger {
     namespace core {
         template <typename T>
         class LockedResource {
-            public:
-                LockedResource(std::shared_ptr<api::Lock> lock, T resource) : _lock(lock), _resource(resource) {
+          public:
+            LockedResource(std::shared_ptr<api::Lock> lock, T resource) : _lock(lock), _resource(resource) {
+                _isLocked = false;
+            }
+
+            T *operator->() {
+                lock();
+                return &_resource;
+            }
+
+            void lock() {
+                if (!_isLocked) {
+                    _isLocked = true;
+                    _lock->lock();
+                }
+            }
+
+            void swap(T value) {
+                lock();
+                _resource = value;
+                unlock();
+            }
+
+            void unlock() {
+                if (_isLocked) {
                     _isLocked = false;
+                    _lock->unlock();
                 }
+            }
 
-                T* operator->() {
-                    lock();
-                    return &_resource;
-                }
+            ~LockedResource() {
+                unlock();
+            }
 
-                void lock() {
-                    if (!_isLocked) {
-                        _isLocked = true;
-                        _lock->lock();
-                    }
-                }
-
-                void swap(T value) {
-                    lock();
-                    _resource = value;
-                    unlock();
-                }
-
-                void unlock() {
-                    if (_isLocked) {
-                        _isLocked = false;
-                        _lock->unlock();
-                    }
-                }
-
-                ~LockedResource() {
-                    unlock();
-                }
-
-        private:
-                std::shared_ptr<api::Lock> _lock;
-                T _resource;
-                bool _isLocked;
+          private:
+            std::shared_ptr<api::Lock> _lock;
+            T _resource;
+            bool _isLocked;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_LOCKEDRESOURCE_HPP
+#endif // LEDGER_CORE_LOCKEDRESOURCE_HPP

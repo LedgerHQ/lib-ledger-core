@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ETHEREUMLIKEACCOUNTSYNCHRONIZER_H
 #define LEDGER_CORE_ETHEREUMLIKEACCOUNTSYNCHRONIZER_H
 
@@ -38,10 +37,8 @@ namespace ledger {
     namespace core {
         class EthereumLikeAccount;
         class EthereumLikeAccountSynchronizer : public AbstractAccountSynchronizer<EthereumLikeAccount> {
-
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_ETHEREUMLIKEACCOUNTSYNCHRONIZER_H
+#endif // LEDGER_CORE_ETHEREUMLIKEACCOUNTSYNCHRONIZER_H

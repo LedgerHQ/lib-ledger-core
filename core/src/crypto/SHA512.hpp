@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_SHA512_H
 #define LEDGER_CORE_SHA512_H
 
@@ -38,17 +37,16 @@
 namespace ledger {
     namespace core {
         class SHA512 {
-        public:
-            static std::string stringToHexHash(const std::string& input);
-            static std::string bytesToHexHash(const std::vector<uint8_t>& bytes);
-            static std::vector<uint8_t> stringToBytesHash(const std::string& input);
-            static std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t>& bytes);
+          public:
+            static std::string stringToHexHash(const std::string &input);
+            static std::string bytesToHexHash(const std::vector<uint8_t> &bytes);
+            static std::vector<uint8_t> stringToBytesHash(const std::string &input);
+            static std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t> &bytes);
 
-        private:
+          private:
             static std::vector<uint8_t> dataToBytesHash(const void *data, size_t size);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_SHA512_H
+#endif // LEDGER_CORE_SHA512_H

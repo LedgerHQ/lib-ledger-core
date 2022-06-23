@@ -30,35 +30,34 @@
  */
 
 #include "soci-proxy.h"
+
 #include <utils/Try.hpp>
 
 using namespace ledger::core;
 using namespace soci;
 
-#define BIND(T, value) \
-    if (_position.isLeft()) { \
+#define BIND(T, value)                                           \
+    if (_position.isLeft()) {                                    \
         statement_._stmt->bind##T(_position.getLeft(), (value)); \
     }
 
-void
-proxy_standard_use_type_backend::bind_by_pos(int &position, void *data, details::exchange_type type, bool /*readOnly*/) {
+void proxy_standard_use_type_backend::bind_by_pos(int &position, void *data, details::exchange_type type, bool /*readOnly*/) {
     SP_PRINT("SUTB BIND BY POS " << position << " type " << type)
     _position = position++;
-    _data = data;
-    _type = type;
+    _data     = data;
+    _type     = type;
 }
 
-void proxy_standard_use_type_backend::bind_by_name(std::string const &name, void *data, details::exchange_type type,
-                                                   bool /*readOnly*/) {
+void proxy_standard_use_type_backend::bind_by_name(std::string const &name, void *data, details::exchange_type type, bool /*readOnly*/) {
     SP_PRINT("SUTB BIND BY NAME" << name)
     _position = name;
-    _data = data;
-    _type = type;
+    _data     = data;
+    _type     = type;
 }
 
 void proxy_standard_use_type_backend::pre_use(indicator const *ind) {
     SP_PRINT("SUTB PRE USE")
-    make_try<Unit>([&] () {
+    make_try<Unit>([&]() {
         if (ind && *ind == i_null) {
             if (_position.isLeft()) {
                 statement_._stmt->bindNull(_position.getLeft());
@@ -66,46 +65,50 @@ void proxy_standard_use_type_backend::pre_use(indicator const *ind) {
             return unit;
         }
         switch (_type) {
-            case details::x_char: throw soci_error("Unsupported type char.");
-            case details::x_stdstring: {
-                auto str = static_cast<std::string *>(_data);
-                BIND(String, *str);
-                break;
-            }
-            case details::x_short: {
-                auto value = static_cast<short*>(_data);
-                BIND(Short, (int16_t)(*value));
-                break;
-            }
-            case details::x_integer: {
-                auto i = static_cast<int *>(_data);
-                BIND(Int, (int32_t)(*i));
-                break;
-            }
-            case details::x_long_long: {
-                auto ll = static_cast<int64_t *>(_data);
-                BIND(Long, (long long)(*ll));
-                break;
-            }
-            case details::x_unsigned_long_long: {
-                auto ull = static_cast<unsigned long long*>(_data);
-                BIND(Long, (int64_t)(*ull));
-                break;
-            }
-            case details::x_double: {
-                auto d = static_cast<double *>(_data);
-                BIND(Double, *d);
-                break;
-            }
-            case details::x_stdtm: throw soci_error("Unsupported type timestamp.");
-            case details::x_statement: throw soci_error("Unsupported type statement in SQL query.");
-            case details::x_blob: {
-                auto blob = static_cast<soci::blob *>(_data);
-                auto backend = dynamic_cast<proxy_blob_backend *>(blob->get_backend())->getBlob();
-                BIND(Blob, backend);
-                break;
-            }
-            case details::x_rowid: throw soci_error("Unsupported type row id in SQL query");
+        case details::x_char:
+            throw soci_error("Unsupported type char.");
+        case details::x_stdstring: {
+            auto str = static_cast<std::string *>(_data);
+            BIND(String, *str);
+            break;
+        }
+        case details::x_short: {
+            auto value = static_cast<short *>(_data);
+            BIND(Short, (int16_t)(*value));
+            break;
+        }
+        case details::x_integer: {
+            auto i = static_cast<int *>(_data);
+            BIND(Int, (int32_t)(*i));
+            break;
+        }
+        case details::x_long_long: {
+            auto ll = static_cast<int64_t *>(_data);
+            BIND(Long, (long long)(*ll));
+            break;
+        }
+        case details::x_unsigned_long_long: {
+            auto ull = static_cast<unsigned long long *>(_data);
+            BIND(Long, (int64_t)(*ull));
+            break;
+        }
+        case details::x_double: {
+            auto d = static_cast<double *>(_data);
+            BIND(Double, *d);
+            break;
+        }
+        case details::x_stdtm:
+            throw soci_error("Unsupported type timestamp.");
+        case details::x_statement:
+            throw soci_error("Unsupported type statement in SQL query.");
+        case details::x_blob: {
+            auto blob    = static_cast<soci::blob *>(_data);
+            auto backend = dynamic_cast<proxy_blob_backend *>(blob->get_backend())->getBlob();
+            BIND(Blob, backend);
+            break;
+        }
+        case details::x_rowid:
+            throw soci_error("Unsupported type row id in SQL query");
         }
         return unit;
     });

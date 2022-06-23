@@ -28,23 +28,22 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEACCOUNTDATABASEHELPER_H
 #define LEDGER_CORE_TEZOSLIKEACCOUNTDATABASEHELPER_H
 #include <soci.h>
-#include <wallet/tezos/database/TezosLikeAccountDatabaseEntry.h>
 #include <wallet/common/Operation.h>
+#include <wallet/tezos/database/TezosLikeAccountDatabaseEntry.h>
 namespace ledger {
     namespace core {
         class TezosLikeAccountDatabaseHelper {
-        public:
-            static void createAccount(soci::session& sql,
+          public:
+            static void createAccount(soci::session &sql,
                                       const std::string walletUid,
                                       int32_t index,
-                                      const std::string& publicKey);
-            static bool queryAccount(soci::session& sql,
-                                     const std::string& accountUid,
-                                     TezosLikeAccountDatabaseEntry& entry);
+                                      const std::string &publicKey);
+            static bool queryAccount(soci::session &sql,
+                                     const std::string &accountUid,
+                                     TezosLikeAccountDatabaseEntry &entry);
             static std::string createOriginatedAccountUid(const std::string &xtzAccountUid, const std::string &originatedAddress);
             static void updatePubKeyField(soci::session &sql, const std::string &accountUid, const std::string &pubKey);
             static void addOriginatedAccountOperation(soci::session &sql,
@@ -56,6 +55,6 @@ namespace ledger {
                                           std::vector<Operation> &operations,
                                           std::function<bool(const std::string &address)> filter);
         };
-    }
-}
-#endif //LEDGER_CORE_TEZOSLIKEACCOUNTDATABASEHELPER_H
+    } // namespace core
+} // namespace ledger
+#endif // LEDGER_CORE_TEZOSLIKEACCOUNTDATABASEHELPER_H

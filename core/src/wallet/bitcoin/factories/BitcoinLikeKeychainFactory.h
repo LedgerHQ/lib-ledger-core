@@ -31,33 +31,30 @@
 #ifndef LEDGER_CORE_BITCOINLIKEKEYCHAINFACTORY_H
 #define LEDGER_CORE_BITCOINLIKEKEYCHAINFACTORY_H
 
-#include <collections/DynamicObject.hpp>
 #include <api/Currency.hpp>
-#include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
 #include <api/ExtendedKeyAccountCreationInfo.hpp>
 #include <async/Future.hpp>
+#include <collections/DynamicObject.hpp>
+#include <wallet/bitcoin/keychains/BitcoinLikeKeychain.hpp>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeKeychainFactory {
-        public:
+          public:
             virtual std::shared_ptr<BitcoinLikeKeychain> build(int32_t index,
-                                                         const DerivationPath &path,
-                                                         const std::shared_ptr<DynamicObject>& configuration,
-                                                         const api::ExtendedKeyAccountCreationInfo& info,
-                                                         const std::shared_ptr<Preferences>& accountPreferences,
-                                                         const api::Currency& currency
-            ) = 0;
+                                                               const DerivationPath &path,
+                                                               const std::shared_ptr<DynamicObject> &configuration,
+                                                               const api::ExtendedKeyAccountCreationInfo &info,
+                                                               const std::shared_ptr<Preferences> &accountPreferences,
+                                                               const api::Currency &currency)   = 0;
             virtual std::shared_ptr<BitcoinLikeKeychain> restore(int32_t index,
-                                                           const DerivationPath &path,
-                                                           const std::shared_ptr<DynamicObject>& configuration,
-                                                           const std::string& databaseXpubEntry,
-                                                           const std::shared_ptr<Preferences>& accountPreferences,
-                                                           const api::Currency& currency
-            ) = 0;
+                                                                 const DerivationPath &path,
+                                                                 const std::shared_ptr<DynamicObject> &configuration,
+                                                                 const std::string &databaseXpubEntry,
+                                                                 const std::shared_ptr<Preferences> &accountPreferences,
+                                                                 const api::Currency &currency) = 0;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BITCOINLIKEKEYCHAINFACTORY_H
+#endif // LEDGER_CORE_BITCOINLIKEKEYCHAINFACTORY_H

@@ -36,19 +36,19 @@
 namespace ledger {
     namespace core {
         class Benchmarker {
-        public:
-            Benchmarker(const std::string& name, const std::shared_ptr<spdlog::logger>& logger);
-            Benchmarker& start();
-            Benchmarker& stop();
+          public:
+            Benchmarker(const std::string &name, const std::shared_ptr<spdlog::logger> &logger);
+            Benchmarker &start();
+            Benchmarker &stop();
             std::chrono::high_resolution_clock::duration getDuration() const;
-        private:
+
+          private:
             std::shared_ptr<spdlog::logger> _logger;
             std::string _name;
             std::chrono::high_resolution_clock::time_point _startDate;
             std::chrono::high_resolution_clock::time_point _stopDate;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BENCHMARKER_H
+#endif // LEDGER_CORE_BENCHMARKER_H

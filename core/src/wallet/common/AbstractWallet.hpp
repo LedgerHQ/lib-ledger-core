@@ -32,24 +32,25 @@
 #define LEDGER_CORE_ABSTRACTWALLET_HPP
 
 #include "api/Wallet.hpp"
-#include <api/Currency.hpp>
+
 #include <api/Account.hpp>
-#include <preferences/Preferences.hpp>
-#include <async/DedicatedContext.hpp>
-#include <events/EventPublisher.hpp>
-#include <debug/logger.hpp>
-#include <api/WalletType.hpp>
-#include <database/DatabaseSessionPool.hpp>
-#include <collections/DynamicObject.hpp>
-#include <utils/DerivationScheme.hpp>
-#include <api/AccountCreationInfo.hpp>
-#include <api/ExtendedKeyAccountCreationInfo.hpp>
-#include <api/AccountCreationInfoCallback.hpp>
-#include <api/ExtendedKeyAccountCreationInfoCallback.hpp>
 #include <api/AccountCallback.hpp>
+#include <api/AccountCreationInfo.hpp>
+#include <api/AccountCreationInfoCallback.hpp>
 #include <api/Block.hpp>
 #include <api/BlockCallback.hpp>
+#include <api/Currency.hpp>
 #include <api/DynamicObject.hpp>
+#include <api/ExtendedKeyAccountCreationInfo.hpp>
+#include <api/ExtendedKeyAccountCreationInfoCallback.hpp>
+#include <api/WalletType.hpp>
+#include <async/DedicatedContext.hpp>
+#include <collections/DynamicObject.hpp>
+#include <database/DatabaseSessionPool.hpp>
+#include <debug/logger.hpp>
+#include <events/EventPublisher.hpp>
+#include <preferences/Preferences.hpp>
+#include <utils/DerivationScheme.hpp>
 #include <utils/TTLCache.h>
 #include <wallet/common/Amount.h>
 
@@ -59,13 +60,12 @@ namespace ledger {
         class WalletPool;
         class AbstractAccount;
         class AbstractWallet : public virtual api::Wallet, public DedicatedContext, public virtual std::enable_shared_from_this<AbstractWallet> {
-        public:
-            AbstractWallet(const std::string& walletName,
-                           const api::Currency& currency,
-                           const std::shared_ptr<WalletPool>& pool,
-                           const std::shared_ptr<DynamicObject>& configuration,
-                           const DerivationScheme& derivationScheme
-            );
+          public:
+            AbstractWallet(const std::string &walletName,
+                           const api::Currency &currency,
+                           const std::shared_ptr<WalletPool> &pool,
+                           const std::shared_ptr<DynamicObject> &configuration,
+                           const DerivationScheme &derivationScheme);
             std::shared_ptr<api::EventBus> getEventBus() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
             bool isInstanceOfBitcoinLikeWallet() override;
@@ -87,7 +87,7 @@ namespace ledger {
             std::shared_ptr<api::CosmosLikeWallet> asCosmosLikeWallet() override;
 
             api::Currency getCurrency() override;
-            const api::Currency& getCurrency() const;
+            const api::Currency &getCurrency() const;
             std::string getName() override;
 
             void getNextAccountIndex(const std::shared_ptr<api::I32Callback> &callback) override;
@@ -115,7 +115,7 @@ namespace ledger {
 
             void getNextAccountCreationInfo(const std::shared_ptr<api::AccountCreationInfoCallback> &callback) override;
             void getNextExtendedKeyAccountCreationInfo(
-                    const std::shared_ptr<api::ExtendedKeyAccountCreationInfoCallback> &callback) override;
+                const std::shared_ptr<api::ExtendedKeyAccountCreationInfoCallback> &callback) override;
 
             void getAccountCreationInfo(int32_t accountIndex,
                                         const std::shared_ptr<api::AccountCreationInfoCallback> &callback) override;
@@ -130,8 +130,8 @@ namespace ledger {
             newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &extendedKeyAccountCreationInfo,
                                           const std::shared_ptr<api::AccountCallback> &callback) override;
 
-            void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
-            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date);
+            void eraseDataSince(const std::chrono::system_clock::time_point &date, const std::shared_ptr<api::ErrorCodeCallback> &callback) override;
+            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point &date);
 
             std::shared_ptr<api::DynamicObject> getConfiguration() override;
 
@@ -139,13 +139,14 @@ namespace ledger {
             void updateBalanceCache(size_t accountIndex, Amount balance);
             void invalidateBalanceCache(size_t accountIndex);
 
-            virtual FuturePtr<api::Account> newAccountWithInfo(const api::AccountCreationInfo& info) = 0;
-            virtual FuturePtr<api::Account> newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo& info) = 0;
-            virtual Future<api::ExtendedKeyAccountCreationInfo> getExtendedKeyAccountCreationInfo(int32_t accountIndex) = 0;
-            virtual Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) = 0;
+            virtual FuturePtr<api::Account> newAccountWithInfo(const api::AccountCreationInfo &info)                       = 0;
+            virtual FuturePtr<api::Account> newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) = 0;
+            virtual Future<api::ExtendedKeyAccountCreationInfo> getExtendedKeyAccountCreationInfo(int32_t accountIndex)    = 0;
+            virtual Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex)                          = 0;
             virtual Future<api::AccountCreationInfo> getNextAccountCreationInfo();
             virtual Future<api::ExtendedKeyAccountCreationInfo> getNextExtendedKeyAccountCreationInfo();
-        public:
+
+          public:
             virtual std::shared_ptr<Preferences> getAccountExternalPreferences(int32_t index);
             virtual std::shared_ptr<Preferences> getAccountInternalPreferences(int32_t index);
             virtual std::shared_ptr<Preferences> getInternalPreferences() const;
@@ -156,14 +157,14 @@ namespace ledger {
             virtual std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
             virtual std::string getWalletUid() const;
             virtual std::shared_ptr<DynamicObject> getConfig() const;
-            virtual const DerivationScheme& getDerivationScheme() const;
+            virtual const DerivationScheme &getDerivationScheme() const;
             virtual std::chrono::seconds getMempoolGracePeriod() const { return std::chrono::seconds(0); }
 
-        protected:
-            virtual std::shared_ptr<AbstractAccount> createAccountInstance(soci::session& sql, const std::string& accountUid) = 0;
-            void addAccountInstanceToInstanceCache(const std::shared_ptr<AbstractAccount>& account);
+          protected:
+            virtual std::shared_ptr<AbstractAccount> createAccountInstance(soci::session &sql, const std::string &accountUid) = 0;
+            void addAccountInstanceToInstanceCache(const std::shared_ptr<AbstractAccount> &account);
 
-        private:
+          private:
             std::string _name;
             std::string _uid;
             std::mutex _accountsLock;
@@ -181,8 +182,7 @@ namespace ledger {
             std::unordered_map<int32_t, std::shared_ptr<AbstractAccount>> _accounts;
             TTLCache<std::string, Amount> _balanceCache;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_ABSTRACTWALLET_HPP
+#endif // LEDGER_CORE_ABSTRACTWALLET_HPP

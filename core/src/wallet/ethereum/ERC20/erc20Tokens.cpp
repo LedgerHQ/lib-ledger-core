@@ -28,8 +28,8 @@
  *
  */
 
-
 #include "erc20Tokens.h"
+
 #include <api/ErrorCode.hpp>
 #include <utils/Exception.hpp>
 namespace ledger {
@@ -46,17 +46,13 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No known ERC20 token named {}", erc20);
             }
 
-            const std::map<std::string, std::string> ERC20MethodsID({
-                    std::pair<std::string, std::string>("totalSupply", "18160ddd"),
-                    std::pair<std::string, std::string>("balanceOf", "70a08231"),
-                    std::pair<std::string, std::string>("transfer", "a9059cbb"),
-                    std::pair<std::string, std::string>("transferFrom", "23b872dd"),
-                    std::pair<std::string, std::string>("approve", "095ea7b3")
-                                                                    });
+            const std::map<std::string, std::string> ERC20MethodsID({std::pair<std::string, std::string>("totalSupply", "18160ddd"),
+                                                                     std::pair<std::string, std::string>("balanceOf", "70a08231"),
+                                                                     std::pair<std::string, std::string>("transfer", "a9059cbb"),
+                                                                     std::pair<std::string, std::string>("transferFrom", "23b872dd"),
+                                                                     std::pair<std::string, std::string>("approve", "095ea7b3")});
 
-            const std::map<std::string, api::ERC20Token> ALL_ERC20({
-                                                                           std::pair<std::string, api::ERC20Token>("0x9549e8a940062615cee20c0420c98c25ffa2b214", getERC20Token("ledger_coin"))
-                                                                   });
-        }
-    }
-}
+            const std::map<std::string, api::ERC20Token> ALL_ERC20({std::pair<std::string, api::ERC20Token>("0x9549e8a940062615cee20c0420c98c25ffa2b214", getERC20Token("ledger_coin"))});
+        } // namespace erc20Tokens
+    }     // namespace core
+} // namespace ledger

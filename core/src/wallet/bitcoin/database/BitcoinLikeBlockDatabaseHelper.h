@@ -38,11 +38,11 @@
 namespace ledger {
     namespace core {
         class BitcoinLikeBlockDatabaseHelper {
-        public:
-            static bool blockExists(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
-            static bool putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
+          public:
+            static bool blockExists(soci::session &sql, const BitcoinLikeBlockchainExplorer::Block &block);
+            static bool putBlock(soci::session &sql, const BitcoinLikeBlockchainExplorer::Block &block);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H
+#endif // LEDGER_CORE_BITCOINLIKEBLOCKDATABASEHELPER_H

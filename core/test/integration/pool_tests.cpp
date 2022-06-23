@@ -29,22 +29,22 @@
  *
  */
 
-#include <gtest/gtest.h>
 #include "BaseFixture.h"
+
+#include <gtest/gtest.h>
 #include <src/database/DatabaseSessionPool.hpp>
-#include <unordered_set>
 #include <src/wallet/pool/WalletPool.hpp>
+#include <unordered_set>
 #include <wallet/common/CurrencyBuilder.hpp>
 
 class WalletPoolTest : public BaseFixture {
-
 };
 
 TEST_F(WalletPoolTest, InitializeCurrencies) {
     auto pool = newDefaultPool();
     api::Currency bitcoin;
 
-    for (auto& currency : pool->getCurrencies()) {
+    for (auto &currency : pool->getCurrencies()) {
         if (currency.name == "bitcoin") {
             bitcoin = currency;
         }
@@ -56,7 +56,7 @@ TEST_F(WalletPoolTest, InitializeCurrencies) {
     EXPECT_EQ(bitcoin.bitcoinLikeNetworkParameters.value().P2PKHVersion[0], 0);
     EXPECT_EQ(bitcoin.bitcoinLikeNetworkParameters.value().P2SHVersion[0], 5);
 
-    for (const auto& unit : bitcoin.units) {
+    for (const auto &unit : bitcoin.units) {
         if (unit.name == "bitcoin") {
             EXPECT_EQ(unit.code, "BTC");
             EXPECT_EQ(unit.symbol, "BTC");
@@ -71,81 +71,74 @@ TEST_F(WalletPoolTest, InitializeCurrencies) {
 
 TEST_F(WalletPoolTest, AddCurrency) {
     api::BitcoinLikeNetworkParameters params(
-    "wonder_coin", {42}, {21}, {42, 42, 21, 21}, api::BitcoinLikeFeePolicy::PER_KBYTE, 0,
-    api::BitcoinLikeDustPolicy::FIXED, "Wonder Coin Signed Message:\n", false, 0, {0x01}, {}
-    );
-    api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin",
-                                                                                                   12, "WC");
+        "wonder_coin", {42}, {21}, {42, 42, 21, 21}, api::BitcoinLikeFeePolicy::PER_KBYTE, 0,
+        api::BitcoinLikeDustPolicy::FIXED, "Wonder Coin Signed Message:\n", false, 0, {0x01}, {});
+    api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin", 12, "WC");
     {
-        auto firstPool = newDefaultPool();
-        bool found = false;
+        auto firstPool     = newDefaultPool();
+        bool found         = false;
         bool foundInSecond = false;
-        firstPool->addCurrency(wonderCoin).onComplete(dispatcher->getMainExecutionContext(),
-                                                      [&](const Try<Unit> &unit) {
-                                                          for (const auto &currency : firstPool->getCurrencies()) {
-                                                              if (currency.name == "wonder_coin") {
-                                                                  found = true;
-                                                                  EXPECT_EQ(
-                                                                  currency.bitcoinLikeNetworkParameters.value().MessagePrefix,
-                                                                  wonderCoin.bitcoinLikeNetworkParameters.value().MessagePrefix);
-                                                              }
-                                                          }
-                                                          dispatcher->stop();
-                                                      });
+        firstPool->addCurrency(wonderCoin).onComplete(dispatcher->getMainExecutionContext(), [&](const Try<Unit> &unit) {
+            for (const auto &currency : firstPool->getCurrencies()) {
+                if (currency.name == "wonder_coin") {
+                    found = true;
+                    EXPECT_EQ(
+                        currency.bitcoinLikeNetworkParameters.value().MessagePrefix,
+                        wonderCoin.bitcoinLikeNetworkParameters.value().MessagePrefix);
+                }
+            }
+            dispatcher->stop();
+        });
         dispatcher->waitUntilStopped();
         EXPECT_TRUE(found);
     }
     {
         auto secondPool = newDefaultPool();
-        bool found = false;
+        bool found      = false;
         for (const auto &currency : secondPool->getCurrencies()) {
             if (currency.name == "wonder_coin") {
                 found = true;
                 EXPECT_EQ(
-                currency.bitcoinLikeNetworkParameters.value().MessagePrefix,
-                wonderCoin.bitcoinLikeNetworkParameters.value().MessagePrefix);
+                    currency.bitcoinLikeNetworkParameters.value().MessagePrefix,
+                    wonderCoin.bitcoinLikeNetworkParameters.value().MessagePrefix);
             }
         }
         EXPECT_TRUE(found);
     }
-   resolver->clean();
+    resolver->clean();
 }
 
 TEST_F(WalletPoolTest, RemoveCurrency) {
     api::BitcoinLikeNetworkParameters params(
-    "wonder_coin", {42}, {21}, {42, 42, 21, 21}, api::BitcoinLikeFeePolicy::PER_KBYTE, 0, 
-    api::BitcoinLikeDustPolicy::FIXED, "Wonder Coin Signed Message:\n", false, 0, {0x01}, {}
-    );
-    api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin",
-                                                                                                   12, "WC");
+        "wonder_coin", {42}, {21}, {42, 42, 21, 21}, api::BitcoinLikeFeePolicy::PER_KBYTE, 0,
+        api::BitcoinLikeDustPolicy::FIXED, "Wonder Coin Signed Message:\n", false, 0, {0x01}, {});
+    api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin", 12, "WC");
     {
-        auto firstPool = newDefaultPool();
-        bool found = false;
+        auto firstPool     = newDefaultPool();
+        bool found         = false;
         bool foundInSecond = false;
         firstPool
-        ->addCurrency(wonderCoin)
-        .onComplete(dispatcher->getMainExecutionContext(),
-          [&](const Try<Unit> &unit) {
-              for (const auto &currency : firstPool->getCurrencies()) {
-                  if (currency.name == "wonder_coin") {
-                      found = true;
-                      EXPECT_EQ(
-                      currency.bitcoinLikeNetworkParameters.value().MessagePrefix,
-                      wonderCoin.bitcoinLikeNetworkParameters.value().MessagePrefix);
-                  }
-              }
-              firstPool->removeCurrency(wonderCoin.name).onComplete(dispatcher->getMainExecutionContext(),
-                [&] (const Try<Unit>& result) {
-                    dispatcher->stop();
-                }
-              );
-          });
+            ->addCurrency(wonderCoin)
+            .onComplete(dispatcher->getMainExecutionContext(),
+                        [&](const Try<Unit> &unit) {
+                            for (const auto &currency : firstPool->getCurrencies()) {
+                                if (currency.name == "wonder_coin") {
+                                    found = true;
+                                    EXPECT_EQ(
+                                        currency.bitcoinLikeNetworkParameters.value().MessagePrefix,
+                                        wonderCoin.bitcoinLikeNetworkParameters.value().MessagePrefix);
+                                }
+                            }
+                            firstPool->removeCurrency(wonderCoin.name).onComplete(dispatcher->getMainExecutionContext(), [&](const Try<Unit> &result) {
+                                dispatcher->stop();
+                            });
+                        });
         dispatcher->waitUntilStopped();
         EXPECT_TRUE(found);
     }
     {
         auto secondPool = newDefaultPool();
-        bool found = false;
+        bool found      = false;
         for (const auto &currency : secondPool->getCurrencies()) {
             if (currency.name == "wonder_coin") {
                 found = true;
@@ -157,10 +150,10 @@ TEST_F(WalletPoolTest, RemoveCurrency) {
 }
 
 TEST_F(WalletPoolTest, CreateAndGetWallet) {
-    auto pool = newDefaultPool();
+    auto pool             = newDefaultPool();
     const auto walletName = randomWalletName();
     {
-        auto wallet = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
+        auto wallet    = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
         auto getWallet = uv::wait(pool->getWallet(walletName));
         EXPECT_TRUE(wallet.get() == getWallet.get());
     }

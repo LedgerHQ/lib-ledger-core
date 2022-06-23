@@ -29,6 +29,7 @@
  *
  */
 #include "Networks.hpp"
+
 #include <api/ErrorCode.hpp>
 #include <utils/Exception.hpp>
 namespace ledger {
@@ -48,31 +49,28 @@ namespace ledger {
                     false,
                     0,
                     {0x01},
-                    {}
-                );
+                    {});
             }
 
-            CosmosLikeNetworkParameters Networks::cosmos(const std::string& chainID) {
-                    static const api::CosmosLikeNetworkParameters COSMOSHUB_3(
-                        // The current version of the chain has the "cosmos" identifer
-                        "cosmos",
-                        "ATOM signed message:\n",
-                        {0x04, 0x88, 0xB2, 0x1E},
-                        {0xEB, 0x5A, 0xE9, 0x87},
-                        {},
-                        "cosmoshub-3",
-                        {}
-                    );
+            CosmosLikeNetworkParameters Networks::cosmos(const std::string &chainID) {
+                static const api::CosmosLikeNetworkParameters COSMOSHUB_3(
+                    // The current version of the chain has the "cosmos" identifer
+                    "cosmos",
+                    "ATOM signed message:\n",
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    {0xEB, 0x5A, 0xE9, 0x87},
+                    {},
+                    "cosmoshub-3",
+                    {});
 
-                    static const api::CosmosLikeNetworkParameters COSMOSHUB_2(
-                        "atom-cosmoshub2",
-                        "ATOM signed message:\n",
-                        {0x04, 0x88, 0xB2, 0x1E},
-                        {0xEB, 0x5A, 0xE9, 0x87},
-                        {},
-                        "cosmoshub-2",
-                        {}
-                    );
+                static const api::CosmosLikeNetworkParameters COSMOSHUB_2(
+                    "atom-cosmoshub2",
+                    "ATOM signed message:\n",
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    {0xEB, 0x5A, 0xE9, 0x87},
+                    {},
+                    "cosmoshub-2",
+                    {});
 
                 if (chainID == "atom") {
                     return COSMOSHUB_3;
@@ -86,39 +84,35 @@ namespace ledger {
                     chainID);
             }
 
-
             EthereumLikeNetworkParameters Networks::ethereum() {
                 return EthereumLikeNetworkParameters(
-                        "eth",
-                        "Ethereum signed message:\n",
-                        {0x01},
-                        {0x04, 0x88, 0xb2, 0x1e},
-                        {},
-                        0
-                );
+                    "eth",
+                    "Ethereum signed message:\n",
+                    {0x01},
+                    {0x04, 0x88, 0xb2, 0x1e},
+                    {},
+                    0);
             }
 
             RippleLikeNetworkParameters Networks::ripple() {
                 return RippleLikeNetworkParameters(
-                        "xrp",
-                        "XRP signed message:\n",
-                        {0x04, 0x88, 0xB2, 0x1E},
-                        {},
-                        0
-                );
+                    "xrp",
+                    "XRP signed message:\n",
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    {},
+                    0);
             }
 
             TezosLikeNetworkParameters Networks::tezos() {
                 return TezosLikeNetworkParameters(
-                        "xtz",
-                        "XTZ signed message:\n",
-                        {0x04, 0x88, 0xB2, 0x1E},
-                        {0x06, 0xA1, 0x9F},
-                        {0x02, 0x5A, 0x79},
-                        {},
-                        0
-                );
+                    "xtz",
+                    "XTZ signed message:\n",
+                    {0x04, 0x88, 0xB2, 0x1E},
+                    {0x06, 0xA1, 0x9F},
+                    {0x02, 0x5A, 0x79},
+                    {},
+                    0);
             }
-        }
-    }
-}
+        } // namespace api
+    }     // namespace core
+} // namespace ledger

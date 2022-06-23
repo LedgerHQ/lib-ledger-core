@@ -30,28 +30,26 @@
  */
 
 #include "EthereumLikeAddress.h"
-#include <utils/Exception.hpp>
-#include <math/Base58.hpp>
+
 #include <collections/vector.hpp>
-#include <utils/hex.h>
 #include <crypto/Keccak.h>
+#include <math/Base58.hpp>
+#include <utils/Exception.hpp>
+#include <utils/hex.h>
 
 namespace ledger {
     namespace core {
 
-        EthereumLikeAddress::EthereumLikeAddress(const api::Currency& currency,
-                            const std::vector<uint8_t>& keccak256,
-                            const Option<std::string>& derivationPath) :
-                _params(currency.ethereumLikeNetworkParameters.value()),
-                _derivationPath(derivationPath),
-                _keccak256(keccak256),
-                AbstractAddress(currency, derivationPath)
-        {
-
+        EthereumLikeAddress::EthereumLikeAddress(const api::Currency &currency,
+                                                 const std::vector<uint8_t> &keccak256,
+                                                 const Option<std::string> &derivationPath) : _params(currency.ethereumLikeNetworkParameters.value()),
+                                                                                              _derivationPath(derivationPath),
+                                                                                              _keccak256(keccak256),
+                                                                                              AbstractAddress(currency, derivationPath) {
         }
 
         std::vector<uint8_t> EthereumLikeAddress::getVersion() {
-                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeAddress::getVersion is not implemented yet");
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "EthereumLikeAddress::getVersion is not implemented yet");
         }
 
         std::vector<uint8_t> EthereumLikeAddress::getKeccakHash() {
@@ -74,9 +72,8 @@ namespace ledger {
             return toEIP55();
         }
 
-        std::shared_ptr<AbstractAddress> EthereumLikeAddress::parse(const std::string& address, const api::Currency& currency,
-                                                      const Option<std::string>& derivationPath) {
-            auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&] () {
+        std::shared_ptr<AbstractAddress> EthereumLikeAddress::parse(const std::string &address, const api::Currency &currency, const Option<std::string> &derivationPath) {
+            auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&]() {
                 return fromEIP55(address, currency, derivationPath);
             });
             return std::dynamic_pointer_cast<AbstractAddress>(result.toOption().getValueOr(nullptr));
@@ -88,14 +85,14 @@ namespace ledger {
                                                                             bool skipEIP55Check) {
             std::vector<uint8_t> keccack256;
             if (address.length() > 2) {
-                //Remove 0x
+                // Remove 0x
                 auto tmpAddress = address.substr(2, address.length() - 2);
-                keccack256 = hex::toByteArray(tmpAddress);
-                //Now we only accept addresses that are EIP55 compliant
-                //If client want to use all lower/upper cased address
-                //they should decide if those addresses are valid or not
-                //N.B.: Live and Vault will validate these addresses and
-                //warn that this address was not validated from our side
+                keccack256      = hex::toByteArray(tmpAddress);
+                // Now we only accept addresses that are EIP55 compliant
+                // If client want to use all lower/upper cased address
+                // they should decide if those addresses are valid or not
+                // N.B.: Live and Vault will validate these addresses and
+                // warn that this address was not validated from our side
                 if (tmpAddress.size() != 40 || (!skipEIP55Check && address != Base58::encodeWithEIP55(keccack256))) {
                     throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
                 }
@@ -103,5 +100,5 @@ namespace ledger {
 
             return std::make_shared<ledger::core::EthereumLikeAddress>(currency, keccack256, derivationPath);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

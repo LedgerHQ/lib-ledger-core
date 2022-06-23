@@ -28,18 +28,15 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKEWALLETFACTORY_H
 #define LEDGER_CORE_TEZOSLIKEWALLETFACTORY_H
 
+#include <api/Currency.hpp>
 #include <functional>
-
 #include <wallet/common/AbstractWalletFactory.hpp>
-#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.hpp>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
 #include <wallet/tezos/factories/TezosLikeKeychainFactory.h>
-
-#include <api/Currency.hpp>
+#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.hpp>
 
 namespace ledger {
     namespace core {
@@ -48,19 +45,19 @@ namespace ledger {
         class WalletPool;
 
         class TezosLikeWalletFactory : public AbstractWalletFactory {
-        public:
+          public:
             TezosLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
 
             std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
-        private:
+          private:
             std::shared_ptr<TezosLikeBlockchainExplorer>
             getExplorer(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
 
-        private:
+          private:
             std::list<std::weak_ptr<TezosLikeBlockchainExplorer>> _runningExplorers;
             std::unordered_map<std::string, std::shared_ptr<TezosLikeKeychainFactory>> _keychainFactories;
         };
-    }
-}
-#endif //LEDGER_CORE_TEZOSLIKEWALLETFACTORY_H
+    } // namespace core
+} // namespace ledger
+#endif // LEDGER_CORE_TEZOSLIKEWALLETFACTORY_H

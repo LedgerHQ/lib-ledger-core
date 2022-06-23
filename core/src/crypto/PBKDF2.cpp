@@ -29,14 +29,14 @@
  *
  */
 #include "PBKDF2.hpp"
+
 #include <openssl/evp.h>
 
 namespace ledger {
     namespace core {
 
         std::vector<uint8_t>
-        PBKDF2::derive(const std::vector<uint8_t> &key, const std::vector<uint8_t> &salt, uint32_t iter,
-                       size_t outLength) {
+        PBKDF2::derive(const std::vector<uint8_t> &key, const std::vector<uint8_t> &salt, uint32_t iter, size_t outLength) {
             std::vector<uint8_t> result(outLength);
             PKCS5_PBKDF2_HMAC_SHA1((const char *)key.data(), key.size(),
                                    salt.data(), salt.size(),
@@ -44,5 +44,5 @@ namespace ledger {
                                    result.data());
             return result;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

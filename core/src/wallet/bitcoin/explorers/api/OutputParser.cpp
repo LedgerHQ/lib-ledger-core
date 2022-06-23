@@ -108,5 +108,5 @@ namespace ledger {
             _output = output;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

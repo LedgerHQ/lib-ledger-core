@@ -32,20 +32,21 @@
 #ifndef LEDGER_CORE_STELLARLIKETRANSACTIONBUILDER_HPP
 #define LEDGER_CORE_STELLARLIKETRANSACTIONBUILDER_HPP
 
+#include "StellarLikeTransaction.hpp"
+
 #include <api/StellarLikeTransactionBuilder.hpp>
 #include <async/Future.hpp>
-#include <wallet/stellar/xdr/models.hpp>
 #include <wallet/stellar/stellar.hpp>
-#include "StellarLikeTransaction.hpp"
+#include <wallet/stellar/xdr/models.hpp>
 
 namespace ledger {
     namespace core {
 
         class StellarLikeAccount;
         class StellarLikeTransactionBuilder : public virtual api::StellarLikeTransactionBuilder,
-                public std::enable_shared_from_this<StellarLikeTransactionBuilder> {
-        public:
-            explicit StellarLikeTransactionBuilder(const std::shared_ptr<StellarLikeAccount>& account);
+                                              public std::enable_shared_from_this<StellarLikeTransactionBuilder> {
+          public:
+            explicit StellarLikeTransactionBuilder(const std::shared_ptr<StellarLikeAccount> &account);
             std::shared_ptr<api::StellarLikeTransactionBuilder>
             addNativePayment(const std::string &address, const std::shared_ptr<api::Amount> &amount) override;
 
@@ -71,21 +72,19 @@ namespace ledger {
             setSequence(const std::shared_ptr<api::BigInt> &sequence) override;
 
             std::shared_ptr<api::StellarLikeTransactionBuilder>
-            setCorrelationId(const std::string & correlationId) override;
+            setCorrelationId(const std::string &correlationId) override;
 
             void build(const std::shared_ptr<api::StellarLikeTransactionCallback> &callback) override;
             FuturePtr<api::StellarLikeTransaction> build();
 
-        private:
+          private:
             std::shared_ptr<StellarLikeAccount> _account;
             stellar::xdr::TransactionV1Envelope _envelope;
             Option<uint64_t> _baseFee;
             BigInt _balanceChange;
             std::string _correlationId;
-
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_STELLARLIKETRANSACTIONBUILDER_HPP
+#endif // LEDGER_CORE_STELLARLIKETRANSACTIONBUILDER_HPP

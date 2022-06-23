@@ -32,19 +32,18 @@
 #ifndef LEDGER_CORE_STELLARLIKELEDGERDATABASEHELPER_HPP
 #define LEDGER_CORE_STELLARLIKELEDGERDATABASEHELPER_HPP
 
+#include <api/Currency.hpp>
 #include <soci.h>
 #include <wallet/stellar/stellar.hpp>
-#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
         class StellarLikeLedgerDatabaseHelper {
-        public:
-            static bool putLedger(soci::session& sql, const api::Currency& currency, const stellar::Ledger& ledger);
-            static bool getLastLedger(soci::session& sql, const api::Currency& currency, stellar::Ledger& out);
+          public:
+            static bool putLedger(soci::session &sql, const api::Currency &currency, const stellar::Ledger &ledger);
+            static bool getLastLedger(soci::session &sql, const api::Currency &currency, stellar::Ledger &out);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_STELLARLIKELEDGERDATABASEHELPER_HPP
+#endif // LEDGER_CORE_STELLARLIKELEDGERDATABASEHELPER_HPP

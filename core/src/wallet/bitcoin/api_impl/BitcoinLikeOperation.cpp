@@ -29,6 +29,7 @@
  *
  */
 #include "BitcoinLikeOperation.h"
+
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 
 namespace ledger {
@@ -41,5 +42,5 @@ namespace ledger {
         BitcoinLikeOperation::BitcoinLikeOperation(const std::shared_ptr<OperationApi> &baseOp) {
             _transaction = std::make_shared<BitcoinLikeTransactionApi>(baseOp);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

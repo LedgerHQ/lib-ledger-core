@@ -31,32 +31,31 @@
 #ifndef LEDGER_CORE_BITCOINLIKESOCIWALLET_H
 #define LEDGER_CORE_BITCOINLIKESOCIWALLET_H
 
+#include "BitcoinLikeAccountDatabase.h"
+
+#include <database/DatabaseSessionPool.hpp>
 #include <soci.h>
 #include <wallet/pool/WalletPool.hpp>
-#include <database/DatabaseSessionPool.hpp>
-#include "BitcoinLikeAccountDatabase.h"
 
 namespace ledger {
     namespace core {
 
         class BitcoinLikeWalletDatabase {
-        public:
-            BitcoinLikeWalletDatabase(const std::shared_ptr<WalletPool>& pool,
-                                  const std::string& walletName,
-                                  const std::string& currencyName
-            );
+          public:
+            BitcoinLikeWalletDatabase(const std::shared_ptr<WalletPool> &pool,
+                                      const std::string &walletName,
+                                      const std::string &currencyName);
             int64_t getAccountsCount() const;
             bool accountExists(int32_t index) const;
-            void createAccount(int32_t index, const std::string& xpub) const;
-            const std::string& getWalletUid() const;
+            void createAccount(int32_t index, const std::string &xpub) const;
+            const std::string &getWalletUid() const;
             int32_t getNextAccountIndex() const;
 
-        private:
+          private:
             const std::string _walletUid;
             mutable std::shared_ptr<DatabaseSessionPool> _database;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BITCOINLIKESOCIWALLET_H
+#endif // LEDGER_CORE_BITCOINLIKESOCIWALLET_H

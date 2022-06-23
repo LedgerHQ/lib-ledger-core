@@ -27,10 +27,11 @@
  * SOFTWARE.
  *
  */
+#include "../BaseFixture.h"
+#include "keychain_test_helper.h"
+
 #include <gtest/gtest.h>
 #include <src/wallet/bitcoin/keychains/P2WPKHBitcoinLikeKeychain.hpp>
-#include "keychain_test_helper.h"
-#include "../BaseFixture.h"
 
 using namespace std;
 
@@ -38,21 +39,21 @@ class BitcoinP2WPKHKeychains : public KeychainFixture<P2WPKHBitcoinLikeKeychain>
 };
 
 TEST_F(BitcoinP2WPKHKeychains, tBTCKeychainDerivation) {
-    testKeychain(BTC_TESTNET_DATA, [] (P2WPKHBitcoinLikeKeychain& keychain) {
+    testKeychain(BTC_TESTNET_DATA, [](P2WPKHBitcoinLikeKeychain &keychain) {
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBech32(), "tb1qunawpra24prfc46klknlhl0ydy32feajmwpg84");
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBech32(), "tb1qm2grk5v7jy42vtnjccx8dwthngslq650n5hm23");
     });
 }
 
 TEST_F(BitcoinP2WPKHKeychains, BTCKeychainDerivation) {
-    testKeychain(BTC_DATA, [] (P2WPKHBitcoinLikeKeychain& keychain) {
+    testKeychain(BTC_DATA, [](P2WPKHBitcoinLikeKeychain &keychain) {
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBech32(), "bc1q9sz3mlk5t9cm5vz88hjtfetj0z7e7qq7cq472f");
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBech32(), "bc1qrkt83qrp40p6hjumpxj803mqg8p708jt8ynx0y");
     });
 }
 
 TEST_F(BitcoinP2WPKHKeychains, DISABLED_BCHKeychainDerivation) {
-    testKeychain(BCH_DATA, [] (P2WPKHBitcoinLikeKeychain& keychain) {
+    testKeychain(BCH_DATA, [](P2WPKHBitcoinLikeKeychain &keychain) {
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::RECEIVE)->toBech32(), "bitcoincash:qpenyye7dhp9wgugtsh9t3ukdvrnpwyvqyafwfxe0w");
         EXPECT_EQ(keychain.getFreshAddress(BitcoinLikeKeychain::KeyPurpose::CHANGE)->toBech32(), "bitcoincash:qzf6rezvt9agmmwnca4ykj74kppr4dx2hvm6f8kzqr");
     });

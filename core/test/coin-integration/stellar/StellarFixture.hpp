@@ -33,21 +33,21 @@
 #define LEDGER_CORE_STELLARFIXTURE_HPP
 
 #include "../common/CoinIntegrationFixture.hpp"
-#include <wallet/stellar/StellarLikeWallet.hpp>
+
 #include <wallet/stellar/StellarLikeAccount.hpp>
 #include <wallet/stellar/StellarLikeOperation.hpp>
+#include <wallet/stellar/StellarLikeWallet.hpp>
 
 class StellarFixture : public CoinIntegrationFixture<StellarLikeWallet, StellarLikeAccount> {
-public:
+  public:
     std::shared_ptr<WalletPool> newPool(std::string poolName = "default_pool") override;
 
-    api::AccountCreationInfo accountInfo(const std::string& pubKey) const;
+    api::AccountCreationInfo accountInfo(const std::string &pubKey) const;
     api::AccountCreationInfo defaultAccount() const;
     api::AccountCreationInfo emptyAccount() const;
-    api::AccountCreationInfo accountInfoFromAddress(const std::string& address) const;
+    api::AccountCreationInfo accountInfoFromAddress(const std::string &address) const;
 
     api::Currency getCurrency() const;
 };
 
-
-#endif //LEDGER_CORE_STELLARFIXTURE_HPP
+#endif // LEDGER_CORE_STELLARFIXTURE_HPP

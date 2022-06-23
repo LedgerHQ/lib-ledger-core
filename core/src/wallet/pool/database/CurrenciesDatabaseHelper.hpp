@@ -31,24 +31,23 @@
 #ifndef LEDGER_CORE_CURRENCIESDATABASEHELPER_HPP
 #define LEDGER_CORE_CURRENCIESDATABASEHELPER_HPP
 
-#include <soci.h>
 #include <api/Currency.hpp>
 #include <api/ERC20Token.hpp>
+#include <soci.h>
 
 namespace ledger {
     namespace core {
         class CurrenciesDatabaseHelper {
-        public:
-            static bool insertCurrency(soci::session& sql, const api::Currency& currency);
+          public:
+            static bool insertCurrency(soci::session &sql, const api::Currency &currency);
             static bool insertERC20Token(soci::session &sql,
                                          const ledger::core::api::ERC20Token &token);
-            static void getAllCurrencies(soci::session& sql, std::vector<api::Currency>& currencies);
-            static void insertUnits(soci::session& sql, const api::Currency& currency);
-            static void getAllUnits(soci::session& sql, api::Currency& currency);
-            static void removeCurrency(soci::session& sql, const std::string& currencyName);
+            static void getAllCurrencies(soci::session &sql, std::vector<api::Currency> &currencies);
+            static void insertUnits(soci::session &sql, const api::Currency &currency);
+            static void getAllUnits(soci::session &sql, api::Currency &currency);
+            static void removeCurrency(soci::session &sql, const std::string &currencyName);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_CURRENCIESDATABASEHELPER_HPP
+#endif // LEDGER_CORE_CURRENCIESDATABASEHELPER_HPP

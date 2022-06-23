@@ -30,19 +30,18 @@
  */
 
 #include "CosmosLikeOperationsDatabaseHelper.hpp"
+
+#include <api/BigInt.hpp>
 #include <database/PreparedStatement.hpp>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
-#include <api/BigInt.hpp>
 #include <debug/Benchmarker.h>
-#include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-#include <wallet/cosmos/database/SociCosmosAmount.hpp>
-#include <wallet/cosmos/CosmosLikeMessage.hpp>
+#include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <wallet/cosmos/CosmosLikeMessage.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
-
-
+#include <wallet/cosmos/database/SociCosmosAmount.hpp>
 
 using namespace soci;
 
@@ -54,7 +53,7 @@ namespace {
         std::vector<std::string> uid;
         std::vector<std::string> msgUid;
 
-        void update(const std::string& op, const std::string& msg) {
+        void update(const std::string &op, const std::string &msg) {
             uid.push_back(op);
             msgUid.push_back(msg);
         }
@@ -66,31 +65,31 @@ namespace {
     };
 
     const auto UPSERT_COSMOS_OPERATION = db::stmt<CosmosOperationBinding>(
-            "INSERT INTO cosmos_operations VALUES(:uid, :message_uid) "
-            "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, use(b.uid), use(b.msgUid);
-            });
+        "INSERT INTO cosmos_operations VALUES(:uid, :message_uid) "
+        "ON CONFLICT DO NOTHING",
+        [](auto &s, auto &b) {
+            s, use(b.uid), use(b.msgUid);
+        });
 
-   // Transaction
+    // Transaction
     struct TransactionBinding {
-        std::vector<std::string> uid; 
-        std::vector<std::string> hash; 
-        std::vector<Option<std::string>> blockUid; 
+        std::vector<std::string> uid;
+        std::vector<std::string> hash;
+        std::vector<Option<std::string>> blockUid;
         std::vector<std::string> date;
         std::vector<std::string> fee;
-        std::vector<std::string> gas; 
-        std::vector<Option<std::string>> gasUsed; 
+        std::vector<std::string> gas;
+        std::vector<Option<std::string>> gasUsed;
         std::vector<std::string> memo;
-        
-        void update(const cosmos::Transaction& tx) {
+
+        void update(const cosmos::Transaction &tx) {
             Option<std::string> txblockUid;
             if (tx.block.nonEmpty() && !tx.block.getValue().hash.empty()) {
                 txblockUid = BlockDatabaseHelper::createBlockUid(tx.block.getValue());
             }
-            auto txdate = DateUtils::toJSON(tx.timestamp);
-            auto txfee = soci::coinsToString(tx.fee.amount);
-            auto txgas = tx.fee.gas.toString();
+            auto txdate    = DateUtils::toJSON(tx.timestamp);
+            auto txfee     = soci::coinsToString(tx.fee.amount);
+            auto txgas     = tx.fee.gas.toString();
             auto txgasUsed = tx.gasUsed.flatMap<std::string>([](const BigInt &g) {
                 return g.toString();
             });
@@ -122,21 +121,19 @@ namespace {
         "uid, hash, block_uid, time, fee_amount, gas, gas_used, memo"
         ") VALUES (:uid, :hash, :block_uid, :time, :fee, :gas, :gas_used, :memo)"
         " ON CONFLICT(uid) DO UPDATE SET block_uid = :buid, gas_used = :gused",
-            [] (auto& s, auto&  b) {
-                s, 
-                use(b.uid), 
-                use(b.hash), 
-                use(b.blockUid), 
-                use(b.date), 
+        [](auto &s, auto &b) {
+            s,
+                use(b.uid),
+                use(b.hash),
+                use(b.blockUid),
+                use(b.date),
                 use(b.fee),
-                use(b.gas), 
-                use(b.gasUsed), 
+                use(b.gas),
+                use(b.gasUsed),
                 use(b.memo),
-                use(b.blockUid), 
-                use(b.gasUsed);          
-            });
-
-
+                use(b.blockUid),
+                use(b.gasUsed);
+        });
 
     // Messages: generic class
     struct MessageBinding {
@@ -146,7 +143,7 @@ namespace {
         std::vector<std::string> log;
         std::vector<int32_t> success;
         std::vector<int32_t> messageIndex;
-        
+
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             uid.push_back(msg.uid);
             txUid.push_back(transactionUid);
@@ -174,22 +171,22 @@ namespace {
         "uid, transaction_uid, message_type, log, success, msg_index)"
         "VALUES (:uid, :tuid, :mt, :log, :success, :mi) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex);   
-            });
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex);
+        });
 
     // Messages: Send
-    struct SendMessageBinding: public MessageBinding {
+    struct SendMessageBinding : public MessageBinding {
         std::vector<std::string> fromAddress;
         std::vector<std::string> toAddress;
         std::vector<std::string> coins;
 
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
-            
-            const auto &m = boost::get<cosmos::MsgSend>(msg.content);
+
+            const auto &m          = boost::get<cosmos::MsgSend>(msg.content);
             const auto coinsAmount = soci::coinsToString(m.amount);
             fromAddress.push_back(m.fromAddress);
             toAddress.push_back(m.toAddress);
@@ -201,32 +198,31 @@ namespace {
             fromAddress.clear();
             toAddress.clear();
             coins.clear();
-
         }
     };
     const auto UPSERT_MESSAGE_SEND = db::stmt<SendMessageBinding>(
         "INSERT INTO cosmos_messages (uid,"
-            "transaction_uid, message_type, log,"
-            "success, msg_index, from_address, to_address, amount) "
-            "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :ta, :amount) "
-            "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
+        "transaction_uid, message_type, log,"
+        "success, msg_index, from_address, to_address, amount) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :ta, :amount) "
+        "ON CONFLICT DO NOTHING",
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
                 soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
-                soci::use(b.fromAddress), soci::use(b.toAddress), soci::use(b.coins); 
-            });
+                soci::use(b.fromAddress), soci::use(b.toAddress), soci::use(b.coins);
+        });
 
     // Messages: Delegate
-    struct DelegateMessageBinding: public MessageBinding {
+    struct DelegateMessageBinding : public MessageBinding {
         std::vector<std::string> delegatorAddress;
         std::vector<std::string> validatorAddress;
         std::vector<std::string> coin;
 
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
-            
-            const auto &m = boost::get<cosmos::MsgDelegate>(msg.content);
+
+            const auto &m         = boost::get<cosmos::MsgDelegate>(msg.content);
             const auto coinAmount = soci::coinToString(m.amount);
             delegatorAddress.push_back(m.delegatorAddress);
             validatorAddress.push_back(m.validatorAddress);
@@ -242,27 +238,27 @@ namespace {
     };
     const auto UPSERT_MESSAGE_DELEGATE = db::stmt<DelegateMessageBinding>(
         "INSERT INTO cosmos_messages (uid,"
-           "transaction_uid, message_type, log,"
-           "success, msg_index, delegator_address, validator_address, amount) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :ta, :amount) "
+        "transaction_uid, message_type, log,"
+        "success, msg_index, delegator_address, validator_address, amount) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :ta, :amount) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex), 
-                soci::use(b.delegatorAddress), soci::use(b.validatorAddress), soci::use(b.coin);   
-            });
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
+                soci::use(b.delegatorAddress), soci::use(b.validatorAddress), soci::use(b.coin);
+        });
 
     // Messages: Undelegate
-    struct UndelegateMessageBinding: public MessageBinding {
+    struct UndelegateMessageBinding : public MessageBinding {
         std::vector<std::string> delegatorAddress;
         std::vector<std::string> validatorAddress;
         std::vector<std::string> coin;
 
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
-            
-            const auto &m = boost::get<cosmos::MsgUndelegate>(msg.content);
+
+            const auto &m         = boost::get<cosmos::MsgUndelegate>(msg.content);
             const auto coinAmount = soci::coinToString(m.amount);
             delegatorAddress.push_back(m.delegatorAddress);
             validatorAddress.push_back(m.validatorAddress);
@@ -277,29 +273,29 @@ namespace {
         }
     };
     const auto UPSERT_MESSAGE_UNDELEGATE = db::stmt<UndelegateMessageBinding>(
-      "INSERT INTO cosmos_messages (uid,"
-           "transaction_uid, message_type, log,"
-           "success, msg_index, delegator_address, validator_address, amount) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :ta, :amount) "
+        "INSERT INTO cosmos_messages (uid,"
+        "transaction_uid, message_type, log,"
+        "success, msg_index, delegator_address, validator_address, amount) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :ta, :amount) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex), 
-                soci::use(b.delegatorAddress), soci::use(b.validatorAddress), soci::use(b.coin);  
-            });
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
+                soci::use(b.delegatorAddress), soci::use(b.validatorAddress), soci::use(b.coin);
+        });
 
     // Messages: BeginRedelegate
-    struct BeginRedelegateMessageBinding: public MessageBinding {
+    struct BeginRedelegateMessageBinding : public MessageBinding {
         std::vector<std::string> delegatorAddress;
         std::vector<std::string> validatorSourceAddress;
         std::vector<std::string> validatorDestinationAddress;
         std::vector<std::string> coin;
-        
+
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
-            
-            const auto &m = boost::get<cosmos::MsgBeginRedelegate>(msg.content);
+
+            const auto &m         = boost::get<cosmos::MsgBeginRedelegate>(msg.content);
             const auto coinAmount = soci::coinToString(m.amount);
             delegatorAddress.push_back(m.delegatorAddress);
             validatorSourceAddress.push_back(m.validatorSourceAddress);
@@ -316,21 +312,21 @@ namespace {
         }
     };
     const auto UPSERT_MESSAGE_BEGIN_REDELEGATE = db::stmt<BeginRedelegateMessageBinding>(
-       "INSERT INTO cosmos_messages (uid,"
-           "transaction_uid, message_type, log,"
-           "success, msg_index, delegator_address, validator_src_address,"
-           "validator_dst_address, amount) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :da, :fa, :ta, :amount) "
+        "INSERT INTO cosmos_messages (uid,"
+        "transaction_uid, message_type, log,"
+        "success, msg_index, delegator_address, validator_src_address,"
+        "validator_dst_address, amount) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :da, :fa, :ta, :amount) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex), 
-                soci::use(b.delegatorAddress), soci::use(b.validatorSourceAddress), soci::use(b.validatorDestinationAddress), soci::use(b.coin);   
-            });
-    
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
+                soci::use(b.delegatorAddress), soci::use(b.validatorSourceAddress), soci::use(b.validatorDestinationAddress), soci::use(b.coin);
+        });
+
     // Messages: SubmitProposal
-    struct SubmitProposalMessageBinding: public MessageBinding {
+    struct SubmitProposalMessageBinding : public MessageBinding {
         std::vector<std::string> proposer;
         std::vector<std::string> contentType;
         std::vector<std::string> contentTitle;
@@ -339,8 +335,8 @@ namespace {
 
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
-            
-            const auto &m = boost::get<cosmos::MsgSubmitProposal>(msg.content);
+
+            const auto &m          = boost::get<cosmos::MsgSubmitProposal>(msg.content);
             const auto coinsAmount = soci::coinsToString(m.initialDeposit);
             proposer.push_back(m.proposer);
             contentType.push_back(m.content.type);
@@ -359,23 +355,23 @@ namespace {
         }
     };
     const auto UPSERT_MESSAGE_SUBMIT_PROPOSAL = db::stmt<SubmitProposalMessageBinding>(
-       "INSERT INTO cosmos_messages (uid,"
-           "transaction_uid, message_type, log,"
-           "success, msg_index, proposer, content_type,"
-           "content_title, content_description, amount) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :proposer,"
-           ":ctype, :ctitle, :cdescription, :amount) "
+        "INSERT INTO cosmos_messages (uid,"
+        "transaction_uid, message_type, log,"
+        "success, msg_index, proposer, content_type,"
+        "content_title, content_description, amount) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :proposer,"
+        ":ctype, :ctitle, :cdescription, :amount) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex), 
-                soci::use(b.proposer), soci::use(b.contentType), soci::use(b.contentTitle), 
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
+                soci::use(b.proposer), soci::use(b.contentType), soci::use(b.contentTitle),
                 soci::use(b.contentDescr), soci::use(b.coins);
-            });
+        });
 
     // Messages: Vote
-    struct VoteMessageBinding: public MessageBinding {
+    struct VoteMessageBinding : public MessageBinding {
         std::vector<std::string> proposalId;
         std::vector<std::string> voter;
         std::vector<std::string> option;
@@ -398,28 +394,28 @@ namespace {
     };
     const auto UPSERT_MESSAGE_VOTE = db::stmt<VoteMessageBinding>(
         "INSERT INTO cosmos_messages (uid,"
-           "transaction_uid, message_type, log,"
-           "success, msg_index, proposal_id, voter,"
-           "vote_option) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :pid, :voter, :opt) "
+        "transaction_uid, message_type, log,"
+        "success, msg_index, proposal_id, voter,"
+        "vote_option) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :pid, :voter, :opt) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex), 
-                soci::use(b.proposalId), soci::use(b.voter), soci::use(b.option); 
-            });
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
+                soci::use(b.proposalId), soci::use(b.voter), soci::use(b.option);
+        });
 
     // Messages: Deposit
-    struct DepositMessageBinding: public MessageBinding {
+    struct DepositMessageBinding : public MessageBinding {
         std::vector<std::string> depositor;
         std::vector<std::string> proposalId;
         std::vector<std::string> coins;
 
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
-            
-            const auto &m = boost::get<cosmos::MsgDeposit>(msg.content);
+
+            const auto &m          = boost::get<cosmos::MsgDeposit>(msg.content);
             const auto coinsAmount = soci::coinsToString(m.amount);
             depositor.push_back(m.depositor);
             proposalId.push_back(m.proposalId);
@@ -435,25 +431,25 @@ namespace {
     };
     const auto UPSERT_MESSAGE_DEPOSIT = db::stmt<DepositMessageBinding>(
         "INSERT INTO cosmos_messages (uid, transaction_uid, "
-           "message_type, log, success, "
-           "msg_index, depositor, proposal_id, amount) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :dep, :pid, :amount) "
+        "message_type, log, success, "
+        "msg_index, depositor, proposal_id, amount) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :dep, :pid, :amount) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex), 
-                soci::use(b.depositor), soci::use(b.proposalId), soci::use(b.coins);   
-            });
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
+                soci::use(b.depositor), soci::use(b.proposalId), soci::use(b.coins);
+        });
 
     // Messages: WithdrawDelegationReward
-    struct WithdrawDelegationRewardMessageBinding: public MessageBinding {
+    struct WithdrawDelegationRewardMessageBinding : public MessageBinding {
         std::vector<std::string> delegatorAddress;
         std::vector<std::string> validatorAddress;
 
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
-            
+
             const auto &m = boost::get<cosmos::MsgWithdrawDelegationReward>(msg.content);
             delegatorAddress.push_back(m.delegatorAddress);
             validatorAddress.push_back(m.validatorAddress);
@@ -467,26 +463,26 @@ namespace {
     };
     const auto UPSERT_MESSAGE_WITHDRAW_DELEGATION_REWARD = db::stmt<WithdrawDelegationRewardMessageBinding>(
         "INSERT INTO cosmos_messages (uid,"
-           "transaction_uid, message_type, log,"
-           "success, msg_index, delegator_address, validator_address) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :da, :va) "
+        "transaction_uid, message_type, log,"
+        "success, msg_index, delegator_address, validator_address) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :da, :va) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex), 
-                soci::use(b.delegatorAddress), soci::use(b.validatorAddress);   
-            });
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
+                soci::use(b.delegatorAddress), soci::use(b.validatorAddress);
+        });
 
     // Messages: WithdrawDelegatorReward
-    struct WithdrawDelegatorRewardMessageBinding: public MessageBinding {
+    struct WithdrawDelegatorRewardMessageBinding : public MessageBinding {
         std::vector<std::string> delegatorAddress;
         std::vector<std::string> validatorAddress;
 
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
-            
-           const auto &m = boost::get<cosmos::MsgWithdrawDelegatorReward>(msg.content);
+
+            const auto &m = boost::get<cosmos::MsgWithdrawDelegatorReward>(msg.content);
             delegatorAddress.push_back(m.delegatorAddress);
             validatorAddress.push_back(m.validatorAddress);
         }
@@ -498,25 +494,25 @@ namespace {
         }
     };
     const auto UPSERT_MESSAGE_WITHDRAW_DELEGATOR_REWARD = db::stmt<WithdrawDelegatorRewardMessageBinding>(
-       "INSERT INTO cosmos_messages (uid,"
-           "transaction_uid, message_type, log,"
-           "success, msg_index, delegator_address, validator_address) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :da, :va) "
+        "INSERT INTO cosmos_messages (uid,"
+        "transaction_uid, message_type, log,"
+        "success, msg_index, delegator_address, validator_address) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :da, :va) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex), 
-                soci::use(b.delegatorAddress), soci::use(b.validatorAddress); 
-            });
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
+                soci::use(b.delegatorAddress), soci::use(b.validatorAddress);
+        });
 
     // Messages: WithdrawValidatorCommission
-    struct WithdrawValidatorCommissionMessageBinding: public MessageBinding {
+    struct WithdrawValidatorCommissionMessageBinding : public MessageBinding {
         std::vector<std::string> validatorAddress;
 
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
-            
+
             const auto &m = boost::get<cosmos::MsgWithdrawValidatorCommission>(msg.content);
             validatorAddress.push_back(m.validatorAddress);
         }
@@ -528,25 +524,25 @@ namespace {
     };
     const auto UPSERT_MESSAGE_WITHDRAW_VALIDATOR_COMMISSION = db::stmt<WithdrawValidatorCommissionMessageBinding>(
         "INSERT INTO cosmos_messages (uid,"
-           "transaction_uid, message_type, log,"
-           "success, msg_index, validator_address) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :va) "
+        "transaction_uid, message_type, log,"
+        "success, msg_index, validator_address) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :va) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex), 
-                soci::use(b.validatorAddress);   
-            });
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
+                soci::use(b.validatorAddress);
+        });
 
     // Messages: SetWithdrawAddress
-    struct SetWithdrawAddressMessageBinding: public MessageBinding {
+    struct SetWithdrawAddressMessageBinding : public MessageBinding {
         std::vector<std::string> delegatorAddress;
         std::vector<std::string> withdrawAddress;
 
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
-    
+
             const auto &m = boost::get<cosmos::MsgSetWithdrawAddress>(msg.content);
             delegatorAddress.push_back(m.delegatorAddress);
             withdrawAddress.push_back(m.withdrawAddress);
@@ -559,25 +555,25 @@ namespace {
         }
     };
     const auto UPSERT_MESSAGE_SET_WITHDRAW_ADDRESS = db::stmt<SetWithdrawAddressMessageBinding>(
-       "INSERT INTO cosmos_messages (uid,"
-           "transaction_uid, message_type, log,"
-           "success, msg_index, delegator_address, to_address) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :da, :withdraw) "
+        "INSERT INTO cosmos_messages (uid,"
+        "transaction_uid, message_type, log,"
+        "success, msg_index, delegator_address, to_address) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :da, :withdraw) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex), 
-                soci::use(b.delegatorAddress), soci::use(b.withdrawAddress);   
-            });
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
+                soci::use(b.delegatorAddress), soci::use(b.withdrawAddress);
+        });
 
     // Messages: Unjail
-    struct UnjailMessageBinding: public MessageBinding {
+    struct UnjailMessageBinding : public MessageBinding {
         std::vector<std::string> validatorAddress;
 
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
-    
+
             const auto &m = boost::get<cosmos::MsgUnjail>(msg.content);
             validatorAddress.push_back(m.validatorAddress);
         }
@@ -588,20 +584,20 @@ namespace {
         }
     };
     const auto UPSERT_MESSAGE_UNJAIL = db::stmt<UnjailMessageBinding>(
-       "INSERT INTO cosmos_messages (uid,"
-           "transaction_uid, message_type, log,"
-           "success, msg_index, validator_address) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :va) "
+        "INSERT INTO cosmos_messages (uid,"
+        "transaction_uid, message_type, log,"
+        "success, msg_index, validator_address) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :va) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex), 
-                soci::use(b.validatorAddress); 
-            });
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
+                soci::use(b.validatorAddress);
+        });
 
     // Messages: MultiSend
-    struct MultiSendMessageBinding: public MessageBinding {
+    struct MultiSendMessageBinding : public MessageBinding {
         std::vector<std::string> coins;
 
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
@@ -643,25 +639,25 @@ namespace {
     };
     const auto UPSERT_MESSAGE_MULTISEND = db::stmt<MultiSendMessageBinding>(
         "INSERT INTO cosmos_messages (uid,"
-           "transaction_uid, message_type, log,"
-           "success, msg_index, amount) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :amount) "
+        "transaction_uid, message_type, log,"
+        "success, msg_index, amount) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :amount) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
                 soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
                 soci::use(b.coins);
-            });
+        });
 
     // Messages: Fees
-    struct FeesMessageBinding: public MessageBinding {
+    struct FeesMessageBinding : public MessageBinding {
         std::vector<std::string> payerAddress;
         std::vector<std::string> fees;
 
         void update(std::string const &transactionUid, cosmos::Message const &msg, cosmos::MessageLog const &messageLog) {
             MessageBinding::update(transactionUid, msg, messageLog);
-    
+
             const auto &m = boost::get<cosmos::MsgFees>(msg.content);
             const auto &f = soci::coinToString(m.fees);
             payerAddress.push_back(m.payerAddress);
@@ -676,30 +672,30 @@ namespace {
     };
     const auto UPSERT_MESSAGE_FEES = db::stmt<FeesMessageBinding>(
         "INSERT INTO cosmos_messages (uid,"
-           "transaction_uid, message_type, log,"
-           "success, msg_index, from_address, amount) "
-           "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :amount) "
+        "transaction_uid, message_type, log,"
+        "success, msg_index, from_address, amount) "
+        "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :amount) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type), 
-                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex), 
-                soci::use(b.payerAddress), soci::use(b.fees);   
-            });
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.txUid), soci::use(b.type),
+                soci::use(b.log), soci::use(b.success), soci::use(b.messageIndex),
+                soci::use(b.payerAddress), soci::use(b.fees);
+        });
 
     struct MultiSendInputBinding {
         std::vector<std::string> uid;
         std::vector<std::string> fromAddress;
         std::vector<std::string> inputCoins;
-        
+
         void update(cosmos::Message const &msg) {
             const auto &m = boost::get<cosmos::MsgMultiSend>(msg.content);
-            for (const auto &input: m.inputs) {    
+            for (const auto &input : m.inputs) {
                 const auto coins = soci::coinsToString(input.coins);
                 uid.push_back(msg.uid);
                 fromAddress.push_back(input.fromAddress);
                 inputCoins.push_back(coins);
-            }      
+            }
         }
 
         void clear() {
@@ -714,26 +710,26 @@ namespace {
     };
     const auto UPSERT_MULTISEND_INPUT = db::stmt<MultiSendInputBinding>(
         "INSERT INTO cosmos_multisend_io (message_uid, from_address, amount) "
-            "VALUES (:uid, :fa, :amt) "
+        "VALUES (:uid, :fa, :amt) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.fromAddress), soci::use(b.inputCoins);  
-            });
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.fromAddress), soci::use(b.inputCoins);
+        });
 
     struct MultiSendOutputBinding {
         std::vector<std::string> uid;
         std::vector<std::string> toAddress;
         std::vector<std::string> outputCoins;
-        
+
         void update(cosmos::Message const &msg) {
             const auto &m = boost::get<cosmos::MsgMultiSend>(msg.content);
-            for (const auto &output: m.outputs) {
+            for (const auto &output : m.outputs) {
                 const auto coins = soci::coinsToString(output.coins);
                 uid.push_back(msg.uid);
                 toAddress.push_back(output.toAddress);
                 outputCoins.push_back(coins);
-            }          
+            }
         }
 
         void clear() {
@@ -748,18 +744,18 @@ namespace {
     };
     const auto UPSERT_MULTISEND_OUTPUT = db::stmt<MultiSendOutputBinding>(
         "INSERT INTO cosmos_multisend_io (message_uid, to_address, amount) "
-            "VALUES (:uid, :ta, :amt) "
+        "VALUES (:uid, :ta, :amt) "
         "ON CONFLICT DO NOTHING",
-            [] (auto& s, auto&  b) {
-                s, 
-                soci::use(b.uid), soci::use(b.toAddress), soci::use(b.outputCoins);  
-            });
-}
+        [](auto &s, auto &b) {
+            s,
+                soci::use(b.uid), soci::use(b.toAddress), soci::use(b.outputCoins);
+        });
+} // namespace
 
 namespace ledger {
     namespace core {
         void CosmosLikeOperationsDatabaseHelper::bulkInsert(soci::session &sql,
-                const std::vector<CosmosLikeOperation> &operations) {
+                                                            const std::vector<CosmosLikeOperation> &operations) {
             if (operations.empty())
                 return;
             Benchmarker rawInsert("raw_db_insert_cosmos", nullptr);
@@ -792,8 +788,8 @@ namespace ledger {
             UPSERT_COSMOS_OPERATION(sql, cosmosOpStmt);
             UPSERT_TRANSACTION(sql, transactionStmt);
 
-            for (auto& op : operations) {
-                const auto& tx = std::static_pointer_cast<CosmosLikeTransactionApi>(op.getTransaction())->getRawData();
+            for (auto &op : operations) {
+                const auto &tx = std::static_pointer_cast<CosmosLikeTransactionApi>(op.getTransaction())->getRawData();
 
                 // Upsert block
                 if (tx.block.nonEmpty()) {
@@ -801,109 +797,110 @@ namespace ledger {
                 }
                 // Upsert operation
                 operationStmt.bindings.update(op);
-                // Upsert transaction    
+                // Upsert transaction
                 transactionStmt.bindings.update(tx);
                 // messages
-                const auto& msg = std::static_pointer_cast<CosmosLikeMessage>(
-                    op.getMessage())->getRawData();
-                const auto& log = op.getMessageLog();
+                const auto &msg = std::static_pointer_cast<CosmosLikeMessage>(
+                                      op.getMessage())
+                                      ->getRawData();
+                const auto &log = op.getMessageLog();
 
                 switch (cosmos::stringToMsgType(msg.type.c_str())) {
-                    case api::CosmosLikeMsgType::MSGSEND: {
-                        if (sendMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_SEND(sql, sendMessageStmt);
-                        sendMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGDELEGATE: {
-                        if (delegateMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_DELEGATE(sql, delegateMessageStmt);
-                        delegateMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGUNDELEGATE: {
-                        if (undelegateMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_UNDELEGATE(sql, undelegateMessageStmt);
-                        undelegateMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGBEGINREDELEGATE: {
-                        if (beginRedelegateMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_BEGIN_REDELEGATE(sql, beginRedelegateMessageStmt);
-                        beginRedelegateMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGSUBMITPROPOSAL: {
-                        if (submitProposalMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_SUBMIT_PROPOSAL(sql, submitProposalMessageStmt);
-                        submitProposalMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGVOTE: {
-                        if (voteMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_VOTE(sql, voteMessageStmt);
-                        voteMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGDEPOSIT: {
-                        if (depositMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_DEPOSIT(sql, depositMessageStmt);
-                        depositMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATIONREWARD: {
-                        if (withdrawDelegationRewardMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_WITHDRAW_DELEGATION_REWARD(sql, withdrawDelegationRewardMessageStmt);
-                        withdrawDelegationRewardMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD: {
-                        if (withdrawDelegatorRewardMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_WITHDRAW_DELEGATOR_REWARD(sql, withdrawDelegatorRewardMessageStmt);
-                        withdrawDelegatorRewardMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGWITHDRAWVALIDATORCOMMISSION: {
-                        if (withdrawValidatorCommissionMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_WITHDRAW_VALIDATOR_COMMISSION(sql, withdrawValidatorCommissionMessageStmt);
-                        withdrawValidatorCommissionMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGSETWITHDRAWADDRESS: {
-                        if (setWithdrawAddressMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_SET_WITHDRAW_ADDRESS(sql, setWithdrawAddressMessageStmt);
-                        setWithdrawAddressMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGUNJAIL: {
-                        if (unjailMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_UNJAIL(sql, unjailMessageStmt);
-                        unjailMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGMULTISEND: {
-                        if (multiSendMessageStmt.bindings.empty()) {
-                            UPSERT_MESSAGE_MULTISEND(sql, multiSendMessageStmt);
-                            UPSERT_MULTISEND_INPUT(sql, multisendInStmt);
-                            UPSERT_MULTISEND_OUTPUT(sql, multisendOutStmt);
-                        }
-                        multiSendMessageStmt.bindings.update(tx.uid, msg, log);
-                        multisendInStmt.bindings.update(msg);
-                        multisendOutStmt.bindings.update(msg);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGFEES: {
-                        if (feesMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_FEES(sql, feesMessageStmt);
-                        feesMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
-                    case api::CosmosLikeMsgType::MSGCREATEVALIDATOR:
-                    case api::CosmosLikeMsgType::MSGEDITVALIDATOR:
-                    case api::CosmosLikeMsgType::UNSUPPORTED:
-                    default: {
-                        if (genericMessageStmt.bindings.empty())
-                            UPSERT_MESSAGE_GENERIC(sql, genericMessageStmt);
-                        genericMessageStmt.bindings.update(tx.uid, msg, log);
-                    } break;
+                case api::CosmosLikeMsgType::MSGSEND: {
+                    if (sendMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_SEND(sql, sendMessageStmt);
+                    sendMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGDELEGATE: {
+                    if (delegateMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_DELEGATE(sql, delegateMessageStmt);
+                    delegateMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGUNDELEGATE: {
+                    if (undelegateMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_UNDELEGATE(sql, undelegateMessageStmt);
+                    undelegateMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGBEGINREDELEGATE: {
+                    if (beginRedelegateMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_BEGIN_REDELEGATE(sql, beginRedelegateMessageStmt);
+                    beginRedelegateMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGSUBMITPROPOSAL: {
+                    if (submitProposalMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_SUBMIT_PROPOSAL(sql, submitProposalMessageStmt);
+                    submitProposalMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGVOTE: {
+                    if (voteMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_VOTE(sql, voteMessageStmt);
+                    voteMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGDEPOSIT: {
+                    if (depositMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_DEPOSIT(sql, depositMessageStmt);
+                    depositMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATIONREWARD: {
+                    if (withdrawDelegationRewardMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_WITHDRAW_DELEGATION_REWARD(sql, withdrawDelegationRewardMessageStmt);
+                    withdrawDelegationRewardMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD: {
+                    if (withdrawDelegatorRewardMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_WITHDRAW_DELEGATOR_REWARD(sql, withdrawDelegatorRewardMessageStmt);
+                    withdrawDelegatorRewardMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGWITHDRAWVALIDATORCOMMISSION: {
+                    if (withdrawValidatorCommissionMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_WITHDRAW_VALIDATOR_COMMISSION(sql, withdrawValidatorCommissionMessageStmt);
+                    withdrawValidatorCommissionMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGSETWITHDRAWADDRESS: {
+                    if (setWithdrawAddressMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_SET_WITHDRAW_ADDRESS(sql, setWithdrawAddressMessageStmt);
+                    setWithdrawAddressMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGUNJAIL: {
+                    if (unjailMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_UNJAIL(sql, unjailMessageStmt);
+                    unjailMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGMULTISEND: {
+                    if (multiSendMessageStmt.bindings.empty()) {
+                        UPSERT_MESSAGE_MULTISEND(sql, multiSendMessageStmt);
+                        UPSERT_MULTISEND_INPUT(sql, multisendInStmt);
+                        UPSERT_MULTISEND_OUTPUT(sql, multisendOutStmt);
+                    }
+                    multiSendMessageStmt.bindings.update(tx.uid, msg, log);
+                    multisendInStmt.bindings.update(msg);
+                    multisendOutStmt.bindings.update(msg);
+                } break;
+                case api::CosmosLikeMsgType::MSGFEES: {
+                    if (feesMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_FEES(sql, feesMessageStmt);
+                    feesMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
+                case api::CosmosLikeMsgType::MSGCREATEVALIDATOR:
+                case api::CosmosLikeMsgType::MSGEDITVALIDATOR:
+                case api::CosmosLikeMsgType::UNSUPPORTED:
+                default: {
+                    if (genericMessageStmt.bindings.empty())
+                        UPSERT_MESSAGE_GENERIC(sql, genericMessageStmt);
+                    genericMessageStmt.bindings.update(tx.uid, msg, log);
+                } break;
                 }
 
                 // cosmos operation
                 cosmosOpStmt.bindings.update(op.uid, msg.uid);
             }
-            
+
             // 1- block
             if (!blockStmt.bindings.uid.empty()) {
                 blockStmt.execute();
             }
 
-            // 2- cosmos_transaction 
+            // 2- cosmos_transaction
             transactionStmt.execute();
 
             // 3- cosmos_messages
@@ -963,11 +960,11 @@ namespace ledger {
 
             // 5- operations
             operationStmt.execute();
-            
+
             // 6- cosmos_operations
             cosmosOpStmt.execute();
 
             rawInsert.stop();
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -28,19 +28,15 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKEWALLETFACTORY_H
 #define LEDGER_CORE_RIPPLELIKEWALLETFACTORY_H
 
-
+#include <api/Currency.hpp>
 #include <functional>
-
 #include <wallet/common/AbstractWalletFactory.hpp>
-#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.hpp>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 #include <wallet/ripple/factories/RippleLikeKeychainFactory.h>
-
-#include <api/Currency.hpp>
+#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.hpp>
 
 namespace ledger {
     namespace core {
@@ -49,23 +45,22 @@ namespace ledger {
         class WalletPool;
 
         class RippleLikeWalletFactory : public AbstractWalletFactory {
-        public:
+          public:
             RippleLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
             std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
-        private:
-            std::shared_ptr<RippleLikeBlockchainExplorer> getExplorer(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
-        private:
+          private:
+            std::shared_ptr<RippleLikeBlockchainExplorer> getExplorer(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
+
+          private:
             // Explorers
             std::list<std::weak_ptr<RippleLikeBlockchainExplorer>> _runningExplorers;
 
             // Keychain factories
             std::unordered_map<std::string, std::shared_ptr<RippleLikeKeychainFactory>> _keychainFactories;
-
         };
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_RIPPLELIKEWALLETFACTORY_H
+#endif // LEDGER_CORE_RIPPLELIKEWALLETFACTORY_H

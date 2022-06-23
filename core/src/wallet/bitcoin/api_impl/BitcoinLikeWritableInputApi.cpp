@@ -30,28 +30,33 @@
  */
 
 #include "BitcoinLikeWritableInputApi.h"
-#include <api/BinaryCallback.hpp>
+
 #include "BitcoinLikeScriptApi.h"
+
+#include <api/BinaryCallback.hpp>
 
 namespace ledger {
     namespace core {
 
         BitcoinLikeWritableInputApi::BitcoinLikeWritableInputApi(
-                const std::shared_ptr<ledger::core::BitcoinLikeBlockchainExplorer> &explorer,
-                const std::shared_ptr<api::ExecutionContext> &context, uint32_t sequence,
-                const std::vector<std::vector<uint8_t> > &pubKeys,
-                const std::vector<std::shared_ptr<api::DerivationPath>> &paths, const std::string &address,
-                const std::shared_ptr<api::Amount> &amount, const std::string &previousTxHash, int32_t index,
-                const std::vector<uint8_t> &scriptSig,
-                const std::shared_ptr<api::BitcoinLikeOutput> &previousOutput,
-                const std::string &keychainEngine) :
-                _explorer(explorer), _context(context), _sequence(sequence),
-                _pubKeys(pubKeys), _paths(paths), _address(address), _index(index),
-                _amount(amount), _previousHash(previousTxHash),
-                _previousScript(previousOutput) {
+            const std::shared_ptr<ledger::core::BitcoinLikeBlockchainExplorer> &explorer,
+            const std::shared_ptr<api::ExecutionContext> &context,
+            uint32_t sequence,
+            const std::vector<std::vector<uint8_t>> &pubKeys,
+            const std::vector<std::shared_ptr<api::DerivationPath>> &paths,
+            const std::string &address,
+            const std::shared_ptr<api::Amount> &amount,
+            const std::string &previousTxHash,
+            int32_t index,
+            const std::vector<uint8_t> &scriptSig,
+            const std::shared_ptr<api::BitcoinLikeOutput> &previousOutput,
+            const std::string &keychainEngine) : _explorer(explorer), _context(context), _sequence(sequence),
+                                                 _pubKeys(pubKeys), _paths(paths), _address(address), _index(index),
+                                                 _amount(amount), _previousHash(previousTxHash),
+                                                 _previousScript(previousOutput) {
             // TODO handle the case where explorer, context are missing properly
             if (!scriptSig.empty()) {
-                auto isSigned = true;
+                auto isSigned     = true;
                 auto strScriptSig = hex::toString(scriptSig);
                 auto parsedScript = BitcoinLikeScript::parse(scriptSig,
                                                              BitcoinLikeScriptConfiguration(isSigned, keychainEngine));
@@ -69,7 +74,7 @@ namespace ledger {
             return _pubKeys;
         }
 
-        std::vector<std::shared_ptr<api::DerivationPath> > BitcoinLikeWritableInputApi::getDerivationPath() {
+        std::vector<std::shared_ptr<api::DerivationPath>> BitcoinLikeWritableInputApi::getDerivationPath() {
             return _paths;
         }
 
@@ -114,11 +119,11 @@ namespace ledger {
         }
 
         void BitcoinLikeWritableInputApi::setSequence(int32_t sequence) {
-            _sequence = (uint32_t) sequence;
+            _sequence = (uint32_t)sequence;
         }
 
         int64_t BitcoinLikeWritableInputApi::getSequence() {
-            return (int32_t) _sequence;
+            return (int32_t)_sequence;
         }
 
         void BitcoinLikeWritableInputApi::setP2PKHSigScript(const std::vector<uint8_t> &signature) {
@@ -131,11 +136,10 @@ namespace ledger {
         }
 
         Future<std::vector<uint8_t>> BitcoinLikeWritableInputApi::getPreviousTransaction() {
-            return _explorer->getRawTransaction(getPreviousTxHash().value()).map<std::vector<uint8_t> >(_context,
-                                                                                                        [](const Bytes &bytes) {
-                                                                                                            return bytes.getContainer();
-                                                                                                        });
+            return _explorer->getRawTransaction(getPreviousTxHash().value()).map<std::vector<uint8_t>>(_context, [](const Bytes &bytes) {
+                return bytes.getContainer();
+            });
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -32,11 +32,11 @@
 #define LEDGER_CORE_IMMEDIATEEXECUTIONCONTEXT_HPP
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER)
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 #include "../api/ExecutionContext.hpp"
@@ -44,12 +44,12 @@
 namespace ledger {
     namespace core {
         class ImmediateExecutionContext : public api::ExecutionContext {
-        public:
+          public:
             void execute(const std::shared_ptr<api::Runnable> &runnable) override;
             void delay(const std::shared_ptr<api::Runnable> &runnable, int64_t millis) override;
             static LIBCORE_EXPORT std::shared_ptr<ImmediateExecutionContext> INSTANCE;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_IMMEDIATEEXECUTIONCONTEXT_HPP
+#endif // LEDGER_CORE_IMMEDIATEEXECUTIONCONTEXT_HPP

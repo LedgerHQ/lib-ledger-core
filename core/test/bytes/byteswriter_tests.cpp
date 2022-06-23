@@ -29,8 +29,8 @@
  *
  */
 
-#include <ledger/core/bytes/BytesWriter.h>
 #include <gtest/gtest.h>
+#include <ledger/core/bytes/BytesWriter.h>
 
 using namespace ledger::core;
 

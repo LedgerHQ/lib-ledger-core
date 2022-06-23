@@ -319,6 +319,20 @@ nix-build --arg runTests true --arg jni false
 If you don't want to, you can also provision the postgres
 test database if necessary, and then run `ctest`.
 
+### Code formating
+
+We use clang-format >= 14, not available by default on ubuntu 20.04
+
+#### Install
+
+``` sh
+sudo add-apt-repository 'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-14 main'
+wget https://apt.llvm.org/llvm-snapshot.gpg.key
+sudo apt-key add llvm-snapshot.gpg.key
+sudo apt update
+sudo apt install clang-format-14
+```
+
 ### CI
 
 #### Appveyor

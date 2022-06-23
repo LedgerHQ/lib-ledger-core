@@ -31,15 +31,16 @@
 #ifndef LEDGER_CORE_OPTION_HPP
 #define LEDGER_CORE_OPTION_HPP
 
-#include "optional.hpp"
 #include "Unit.hpp"
+#include "optional.hpp"
+
 #include <cstddef>
+#include <memory>
 #include <new>
 #include <stdexcept>
 #include <type_traits>
 #include <utility>
 #include <vector>
-#include <memory>
 
 #undef foreach
 
@@ -51,45 +52,46 @@ namespace ledger {
                           "Option is not compatible with references");
             static_assert(!std::is_abstract<T>::value,
                           "Option is not compatible with abstract types");
-        public:
+
+          public:
             typedef T BaseType;
             static const Option<T> NONE;
 
-            Option() {};
-            ~Option() {};
-            Option(const T& value) : _optional(value) {};
-            Option(T&& value) : _optional(std::move(value)) {};
+            Option(){};
+            ~Option(){};
+            Option(const T &value) : _optional(value){};
+            Option(T &&value) : _optional(std::move(value)){};
 
-            Option(const Option<T>& option) : _optional(option._optional) {};
+            Option(const Option<T> &option) : _optional(option._optional){};
 
-            Option(Option<T>&& option) : _optional(std::move(option._optional)) {}
+            Option(Option<T> &&option) : _optional(std::move(option._optional)) {}
 
-            Option(const std::experimental::optional<T>& optional) : _optional(optional) {};
-            Option<T>& operator=(const Option<T>& option) {
+            Option(const std::experimental::optional<T> &optional) : _optional(optional){};
+            Option<T> &operator=(const Option<T> &option) {
                 if (this != &option) {
                     _optional = option._optional;
                 }
                 return *this;
             };
 
-            Option<T>& operator=(Option<T>&& option) {
+            Option<T> &operator=(Option<T> &&option) {
                 if (this != &option) {
                     _optional = std::move(option._optional);
                 }
                 return *this;
             };
 
-            Option<T>& operator=(const T& v) {
+            Option<T> &operator=(const T &v) {
                 _optional = optional<T>(v);
                 return *this;
             };
 
-            Option<T>& operator=(T&& v) {
+            Option<T> &operator=(T &&v) {
                 _optional = optional<T>(std::move(v));
                 return *this;
             };
 
-            Option<T>&operator=(T* v) {
+            Option<T> &operator=(T *v) {
                 if (v == nullptr) {
                     _optional = optional<T>(v);
                 } else {
@@ -99,7 +101,7 @@ namespace ledger {
             };
 
             inline bool isEmpty() const {
-              return !_optional;
+                return !_optional;
             };
 
             inline bool hasValue() const {
@@ -110,56 +112,56 @@ namespace ledger {
                 return !isEmpty();
             }
 
-            T& operator*() & {return *_optional;};
-            const T& operator*() const & { return *_optional;};
-            T&& operator*() && {return std::move(*_optional);};
-            const T&& operator*() const && { return  std::move(*_optional);};
+            T &operator*() & { return *_optional; };
+            const T &operator*() const & { return *_optional; };
+            T &&operator*() && { return std::move(*_optional); };
+            const T &&operator*() const && { return std::move(*_optional); };
 
-            const T* operator->() const {
+            const T *operator->() const {
                 return &_optional.value();
             }
 
-            T* operator->() {
+            T *operator->() {
                 return &_optional.value();
             }
 
-            T& getValue() & {
+            T &getValue() & {
                 return _optional.value();
             }
 
-            const T& getValue() const & {
+            const T &getValue() const & {
                 return _optional.value();
             }
 
-            T&& getValue() && {
+            T &&getValue() && {
                 return std::move(_optional.value());
             }
 
-            const T&& getValue() const && {
+            const T &&getValue() const && {
                 return std::move(_optional.value());
             }
 
-            T getValueOr(const T& v) const& {
+            T getValueOr(const T &v) const & {
                 if (isEmpty())
                     return v;
                 else
                     return getValue();
             }
 
-            T getOrElse(std::function<T ()> f) const {
+            T getOrElse(std::function<T()> f) const {
                 if (isEmpty())
                     return f();
                 else
                     return getValue();
             }
 
-            T getValueOr(T&& v) const & {
+            T getValueOr(T &&v) const & {
                 if (isEmpty())
                     return std::forward<T>(v);
                 return getValue();
             }
 
-            T getValueOr(T&& v) && {
+            T getValueOr(T &&v) && {
                 if (isEmpty())
                     return std::move(v);
                 return getValue();
@@ -169,31 +171,31 @@ namespace ledger {
                 return _optional;
             };
 
-            bool operator==(const T& v) const noexcept {
+            bool operator==(const T &v) const noexcept {
                 return hasValue() && **this == v;
             }
 
-            bool operator==(const Option<T>& v) const noexcept {
+            bool operator==(const Option<T> &v) const noexcept {
                 return (isEmpty() == v.isEmpty()) || (hasValue() && v.hasValue() && **this == *v);
             }
 
-            bool operator!=(const T& v) const noexcept {
+            bool operator!=(const T &v) const noexcept {
                 return !(*this == v);
             }
 
-            bool operator!=(const Option<T>& v) const noexcept {
+            bool operator!=(const Option<T> &v) const noexcept {
                 return !(*this == v);
             }
 
-            operator bool() const { return hasValue();};
+            operator bool() const { return hasValue(); };
 
-            void foreach(std::function<void (const T& value)> f) const {
+            void foreach (std::function<void(const T &value)> f) const {
                 if (hasValue()) {
                     f(_optional.value());
                 }
             }
 
-            bool forall(std::function<bool (const T& value)> f) const {
+            bool forall(std::function<bool(const T &value)> f) const {
                 if (hasValue()) {
                     return f(_optional.value());
                 }
@@ -201,14 +203,14 @@ namespace ledger {
             }
 
             template <typename A>
-            Option<A> map(std::function<A (const T&)> f) const {
+            Option<A> map(std::function<A(const T &)> f) const {
                 if (isEmpty())
                     return Option<A>();
                 return Option<A>(f(getValue()));
             };
 
             template <typename A>
-            Option<A> flatMap(std::function<Option<A> (const T&)> f) const {
+            Option<A> flatMap(std::function<Option<A>(const T &)> f) const {
                 if (isEmpty())
                     return Option<A>();
                 return f(getValue());
@@ -223,7 +225,7 @@ namespace ledger {
             }
 
             template <typename A>
-            Option<A> orElse(std::function<Option<A> ()> f) const {
+            Option<A> orElse(std::function<Option<A>()> f) const {
                 if (isEmpty()) {
                     return f();
                 } else {
@@ -235,7 +237,7 @@ namespace ledger {
                 return _optional;
             }
 
-        private:
+          private:
             optional<T> _optional;
         };
 
@@ -246,14 +248,14 @@ namespace ledger {
         const Option<T> Option<T>::NONE;
 
         template <typename T>
-        Option<std::shared_ptr<T>> make_option(const std::shared_ptr<T>& ptr) {
+        Option<std::shared_ptr<T>> make_option(const std::shared_ptr<T> &ptr) {
             if (ptr == nullptr)
                 return Option<std::shared_ptr<T>>();
             else
                 return Option<std::shared_ptr<T>>(ptr);
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_OPTION_HPP
+#endif // LEDGER_CORE_OPTION_HPP

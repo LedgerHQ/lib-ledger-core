@@ -31,37 +31,31 @@
 
 #include "../../AlgorandAddress.hpp"
 
+#include <cstdint>
 #include <utils/Option.hpp>
 
-#include <cstdint>
-
 namespace ledger {
-namespace core {
-namespace algorand {
-namespace model {
+    namespace core {
+        namespace algorand {
+            namespace model {
 
-    class PaymentTxnFields
-    {
-    public:
-        PaymentTxnFields() = default;
-        PaymentTxnFields(uint64_t amount,
-                         Option<Address> closeAddr,
-                         Address receiverAddr)
-            : amount(amount)
-            , closeAddr(std::move(closeAddr))
-            , receiverAddr(std::move(receiverAddr))
-        {}
+                class PaymentTxnFields {
+                  public:
+                    PaymentTxnFields() = default;
+                    PaymentTxnFields(uint64_t amount,
+                                     Option<Address> closeAddr,
+                                     Address receiverAddr)
+                        : amount(amount), closeAddr(std::move(closeAddr)), receiverAddr(std::move(receiverAddr)) {}
 
-        uint64_t amount;
-        Option<Address> closeAddr;
-        Address receiverAddr;
+                    uint64_t amount;
+                    Option<Address> closeAddr;
+                    Address receiverAddr;
 
-        // Additional fields retrieved from the blockchain
-        Option<uint64_t> closeAmount;
-    };
+                    // Additional fields retrieved from the blockchain
+                    Option<uint64_t> closeAmount;
+                };
 
-} // namespace model
+            } // namespace model
+        }     // namespace algorand
+    }         // namespace core
 } // namespace ledger
-} // namespace core
-} // namespace algorand
-

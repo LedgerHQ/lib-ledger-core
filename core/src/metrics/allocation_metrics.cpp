@@ -42,12 +42,12 @@ namespace ledger {
 
             std::unordered_map<std::string, int32_t> AllocationMetrics::getObjectAllocations() {
                 std::unordered_map<std::string, int32_t> allocations;
-                for (const auto& alloc : AllocationMap::getInstance()->getAllocations()) {
+                for (const auto &alloc : AllocationMap::getInstance()->getAllocations()) {
                     allocations[alloc.first.name()] = alloc.second;
                 }
                 return allocations;
             }
 
-        }
-    }
-}
+        } // namespace api
+    }     // namespace core
+} // namespace ledger

@@ -32,31 +32,32 @@
 #define LEDGER_CORE_EVENT_HPP
 
 #include "EventPublisher.hpp"
+
 #include <memory>
 
 namespace ledger {
     namespace core {
         class Event : public api::Event {
-        public:
-            Event(api::EventCode code, const std::shared_ptr<api::DynamicObject>& payload);
+          public:
+            Event(api::EventCode code, const std::shared_ptr<api::DynamicObject> &payload);
             api::EventCode getCode() override;
             std::shared_ptr<api::DynamicObject> getPayload() override;
             bool isSticky() override;
             int32_t getStickyTag() override;
             void setReadOnly(bool readOnly);
 
-        private:
+          private:
             friend class EventPublisher;
             void setSticky(int32_t tag);
-        private:
+
+          private:
             api::EventCode _code;
             std::shared_ptr<api::DynamicObject> _payload;
             int32_t _tag;
             bool _sticky;
         };
-        std::shared_ptr<api::Event> make_event(api::EventCode code, const std::shared_ptr<api::DynamicObject>& payload);
-    }
-}
+        std::shared_ptr<api::Event> make_event(api::EventCode code, const std::shared_ptr<api::DynamicObject> &payload);
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_EVENT_HPP
+#endif // LEDGER_CORE_EVENT_HPP

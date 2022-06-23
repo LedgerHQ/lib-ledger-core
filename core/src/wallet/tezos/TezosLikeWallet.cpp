@@ -28,26 +28,23 @@
  *
  */
 
-
 #include "TezosLikeWallet.h"
+
 #include "TezosLikeAccount.h"
 
 #include <algorithm>
-
-#include <async/wait.h>
-#include <api/ErrorCode.hpp>
 #include <api/AccountCallback.hpp>
+#include <api/BoolCallback.hpp>
 #include <api/ConfigurationDefaults.hpp>
+#include <api/ErrorCode.hpp>
 #include <api/KeychainEngines.hpp>
-
-#include <tezos/TezosLikeExtendedPublicKey.h>
-
-#include <wallet/common/database/AccountDatabaseHelper.h>
-#include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
-#include <api/TezosCurve.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
-#include <api/BoolCallback.hpp>
+#include <api/TezosCurve.hpp>
+#include <async/wait.h>
+#include <tezos/TezosLikeExtendedPublicKey.h>
+#include <wallet/common/database/AccountDatabaseHelper.h>
+#include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -61,11 +58,10 @@ namespace ledger {
                                          const std::shared_ptr<WalletPool> &pool,
                                          const api::Currency &network,
                                          const std::shared_ptr<DynamicObject> &configuration,
-                                         const DerivationScheme &scheme
-        )
-                : AbstractWallet(name, network, pool, configuration, scheme) {
-            _explorer = explorer;
-            _keychainFactory = keychainFactory;
+                                         const DerivationScheme &scheme)
+            : AbstractWallet(name, network, pool, configuration, scheme) {
+            _explorer            = explorer;
+            _keychainFactory     = keychainFactory;
             _synchronizerFactory = synchronizer;
             // TODO This is a dirty patch because Tezos uses the AbstractBlockchainExplorer and synchronizer
             // Most of the code of these classes were made for BTC and offer very few advantage for simpler
@@ -84,7 +80,7 @@ namespace ledger {
         FuturePtr<ledger::core::api::Account>
         TezosLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
             auto self = getSelf();
-            return async<std::shared_ptr<api::Account>>([=] () -> std::shared_ptr<api::Account> {
+            return async<std::shared_ptr<api::Account>>([=]() -> std::shared_ptr<api::Account> {
                 DerivationPath path(info.derivations[0]);
                 if (info.publicKeys.size() < 1) {
                     throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Missing pubkey in account creation info.");
@@ -95,12 +91,11 @@ namespace ledger {
                         throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {} already exists", info.index);
                     }
                     auto keychain = self->_keychainFactory->build(
-                            path,
-                            std::dynamic_pointer_cast<DynamicObject>(self->getConfiguration()),
-                            info,
-                            self->getAccountInternalPreferences(info.index),
-                            self->getCurrency()
-                    );
+                        path,
+                        std::dynamic_pointer_cast<DynamicObject>(self->getConfiguration()),
+                        info,
+                        self->getAccountInternalPreferences(info.index),
+                        self->getCurrency());
                     soci::transaction tr(sql);
 
                     if (AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), info.index))
@@ -125,7 +120,7 @@ namespace ledger {
 
         Future<api::AccountCreationInfo> TezosLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
             auto scheme = getDerivationScheme();
-            auto path = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
+            auto path   = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
             return Future<api::AccountCreationInfo>::successful(api::AccountCreationInfo{accountIndex, {"main"}, {path.toString()}, {}, {}});
         }
 
@@ -144,7 +139,7 @@ namespace ledger {
                                                       getConfig(),
                                                       entry.publicKey,
                                                       getAccountInternalPreferences(entry.index), getCurrency());
-            auto account = std::make_shared<TezosLikeAccount>(shared_from_this(),
+            auto account  = std::make_shared<TezosLikeAccount>(shared_from_this(),
                                                               entry.index,
                                                               _explorer,
                                                               _synchronizerFactory(),
@@ -158,7 +153,7 @@ namespace ledger {
         }
 
         void TezosLikeWallet::isDelegate(const std::string &address, const std::shared_ptr<api::BoolCallback> &callback) {
-            isDelegate(address).onComplete(getContext(), [=] (const Try<bool>& result) {
+            isDelegate(address).onComplete(getContext(), [=](const Try<bool> &result) {
                 if (result.isFailure()) {
                     callback->onCallback(optional<bool>(), optional<api::Error>(api::Error(result.getFailure().getErrorCode(), result.getFailure().getMessage())));
                 } else {
@@ -167,9 +162,9 @@ namespace ledger {
             });
         }
 
-        Future<bool> TezosLikeWallet::isDelegate(const std::string& address) {
+        Future<bool> TezosLikeWallet::isDelegate(const std::string &address) {
             return _explorer->isDelegate(address);
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

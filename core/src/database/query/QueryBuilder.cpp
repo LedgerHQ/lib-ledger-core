@@ -29,6 +29,7 @@
  *
  */
 #include "QueryBuilder.h"
+
 #include <fmt/format.h>
 
 namespace ledger {
@@ -36,7 +37,7 @@ namespace ledger {
 
         soci::details::prepare_temp_type QueryBuilder::execute(soci::session &sql) {
             std::stringstream query;
-            query << "SELECT " << _keys << " FROM " << _table<< " AS " << _output;
+            query << "SELECT " << _keys << " FROM " << _table << " AS " << _output;
             if (!_outerJoins.empty()) {
                 for (auto &outerJoin : _outerJoins) {
                     if (outerJoin.nonEmpty()) {
@@ -52,13 +53,13 @@ namespace ledger {
             }
 
             if (!_group.empty()) {
-              query << " GROUP BY " << _group;
+                query << " GROUP BY " << _group;
             }
 
             if (!_order.empty()) {
                 query << " ORDER BY ";
                 for (auto it = _order.begin(); it != _order.end(); it++) {
-                    auto& order = *it;
+                    auto &order = *it;
                     query << std::get<2>(order) << "." << std::get<0>(order) << (std::get<1>(order) ? " DESC" : " ASC");
 
                     if (std::distance(it, _order.end()) > 1) {
@@ -73,7 +74,6 @@ namespace ledger {
             if (_offset.nonEmpty()) {
                 query << " OFFSET " << _offset.getValue();
             }
-
 
             soci::details::prepare_temp_type statement = sql.prepare << query.str();
             if (_filter) {
@@ -117,7 +117,7 @@ namespace ledger {
             return *this;
         }
 
-        QueryBuilder &QueryBuilder::order(std::string &&keys, bool&& descending, std::string&& table) {
+        QueryBuilder &QueryBuilder::order(std::string &&keys, bool &&descending, std::string &&table) {
             _order.push_back(std::move(std::make_tuple(keys, descending, table)));
             return *this;
         }
@@ -132,15 +132,15 @@ namespace ledger {
             return *this;
         }
 
-        QueryBuilder& QueryBuilder::outerJoin(const std::string &table, const std::string &condition) {
+        QueryBuilder &QueryBuilder::outerJoin(const std::string &table, const std::string &condition) {
             _outerJoins.emplace_back(Option<LeftOuterJoin>(std::make_tuple(table, condition)));
             return *this;
         }
 
         QueryBuilder &QueryBuilder::groupBy(std::string group) {
-          _group = std::move(group);
-          return *this;
+            _group = std::move(group);
+            return *this;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

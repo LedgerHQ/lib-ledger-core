@@ -30,21 +30,20 @@
  */
 
 #include "StellarFixture.hpp"
-#include <wallet/stellar/explorers/HorizonBlockchainExplorer.hpp>
+
 #include <collections/DynamicObject.hpp>
 #include <utils/DateUtils.hpp>
+#include <wallet/stellar/explorers/HorizonBlockchainExplorer.hpp>
 
-static const auto BASE_URL = "https://horizon-testnet.stellar.org";
+static const auto BASE_URL    = "https://horizon-testnet.stellar.org";
 static const auto MAINNET_URL = "https://horizon.stellar.org";
 
-
 TEST_F(StellarFixture, GetAsset) {
-    auto pool = newPool();
+    auto pool     = newPool();
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
-            pool->getDispatcher()->getSerialExecutionContext("explorer"),
-            pool->getHttpClient(BASE_URL),
-            std::make_shared<DynamicObject>()
-            );
+        pool->getDispatcher()->getSerialExecutionContext("explorer"),
+        pool->getHttpClient(BASE_URL),
+        std::make_shared<DynamicObject>());
     auto asset = uv::wait(explorer->getAsset("USD", "GDZJPY2OAJROO5LTIBRHOGU33QSPBMIM6VO46G5IEYYRKZXGE4YEJG45"));
     /*
      * Disable these assert the test is too fragile because asset list changes a lot
@@ -58,21 +57,20 @@ TEST_F(StellarFixture, GetAsset) {
 }
 
 TEST_F(StellarFixture, GetAccount) {
-    auto pool = newPool();
+    auto pool     = newPool();
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
-            pool->getDispatcher()->getSerialExecutionContext("explorer"),
-            pool->getHttpClient(MAINNET_URL),
-            std::make_shared<DynamicObject>()
-    );
+        pool->getDispatcher()->getSerialExecutionContext("explorer"),
+        pool->getHttpClient(MAINNET_URL),
+        std::make_shared<DynamicObject>());
     auto accountId = "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3";
-    auto account = uv::wait(explorer->getAccount(accountId));
+    auto account   = uv::wait(explorer->getAccount(accountId));
     EXPECT_EQ(account->accountId, accountId);
     EXPECT_TRUE(!account->sequence.empty());
     EXPECT_TRUE(!account->flags.authImmutable);
     EXPECT_TRUE(!account->flags.authRevocable);
     EXPECT_TRUE(!account->flags.authRequired);
     bool foundBalance = false;
-    for (const auto& balance : account->balances) {
+    for (const auto &balance : account->balances) {
         if (balance.assetType == "native") {
             EXPECT_TRUE(balance.value > BigInt::ZERO);
             foundBalance = true;
@@ -81,34 +79,30 @@ TEST_F(StellarFixture, GetAccount) {
     EXPECT_TRUE(foundBalance);
 }
 
-
 TEST_F(StellarFixture, GetLastLedger) {
-    auto pool = newPool();
+    auto pool     = newPool();
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
-            pool->getDispatcher()->getSerialExecutionContext("explorer"),
-            pool->getHttpClient(BASE_URL),
-            std::make_shared<DynamicObject>()
-    );
+        pool->getDispatcher()->getSerialExecutionContext("explorer"),
+        pool->getHttpClient(BASE_URL),
+        std::make_shared<DynamicObject>());
     auto ledger = uv::wait(explorer->getLastLedger());
-    auto t = DateUtils::toJSON(ledger->time);
+    auto t      = DateUtils::toJSON(ledger->time);
     EXPECT_TRUE(!ledger->hash.empty());
     EXPECT_GT(ledger->height, 0);
     EXPECT_TRUE(ledger->time > DateUtils::fromJSON("2015-07-16T23:49:00Z"));
 }
 
-
 TEST_F(StellarFixture, DISABLED_GetTransactions) {
-    auto pool = newPool();
+    auto pool     = newPool();
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
-            pool->getDispatcher()->getSerialExecutionContext("explorer"),
-            pool->getHttpClient(MAINNET_URL),
-            std::make_shared<DynamicObject>()
-    );
-    auto accountId = "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3";
+        pool->getDispatcher()->getSerialExecutionContext("explorer"),
+        pool->getHttpClient(MAINNET_URL),
+        std::make_shared<DynamicObject>());
+    auto accountId    = "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3";
     auto transactions = uv::wait(explorer->getTransactions(accountId, ""));
     fmt::print("SIZE {}\n", transactions.size());
     EXPECT_GE(transactions.size(), 5);
-    const auto& tx = transactions.front();
+    const auto &tx = transactions.front();
     EXPECT_EQ(tx->hash, "93645afbd9f1c60f364e5acf77acd542883549262e84fd813f7cfefd4dc5bad6");
     EXPECT_EQ(tx->successful, true);
     EXPECT_EQ(tx->ledger, 22921932UL);
@@ -122,18 +116,17 @@ TEST_F(StellarFixture, DISABLED_GetTransactions) {
 }
 
 TEST_F(StellarFixture, DISABLED_GetOperations) {
-    auto pool = newPool();
+    auto pool     = newPool();
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
-            pool->getDispatcher()->getSerialExecutionContext("explorer"),
-            pool->getHttpClient(MAINNET_URL),
-            std::make_shared<DynamicObject>()
-    );
-    auto accountId = "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3";
+        pool->getDispatcher()->getSerialExecutionContext("explorer"),
+        pool->getHttpClient(MAINNET_URL),
+        std::make_shared<DynamicObject>());
+    auto accountId  = "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3";
     auto operations = uv::wait(explorer->getOperations(accountId, Option<std::string>::NONE));
     EXPECT_TRUE(operations.size() >= 5);
 
     {
-        const auto& op = operations[0];
+        const auto &op = operations[0];
         EXPECT_TRUE(op->transactionSuccessful);
         EXPECT_EQ(op->transactionHash, "93645afbd9f1c60f364e5acf77acd542883549262e84fd813f7cfefd4dc5bad6");
         EXPECT_EQ(op->id, "98448948301160449");
@@ -146,7 +139,7 @@ TEST_F(StellarFixture, DISABLED_GetOperations) {
     }
 
     {
-        const auto& op = operations[2];
+        const auto &op = operations[2];
         EXPECT_TRUE(op->transactionSuccessful);
         EXPECT_EQ(op->transactionHash, "90d93ad920779c48c02e227a953276534d93cb972f3dd21c0963c99fd99e5278");
         EXPECT_EQ(op->id, "98449854539276289");
@@ -161,14 +154,13 @@ TEST_F(StellarFixture, DISABLED_GetOperations) {
 }
 
 TEST_F(StellarFixture, DISABLED_GetRecommendedFees) {
-    auto pool = newPool();
+    auto pool     = newPool();
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
-            pool->getDispatcher()->getSerialExecutionContext("explorer"),
-            pool->getHttpClient(MAINNET_URL),
-            std::make_shared<DynamicObject>()
-    );
+        pool->getDispatcher()->getSerialExecutionContext("explorer"),
+        pool->getHttpClient(MAINNET_URL),
+        std::make_shared<DynamicObject>());
     auto fees = uv::wait(explorer->getRecommendedFees());
-    auto t = fees->maxFee.toString();
+    auto t    = fees->maxFee.toString();
     EXPECT_TRUE(!fees->lastLedger.empty());
     EXPECT_TRUE(fees->lastBaseFee >= BigInt(100));
     EXPECT_TRUE(fees->modeAcceptedFee >= BigInt(100));

@@ -32,12 +32,13 @@
 #ifndef LEDGER_CORE_BITCOINLIKESCRIPT_H
 #define LEDGER_CORE_BITCOINLIKESCRIPT_H
 
-#include <utils/Try.hpp>
-#include <utils/Either.hpp>
 #include "operators.h"
-#include <list>
+
 #include <api/BitcoinLikeNetworkParameters.hpp>
 #include <bitcoin/BitcoinLikeAddress.hpp>
+#include <list>
+#include <utils/Either.hpp>
+#include <utils/Try.hpp>
 
 namespace ledger {
     namespace core {
@@ -45,7 +46,7 @@ namespace ledger {
         using BitcoinLikeScriptOpCode = btccore::opcodetype;
 
         class BitcoinLikeScriptChunk {
-        public:
+          public:
             explicit BitcoinLikeScriptChunk(BitcoinLikeScriptOpCode op);
 
             explicit BitcoinLikeScriptChunk(const std::vector<uint8_t> &bytes);
@@ -62,7 +63,7 @@ namespace ledger {
 
             bool isOpCode() const;
 
-        private:
+          private:
             Either<std::vector<uint8_t>, BitcoinLikeScriptOpCode> _value;
         };
 
@@ -80,22 +81,22 @@ namespace ledger {
             }
 
             BitcoinLikeScriptConfiguration(const BitcoinLikeScriptConfiguration &copy) {
-                this->isSigned = copy.isSigned;
+                this->isSigned       = copy.isSigned;
                 this->keychainEngine = copy.keychainEngine;
             }
 
             BitcoinLikeScriptConfiguration &operator=(const BitcoinLikeScriptConfiguration &copy) {
-                this->isSigned = copy.isSigned;
+                this->isSigned       = copy.isSigned;
                 this->keychainEngine = copy.keychainEngine;
                 return *this;
             }
         };
 
         class BitcoinLikeScript {
-        public:
-            BitcoinLikeScript() : _configuration(BitcoinLikeScriptConfiguration(false, "")) {};
+          public:
+            BitcoinLikeScript() : _configuration(BitcoinLikeScriptConfiguration(false, "")){};
 
-            BitcoinLikeScript(const BitcoinLikeScriptConfiguration &configuration) : _configuration(configuration) {};
+            BitcoinLikeScript(const BitcoinLikeScriptConfiguration &configuration) : _configuration(configuration){};
 
             BitcoinLikeScript &operator<<(btccore::opcodetype op_code);
 
@@ -125,16 +126,16 @@ namespace ledger {
 
             static Try<BitcoinLikeScript> parse(const std::vector<uint8_t> &script,
                                                 const BitcoinLikeScriptConfiguration &configuration = BitcoinLikeScriptConfiguration(
-                                                        false, ""));
+                                                    false,
+                                                    ""));
 
             static BitcoinLikeScript fromAddress(const std::string &address, const api::Currency &currency);
 
-        private:
+          private:
             std::list<BitcoinLikeScriptChunk> _chunks;
             BitcoinLikeScriptConfiguration _configuration;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BITCOINLIKESCRIPT_H
+#endif // LEDGER_CORE_BITCOINLIKESCRIPT_H

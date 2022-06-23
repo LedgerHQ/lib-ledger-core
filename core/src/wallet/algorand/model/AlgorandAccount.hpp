@@ -33,41 +33,40 @@
 #include "transactions/AlgorandAssetParams.hpp"
 #include "transactions/AlgorandKeyreg.hpp"
 
-#include <utils/Option.hpp>
-
 #include <cstdint>
 #include <map>
 #include <string>
+#include <utils/Option.hpp>
 
 namespace ledger {
-namespace core {
-namespace algorand {
-namespace model {
+    namespace core {
+        namespace algorand {
+            namespace model {
 
-    struct Account {
-        // The round for which this account information is relevant
-        uint64_t round;
-        // The account address
-        std::string address;
-        // The total number of MicroAlgos in the account
-        uint64_t amount;
-        // The amount of MicroAlgos in the account, without the pending rewards
-        uint64_t amountWithoutPendingRewards;
-        // The amount of MicroAlgos of pending rewards in this account
-        uint64_t pendingRewards;
-        // The total rewards of MicroAlgos the account has received, including pending rewards
-        uint64_t rewards;
-        // The amounts of assets this account contains, indexed by asset ID
-        std::map<uint64_t, AssetAmount> assetsAmounts;
-        // The parameters of assets created by this account, indexed by asset ID
-        std::map<uint64_t, AssetParams> createdAssets;
-        // Indicates the status of the account (offline|online)
-        std::string status;
-        // Information about the participation of this account to the blockchain consensus
-        Option<KeyRegTxnFields> participation;
-    };
+                struct Account {
+                    // The round for which this account information is relevant
+                    uint64_t round;
+                    // The account address
+                    std::string address;
+                    // The total number of MicroAlgos in the account
+                    uint64_t amount;
+                    // The amount of MicroAlgos in the account, without the pending rewards
+                    uint64_t amountWithoutPendingRewards;
+                    // The amount of MicroAlgos of pending rewards in this account
+                    uint64_t pendingRewards;
+                    // The total rewards of MicroAlgos the account has received, including pending rewards
+                    uint64_t rewards;
+                    // The amounts of assets this account contains, indexed by asset ID
+                    std::map<uint64_t, AssetAmount> assetsAmounts;
+                    // The parameters of assets created by this account, indexed by asset ID
+                    std::map<uint64_t, AssetParams> createdAssets;
+                    // Indicates the status of the account (offline|online)
+                    std::string status;
+                    // Information about the participation of this account to the blockchain consensus
+                    Option<KeyRegTxnFields> participation;
+                };
 
-} // namespace model
+            } // namespace model
+        }     // namespace algorand
+    }         // namespace core
 } // namespace ledger
-} // namespace core
-} // namespace algorand

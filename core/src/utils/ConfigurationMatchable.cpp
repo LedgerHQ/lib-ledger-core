@@ -28,58 +28,59 @@
  * SOFTWARE.
  *
  */
-#include <api/DynamicType.hpp>
 #include "ConfigurationMatchable.h"
 
+#include <api/DynamicType.hpp>
+
 ledger::core::ConfigurationMatchable::ConfigurationMatchable(const std::vector<std::string> &matchableKeys)
-        : _matchableKeys(matchableKeys) {
+    : _matchableKeys(matchableKeys) {
 }
 
-bool
-ledger::core::ConfigurationMatchable::match(const std::shared_ptr<ledger::core::api::DynamicObject> &configuration) {
-    for (const auto& key : _matchableKeys) {
+bool ledger::core::ConfigurationMatchable::match(const std::shared_ptr<ledger::core::api::DynamicObject> &configuration) {
+    for (const auto &key : _matchableKeys) {
         auto valueType = configuration->getType(key).value_or(api::DynamicType::UNDEFINED);
         if (valueType == _configuration->getType(key).value_or(api::DynamicType::UNDEFINED)) {
             switch (valueType) {
-                case api::DynamicType::OBJECT:
-                    //TODO Make the matcher works with object
+            case api::DynamicType::OBJECT:
+                // TODO Make the matcher works with object
+                return false;
+                break;
+            case api::DynamicType::INT32:
+                if (configuration->getInt(key) != _configuration->getInt(key)) {
                     return false;
-                    break;
-                case api::DynamicType::INT32:
-                    if (configuration->getInt(key) != _configuration->getInt(key)) {
-                        return false;
-                    }
-                    break;
-                case api::DynamicType::INT64:
-                    if (configuration->getLong(key) != _configuration->getLong(key)) {
-                        return false;
-                    }
-                    break;
-                case api::DynamicType::DOUBLE:
-                    if (configuration->getDouble(key) != _configuration->getDouble(key)) {
-                        return false;
-                    }
-                    break;
-                case api::DynamicType::BOOLEAN:
-                    if (configuration->getBoolean(key) != _configuration->getBoolean(key)) {
-                        return false;
-                    }
-                    break;
-                case api::DynamicType::DATA:
-                    if (configuration->getData(key) != _configuration->getData(key)) {
-                        return false;
-                    }
-                    break;
-                case api::DynamicType::ARRAY:
-                    //TODO Make the matcher works with array
+                }
+                break;
+            case api::DynamicType::INT64:
+                if (configuration->getLong(key) != _configuration->getLong(key)) {
                     return false;
-                    break;
-                case api::DynamicType::STRING:
-                    if (configuration->getString(key) != _configuration->getString(key)) {
-                        return false;
-                    }
-                    break;
-                case api::DynamicType::UNDEFINED:break;
+                }
+                break;
+            case api::DynamicType::DOUBLE:
+                if (configuration->getDouble(key) != _configuration->getDouble(key)) {
+                    return false;
+                }
+                break;
+            case api::DynamicType::BOOLEAN:
+                if (configuration->getBoolean(key) != _configuration->getBoolean(key)) {
+                    return false;
+                }
+                break;
+            case api::DynamicType::DATA:
+                if (configuration->getData(key) != _configuration->getData(key)) {
+                    return false;
+                }
+                break;
+            case api::DynamicType::ARRAY:
+                // TODO Make the matcher works with array
+                return false;
+                break;
+            case api::DynamicType::STRING:
+                if (configuration->getString(key) != _configuration->getString(key)) {
+                    return false;
+                }
+                break;
+            case api::DynamicType::UNDEFINED:
+                break;
             }
         }
     }
@@ -87,10 +88,10 @@ ledger::core::ConfigurationMatchable::match(const std::shared_ptr<ledger::core::
 }
 
 void ledger::core::ConfigurationMatchable::setConfiguration(
-        const std::shared_ptr<ledger::core::api::DynamicObject> &configuration) {
+    const std::shared_ptr<ledger::core::api::DynamicObject> &configuration) {
     _configuration = configuration;
 }
 
-std::shared_ptr<ledger::core::api::DynamicObject> const & ledger::core::ConfigurationMatchable::getConfiguration() const {
-  return _configuration;
+std::shared_ptr<ledger::core::api::DynamicObject> const &ledger::core::ConfigurationMatchable::getConfiguration() const {
+    return _configuration;
 }

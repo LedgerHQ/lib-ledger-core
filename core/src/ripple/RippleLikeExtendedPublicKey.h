@@ -28,51 +28,50 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H
 #define LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H
 
-#include <memory>
 #include "RippleLikeAddress.h"
-#include <common/AbstractExtendedPublicKey.h>
-#include <api/RippleLikeExtendedPublicKey.hpp>
-#include <crypto/DeterministicPublicKey.hpp>
-#include <api/RippleLikeNetworkParameters.hpp>
-#include <utils/Option.hpp>
-#include <utils/DerivationPath.hpp>
+
 #include <api/Currency.hpp>
+#include <api/RippleLikeExtendedPublicKey.hpp>
+#include <api/RippleLikeNetworkParameters.hpp>
+#include <common/AbstractExtendedPublicKey.h>
+#include <crypto/DeterministicPublicKey.hpp>
+#include <memory>
+#include <utils/DerivationPath.hpp>
+#include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {
         using RippleExtendedPublicKey = AbstractExtendedPublicKey<api::RippleLikeNetworkParameters>;
         class RippleLikeExtendedPublicKey : public RippleExtendedPublicKey, public api::RippleLikeExtendedPublicKey {
-        public:
+          public:
+            RippleLikeExtendedPublicKey(const api::Currency &params,
+                                        const DeterministicPublicKey &key,
+                                        const DerivationPath &path = DerivationPath("m/"));
 
-            RippleLikeExtendedPublicKey(const api::Currency& params,
-                                        const DeterministicPublicKey& key,
-                                        const DerivationPath& path = DerivationPath("m/"));
-
-            std::shared_ptr<api::RippleLikeAddress> derive(const std::string & path) override ;
+            std::shared_ptr<api::RippleLikeAddress> derive(const std::string &path) override;
             std::shared_ptr<RippleLikeExtendedPublicKey> derive(const DerivationPath &path);
-            std::vector<uint8_t> derivePublicKey(const std::string & path) override ;
+            std::vector<uint8_t> derivePublicKey(const std::string &path) override;
 
-            std::vector<uint8_t> deriveHash160(const std::string & path) override ;
+            std::vector<uint8_t> deriveHash160(const std::string &path) override;
 
-            std::string toBase58() override ;
+            std::string toBase58() override;
 
-            std::string getRootPath() override ;
+            std::string getRootPath() override;
 
-            static std::shared_ptr<RippleLikeExtendedPublicKey> fromRaw(const api::Currency& params,
-                                                                          const optional<std::vector<uint8_t>>& parentPublicKey,
-                                                                          const std::vector<uint8_t>& publicKey,
-                                                                          const std::vector<uint8_t> &chainCode,
-                                                                          const std::string& path);
+            static std::shared_ptr<RippleLikeExtendedPublicKey> fromRaw(const api::Currency &params,
+                                                                        const optional<std::vector<uint8_t>> &parentPublicKey,
+                                                                        const std::vector<uint8_t> &publicKey,
+                                                                        const std::vector<uint8_t> &chainCode,
+                                                                        const std::string &path);
 
-            static std::shared_ptr<RippleLikeExtendedPublicKey> fromBase58(const api::Currency& currency,
-                                                                             const std::string& xpubBase58,
-                                                                             const Option<std::string>& path);
+            static std::shared_ptr<RippleLikeExtendedPublicKey> fromBase58(const api::Currency &currency,
+                                                                           const std::string &xpubBase58,
+                                                                           const Option<std::string> &path);
 
-        protected:
+          protected:
             const api::RippleLikeNetworkParameters &params() const override {
                 return _currency.rippleLikeNetworkParameters.value();
             };
@@ -85,14 +84,13 @@ namespace ledger {
             const api::Currency &getCurrency() const override {
                 return _currency;
             };
-        private:
+
+          private:
             const api::Currency _currency;
             const DerivationPath _path;
             const DeterministicPublicKey _key;
-
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H
+#endif // LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H

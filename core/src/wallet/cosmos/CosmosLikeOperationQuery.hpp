@@ -40,12 +40,12 @@
 // answer the Operation::asCosmosLikeOperation() calls.
 
 namespace ledger {
-namespace core {
-namespace cosmos {
-struct OperationQueryResult {
-    Transaction tx;
-    Message msg;
-};
-}  // namespace cosmos
-}  // namespace core
-}  // namespace ledger
+    namespace core {
+        namespace cosmos {
+            struct OperationQueryResult {
+                Transaction tx;
+                Message msg;
+            };
+        } // namespace cosmos
+    }     // namespace core
+} // namespace ledger

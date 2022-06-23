@@ -30,33 +30,29 @@
  */
 
 #include "EthereumLikeExtendedPublicKey.h"
-#include "EthereumLikeAddress.h"
 
-#include <math/Base58.hpp>
+#include "EthereumLikeAddress.h"
 
 #include <bytes/BytesReader.h>
 #include <bytes/BytesWriter.h>
-
-#include <utils/hex.h>
-#include <utils/Exception.hpp>
-
-#include <crypto/Keccak.h>
-#include <crypto/SECP256k1Point.hpp>
-#include <crypto/RIPEMD160.hpp>
-#include <crypto/SHA256.hpp>
 #include <crypto/HashAlgorithm.h>
+#include <crypto/Keccak.h>
+#include <crypto/RIPEMD160.hpp>
+#include <crypto/SECP256k1Point.hpp>
+#include <crypto/SHA256.hpp>
+#include <math/Base58.hpp>
+#include <utils/Exception.hpp>
+#include <utils/hex.h>
 
 namespace ledger {
     namespace core {
 
-        EthereumLikeExtendedPublicKey::EthereumLikeExtendedPublicKey(const api::Currency& params,
-                                                                     const DeterministicPublicKey& key,
-                                                                     const DerivationPath& path):
-            _currency(params), _key(key), _path(path)
-        {}
+        EthereumLikeExtendedPublicKey::EthereumLikeExtendedPublicKey(const api::Currency &params,
+                                                                     const DeterministicPublicKey &key,
+                                                                     const DerivationPath &path) : _currency(params), _key(key), _path(path) {}
 
         std::shared_ptr<api::EthereumLikeAddress>
-        EthereumLikeExtendedPublicKey::derive(const std::string & path) {
+        EthereumLikeExtendedPublicKey::derive(const std::string &path) {
             DerivationPath p(path);
             auto key = _derive(0, p.toVector(), _key);
             return std::make_shared<EthereumLikeAddress>(_currency, key.getPublicKeyKeccak256(), optional<std::string>((_path + p).toString()));
@@ -69,12 +65,12 @@ namespace ledger {
         }
 
         std::vector<uint8_t>
-        EthereumLikeExtendedPublicKey::derivePublicKey(const std::string & path) {
+        EthereumLikeExtendedPublicKey::derivePublicKey(const std::string &path) {
             return EthereumExtendedPublicKey::derivePublicKey(path);
         }
 
         std::vector<uint8_t>
-        EthereumLikeExtendedPublicKey::deriveHash160(const std::string & path) {
+        EthereumLikeExtendedPublicKey::deriveHash160(const std::string &path) {
             return EthereumExtendedPublicKey::deriveHash160(path);
         }
 
@@ -87,25 +83,24 @@ namespace ledger {
         }
 
         std::shared_ptr<EthereumLikeExtendedPublicKey>
-        EthereumLikeExtendedPublicKey::fromRaw(const api::Currency& currency,
-                const optional<std::vector<uint8_t>>& parentPublicKey,
-                const std::vector<uint8_t>& publicKey,
-                const std::vector<uint8_t> &chainCode,
-                const std::string& path) {
-            auto& params = currency.ethereumLikeNetworkParameters.value();
+        EthereumLikeExtendedPublicKey::fromRaw(const api::Currency &currency,
+                                               const optional<std::vector<uint8_t>> &parentPublicKey,
+                                               const std::vector<uint8_t> &publicKey,
+                                               const std::vector<uint8_t> &chainCode,
+                                               const std::string &path) {
+            auto &params             = currency.ethereumLikeNetworkParameters.value();
             DeterministicPublicKey k = EthereumExtendedPublicKey::fromRaw(currency, params, parentPublicKey, publicKey, chainCode, path);
             return std::make_shared<EthereumLikeExtendedPublicKey>(currency, k, DerivationPath(path));
         }
 
         std::shared_ptr<EthereumLikeExtendedPublicKey>
-        EthereumLikeExtendedPublicKey::fromBase58(const api::Currency& currency,
-                                                  const std::string& xpubBase58,
-                                                  const Option<std::string>& path) {
-            auto& params = currency.ethereumLikeNetworkParameters.value();
+        EthereumLikeExtendedPublicKey::fromBase58(const api::Currency &currency,
+                                                  const std::string &xpubBase58,
+                                                  const Option<std::string> &path) {
+            auto &params             = currency.ethereumLikeNetworkParameters.value();
             DeterministicPublicKey k = EthereumExtendedPublicKey::fromBase58(currency, params, xpubBase58, path);
             return std::make_shared<ledger::core::EthereumLikeExtendedPublicKey>(currency, k, DerivationPath(path.getValueOr("m")));
-
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

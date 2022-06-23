@@ -29,14 +29,15 @@
  *
  */
 #include "BitcoinLikeInputApi.h"
-#include <wallet/common/Amount.h>
+
 #include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/Amount.h>
 
 namespace ledger {
     namespace core {
 
         BitcoinLikeInputApi::BitcoinLikeInputApi(const std::shared_ptr<OperationApi> &operation, int32_t inputIndex) {
-            _operation = operation;
+            _operation  = operation;
             _inputIndex = inputIndex;
         }
 
@@ -67,9 +68,10 @@ namespace ledger {
         }
 
         optional<int32_t> BitcoinLikeInputApi::getPreviousOutputIndex() {
-            return getInput().previousTxOutputIndex.map<int32_t>([] (const uint32_t& v) {
-                return (int32_t)v;
-            }).toOptional();
+            return getInput().previousTxOutputIndex.map<int32_t>([](const uint32_t &v) {
+                                                       return (int32_t)v;
+                                                   })
+                .toOptional();
         }
 
         std::vector<std::vector<uint8_t>> BitcoinLikeInputApi::getPublicKeys() {
@@ -115,5 +117,5 @@ namespace ledger {
         void BitcoinLikeInputApi::getPreviousTransaction(const std::shared_ptr<api::BinaryCallback> &callback) {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "void BitcoinLikeInputApi::getPreviousTransaction(const std::shared_ptr<api::BinaryCallback> &callback)");
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

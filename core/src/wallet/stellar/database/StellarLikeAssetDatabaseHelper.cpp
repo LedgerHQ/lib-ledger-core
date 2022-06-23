@@ -30,37 +30,34 @@
  */
 
 #include "StellarLikeAssetDatabaseHelper.hpp"
-#include <utils/hex.h>
+
 #include <crypto/SHA256.hpp>
-#include <fmt/format.h>
 #include <database/soci-option.h>
+#include <fmt/format.h>
+#include <utils/hex.h>
 
 using namespace soci;
 
 namespace ledger {
     namespace core {
 
-
         std::string
-        StellarLikeAssetDatabaseHelper::createAssetUid(const std::string &type, const Option<std::string> &code,
-                                                       const Option<std::string> &issuer) {
+        StellarLikeAssetDatabaseHelper::createAssetUid(const std::string &type, const Option<std::string> &code, const Option<std::string> &issuer) {
             stellar::Asset asset;
-            asset.type = type;
+            asset.type   = type;
             asset.issuer = issuer.getValueOr("");
-            asset.code = code.getValueOr("");
+            asset.code   = code.getValueOr("");
             return createAssetUid(asset);
         }
 
-        bool StellarLikeAssetDatabaseHelper::putAsset(soci::session &sql, const std::string &type,
-                                                      const Option<std::string> &code,
-                                                      const Option<std::string> &issuer) {
+        bool StellarLikeAssetDatabaseHelper::putAsset(soci::session &sql, const std::string &type, const Option<std::string> &code, const Option<std::string> &issuer) {
             int count = 0;
-            auto uid = createAssetUid(type, code, issuer);
+            auto uid  = createAssetUid(type, code, issuer);
             sql << "SELECT COUNT(*) FROM stellar_assets WHERE uid = :uid", use(uid), into(count);
 
-            if (count == 0)  {
+            if (count == 0) {
                 sql << "INSERT INTO stellar_assets VALUES (:uid, :type, :code, :issuer)", use(uid), use(type),
-                use(code), use(issuer);
+                    use(code), use(issuer);
             }
 
             return count == 0;
@@ -81,6 +78,5 @@ namespace ledger {
             return putAsset(sql, asset.type, code, issuer);
         }
 
-
-    }
-}
+    } // namespace core
+} // namespace ledger

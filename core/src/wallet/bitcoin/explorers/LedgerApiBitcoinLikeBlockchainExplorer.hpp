@@ -31,18 +31,17 @@
 #ifndef LEDGER_CORE_LEDGERAPIBITCOINLIKEBLOCKCHAINEXPLORER_HPP
 #define LEDGER_CORE_LEDGERAPIBITCOINLIKEBLOCKCHAINEXPLORER_HPP
 
-
-#include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
-#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
-#include <api/BitcoinLikeNetworkParameters.hpp>
-#include <collections/collections.hpp>
-#include <async/Future.hpp>
-#include <net/HttpClient.hpp>
-#include <async/DedicatedContext.hpp>
+#include "api/BlockParser.hpp"
 #include "api/TransactionParser.hpp"
 #include "api/TransactionsBulkParser.hpp"
-#include "api/BlockParser.hpp"
+
 #include <api/BitcoinLikeNetworkParameters.hpp>
+#include <async/DedicatedContext.hpp>
+#include <async/Future.hpp>
+#include <collections/collections.hpp>
+#include <net/HttpClient.hpp>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
 
 namespace ledger {
     namespace core {
@@ -52,41 +51,40 @@ namespace ledger {
                                                        public LedgerApiBlockchainExplorer,
                                                        public DedicatedContext,
                                                        public std::enable_shared_from_this<LedgerApiBitcoinLikeBlockchainExplorer> {
-        public:
+          public:
             LedgerApiBitcoinLikeBlockchainExplorer(
-                const std::shared_ptr<api::ExecutionContext>& context,
-                const std::shared_ptr<HttpClient>& http,
-                const api::BitcoinLikeNetworkParameters& parameters,
-                const std::shared_ptr<api::DynamicObject>& configuration
-            );
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<HttpClient> &http,
+                const api::BitcoinLikeNetworkParameters &parameters,
+                const std::shared_ptr<api::DynamicObject> &configuration);
 
-            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId="") override;
+            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
             Future<void *> startSession() override;
             Future<Unit> killSession(void *session) override;
-            Future<Bytes> getRawTransaction(const String& transactionHash) override;
-            Future<String> pushTransaction(const std::vector<uint8_t>& transaction, const std::string& correlationId="") override;
+            Future<Bytes> getRawTransaction(const String &transactionHash) override;
+            Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
 
             FuturePtr<TransactionsBulk>
             getTransactions(const std::vector<std::string> &addresses,
                             Option<std::string> fromBlockHash = Option<std::string>(),
-                            Option<void *> session = Option<void *>()) override;
+                            Option<void *> session            = Option<void *>()) override;
 
             FuturePtr<Block> getCurrentBlock() const override;
 
             FuturePtr<BitcoinLikeBlockchainExplorerTransaction> getTransactionByHash(const String &transactionHash) const override;
 
-            Future<int64_t > getTimestamp() const override;
+            Future<int64_t> getTimestamp() const override;
 
             std::shared_ptr<api::ExecutionContext> getExplorerContext() const override;
             api::BitcoinLikeNetworkParameters getNetworkParameters() const override;
             std::string getExplorerVersion() const override;
             Future<std::vector<std::shared_ptr<api::BigInt>>> getFees() override;
-        private:
+
+          private:
             api::BitcoinLikeNetworkParameters _parameters;
             std::string _explorerVersion;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_LEDGERAPIBITCOINLIKEBLOCKCHAINEXPLORER_HPP
+#endif // LEDGER_CORE_LEDGERAPIBITCOINLIKEBLOCKCHAINEXPLORER_HPP

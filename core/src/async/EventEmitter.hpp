@@ -37,13 +37,11 @@ namespace ledger {
 
     namespace core {
 
-
         class EventEmitter {
-
         };
 
-    }
+    } // namespace core
 
-}
+} // namespace ledger
 
-#endif //LEDGER_CORE_EVENTEMITTER_H
+#endif // LEDGER_CORE_EVENTEMITTER_H

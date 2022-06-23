@@ -31,24 +31,24 @@
 #pragma once
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER)
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 #include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
-                namespace algorand {
+        namespace algorand {
             namespace constants {
                 static constexpr uint64_t COIN_ID = 283;
             }
-        }
+        } // namespace algorand
         namespace currencies {
             extern LIBCORE_EXPORT const api::Currency ALGORAND;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

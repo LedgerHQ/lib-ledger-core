@@ -30,8 +30,10 @@
  */
 
 #include "BytesWriter.h"
-#include <algorithm>
+
 #include "../utils/endian.h"
+
+#include <algorithm>
 
 namespace ledger {
     namespace core {
@@ -90,5 +92,5 @@ namespace ledger {
         BytesWriter &BytesWriter::writeVarString(const std::string &str) {
             return writeVarInt(str.length()).writeString(str);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

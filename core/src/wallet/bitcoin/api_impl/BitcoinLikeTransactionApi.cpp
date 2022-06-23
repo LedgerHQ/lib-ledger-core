@@ -29,37 +29,35 @@
  *
  */
 #include "BitcoinLikeTransactionApi.h"
-#include <bytes/BytesWriter.h>
+
+#include <api/BitcoinLikeTransactionBuilder.hpp>
+#include <api/KeychainEngines.hpp>
 #include <bytes/BytesReader.h>
-#include <wallet/common/Amount.h>
-#include <wallet/common/AbstractAccount.hpp>
-#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
-#include <wallet/bitcoin/networks.hpp>
+#include <bytes/BytesWriter.h>
 #include <crypto/HASH160.hpp>
 #include <crypto/SHA512.hpp>
 #include <math/Base58.hpp>
-#include <api/KeychainEngines.hpp>
-#include <api/BitcoinLikeTransactionBuilder.hpp>
+#include <wallet/bitcoin/networks.hpp>
+#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
+#include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/Amount.h>
 
 namespace ledger {
     namespace core {
 
-
         BitcoinLikeTransactionApi::BitcoinLikeTransactionApi(const api::Currency &currency,
                                                              const std::string &correlationId,
                                                              const std::string &keychainEngine,
-                                                             uint64_t currentBlockHeight) :
-                _currency(currency), _correlationId(correlationId), _keychainEngine(keychainEngine), _currentBlockHeight(currentBlockHeight) {
-            _version = 1;
-            _params = currency.bitcoinLikeNetworkParameters.value();
+                                                             uint64_t currentBlockHeight) : _currency(currency), _correlationId(correlationId), _keychainEngine(keychainEngine), _currentBlockHeight(currentBlockHeight) {
+            _version  = 1;
+            _params   = currency.bitcoinLikeNetworkParameters.value();
             _writable = true;
         }
 
         BitcoinLikeTransactionApi::BitcoinLikeTransactionApi(const std::shared_ptr<OperationApi> &operation)
-                : BitcoinLikeTransactionApi(operation->getCurrency()) {
-
-            auto &tx = operation->getBackend().bitcoinTransaction.getValue();
-            _time = tx.receivedAt;
+            : BitcoinLikeTransactionApi(operation->getCurrency()) {
+            auto &tx  = operation->getBackend().bitcoinTransaction.getValue();
+            _time     = tx.receivedAt;
             _lockTime = tx.lockTime;
             _writable = false;
 
@@ -113,7 +111,7 @@ namespace ledger {
             }
             for (auto &output : getOutputs()) {
                 auto v = std::dynamic_pointer_cast<ledger::core::Amount>(output->getValue())->value();
-                value = value - *v;
+                value  = value - *v;
             }
             return std::make_shared<ledger::core::Amount>(_currency, 0, value);
         }
@@ -126,20 +124,21 @@ namespace ledger {
             return _hash;
         }
 
-        std::string BitcoinLikeTransactionApi::getCorrelationId()  {
+        std::string BitcoinLikeTransactionApi::getCorrelationId() {
             return _correlationId;
         }
 
-        std::string BitcoinLikeTransactionApi::setCorrelationId(const std::string& newId)  {
-            auto oldId = _correlationId;
+        std::string BitcoinLikeTransactionApi::setCorrelationId(const std::string &newId) {
+            auto oldId     = _correlationId;
             _correlationId = newId;
             return oldId;
         }
 
         optional<int32_t> BitcoinLikeTransactionApi::getTimestamp() {
             return _timestamp.map<int32_t>([](const uint32_t &v) {
-                return (int32_t) v;
-            }).toOptional();
+                                 return (int32_t)v;
+                             })
+                .toOptional();
         }
 
         std::vector<uint8_t> BitcoinLikeTransactionApi::serialize() {
@@ -152,24 +151,24 @@ namespace ledger {
         }
 
         optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness() {
-            bool isDecred =  _params.Identifier == "dcr";
+            bool isDecred = _params.Identifier == "dcr";
             BytesWriter witness;
 
-            //Decred has a special witness with nb of witnesses and no stack size,
-            //and additional fields: amount, block height, block index
+            // Decred has a special witness with nb of witnesses and no stack size,
+            // and additional fields: amount, block height, block index
             if (BitcoinLikeKeychain::isSegwit(_keychainEngine) && !isDecred) {
                 for (auto &input : _inputs) {
                     auto scriptSig = input->getScriptSig();
                     if (!scriptSig.empty()) {
-                        //Stack size
+                        // Stack size
                         witness.writeVarInt(2);
                         witness.writeByteArray(scriptSig);
                     }
                 }
-            } else if (isDecred){
+            } else if (isDecred) {
                 witness.writeVarInt(_inputs.size());
                 for (auto &input : _inputs) {
-                    //TODO: Amount (not used can be anything)
+                    // TODO: Amount (not used can be anything)
                     witness.writeByteArray({0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
                     witness.writeByteArray({0x00, 0x00, 0x00, 0x00});
                     witness.writeByteArray({0xff, 0xff, 0xff, 0xff});
@@ -235,25 +234,25 @@ namespace ledger {
             // Fixed size computation
             fixedSize = 4; // Transaction version
             if (currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction)
-                fixedSize += 4; // Timestamp
-            fixedSize += BytesWriter().writeVarInt(inputCount).toByteArray().size(); // Number of inputs
+                fixedSize += 4;                                                       // Timestamp
+            fixedSize += BytesWriter().writeVarInt(inputCount).toByteArray().size();  // Number of inputs
             fixedSize += BytesWriter().writeVarInt(outputCount).toByteArray().size(); // Number of outputs
-            fixedSize += 4; // Timelock
+            fixedSize += 4;                                                           // Timelock
 
             auto isSegwit = BitcoinLikeKeychain::isSegwit(keychainEngine);
             if (isSegwit) {
                 // Native Segwit: 32 PrevTxHash + 4 Index + 1 null byte + 4 sequence
                 // P2SH: 32 PrevTxHash + 4 Index + 23 scriptPubKey + 4 sequence
                 auto isNativeSegwit = BitcoinLikeKeychain::isNativeSegwit(keychainEngine);
-                size_t inputSize = isNativeSegwit ? 41 : 63;
-                size_t noWitness = fixedSize + inputSize * inputCount + 34 * outputCount;
-                
+                size_t inputSize    = isNativeSegwit ? 41 : 63;
+                size_t noWitness    = fixedSize + inputSize * inputCount + 34 * outputCount;
+
                 // Include flag and marker size (one byte each)
-                size_t minWitness = noWitness + (106 * inputCount) + 2;
-                size_t maxWitness = noWitness + (108 * inputCount) + 2;
-                
-                minSize = (noWitness * 3 + minWitness) / 4;
-                maxSize = (noWitness * 3 + maxWitness) / 4;
+                size_t minWitness   = noWitness + (106 * inputCount) + 2;
+                size_t maxWitness   = noWitness + (108 * inputCount) + 2;
+
+                minSize             = (noWitness * 3 + minWitness) / 4;
+                maxSize             = (noWitness * 3 + maxWitness) / 4;
             } else {
                 minSize = fixedSize + 146 * inputCount + 32 * outputCount;
                 maxSize = fixedSize + 148 * inputCount + 34 * outputCount;
@@ -263,10 +262,9 @@ namespace ledger {
 
         int64_t BitcoinLikeTransactionApi::computeDustAmount(const api::Currency &currency, int32_t size) {
             int64_t dustAmount = currency.bitcoinLikeNetworkParameters.value().Dust;
-            switch (currency.bitcoinLikeNetworkParameters.value().DustPolicy)
-            {
-            case api::BitcoinLikeDustPolicy::PER_KBYTE: 
-                dustAmount = dustAmount * size /1000;
+            switch (currency.bitcoinLikeNetworkParameters.value().DustPolicy) {
+            case api::BitcoinLikeDustPolicy::PER_KBYTE:
+                dustAmount = dustAmount * size / 1000;
                 break;
             case api::BitcoinLikeDustPolicy::PER_BYTE:
                 dustAmount = dustAmount * size;
@@ -280,7 +278,7 @@ namespace ledger {
         BitcoinLikeTransactionApi &BitcoinLikeTransactionApi::setVersion(uint32_t version) {
             _version = version;
             // Update params
-            _params = networks::getNetworkParameters(_currency.name, _version);
+            _params  = networks::getNetworkParameters(_currency.name, _version);
             return *this;
         }
 
@@ -300,34 +298,33 @@ namespace ledger {
             return writer.toByteArray();
         }
 
-        api::BitcoinLikeSignatureState BitcoinLikeTransactionApi::setSignatures(const std::vector<api::BitcoinLikeSignature> & signatures, bool overrid) {
+        api::BitcoinLikeSignatureState BitcoinLikeTransactionApi::setSignatures(const std::vector<api::BitcoinLikeSignature> &signatures, bool overrid) {
             if (signatures.size() != _inputs.size()) {
                 return api::BitcoinLikeSignatureState::MISSING_DATA;
             }
             for (std::size_t i = 0; i < signatures.size(); ++i) {
-                if (overrid == true ) {
+                if (overrid == true) {
                     _inputs[i]->setScriptSig(std::vector<uint8_t>{});
-                }
-                else if (_inputs[i]->getScriptSig().size() > 0) {
+                } else if (_inputs[i]->getScriptSig().size() > 0) {
                     return api::BitcoinLikeSignatureState::ALREADY_SIGNED;
                 }
                 BytesWriter writer;
-                //Get length representing length of R and S
-                //4 value representing both stack size and length of R and S - sighash is excluded
+                // Get length representing length of R and S
+                // 4 value representing both stack size and length of R and S - sighash is excluded
                 auto const sAndRLengthInt = 4 + signatures[i].r.size() + signatures[i].s.size();
-                //DER Signature = Total Size | DER prefix | Size(S+R) | R StackSize | R Length | R | S StackSize | S Length | S | SIGHASH
-                auto const totalSigInt = 2 + sAndRLengthInt;
+                // DER Signature = Total Size | DER prefix | Size(S+R) | R StackSize | R Length | R | S StackSize | S Length | S | SIGHASH
+                auto const totalSigInt    = 2 + sAndRLengthInt;
                 writer.writeByte(totalSigInt);
-                //DER prefix
+                // DER prefix
                 writer.writeByte(0x30);
-                //Size of DER signature minus DER prefix | Size(S+R)
+                // Size of DER signature minus DER prefix | Size(S+R)
                 writer.writeByte(sAndRLengthInt);
-                //R field
-                writer.writeByte(0x02); //Nb of stack elements
+                // R field
+                writer.writeByte(0x02); // Nb of stack elements
                 writer.writeByte(signatures[i].r.size());
                 writer.writeByteArray(signatures[i].r);
-                //S field
-                writer.writeByte(0x02); //Nb of stack elements
+                // S field
+                writer.writeByte(0x02); // Nb of stack elements
                 writer.writeByte(signatures[i].s.size());
                 writer.writeByteArray(signatures[i].s);
                 writer.writeByte(networks::sigHashType::SIGHASH_ALL);
@@ -336,15 +333,14 @@ namespace ledger {
             return api::BitcoinLikeSignatureState::SIGNING_SUCCEED;
         }
 
-        api::BitcoinLikeSignatureState BitcoinLikeTransactionApi::setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures, bool override) {
+        api::BitcoinLikeSignatureState BitcoinLikeTransactionApi::setDERSignatures(const std::vector<std::vector<uint8_t>> &signatures, bool override) {
             if (signatures.size() != _inputs.size()) {
                 return api::BitcoinLikeSignatureState::MISSING_DATA;
             }
             for (std::size_t i = 0; i < signatures.size(); ++i) {
                 if (override == true) {
                     _inputs[i]->setScriptSig(std::vector<uint8_t>{});
-                }
-                else if (_inputs[i]->getScriptSig().size() > 0) {
+                } else if (_inputs[i]->getScriptSig().size() > 0) {
                     return api::BitcoinLikeSignatureState::ALREADY_SIGNED;
                 }
                 _inputs[i]->setP2PKHSigScript(signatures[i]);
@@ -358,22 +354,21 @@ namespace ledger {
 
         void BitcoinLikeTransactionApi::serializeProlog(BytesWriter &writer) {
             auto &additionalBIPs = _params.AdditionalBIPs;
-            auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), "ZIP");
-            auto zipParameters = _currentBlockHeight > networks::ZIP_SAPLING_PARAMETERS.blockHeight ?
-                                 networks::ZIP_SAPLING_PARAMETERS : networks::ZIP143_PARAMETERS;
+            auto it              = std::find(additionalBIPs.begin(), additionalBIPs.end(), "ZIP");
+            auto zipParameters   = _currentBlockHeight > networks::ZIP_SAPLING_PARAMETERS.blockHeight ? networks::ZIP_SAPLING_PARAMETERS : networks::ZIP143_PARAMETERS;
 
             if (it != additionalBIPs.end() && _currentBlockHeight > networks::ZIP143_PARAMETERS.blockHeight) {
                 setVersion(zipParameters.version);
 
-                //New version and overwinter flag
+                // New version and overwinter flag
                 auto header = zipParameters.overwinterFlag;
                 header.push_back(0x00);
                 header.push_back(0x00);
                 header.push_back(zipParameters.version);
-                //Push header (0x80000003 in LE)
+                // Push header (0x80000003 in LE)
                 writer.writeLeByteArray(header);
 
-                //Version group Id (0x03C48270 in LE)
+                // Version group Id (0x03C48270 in LE)
                 writer.writeLeByteArray(zipParameters.versionGroupId);
 
             } else {
@@ -388,9 +383,9 @@ namespace ledger {
             }
 
             if (BitcoinLikeKeychain::isSegwit(_keychainEngine)) {
-                //write marker
+                // write marker
                 writer.writeByte(0x00);
-                //write flag
+                // write flag
                 writer.writeByte(0x01);
             }
         }
@@ -407,7 +402,7 @@ namespace ledger {
                     throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing previous transaction index");
                 writer.writeLeValue<int32_t>(input->getPreviousOutputIndex().value());
 
-                //Decred has only a tree field
+                // Decred has only a tree field
                 if (_params.Identifier == "dcr") {
                     writer.writeByteArray({0x00});
                     writer.writeLeValue<uint32_t>(static_cast<const uint32_t>(input->getSequence()));
@@ -415,14 +410,14 @@ namespace ledger {
                 }
 
                 auto scriptSig = input->getScriptSig();
-                auto isSegwit = BitcoinLikeKeychain::isSegwit(_keychainEngine);
+                auto isSegwit  = BitcoinLikeKeychain::isSegwit(_keychainEngine);
                 if (!isSegwit && scriptSig.size() > 0) {
                     writer.writeVarInt(scriptSig.size());
                     writer.writeByteArray(scriptSig);
                 } else if (isSegwit && scriptSig.size() > 1) {
                     auto pubKeys = input->getPublicKeys();
                     if (!pubKeys.empty()) {
-                        //TODO: handle multi-sig
+                        // TODO: handle multi-sig
                         std::vector<uint8_t> redeemScript = {0x00, 0x14};
                         redeemScript.insert(redeemScript.end(), pubKeys[0].begin(), pubKeys[0].end());
                         writer.writeVarInt(redeemScript.size() + 1);
@@ -447,7 +442,7 @@ namespace ledger {
             for (auto &output : _outputs) {
                 writer.writeLeValue<uint64_t>(static_cast<const uint64_t>(output->getValue()->toLong()));
 
-                //Decred has a version of script
+                // Decred has a version of script
                 if (_params.Identifier == "dcr") {
                     writer.writeByteArray({0x00, 0x00});
                 }
@@ -459,17 +454,17 @@ namespace ledger {
         }
 
         void BitcoinLikeTransactionApi::serializeEpilogue(BytesWriter &writer) {
-            auto witness = getWitness();
-            auto isDecred =  _params.Identifier == "dcr";
+            auto witness  = getWitness();
+            auto isDecred = _params.Identifier == "dcr";
 
-            //Decred has witness after lockTime
+            // Decred has witness after lockTime
             if (!isDecred) {
                 writer.writeByteArray(witness.value_or(std::vector<uint8_t>()));
             }
 
             writer.writeLeValue<int32_t>(_lockTime);
 
-            //TODO: activate when LedgerJS not adding expiryHeight and extraData to transaction
+            // TODO: activate when LedgerJS not adding expiryHeight and extraData to transaction
             /*
             auto &additionalBIPs = _params.AdditionalBIPs;
             auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), "ZIP");
@@ -485,13 +480,12 @@ namespace ledger {
             }
             */
 
-            //Decred has a witness and an expiry height
+            // Decred has a witness and an expiry height
             if (isDecred) {
                 writer.writeByteArray({0xff, 0xff, 0xff, 0xff});
                 writer.writeByteArray(witness.value_or(std::vector<uint8_t>()));
             }
         }
-
 
         std::shared_ptr<api::BitcoinLikeTransaction>
         api::BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(const api::Currency &currency,
@@ -514,22 +508,21 @@ namespace ledger {
                                                        bool isSigned) {
             BytesReader reader(rawTransaction);
             // Parse version
-            auto version = reader.readNextLeUint();
-            auto params = networks::getNetworkParameters(currency.name, version);
+            auto version  = reader.readNextLeUint();
+            auto params   = networks::getNetworkParameters(currency.name, version);
             auto isDecred = params.Identifier == "dcr";
             HashAlgorithm hashAlgorithm(params.Identifier);
-            //Parse additionalBIPs if there are any
+            // Parse additionalBIPs if there are any
             auto &additionalBIPs = params.AdditionalBIPs;
-            auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), "ZIP");
-            auto zipParameters = currentBlockHeight > networks::ZIP_SAPLING_PARAMETERS.blockHeight ?
-                                 networks::ZIP_SAPLING_PARAMETERS : networks::ZIP143_PARAMETERS;
+            auto it              = std::find(additionalBIPs.begin(), additionalBIPs.end(), "ZIP");
+            auto zipParameters   = currentBlockHeight > networks::ZIP_SAPLING_PARAMETERS.blockHeight ? networks::ZIP_SAPLING_PARAMETERS : networks::ZIP143_PARAMETERS;
             if (it != additionalBIPs.end() &&
                 currentBlockHeight > networks::ZIP143_PARAMETERS.blockHeight) {
-                //Substract overwinterFlag
+                // Substract overwinterFlag
                 auto overwinterFlag = zipParameters.overwinterFlag[0];
                 version -= (~(overwinterFlag << 24) + 1);
 
-                //Read version group Id
+                // Read version group Id
                 reader.read(zipParameters.versionGroupId.size());
             }
 
@@ -541,17 +534,17 @@ namespace ledger {
             }
 
             // Parse segwit marker and flag
-            bool isSegwit = false;
-            auto marker = reader.peek();
+            bool isSegwit       = false;
+            auto marker         = reader.peek();
             auto offsetToMarker = reader.getCursor();
             if (marker == 0x00) {
-                isSegwit = true;
-                marker = reader.readNextByte();
+                isSegwit  = true;
+                marker    = reader.readNextByte();
                 auto flag = reader.readNextByte();
             }
 
             auto keychainEngine = isSegwit ? api::KeychainEngines::BIP49_P2SH : api::KeychainEngines::BIP32_P2PKH;
-            auto tx = std::make_shared<BitcoinLikeTransactionApi>(currency, "", keychainEngine, currentBlockHeight);
+            auto tx             = std::make_shared<BitcoinLikeTransactionApi>(currency, "", keychainEngine, currentBlockHeight);
             tx->setVersion(version);
             if (usesTimeStamp) {
                 tx->setTimestamp(timeStamp);
@@ -562,25 +555,24 @@ namespace ledger {
             std::vector<std::vector<uint8_t>> scriptSigs;
             auto inputsCount = reader.readNextVarInt();
             for (auto index = 0; index < inputsCount; index++) {
-                //Previous Tx Hash in LE
+                // Previous Tx Hash in LE
                 auto prevTxHashBytes = reader.read(32);
                 std::reverse(prevTxHashBytes.begin(), prevTxHashBytes.end());
                 auto previousTxHash = hex::toString(prevTxHashBytes);
-                auto outputIndex = reader.readNextLeUint();
+                auto outputIndex    = reader.readNextLeUint();
 
                 ledger::core::BitcoinLikeBlockchainExplorerOutput output;
                 std::string address;
                 std::vector<std::vector<uint8_t>> pubKeys;
 
-                //Decred has a tree field (1 bytes) and nothing else
+                // Decred has a tree field (1 bytes) and nothing else
                 if (isDecred) {
                     reader.readNextByte();
                 } else {
-                    auto scriptSize = reader.readNextVarInt();
-                    auto scriptSig = reader.read(scriptSize);
+                    auto scriptSize   = reader.readNextVarInt();
+                    auto scriptSig    = reader.read(scriptSize);
                     auto parsedScript = ledger::core::BitcoinLikeScript::parse(scriptSig);
                     if (parsedScript.isSuccess()) {
-
                         // Useful to remove script sigs from rawTx to compute txHash (e.g. XST)
                         {
                             BytesWriter localWriter;
@@ -591,13 +583,13 @@ namespace ledger {
 
                         BytesReader localReader(scriptSig);
                         if (isSigned && !isSegwit) {
-                            //Get address from signed script
+                            // Get address from signed script
                             auto sigSize = localReader.readNextVarInt();
-                            auto sig = localReader.read(sigSize);
+                            auto sig     = localReader.read(sigSize);
                             // For example XST, sometimes does not have pubKey in signature ... (e.g. 6a1e7109ce7cae649c2f79200c946622f97ea6c86b2366cbbb7a512acdb3c1c2)
                             if (scriptSize - sigSize > 1) {
                                 auto pubKeySize = localReader.readNextVarInt();
-                                auto pubKey = localReader.read(pubKeySize);
+                                auto pubKey     = localReader.read(pubKeySize);
                                 pubKeys.push_back(pubKey);
                                 BitcoinLikeAddress localAddress(currency,
                                                                 HASH160::hash(pubKey, hashAlgorithm),
@@ -606,10 +598,10 @@ namespace ledger {
                             }
                             output.script = hex::toString(scriptSig);
                         } else if (isSigned && isSegwit && !scriptSig.empty()) {
-                            //Get address from redeem script
+                            // Get address from redeem script
                             auto redeemScriptSize = localReader.readNextVarInt();
-                            auto redeemScript = localReader.read(redeemScriptSize);
-                            //Get pubKeys from Redeem script : 0x00 0x14 <pubKey>
+                            auto redeemScript     = localReader.read(redeemScriptSize);
+                            // Get pubKeys from Redeem script : 0x00 0x14 <pubKey>
                             std::vector<uint8_t> pubKey(redeemScript.begin() + 2, redeemScript.end());
                             pubKeys.push_back(pubKey);
                             BitcoinLikeAddress localAddress(currency,
@@ -626,10 +618,10 @@ namespace ledger {
                         }
                     }
                 }
-                auto sequence = reader.readNextLeUint();
-                output.address = address;
+                auto sequence          = reader.readNextLeUint();
+                output.address         = address;
                 output.transactionHash = previousTxHash;
-                output.index = outputIndex;
+                output.index           = outputIndex;
                 preparedInputs.emplace_back(BitcoinLikePreparedInput(sequence, address, previousTxHash, outputIndex, pubKeys, output));
             }
 
@@ -639,12 +631,12 @@ namespace ledger {
                 ledger::core::BitcoinLikeBlockchainExplorerOutput output;
                 output.index = static_cast<uint64_t>(index);
                 output.value = reader.readNextLeBigInt(8);
-                //Decred has an additional version script (2 byte)
+                // Decred has an additional version script (2 byte)
                 if (isDecred) {
                     reader.read(2);
                 }
-                auto scriptSize = reader.readNextVarInt();
-                auto lockScript = reader.read(scriptSize);
+                auto scriptSize   = reader.readNextVarInt();
+                auto lockScript   = reader.read(scriptSize);
                 auto parsedScript = ledger::core::BitcoinLikeScript::parse(lockScript);
                 if (parsedScript.isSuccess()) {
                     auto parsedAddress = parsedScript.getValue().parseAddress(currency);
@@ -653,28 +645,27 @@ namespace ledger {
                 }
                 output.script = hex::toString(lockScript);
                 tx->addOutput(std::shared_ptr<BitcoinLikeOutputApi>(new BitcoinLikeOutputApi(
-                        output, currency
-                )));
+                    output, currency)));
             }
 
-            //Decred has lockTime, expiry height and nb of witnesses before witness
+            // Decred has lockTime, expiry height and nb of witnesses before witness
             if (isDecred) {
-                //LockTime
+                // LockTime
                 tx->setLockTime(reader.readNextLeUint());
-                //Expiry Height
+                // Expiry Height
                 reader.read(4);
-                //Number of inputs
+                // Number of inputs
                 reader.readNextVarInt();
             }
 
-            //This will usefull to computes tx hash (txID)
+            // This will usefull to computes tx hash (txID)
             std::vector<uint8_t> modifTx(rawTransaction.begin(), rawTransaction.begin() + reader.getCursor());
 
             // For XST we should remove the script sigs
             // Reference: https://github.com/StealthSend/Stealth/commit/5be35d6c2c500b32ed82e5d6913d66d18a4b0a7f#diff-e8db9b851adc2422aadfffca88f14c91R566
             if (params.Identifier == "xst" && !usesTimeStamp) {
-                auto strRawTx = hex::toString(modifTx);
-                auto removeScriptSig = [] (std::string &rawTx, const std::string &scriptSig) {
+                auto strRawTx        = hex::toString(modifTx);
+                auto removeScriptSig = [](std::string &rawTx, const std::string &scriptSig) {
                     size_t pos = rawTx.find(scriptSig);
                     if (pos != std::string::npos) {
                         rawTx.erase(pos, scriptSig.length());
@@ -692,10 +683,10 @@ namespace ledger {
                 modifTx.erase(modifTx.begin() + offsetToMarker, modifTx.begin() + offsetToMarker + 2);
             }
 
-            //Get witness if needed
+            // Get witness if needed
             if (isSigned && (isSegwit || isDecred)) {
                 for (auto index = 0; index < inputsCount; index++) {
-                    //Decred has no stack size on witness
+                    // Decred has no stack size on witness
                     auto stackSize = isDecred ? 2 : reader.readNextVarInt();
                     if (stackSize != 0 && stackSize != 2) {
                         throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
@@ -703,24 +694,23 @@ namespace ledger {
                     }
 
                     if (stackSize == 2) {
-
                         if (isDecred) {
-                            //Amount
+                            // Amount
                             reader.read(8);
-                            //Block height
+                            // Block height
                             reader.read(4);
-                            //Block Index
+                            // Block Index
                             reader.read(4);
-                            //Whole script size
+                            // Whole script size
                             reader.readNextVarInt();
                         }
 
                         auto scriptSigSize = reader.readNextVarInt();
-                        auto scriptSig = reader.read(scriptSigSize);
-                        auto pubKeySize = reader.readNextVarInt();
-                        auto pubKey = reader.read(pubKeySize);
+                        auto scriptSig     = reader.read(scriptSigSize);
+                        auto pubKeySize    = reader.readNextVarInt();
+                        auto pubKey        = reader.read(pubKeySize);
 
-                        //Get script sig
+                        // Get script sig
                         BytesWriter writer;
                         writer.writeVarInt(scriptSigSize);
                         writer.writeByteArray(scriptSig);
@@ -733,25 +723,24 @@ namespace ledger {
                         // For BIP32_P2PKH it is recovered from scriptPubKey (see above)
                         // For BIP49_P2SH it is recovered from redeemScript (see above)
                         // Note: Decred does not support segwit
-                        auto outAddress = preparedInputs[index].address;
+                        auto outAddress                     = preparedInputs[index].address;
                         if (isSegwit && preparedInputs[index].address.empty()) {
                             // Get keychain engine
                             // BIP173_P2WPKH script : <sig> <pubKey> (with <pubKey>.size() == 33)
                             // BIP173_P2WSH script : <sig> <witness>
-                            auto keychain = pubKey.size() == 33 ? api::KeychainEngines::BIP173_P2WPKH : api::KeychainEngines::BIP173_P2WSH;
+                            auto keychain                 = pubKey.size() == 33 ? api::KeychainEngines::BIP173_P2WPKH : api::KeychainEngines::BIP173_P2WSH;
                             // Get hash160 to construct address
-                            auto hash160 = BitcoinLikeAddress::fromPublicKeyToHash160(pubKey, currency, keychain);
+                            auto hash160                  = BitcoinLikeAddress::fromPublicKeyToHash160(pubKey, currency, keychain);
                             preparedInputs[index].address = BitcoinLikeAddress(currency, hash160, keychain).toString();
                         }
                     }
                 }
             }
 
-
-            //Decred has lockTime before witness
+            // Decred has lockTime before witness
             if (!isDecred) {
                 auto timelock = reader.read(4);
-                modifTx = vector::concat(modifTx, timelock);
+                modifTx       = vector::concat(modifTx, timelock);
 
                 BytesReader timelockReader(timelock);
                 tx->setLockTime(timelockReader.readNextLeUint());
@@ -766,39 +755,35 @@ namespace ledger {
                 tx->setHash(hex::toString(doubleHash));
             }
 
-
-            //Finally append inputs to tx
+            // Finally append inputs to tx
             for (auto i = 0; i < inputsCount; i++) {
                 auto keychainEngine = isSegwit ? api::KeychainEngines::BIP49_P2SH : api::KeychainEngines::BIP32_P2PKH;
                 std::vector<uint8_t> scriptSig;
                 std::vector<std::vector<uint8_t>> pubKeys;
                 if (isSigned) {
                     scriptSig = hex::toByteArray(preparedInputs[i].output.script);
-                    pubKeys = preparedInputs[i].pubKeys;
+                    pubKeys   = preparedInputs[i].pubKeys;
                 }
                 tx->addInput(
-                        std::shared_ptr<BitcoinLikeWritableInputApi>(
-                                new BitcoinLikeWritableInputApi(nullptr,
-                                                                nullptr,
-                                                                preparedInputs[i].sequence,
-                                                                pubKeys,
-                                                                {},
-                                                                preparedInputs[i].address,
-                                                                nullptr,
-                                                                preparedInputs[i].previousTxHash,
-                                                                preparedInputs[i].outputIndex,
-                                                                scriptSig,
-                                                                std::shared_ptr<BitcoinLikeOutputApi>(
-                                                                        new BitcoinLikeOutputApi(
-                                                                                preparedInputs[i].output, currency)),
-                                                                keychainEngine
-                                )
-                        )
-                );
+                    std::shared_ptr<BitcoinLikeWritableInputApi>(
+                        new BitcoinLikeWritableInputApi(nullptr,
+                                                        nullptr,
+                                                        preparedInputs[i].sequence,
+                                                        pubKeys,
+                                                        {},
+                                                        preparedInputs[i].address,
+                                                        nullptr,
+                                                        preparedInputs[i].previousTxHash,
+                                                        preparedInputs[i].outputIndex,
+                                                        scriptSig,
+                                                        std::shared_ptr<BitcoinLikeOutputApi>(
+                                                            new BitcoinLikeOutputApi(
+                                                                preparedInputs[i].output, currency)),
+                                                        keychainEngine)));
             }
 
             return tx;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

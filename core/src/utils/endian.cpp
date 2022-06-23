@@ -28,9 +28,10 @@
  * SOFTWARE.
  *
  */
+#include "endian.h"
+
 #include <cstdint>
 #include <iostream>
-#include "endian.h"
 
 namespace ledger {
     namespace core {
@@ -38,7 +39,7 @@ namespace ledger {
 
             Endianness getSystemEndianness() {
                 short int number = 0x1;
-                char *numPtr = (char *) &number;
+                char *numPtr     = (char *)&number;
                 return ((numPtr[0] == 1) ? Endianness::LITTLE : Endianness::BIG);
             }
 
@@ -53,8 +54,8 @@ namespace ledger {
             static void reverseBytes(uint8_t *ptr, size_t size) {
                 unsigned char tmp;
                 for (auto i = 0; i < (size / 2); i++) {
-                    tmp = ptr[i];
-                    ptr[i] = ptr[size - i - 1];
+                    tmp               = ptr[i];
+                    ptr[i]            = ptr[size - i - 1];
                     ptr[size - i - 1] = tmp;
                 }
             }
@@ -80,9 +81,9 @@ namespace ledger {
                 return ptr;
             }
 
-            const void * int_to_array(int i, Endianness endianness) {
+            const void *int_to_array(int i, Endianness endianness) {
                 uint8_t *data = new uint8_t[sizeof(i)];
-                auto ptr = (const uint8_t *)(&i);
+                auto ptr      = (const uint8_t *)(&i);
                 for (auto index = 0; index < sizeof(i); index++) {
                     data[index] = ptr[index];
                 }
@@ -90,6 +91,6 @@ namespace ledger {
                 return (const void *)data;
             }
 
-        }
-    }
-}
+        } // namespace endianness
+    }     // namespace core
+} // namespace ledger

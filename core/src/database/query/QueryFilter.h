@@ -38,7 +38,10 @@ namespace ledger {
     namespace core {
 
         enum class QueryFilterOperator {
-            OP_AND, OP_OR, OP_AND_NOT, OP_OR_NOT
+            OP_AND,
+            OP_OR,
+            OP_AND_NOT,
+            OP_OR_NOT
         };
 
         class QueryFilter;
@@ -49,7 +52,7 @@ namespace ledger {
         };
 
         class QueryFilter : public api::QueryFilter, public std::enable_shared_from_this<QueryFilter> {
-        public:
+          public:
             std::shared_ptr<api::QueryFilter> op_and(const std::shared_ptr<api::QueryFilter> &filter) override;
             std::shared_ptr<api::QueryFilter> op_or(const std::shared_ptr<api::QueryFilter> &filter) override;
             std::shared_ptr<api::QueryFilter> op_and_not(const std::shared_ptr<api::QueryFilter> &filter) override;
@@ -60,8 +63,8 @@ namespace ledger {
                 toString(ss);
                 return ss.str();
             };
-            virtual void toString(std::stringstream& ss) const = 0;
-            virtual void bindValue(soci::details::prepare_temp_type& statement) const = 0;
+            virtual void toString(std::stringstream &ss) const                        = 0;
+            virtual void bindValue(soci::details::prepare_temp_type &statement) const = 0;
             int32_t getSiblingsCount() const;
             std::shared_ptr<QueryFilter> getHead() const;
             std::shared_ptr<QueryFilter> getTail() const;
@@ -72,14 +75,13 @@ namespace ledger {
             std::shared_ptr<QueryFilter> getPrevious() const;
             QueryFilterOperator getOperatorForNextFilter() const;
 
-        private:
+          private:
             std::shared_ptr<api::QueryFilter> link(const std::shared_ptr<api::QueryFilter> &filter, QueryFilterOperator op);
 
-        private:
+          private:
             QueryFilterLink _siblings;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_QUERYFILTER_H
+#endif // LEDGER_CORE_QUERYFILTER_H

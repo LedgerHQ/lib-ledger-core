@@ -31,15 +31,16 @@
 #ifndef LEDGER_CORE_LOGGERAPI_HPP
 #define LEDGER_CORE_LOGGERAPI_HPP
 
-#include "logger.hpp"
 #include "../api/Logger.hpp"
+#include "logger.hpp"
+
 #include <memory>
 
 namespace ledger {
     namespace core {
         class LoggerApi : public api::Logger {
-        public:
-            LoggerApi(const std::weak_ptr<spdlog::logger>& logger) : _logger(logger) {};
+          public:
+            LoggerApi(const std::weak_ptr<spdlog::logger> &logger) : _logger(logger){};
 
             virtual void d(const std::string &tag, const std::string &message) override;
 
@@ -51,10 +52,10 @@ namespace ledger {
 
             virtual void c(const std::string &tag, const std::string &message) override;
 
-        private:
+          private:
             std::weak_ptr<spdlog::logger> _logger;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_LOGGERAPI_HPP
+#endif // LEDGER_CORE_LOGGERAPI_HPP

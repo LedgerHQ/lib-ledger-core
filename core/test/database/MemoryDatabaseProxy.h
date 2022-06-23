@@ -36,14 +36,14 @@
 
 class ConnectionPool;
 class MemoryDatabaseProxy : public ledger::core::api::DatabaseEngine {
-public:
+  public:
     std::shared_ptr<ledger::core::api::DatabaseConnectionPool> connect(const std::string &connectUrl) override;
 
     int32_t getPoolSize() override;
     int32_t getReadonlyPoolSize() override;
 
-private:
+  private:
     std::shared_ptr<ConnectionPool> _pool;
 };
 
-#endif //LEDGER_CORE_MEMORYDATABASEPROXY_H
+#endif // LEDGER_CORE_MEMORYDATABASEPROXY_H

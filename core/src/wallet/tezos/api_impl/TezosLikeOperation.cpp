@@ -28,14 +28,14 @@
  *
  */
 
-
 #include "TezosLikeOperation.h"
+
 #include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
 
 namespace ledger {
     namespace core {
 
-        TezosLikeOperation::TezosLikeOperation(const std::shared_ptr<OperationApi>& baseOp) {
+        TezosLikeOperation::TezosLikeOperation(const std::shared_ptr<OperationApi> &baseOp) {
             // Since this patch is temporary, we can live with this
             // Plus, this transactions are used in "read-only" mode
             _transaction = std::make_shared<TezosLikeTransactionApi>(baseOp, "");
@@ -43,5 +43,5 @@ namespace ledger {
         std::shared_ptr<api::TezosLikeTransaction> TezosLikeOperation::getTransaction() {
             return _transaction;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

@@ -34,33 +34,31 @@
 
 #include <api/BitcoinLikeInput.hpp>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
-#include <wallet/common/api_impl/DerivationPathApi.h>
 #include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
-
+#include <wallet/common/api_impl/DerivationPathApi.h>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeWritableInputApi : public api::BitcoinLikeInput {
-        public:
+          public:
             BitcoinLikeWritableInputApi(
-                    const std::shared_ptr<ledger::core::BitcoinLikeBlockchainExplorer>& explorer,
-                    const std::shared_ptr<api::ExecutionContext>& context,
-                    uint32_t sequence,
-                    const std::vector<std::vector<uint8_t> >& pubKeys,
-                    const std::vector<std::shared_ptr<api::DerivationPath>>& paths,
-                    const std::string& address,
-                    const std::shared_ptr<api::Amount>& amount,
-                    const std::string& previousTxHash,
-                    int32_t index,
-                    const std::vector<uint8_t>& scriptSig,
-                    const std::shared_ptr<api::BitcoinLikeOutput>& previousOutput,
-                    const std::string &keychainEngine = ""
-            );
+                const std::shared_ptr<ledger::core::BitcoinLikeBlockchainExplorer> &explorer,
+                const std::shared_ptr<api::ExecutionContext> &context,
+                uint32_t sequence,
+                const std::vector<std::vector<uint8_t>> &pubKeys,
+                const std::vector<std::shared_ptr<api::DerivationPath>> &paths,
+                const std::string &address,
+                const std::shared_ptr<api::Amount> &amount,
+                const std::string &previousTxHash,
+                int32_t index,
+                const std::vector<uint8_t> &scriptSig,
+                const std::shared_ptr<api::BitcoinLikeOutput> &previousOutput,
+                const std::string &keychainEngine = "");
             optional<std::string> getAddress() override;
             std::vector<std::vector<uint8_t>> getPublicKeys() override;
             std::shared_ptr<api::Amount> getValue() override;
 
-            std::vector<std::shared_ptr<api::DerivationPath> > getDerivationPath() override;
+            std::vector<std::shared_ptr<api::DerivationPath>> getDerivationPath() override;
 
             bool isCoinbase() override;
             optional<std::string> getCoinbase() override;
@@ -77,23 +75,20 @@ namespace ledger {
             Future<std::vector<uint8_t>> getPreviousTransaction();
             void setP2PKHSigScript(const std::vector<uint8_t> &signature) override;
 
-
-
-        private:
+          private:
             std::shared_ptr<ledger::core::BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<ledger::core::api::ExecutionContext> _context;
             uint32_t _sequence;
-            std::vector<std::vector<uint8_t> > _pubKeys;
+            std::vector<std::vector<uint8_t>> _pubKeys;
             std::vector<std::shared_ptr<api::DerivationPath>> _paths;
             std::string _address;
             std::shared_ptr<api::Amount> _amount;
             std::string _previousHash;
-            int32_t  _index;
+            int32_t _index;
             BitcoinLikeScript _scriptSig;
             std::shared_ptr<api::BitcoinLikeOutput> _previousScript;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_BITCOINLIKEWRITABLEINPUTAPI_H
+#endif // LEDGER_CORE_BITCOINLIKEWRITABLEINPUTAPI_H

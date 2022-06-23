@@ -34,34 +34,30 @@
 #include <msgpack.hpp>
 
 namespace msgpack {
-MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
-namespace adaptor {
+    MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+        namespace adaptor {
 
-    using ledger::core::algorand::B64String;
+            using ledger::core::algorand::B64String;
 
-    namespace {
+            namespace {
 
-        template<typename Stream>
-        packer<Stream>& packB64String(packer<Stream>& o, const B64String& b64str)
-        {
-            o.pack(b64str.toBinary());
-            return o;
-        }
+                template <typename Stream>
+                packer<Stream> &packB64String(packer<Stream> &o, const B64String &b64str) {
+                    o.pack(b64str.toBinary());
+                    return o;
+                }
 
-    } // namespace
+            } // namespace
 
-    template<>
-    struct pack<B64String>
-    {
-        template<typename Stream>
-        packer<Stream>& operator()(packer<Stream>& o,
-                                   const B64String& b64str) const
-        {
-            return packB64String(o, b64str);
-        }
-    };
+            template <>
+            struct pack<B64String> {
+                template <typename Stream>
+                packer<Stream> &operator()(packer<Stream> &o,
+                                           const B64String &b64str) const {
+                    return packB64String(o, b64str);
+                }
+            };
 
-} // namespace adaptor
-} // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+        } // namespace adaptor
+    }     // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
 } // namespace msgpack
-

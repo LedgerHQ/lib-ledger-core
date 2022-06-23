@@ -29,8 +29,10 @@
  *
  */
 #include "DerivationScheme.hpp"
-#include "collections/collections.hpp"
+
 #include "boost/lexical_cast.hpp"
+#include "collections/collections.hpp"
+
 #include <sstream>
 
 namespace ledger {
@@ -44,13 +46,13 @@ namespace ledger {
             if (segments.front() == "m") {
                 segments.erase(segments.begin(), segments.begin() + 1);
             }
-            for (auto& segment : segments) {
+            for (auto &segment : segments) {
                 if (segment.length() == 0) {
                     throw Exception(api::ErrorCode::INVALID_DERIVATION_SCHEME, "Derivation scheme segment is empty");
                 }
                 DerivationSchemeNode node;
                 node.hardened = segment.back() == '\'';
-                node.value = 0;
+                node.value    = 0;
                 if (node.hardened) {
                     segment.erase(segment.end() - 1, segment.end());
                 }
@@ -80,17 +82,17 @@ namespace ledger {
 
             // Account & node level both should be set to be used by keychain.
             // Account level always comes before node level
-            auto itAccountLevel = std::find_if(_scheme.begin(), _scheme.end(), [](const DerivationSchemeNode &node) {return node.level == DerivationSchemeLevel::ACCOUNT_INDEX;});
-            auto itNodeLevel = std::find_if(itAccountLevel, _scheme.end(), [](const DerivationSchemeNode &node) {return node.level == DerivationSchemeLevel::NODE;});
+            auto itAccountLevel = std::find_if(_scheme.begin(), _scheme.end(), [](const DerivationSchemeNode &node) { return node.level == DerivationSchemeLevel::ACCOUNT_INDEX; });
+            auto itNodeLevel    = std::find_if(itAccountLevel, _scheme.end(), [](const DerivationSchemeNode &node) { return node.level == DerivationSchemeLevel::NODE; });
             if (itNodeLevel == _scheme.end() && _scheme.size() <= 5) {
-                static std::vector<DerivationSchemeLevel> schemeLevel {DerivationSchemeLevel::UNDEFINED,
-                                                                       DerivationSchemeLevel::COIN_TYPE,
-                                                                       DerivationSchemeLevel::ACCOUNT_INDEX,
-                                                                       DerivationSchemeLevel::NODE,
-                                                                       DerivationSchemeLevel::ADDRESS_INDEX};
-                for (size_t i = 0; i < _scheme.size(); i++ ) {
+                static std::vector<DerivationSchemeLevel> schemeLevel{DerivationSchemeLevel::UNDEFINED,
+                                                                      DerivationSchemeLevel::COIN_TYPE,
+                                                                      DerivationSchemeLevel::ACCOUNT_INDEX,
+                                                                      DerivationSchemeLevel::NODE,
+                                                                      DerivationSchemeLevel::ADDRESS_INDEX};
+                for (size_t i = 0; i < _scheme.size(); i++) {
                     // We don't set twice a level
-                    auto it = std::find_if(_scheme.begin() + i, _scheme.end(), [&](const DerivationSchemeNode &node){return node.level == schemeLevel[i];});
+                    auto it = std::find_if(_scheme.begin() + i, _scheme.end(), [&](const DerivationSchemeNode &node) { return node.level == schemeLevel[i]; });
                     if (it == _scheme.end() && _scheme[i].level == DerivationSchemeLevel::UNDEFINED) {
                         _scheme[i].level = schemeLevel[i];
                     }
@@ -107,7 +109,7 @@ namespace ledger {
         }
 
         DerivationScheme DerivationScheme::getSchemeFrom(DerivationSchemeLevel level) {
-            auto it = _scheme.begin();
+            auto it  = _scheme.begin();
             auto end = _scheme.end();
             while (it != end) {
                 if (it->level == level) {
@@ -120,14 +122,14 @@ namespace ledger {
         }
 
         DerivationScheme DerivationScheme::shift(int n) {
-            auto it = _scheme.begin() + n;
-            auto end = _scheme.end();
+            auto it     = _scheme.begin() + n;
+            auto end    = _scheme.end();
             auto scheme = std::vector<DerivationSchemeNode>(it, end);
             return DerivationScheme(scheme);
         }
 
         DerivationScheme DerivationScheme::getSchemeTo(DerivationSchemeLevel level) const {
-            auto it = _scheme.begin();
+            auto it  = _scheme.begin();
             auto end = _scheme.end();
             while (it != end) {
                 if (it->level == level) {
@@ -147,7 +149,7 @@ namespace ledger {
         }
 
         DerivationPath DerivationScheme::getPath() {
-            std::function<uint32_t (const DerivationSchemeNode&)> map = [] (const DerivationSchemeNode &item) -> uint32_t {
+            std::function<uint32_t(const DerivationSchemeNode &)> map = [](const DerivationSchemeNode &item) -> uint32_t {
                 return item.value | (item.hardened ? 0x80000000 : 0x00);
             };
             auto segments = functional::map(_scheme, map);
@@ -171,7 +173,7 @@ namespace ledger {
         }
 
         DerivationScheme &DerivationScheme::setVariable(DerivationSchemeLevel level, int value) {
-            for (auto& item : _scheme) {
+            for (auto &item : _scheme) {
                 if (item.level == level) {
                     item.value = value;
                 }
@@ -196,7 +198,7 @@ namespace ledger {
         }
 
         int DerivationScheme::getVariable(DerivationSchemeLevel level) const {
-            for (auto& i : _scheme) {
+            for (auto &i : _scheme) {
                 if (i.level == level)
                     return i.value;
             }
@@ -206,27 +208,27 @@ namespace ledger {
         std::string DerivationScheme::toString() const {
             std::stringstream ss;
             bool first = true;
-            for (auto& item : _scheme) {
+            for (auto &item : _scheme) {
                 if (!first) {
                     ss << "/";
                 }
                 first = false;
                 switch (item.level) {
-                    case DerivationSchemeLevel::UNDEFINED:
-                        ss << item.value;
-                        break;
-                    case DerivationSchemeLevel::COIN_TYPE:
-                        ss << "<coin_type>";
-                        break;
-                    case DerivationSchemeLevel::ACCOUNT_INDEX:
-                        ss << "<account>";
-                        break;
-                    case DerivationSchemeLevel::NODE:
-                        ss << "<node>";
-                        break;
-                    case DerivationSchemeLevel::ADDRESS_INDEX:
-                        ss << "<address>";
-                        break;
+                case DerivationSchemeLevel::UNDEFINED:
+                    ss << item.value;
+                    break;
+                case DerivationSchemeLevel::COIN_TYPE:
+                    ss << "<coin_type>";
+                    break;
+                case DerivationSchemeLevel::ACCOUNT_INDEX:
+                    ss << "<account>";
+                    break;
+                case DerivationSchemeLevel::NODE:
+                    ss << "<node>";
+                    break;
+                case DerivationSchemeLevel::ADDRESS_INDEX:
+                    ss << "<address>";
+                    break;
                 }
                 if (item.hardened) {
                     ss << "'";
@@ -237,7 +239,7 @@ namespace ledger {
 
         int DerivationScheme::getPositionForLevel(DerivationSchemeLevel level) const {
             auto index = 0;
-            for (auto& i : _scheme) {
+            for (auto &i : _scheme) {
                 if (i.level == level)
                     return index;
                 index += 1;
@@ -245,6 +247,5 @@ namespace ledger {
             return -1;
         }
 
-
-    }
-}
+    } // namespace core
+} // namespace ledger

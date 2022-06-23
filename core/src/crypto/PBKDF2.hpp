@@ -31,18 +31,17 @@
 #ifndef LEDGER_CORE_PBKDF2_HPP
 #define LEDGER_CORE_PBKDF2_HPP
 
-#include <vector>
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
+#include <vector>
 
 namespace ledger {
     namespace core {
         class PBKDF2 {
-        public:
-            static std::vector<uint8_t> derive(const std::vector<uint8_t>& key, const std::vector<uint8_t>& salt, uint32_t iter, size_t outLength);
+          public:
+            static std::vector<uint8_t> derive(const std::vector<uint8_t> &key, const std::vector<uint8_t> &salt, uint32_t iter, size_t outLength);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_PBKDF2_HPP
+#endif // LEDGER_CORE_PBKDF2_HPP

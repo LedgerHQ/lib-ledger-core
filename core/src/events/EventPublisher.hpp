@@ -31,35 +31,34 @@
 #ifndef LEDGER_CORE_EVENTPUBLISHER_HPP
 #define LEDGER_CORE_EVENTPUBLISHER_HPP
 
-#include <api/EventBus.hpp>
-#include <api/EventPublisher.hpp>
 #include <api/Event.hpp>
+#include <api/EventBus.hpp>
 #include <api/EventCode.hpp>
+#include <api/EventPublisher.hpp>
 #include <api/EventReceiver.hpp>
-#include <unordered_set>
-#include <memory>
 #include <async/DedicatedContext.hpp>
+#include <memory>
+#include <unordered_set>
 
 namespace ledger {
     namespace core {
         class EventBus;
-        typedef std::function<bool (const std::shared_ptr<api::Event>&)> EventFilter;
+        typedef std::function<bool(const std::shared_ptr<api::Event> &)> EventFilter;
         class EventPublisher : public api::EventPublisher, public DedicatedContext, public std::enable_shared_from_this<EventPublisher> {
-        public:
+          public:
             EventPublisher(std::shared_ptr<api::ExecutionContext> context);
             std::shared_ptr<api::EventBus> getEventBus() override;
             void post(const std::shared_ptr<api::Event> &event) override;
             void postSticky(const std::shared_ptr<api::Event> &event, int32_t tag) override;
             void relay(const std::shared_ptr<api::EventBus> &bus) override;
-            void setFilter(const EventFilter& filter);
+            void setFilter(const EventFilter &filter);
 
-
-        private:
+          private:
             std::shared_ptr<EventBus> _bus;
             std::shared_ptr<api::EventReceiver> _receiver;
             EventFilter _filter;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_EVENTPUBLISHER_HPP
+#endif // LEDGER_CORE_EVENTPUBLISHER_HPP

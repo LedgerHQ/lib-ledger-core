@@ -31,37 +31,38 @@
 #ifndef LEDGER_CORE_ETHEREUMLIKEADDRESS_H
 #define LEDGER_CORE_ETHEREUMLIKEADDRESS_H
 
+#include "../utils/optional.hpp"
+
 #include <api/EthereumLikeAddress.hpp>
 #include <api/EthereumLikeNetworkParameters.hpp>
-#include "../utils/optional.hpp"
 #include <wallet/common/AbstractAddress.h>
 
 namespace ledger {
     namespace core {
         class EthereumLikeAddress : public api::EthereumLikeAddress, public AbstractAddress {
-        public:
-            EthereumLikeAddress(const api::Currency& currency,
-                               const std::vector<uint8_t>& keccak256,
-                               const Option<std::string>& derivationPath = Option<std::string>());
-            std::vector<uint8_t> getVersion() override ;
-            std::vector<uint8_t> getKeccakHash() override ;
-            api::EthereumLikeNetworkParameters getNetworkParameters() override ;
-            std::string toEIP55() override ;
+          public:
+            EthereumLikeAddress(const api::Currency &currency,
+                                const std::vector<uint8_t> &keccak256,
+                                const Option<std::string> &derivationPath = Option<std::string>());
+            std::vector<uint8_t> getVersion() override;
+            std::vector<uint8_t> getKeccakHash() override;
+            api::EthereumLikeNetworkParameters getNetworkParameters() override;
+            std::string toEIP55() override;
 
             virtual optional<std::string> getDerivationPath() override;
             std::string toString() override;
 
-            static std::shared_ptr<AbstractAddress> parse(const std::string& address, const api::Currency& currency,
-                                                          const Option<std::string>& derivationPath = Option<std::string>());
-            static std::shared_ptr<EthereumLikeAddress> fromEIP55(const std::string& address,
-                                                                  const api::Currency& currency,
-                                                                  const Option<std::string>& derivationPath = Option<std::string>(),
-                                                                  bool skipEIP55Check = false);
-        private:
+            static std::shared_ptr<AbstractAddress> parse(const std::string &address, const api::Currency &currency, const Option<std::string> &derivationPath = Option<std::string>());
+            static std::shared_ptr<EthereumLikeAddress> fromEIP55(const std::string &address,
+                                                                  const api::Currency &currency,
+                                                                  const Option<std::string> &derivationPath = Option<std::string>(),
+                                                                  bool skipEIP55Check                       = false);
+
+          private:
             const std::vector<uint8_t> _keccak256;
             const api::EthereumLikeNetworkParameters _params;
             const Option<std::string> _derivationPath;
         };
-    }
-}
-#endif //LEDGER_CORE_ETHEREUMLIKEADDRESS_H
+    } // namespace core
+} // namespace ledger
+#endif // LEDGER_CORE_ETHEREUMLIKEADDRESS_H

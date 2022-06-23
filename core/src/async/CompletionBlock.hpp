@@ -31,22 +31,21 @@
 #ifndef LEDGER_CORE_COMPLETIONBLOCK_HPP
 #define LEDGER_CORE_COMPLETIONBLOCK_HPP
 
-#include "../traits/completion_block_traits.hpp"
-#include "../async/Promise.hpp"
 #include "../async/Future.hpp"
+#include "../async/Promise.hpp"
+#include "../traits/completion_block_traits.hpp"
 
 namespace ledger {
     namespace core {
 
         template <typename T, class Class, bool usesPtrInComplete>
         class CompletionBlock {
-
         };
 
         template <typename T, class Class>
         class CompletionBlock<T, Class, true> : public Class {
-        public:
-            virtual void complete(const std::shared_ptr<T>& result, const std::experimental::optional<api::Error>& error) override {
+          public:
+            virtual void complete(const std::shared_ptr<T> &result, const std::experimental::optional<api::Error> &error) override {
                 if (error) {
                     _promise.failure(Exception(error.value().code, error.value().message));
                 } else {
@@ -58,14 +57,14 @@ namespace ledger {
                 return _promise.getFuture();
             }
 
-        private:
+          private:
             Promise<std::shared_ptr<T>> _promise;
         };
 
         template <typename T, class Class>
         class CompletionBlock<T, Class, false> : public Class {
-        public:
-            virtual void complete(const std::experimental::optional<T>& result, const std::experimental::optional<api::Error>& error) override {
+          public:
+            virtual void complete(const std::experimental::optional<T> &result, const std::experimental::optional<api::Error> &error) override {
                 if (error) {
                     _promise.failure(Exception(error.value().code, error.value().message));
                 } else {
@@ -77,18 +76,17 @@ namespace ledger {
                 return _promise.getFuture();
             }
 
-        private:
+          private:
             Promise<T> _promise;
         };
 
         template <typename T, class Class>
-        std::shared_ptr<CompletionBlock<T, Class, has_complete_method<Class, void (const std::shared_ptr<T>&, const std::experimental::optional<api::Error>&)>::value>>
+        std::shared_ptr<CompletionBlock<T, Class, has_complete_method<Class, void(const std::shared_ptr<T> &, const std::experimental::optional<api::Error> &)>::value>>
         make_api_completion_block() {
-            return std::make_shared<CompletionBlock<T, Class, has_complete_method<Class, void (const std::shared_ptr<T>&, const std::experimental::optional<api::Error>&)>::value>>();
+            return std::make_shared<CompletionBlock<T, Class, has_complete_method<Class, void(const std::shared_ptr<T> &, const std::experimental::optional<api::Error> &)>::value>>();
         };
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_COMPLETIONBLOCK_HPP
+#endif // LEDGER_CORE_COMPLETIONBLOCK_HPP

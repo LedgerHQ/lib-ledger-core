@@ -32,10 +32,10 @@
 #ifndef LEDGER_CORE_XDRENCODER_HPP
 #define LEDGER_CORE_XDRENCODER_HPP
 
+#include <array>
+#include <boost/variant/variant.hpp>
 #include <bytes/BytesWriter.h>
 #include <list>
-#include <boost/variant/variant.hpp>
-#include <array>
 #include <utils/Option.hpp>
 
 namespace ledger {
@@ -47,20 +47,19 @@ namespace ledger {
                 using ObjectEncoder = std::function<void(Encoder &)>;
 
                 /**
-                * Create an encoder for the given object. This function must have a
-                * specialization for each types to encode.
-                * @tparam T The class of the object to encode
-                * @param object The object to encode
-                * @return A function able to encode the object
-                */
+                 * Create an encoder for the given object. This function must have a
+                 * specialization for each types to encode.
+                 * @tparam T The class of the object to encode
+                 * @param object The object to encode
+                 * @return A function able to encode the object
+                 */
                 template <class T>
-                ObjectEncoder make_encoder(const T& object);
+                ObjectEncoder make_encoder(const T &object);
 
                 class Encoder {
-                public:
-
-                    template<class Object>
-                    Encoder& operator<<(const std::list<Object> &list) {
+                  public:
+                    template <class Object>
+                    Encoder &operator<<(const std::list<Object> &list) {
                         _writer.writeBeValue<int32_t>(list.size());
                         for (const auto &item : list) {
                             *this << item;
@@ -68,8 +67,8 @@ namespace ledger {
                         return *this;
                     };
 
-                    template<class Object>
-                    Encoder& operator<<(const std::vector<Object> &list) {
+                    template <class Object>
+                    Encoder &operator<<(const std::vector<Object> &list) {
                         _writer.writeBeValue<int32_t>(list.size());
                         for (const auto &item : list) {
                             *this << item;
@@ -77,22 +76,22 @@ namespace ledger {
                         return *this;
                     };
 
-                    template<class Object, std::size_t N>
-                    Encoder& operator<<(const std::array<Object, N> &list) {
+                    template <class Object, std::size_t N>
+                    Encoder &operator<<(const std::array<Object, N> &list) {
                         for (const auto &item : list) {
                             *this << item;
                         }
                         return *this;
                     };
 
-                    template<class Object>
-                    Encoder& operator<<(const Object& object) {
+                    template <class Object>
+                    Encoder &operator<<(const Object &object) {
                         make_encoder(object)(*this);
                         return *this;
                     }
 
-                    template<class Object>
-                    Encoder& operator<<(const Option<Object> &option) {
+                    template <class Object>
+                    Encoder &operator<<(const Option<Object> &option) {
                         *this << option.nonEmpty();
                         if (option.nonEmpty()) {
                             *this << option.getValue();
@@ -100,33 +99,32 @@ namespace ledger {
                         return *this;
                     };
 
-                    Encoder& operator<<(const ObjectEncoder &w);
+                    Encoder &operator<<(const ObjectEncoder &w);
 
-                    Encoder& operator<<(int32_t i);
+                    Encoder &operator<<(int32_t i);
 
-                    Encoder& operator<<(uint32_t i);
+                    Encoder &operator<<(uint32_t i);
 
-                    Encoder& operator<<(int64_t i);
+                    Encoder &operator<<(int64_t i);
 
-                    Encoder& operator<<(uint64_t i);
+                    Encoder &operator<<(uint64_t i);
 
-                    Encoder& operator<<(bool b);
-                    Encoder& operator<<(uint8_t byte);
+                    Encoder &operator<<(bool b);
+                    Encoder &operator<<(uint8_t byte);
 
-                    Encoder& operator<<(const std::string &str);
+                    Encoder &operator<<(const std::string &str);
 
-                    Encoder& operator<<(const std::vector<uint8_t> &bytes);
+                    Encoder &operator<<(const std::vector<uint8_t> &bytes);
 
                     std::vector<uint8_t> toByteArray() const;
 
-                private:
+                  private:
                     BytesWriter _writer;
                 };
 
-            }
-        }
-    }
-}
+            } // namespace xdr
+        }     // namespace stellar
+    }         // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_XDRENCODER_HPP
+#endif // LEDGER_CORE_XDRENCODER_HPP

@@ -30,24 +30,24 @@
  */
 
 #include "StellarLikeTransaction.hpp"
+
 #include <api/ErrorCode.hpp>
-#include <wallet/stellar/xdr/XDREncoder.hpp>
-#include <wallet/stellar/xdr/XDRDecoder.hpp>
+#include <api_impl/BigIntImpl.hpp>
 #include <crypto/SHA256.hpp>
-#include <wallet/stellar/StellarLikeAddress.hpp>
 #include <utils/Exception.hpp>
 #include <wallet/common/Amount.h>
-#include <api_impl/BigIntImpl.hpp>
+#include <wallet/stellar/StellarLikeAddress.hpp>
 #include <wallet/stellar/StellarLikeMemo.hpp>
 #include <wallet/stellar/xdr/StellarModelUtils.hpp>
+#include <wallet/stellar/xdr/XDRDecoder.hpp>
+#include <wallet/stellar/xdr/XDREncoder.hpp>
 
 namespace ledger {
     namespace core {
 
         std::shared_ptr<api::StellarLikeTransaction>
-        StellarLikeTransaction::parseRawTransaction(const api::Currency & currency,
-                                                    const std::vector<uint8_t> & rawTransaction)
-        {
+        StellarLikeTransaction::parseRawTransaction(const api::Currency &currency,
+                                                    const std::vector<uint8_t> &rawTransaction) {
             stellar::xdr::Decoder decoder(rawTransaction);
             stellar::xdr::TransactionEnvelope envelope;
             decoder >> envelope;
@@ -55,16 +55,15 @@ namespace ledger {
         }
 
         std::shared_ptr<api::StellarLikeTransaction>
-        StellarLikeTransaction::parseSignatureBase(const api::Currency & currency,
-                                                   const std::vector<uint8_t> & signatureBase)
-        {
+        StellarLikeTransaction::parseSignatureBase(const api::Currency &currency,
+                                                   const std::vector<uint8_t> &signatureBase) {
             auto networkId = SHA256::stringToBytesHash(currency.stellarLikeNetworkParameters.value().NetworkPassphrase);
 
             stellar::xdr::Encoder envTypeEncoder;
             envTypeEncoder << static_cast<int32_t>(stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX);
             auto encodedEnvType = envTypeEncoder.toByteArray();
 
-            auto offset = networkId.size() + encodedEnvType.size();
+            auto offset         = networkId.size() + encodedEnvType.size();
             auto rawTransaction = std::vector<uint8_t>(signatureBase.begin() + offset, signatureBase.end());
 
             stellar::xdr::Transaction tx;
@@ -72,7 +71,7 @@ namespace ledger {
             txDecoder >> tx;
 
             stellar::xdr::TransactionV1Envelope preEnvelope;
-            preEnvelope.tx = tx;
+            preEnvelope.tx                             = tx;
             stellar::xdr::TransactionEnvelope envelope = stellar::xdr::wrap(preEnvelope);
 
             return std::make_shared<StellarLikeTransaction>(currency, envelope);
@@ -92,7 +91,7 @@ namespace ledger {
             std::vector<uint8_t> signatureBase;
             stellar::xdr::Encoder txEncoder;
             if (isEnvelopeV0()) {
-               auto content = getEnvelopeV0();
+                auto content = getEnvelopeV0();
                 txEncoder << content.tx;
             } else {
                 auto content = getEnvelopeV1();
@@ -108,7 +107,7 @@ namespace ledger {
         }
 
         void StellarLikeTransaction::putSignature(const std::vector<uint8_t> &signature,
-                                                  const std::shared_ptr<api::Address>& address) {
+                                                  const std::shared_ptr<api::Address> &address) {
             auto stellarAddress = std::dynamic_pointer_cast<StellarLikeAddress>(address);
             if (!stellarAddress)
                 throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "putTransaction can only handle stellar addresses");
@@ -128,16 +127,16 @@ namespace ledger {
         std::shared_ptr<api::Address> StellarLikeTransaction::getSourceAccount() {
             std::string address;
             if (isEnvelopeV0()) {
-                const auto& envelope = getEnvelopeV0();
+                const auto &envelope = getEnvelopeV0();
                 std::vector<uint8_t> pubKey(envelope.tx.sourceAccountEd25519.begin(), envelope.tx.sourceAccountEd25519.end());
                 address = StellarLikeAddress::convertPubkeyToAddress(
-                        pubKey, Option<uint64_t>::NONE,
-                        _currency.stellarLikeNetworkParameters.value());
+                    pubKey, Option<uint64_t>::NONE,
+                    _currency.stellarLikeNetworkParameters.value());
             } else {
-                const auto& envelope = getEnvelopeV1();
-                address = StellarLikeAddress::convertMuxedAccountToAddress(
-                        envelope.tx.sourceAccount,
-                        _currency.stellarLikeNetworkParameters.value());
+                const auto &envelope = getEnvelopeV1();
+                address              = StellarLikeAddress::convertMuxedAccountToAddress(
+                                 envelope.tx.sourceAccount,
+                                 _currency.stellarLikeNetworkParameters.value());
             }
 
             return std::make_shared<StellarLikeAddress>(address, _currency, Option<std::string>());
@@ -200,13 +199,11 @@ namespace ledger {
             return _correlationId;
         }
 
-        std::string StellarLikeTransaction::setCorrelationId(const std::string& newId)  {
-            auto oldId = _correlationId;
+        std::string StellarLikeTransaction::setCorrelationId(const std::string &newId) {
+            auto oldId     = _correlationId;
             _correlationId = newId;
             return oldId;
         }
 
-    }
-}
-
-
+    } // namespace core
+} // namespace ledger

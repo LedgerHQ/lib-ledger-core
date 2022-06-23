@@ -29,17 +29,18 @@
  *
  */
 #include "HttpUrlConnectionInputStream.hpp"
-#include "../utils/Exception.hpp"
+
 #include "../api/HttpReadBodyResult.hpp"
+#include "../utils/Exception.hpp"
 
 namespace ledger {
     namespace core {
 
         HttpUrlConnectionInputStream::HttpUrlConnectionInputStream(
-                const std::shared_ptr<api::HttpUrlConnection> &connection) {
+            const std::shared_ptr<api::HttpUrlConnection> &connection) {
             _connection = connection;
-            _index = 0;
-            _offset = 0;
+            _index      = 0;
+            _offset     = 0;
             refill();
         }
 
@@ -54,7 +55,7 @@ namespace ledger {
             if (_index >= _buffer.size())
                 return '\0';
             else {
-                auto c = (Ch) _buffer[_index];
+                auto c = (Ch)_buffer[_index];
                 _index += 1;
                 return c;
             }
@@ -88,13 +89,12 @@ namespace ledger {
                 if (result.error) {
                     throw Exception(result.error.value().code,
                                     result.error.value().message,
-                                    std::static_pointer_cast<void>(_connection)
-                    );
+                                    std::static_pointer_cast<void>(_connection));
                 }
                 _index = 0;
                 _offset += _buffer.size();
-               _buffer = result.data.value();
+                _buffer = result.data.value();
             }
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

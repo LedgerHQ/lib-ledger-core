@@ -32,9 +32,8 @@
 
 namespace ledger {
     namespace core {
-        CurrenciesManager::CurrenciesManager(const std::shared_ptr<WalletPool>& pool)
+        CurrenciesManager::CurrenciesManager(const std::shared_ptr<WalletPool> &pool)
             : DedicatedContext(pool->getContext()) {
-
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

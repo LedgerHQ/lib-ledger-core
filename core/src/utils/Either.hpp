@@ -31,19 +31,19 @@
 #ifndef LEDGER_CORE_EITHER_HPP
 #define LEDGER_CORE_EITHER_HPP
 
-#include "Option.hpp"
 #include "Either.hpp"
-#include <functional>
 #include "Exception.hpp"
+#include "Option.hpp"
+
+#include <functional>
 
 namespace ledger {
     namespace core {
 
-        template<typename Left, typename Right>
+        template <typename Left, typename Right>
         class Either {
-        public:
+          public:
             Either() {
-
             }
 
             Either(const Left &left) {
@@ -55,39 +55,39 @@ namespace ledger {
             };
 
             Either(const Option<Left> &left, const Option<Right> &right) {
-                _left = left;
+                _left  = left;
                 _right = right;
             };
 
-            Either(Either<Left, Right>&& either) {
-                _left = std::move(either._left);
+            Either(Either<Left, Right> &&either) {
+                _left  = std::move(either._left);
                 _right = std::move(either._right);
             }
 
-            Either(const Either<Left, Right>& either) {
-                _left = either._left;
+            Either(const Either<Left, Right> &either) {
+                _left  = either._left;
                 _right = either._right;
             }
 
-            Either(Either& either) {
-                _left = either._left;
+            Either(Either &either) {
+                _left  = either._left;
                 _right = either._right;
             }
 
-            Either<Left, Right>&operator=(const Either<Left, Right>& either) {
-                _left = either._left;
+            Either<Left, Right> &operator=(const Either<Left, Right> &either) {
+                _left  = either._left;
                 _right = either._right;
                 return *this;
             };
 
-            Either<Left, Right>&operator=(const Left& left) {
-                _left = Option<Left>(left);
+            Either<Left, Right> &operator=(const Left &left) {
+                _left  = Option<Left>(left);
                 _right = Option<Right>();
                 return *this;
             };
 
-            Either<Left, Right>&operator=(const Right& right) {
-                _left = Option<Left>();
+            Either<Left, Right> &operator=(const Right &right) {
+                _left  = Option<Left>();
                 _right = Option<Right>(right);
                 return *this;
             };
@@ -140,21 +140,19 @@ namespace ledger {
                 return Either<Right, Left>(_right, _left);
             };
 
-            template<typename T>
-            T fold(std::function<T (const Left&)> f1, std::function<T (const Right&)> f2) const {
+            template <typename T>
+            T fold(std::function<T(const Left &)> f1, std::function<T(const Right &)> f2) const {
                 if (isRight())
                     return f2(getRight());
                 else
                     return f1(getLeft());
             };
 
-
-        private:
+          private:
             Option<Left> _left;
             Option<Right> _right;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_EITHER_HPP
+#endif // LEDGER_CORE_EITHER_HPP

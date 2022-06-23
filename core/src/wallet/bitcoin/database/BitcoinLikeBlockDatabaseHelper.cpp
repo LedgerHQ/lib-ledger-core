@@ -36,7 +36,6 @@ namespace ledger {
 
         bool BitcoinLikeBlockDatabaseHelper::blockExists(soci::session &sql,
                                                          const BitcoinLikeBlockchainExplorer::Block &block) {
-
             return false;
         }
 
@@ -44,5 +43,5 @@ namespace ledger {
                                                       const BitcoinLikeBlockchainExplorer::Block &block) {
             return false;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

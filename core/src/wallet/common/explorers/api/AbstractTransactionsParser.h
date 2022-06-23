@@ -28,63 +28,52 @@
  *
  */
 
-#include <rapidjson/reader.h>
 #include <net/HttpClient.hpp>
+#include <rapidjson/reader.h>
 #include <vector>
-
 
 #ifndef LEDGER_CORE_ABSTRACTTRANSACTIONSPARSER_H
 #define LEDGER_CORE_ABSTRACTTRANSACTIONSPARSER_H
 
-#define PROXY_PARSE_TX(method, ...)                                            \
-    if (_arrayDepth > 0) {                                                  \
-        return getTransactionParser().method(__VA_ARGS__);                      \
-    } else {                                                                \
-        return true;                                                        \
+#define PROXY_PARSE_TX(method, ...)                        \
+    if (_arrayDepth > 0) {                                 \
+        return getTransactionParser().method(__VA_ARGS__); \
+    } else {                                               \
+        return true;                                       \
     }
 
 namespace ledger {
     namespace core {
         template <typename BlockchainExplorerTransaction, typename TxParser>
         class AbstractTransactionsParser {
+          public:
+            bool Null(){
+                PROXY_PARSE_TX(Null)};
 
-        public:
-            bool Null() {
-                PROXY_PARSE_TX(Null)
-            };
+            bool Bool(bool b){
+                PROXY_PARSE_TX(Bool, b)};
 
-            bool Bool(bool b) {
-                PROXY_PARSE_TX(Bool, b)
-            };
+            bool Int(int i){
+                PROXY_PARSE_TX(Int, i)};
 
-            bool Int(int i) {
-                PROXY_PARSE_TX(Int, i)
-            };
+            bool Uint(unsigned i){
+                PROXY_PARSE_TX(Uint, i)};
 
-            bool Uint(unsigned i) {
-                PROXY_PARSE_TX(Uint, i)
-            };
+            bool Int64(int64_t i){
+                PROXY_PARSE_TX(Int64, i)};
 
-            bool Int64(int64_t i) {
-                PROXY_PARSE_TX(Int64, i)
-            };
+            bool Uint64(uint64_t i){
+                PROXY_PARSE_TX(Uint64, i)};
 
-            bool Uint64(uint64_t i) {
-                PROXY_PARSE_TX(Uint64, i)
-            };
-
-            bool Double(double d) {
-                PROXY_PARSE_TX(Double, d)
-            };
+            bool Double(double d){
+                PROXY_PARSE_TX(Double, d)};
 
             bool
-            RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-                PROXY_PARSE_TX(RawNumber, str, length, copy)
-            };
+            RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy){
+                PROXY_PARSE_TX(RawNumber, str, length, copy)};
 
-            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-                PROXY_PARSE_TX(String, str, length, copy)
-            };
+            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy){
+                PROXY_PARSE_TX(String, str, length, copy)};
 
             bool StartObject() {
                 _objectDepth += 1;
@@ -98,14 +87,13 @@ namespace ledger {
                 PROXY_PARSE_TX(StartObject)
             };
 
-            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-                PROXY_PARSE_TX(Key, str, length, copy)
-            };
+            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy){
+                PROXY_PARSE_TX(Key, str, length, copy)};
 
             bool EndObject(rapidjson::SizeType memberCount) {
                 if (_arrayDepth > 0) {
                     _objectDepth -= 1;
-                    auto result =  getTransactionParser().EndObject(memberCount);
+                    auto result = getTransactionParser().EndObject(memberCount);
                     return result;
                 } else {
                     return true;
@@ -128,19 +116,18 @@ namespace ledger {
                 return true;
             };
 
-
             void init(
-                    std::vector<BlockchainExplorerTransaction> *transactions) {
+                std::vector<BlockchainExplorerTransaction> *transactions) {
                 _transactions = transactions;
             };
 
-        protected:
+          protected:
             virtual TxParser &getTransactionParser() = 0;
-            std::vector<BlockchainExplorerTransaction>* _transactions;
+            std::vector<BlockchainExplorerTransaction> *_transactions;
             uint32_t _arrayDepth;
             uint32_t _objectDepth;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_ABSTRACTTRANSACTIONSPARSER_H
+#endif // LEDGER_CORE_ABSTRACTTRANSACTIONSPARSER_H

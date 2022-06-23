@@ -28,23 +28,19 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_TEZOSLIKETRANSACTIONBUILDER_H
 #define LEDGER_CORE_TEZOSLIKETRANSACTIONBUILDER_H
 
-#include <api/TezosLikeTransactionBuilder.hpp>
+#include <api/Amount.hpp>
 #include <api/Currency.hpp>
 #include <api/ExecutionContext.hpp>
-#include <api/Amount.hpp>
+#include <api/TezosLikeTransactionBuilder.hpp>
 #include <api/TezosOperationTag.hpp>
-
+#include <async/Future.hpp>
+#include <math/BigInt.h>
+#include <spdlog/logger.h>
 #include <wallet/common/Amount.h>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
-
-#include <math/BigInt.h>
-
-#include <async/Future.hpp>
-#include <spdlog/logger.h>
 
 namespace ledger {
     namespace core {
@@ -67,12 +63,12 @@ namespace ledger {
         };
 
         using TezosLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::TezosLikeTransaction>>(
-                const TezosLikeTransactionBuildRequest &, const std::shared_ptr<TezosLikeBlockchainExplorer> &)>;
+            const TezosLikeTransactionBuildRequest &,
+            const std::shared_ptr<TezosLikeBlockchainExplorer> &)>;
 
         class TezosLikeTransactionBuilder : public api::TezosLikeTransactionBuilder,
                                             public std::enable_shared_from_this<TezosLikeTransactionBuilder> {
-        public:
-
+          public:
             explicit TezosLikeTransactionBuilder(const std::string &senderAddress,
                                                  const std::shared_ptr<api::ExecutionContext> &context,
                                                  const api::Currency &params,
@@ -100,10 +96,10 @@ namespace ledger {
             setRevealFees(const std::shared_ptr<api::Amount> &revealFees) override;
 
             std::shared_ptr<api::TezosLikeTransactionBuilder>
-            setGasLimit(const std::shared_ptr<api::Amount> & gasLimit) override ;
+            setGasLimit(const std::shared_ptr<api::Amount> &gasLimit) override;
 
             std::shared_ptr<api::TezosLikeTransactionBuilder>
-            setStorageLimit(const std::shared_ptr<api::BigInt> & storageLimit) override;
+            setStorageLimit(const std::shared_ptr<api::BigInt> &storageLimit) override;
 
             std::shared_ptr<api::TezosLikeTransactionBuilder>
             setCorrelationId(const std::string &correlationId) override;
@@ -121,7 +117,7 @@ namespace ledger {
                                                                                   bool isSigned,
                                                                                   const std::string &protocolUpdate);
 
-        private:
+          private:
             api::Currency _currency;
             std::shared_ptr<TezosLikeBlockchainExplorer> _explorer;
             TezosLikeTransactionBuildFunction _build;
@@ -130,6 +126,6 @@ namespace ledger {
             std::shared_ptr<spdlog::logger> _logger;
             std::string _senderAddress;
         };
-    }
-}
-#endif //LEDGER_CORE_TEZOSLIKETRANSACTIONBUILDER_H
+    } // namespace core
+} // namespace ledger
+#endif // LEDGER_CORE_TEZOSLIKETRANSACTIONBUILDER_H

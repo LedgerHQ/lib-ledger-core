@@ -29,6 +29,7 @@
  *
  */
 #include "InputParser.hpp"
+
 #include "utils/DateUtils.hpp"
 
 namespace ledger {
@@ -117,5 +118,5 @@ namespace ledger {
         void InputParser::init(BitcoinLikeBlockchainExplorerInput *input) {
             _input = input;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

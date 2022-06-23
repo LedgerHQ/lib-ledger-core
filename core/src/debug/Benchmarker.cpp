@@ -29,15 +29,16 @@
  *
  */
 #include "Benchmarker.h"
+
+#include <metrics/DurationsMap.hpp>
 #include <utils/DateUtils.hpp>
 #include <utils/DurationUtils.h>
-#include <metrics/DurationsMap.hpp>
 
 namespace ledger {
     namespace core {
 
         Benchmarker::Benchmarker(const std::string &name, const std::shared_ptr<spdlog::logger> &logger) {
-            _name = name;
+            _name   = name;
             _logger = logger;
         }
 
@@ -62,6 +63,5 @@ namespace ledger {
             return _stopDate - _startDate;
         }
 
-
-    }
-}
+    } // namespace core
+} // namespace ledger

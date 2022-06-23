@@ -29,8 +29,9 @@
  *
  */
 
-#include <gtest/gtest.h>
 #include "IntegrationEnvironment.h"
+
+#include <gtest/gtest.h>
 
 int main(int argc, char **argv) {
     IntegrationEnvironment::initInstance(argc, argv);

@@ -40,10 +40,10 @@ namespace ledger {
     namespace core {
 
         class AbstractAddress : public api::Address, public std::enable_shared_from_this<AbstractAddress> {
-        public:
-            explicit AbstractAddress(const api::Currency& currency, const Option<std::string>& path);
+          public:
+            explicit AbstractAddress(const api::Currency &currency, const Option<std::string> &path);
             api::Currency getCurrency() override;
-            const api::Currency& getCurrency() const;
+            const api::Currency &getCurrency() const;
 
             optional<std::string> getDerivationPath() override;
 
@@ -55,12 +55,11 @@ namespace ledger {
 
             bool isInstanceOfStellarLikeAddress() const override;
 
-        private:
+          private:
             api::Currency _currency;
             Option<std::string> _path;
-
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_ABSTRACTADDRESS_H
+#endif // LEDGER_CORE_ABSTRACTADDRESS_H

@@ -33,35 +33,34 @@
 #define LEDGER_CORE_STELLARLIKEKEYCHAIN_HPP
 
 #include <api/Keychain.hpp>
-#include <wallet/stellar/StellarLikeAddress.hpp>
 #include <collections/DynamicObject.hpp>
 #include <preferences/Preferences.hpp>
+#include <wallet/stellar/StellarLikeAddress.hpp>
 
 namespace ledger {
     namespace core {
-        class StellarLikeKeychain: public api::Keychain  {
-        public:
+        class StellarLikeKeychain : public api::Keychain {
+          public:
             using Address = std::shared_ptr<StellarLikeAddress>;
 
-            StellarLikeKeychain(const std::shared_ptr<api::DynamicObject>& configuration,
-                                const api::Currency& currency,
-                                const std::shared_ptr<Preferences>& preferences);
-            const api::StellarLikeNetworkParameters& getNetworkParams() const;
-            const api::Currency& getCurrency() const;
-            virtual Address getAddress() const = 0;
+            StellarLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
+                                const api::Currency &currency,
+                                const std::shared_ptr<Preferences> &preferences);
+            const api::StellarLikeNetworkParameters &getNetworkParams() const;
+            const api::Currency &getCurrency() const;
+            virtual Address getAddress() const        = 0;
             virtual std::string getRestoreKey() const = 0;
 
-        protected:
-            const std::shared_ptr<api::DynamicObject>& getConfiguration() const;
-            const std::shared_ptr<Preferences>& getPreferences() const;
+          protected:
+            const std::shared_ptr<api::DynamicObject> &getConfiguration() const;
+            const std::shared_ptr<Preferences> &getPreferences() const;
 
-        private:
+          private:
             std::shared_ptr<api::DynamicObject> _configuration;
             std::shared_ptr<Preferences> _preferences;
             api::Currency _currency;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_STELLARLIKEKEYCHAIN_HPP
+#endif // LEDGER_CORE_STELLARLIKEKEYCHAIN_HPP

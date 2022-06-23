@@ -29,15 +29,17 @@
  */
 
 #include "EthereumLikeTransactionParser.hpp"
-#include "utils/DateUtils.hpp"
-#include <math/Base58.hpp>
-#include <database/migrations.hpp>
 
-#define PROXY_PARSE(method, ...)                                    \
- auto& currentObject = _hierarchy.top();                            \
- if (currentObject == "block") {                                    \
-    return _blockParser.method(__VA_ARGS__);                        \
- } else                                                             \
+#include "utils/DateUtils.hpp"
+
+#include <database/migrations.hpp>
+#include <math/Base58.hpp>
+
+#define PROXY_PARSE(method, ...)                 \
+    auto &currentObject = _hierarchy.top();      \
+    if (currentObject == "block") {              \
+        return _blockParser.method(__VA_ARGS__); \
+    } else
 
 namespace ledger {
     namespace core {
@@ -46,7 +48,7 @@ namespace ledger {
             _lastKey = std::string(str, length);
 
             if (_lastKey == "block" && _arrayDepth == 0) {
-                auto& top = _hierarchy.top();
+                auto &top = _hierarchy.top();
             }
             PROXY_PARSE(Key, str, length, copy) {
                 return true;
@@ -58,7 +60,7 @@ namespace ledger {
                 _hierarchy.push(_lastKey);
             }
 
-            auto& currentObject = _hierarchy.top();
+            auto &currentObject = _hierarchy.top();
 
             if (currentObject == "block") {
                 EthereumLikeBlockchainExplorer::Block block;
@@ -74,7 +76,7 @@ namespace ledger {
         }
 
         bool EthereumLikeTransactionParser::EndObject(rapidjson::SizeType memberCount) {
-            auto& currentObject = _hierarchy.top();
+            auto &currentObject = _hierarchy.top();
             if (_lastKey == "block") {
                 return false;
             }
@@ -139,7 +141,7 @@ namespace ledger {
         bool EthereumLikeTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(RawNumber, str, length, copy) {
                 std::string number(str, length);
-                BigInt value = BigInt::fromString(number);
+                BigInt value      = BigInt::fromString(number);
                 bool isInternalTx = currentObject == "actions" && !_transaction->internalTransactions.empty();
                 if (_lastKey == "gas_used") {
                     if (isInternalTx) {
@@ -147,7 +149,7 @@ namespace ledger {
                     } else {
                         _transaction->gasUsed = Option<BigInt>(value);
                     }
-                }  else if (_lastKey == "gas") {
+                } else if (_lastKey == "gas") {
                     if (isInternalTx) {
                         _transaction->internalTransactions.back().gasLimit = value;
                     } else {
@@ -176,16 +178,16 @@ namespace ledger {
             PROXY_PARSE(String, str, length, copy) {
                 std::string value(str, length);
 
-                auto fromStringToBytes = [] (const std::string &data) -> std::vector<uint8_t> {
+                auto fromStringToBytes = [](const std::string &data) -> std::vector<uint8_t> {
                     std::string tmpData;
                     auto pos = data.find("x");
-                    if( pos != std::string::npos) { //[0x0, 0xf]
+                    if (pos != std::string::npos) { //[0x0, 0xf]
                         tmpData = data.substr(pos + 1, tmpData.size() - (pos + 1));
                     }
                     return hex::toByteArray(tmpData);
                 };
 
-                //All addresses are lower cased, we get EIP55 format
+                // All addresses are lower cased, we get EIP55 format
                 if ((_lastKey == "from" || _lastKey == "to" || _lastKey == "contract") && value.size() > 2) {
                     value = Base58::encodeWithEIP55(value);
                 }
@@ -230,17 +232,15 @@ namespace ledger {
             }
         }
 
-        EthereumLikeTransactionParser::EthereumLikeTransactionParser(std::string& lastKey) :
-            _lastKey(lastKey), _blockParser(lastKey)
-        {
+        EthereumLikeTransactionParser::EthereumLikeTransactionParser(std::string &lastKey) : _lastKey(lastKey), _blockParser(lastKey) {
             _arrayDepth = 0;
         }
 
         void EthereumLikeTransactionParser::init(EthereumLikeBlockchainExplorerTransaction *transaction) {
-            _transaction = transaction;
+            _transaction             = transaction;
             // Default receivedAt to `now`, in case the explorer doesn't return it.
             _transaction->receivedAt = std::chrono::system_clock::now();
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

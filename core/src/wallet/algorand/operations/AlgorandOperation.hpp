@@ -34,62 +34,58 @@
 #include <api/AlgorandOperation.hpp>
 #include <api/AlgorandOperationType.hpp>
 #include <api/AlgorandTransaction.hpp>
-
 #include <api/Operation.hpp>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/api_impl/OperationApi.h>
 
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
 
-    class Account;
-    class AlgorandTransactionImpl;
+            class Account;
+            class AlgorandTransactionImpl;
 
-    class Operation : public ::ledger::core::api::AlgorandOperation
-                    , public ::ledger::core::OperationApi
-    {
-    public:
-        explicit Operation(const std::shared_ptr<AbstractAccount>& account);
-        explicit Operation(const std::shared_ptr<AbstractAccount>& account,
-                           const model::Transaction& txn);
+            class Operation : public ::ledger::core::api::AlgorandOperation, public ::ledger::core::OperationApi {
+              public:
+                explicit Operation(const std::shared_ptr<AbstractAccount> &account);
+                explicit Operation(const std::shared_ptr<AbstractAccount> &account,
+                                   const model::Transaction &txn);
 
-        // From ledger::core::api::AlgorandOperation
-        std::shared_ptr<api::AlgorandTransaction> getTransaction() const override;
-        api::AlgorandOperationType getAlgorandOperationType() const override;
-        std::string getRewards() const override;
-        std::string getAssetAmount() const override;
+                // From ledger::core::api::AlgorandOperation
+                std::shared_ptr<api::AlgorandTransaction> getTransaction() const override;
+                api::AlgorandOperationType getAlgorandOperationType() const override;
+                std::string getRewards() const override;
+                std::string getAssetAmount() const override;
 
-        void refreshUid(const std::string& additional = "");
+                void refreshUid(const std::string &additional = "");
 
-        bool isComplete() override;
+                bool isComplete() override;
 
-        const model::Transaction& getTransactionData() const;
-        void setTransaction(const model::Transaction& txn);
-        void setAlgorandOperationType(api::AlgorandOperationType t);
+                const model::Transaction &getTransactionData() const;
+                void setTransaction(const model::Transaction &txn);
+                void setAlgorandOperationType(api::AlgorandOperationType t);
 
-    private:
-        void inflate();
-        void inflateFromAccount();
-        void inflateFromTransaction();
-        void inflateDate();
-        void inflateBlock();
-        void inflateAmountAndFees();
-        void inflateSenders();
-        void inflateRecipients();
-        void inflateType();
-        void inflateAlgorandOperationType();
+              private:
+                void inflate();
+                void inflateFromAccount();
+                void inflateFromTransaction();
+                void inflateDate();
+                void inflateBlock();
+                void inflateAmountAndFees();
+                void inflateSenders();
+                void inflateRecipients();
+                void inflateType();
+                void inflateAlgorandOperationType();
 
-        const Account& getAlgorandAccount() const;
+                const Account &getAlgorandAccount() const;
 
-    private:
-        std::shared_ptr<AlgorandTransactionImpl> transaction;
-        api::AlgorandOperationType algorandType;
-        uint64_t rewards;
-        uint64_t assetAmount;
-    };
+              private:
+                std::shared_ptr<AlgorandTransactionImpl> transaction;
+                api::AlgorandOperationType algorandType;
+                uint64_t rewards;
+                uint64_t assetAmount;
+            };
 
-} // namespace algorand
-} // namespace core
+        } // namespace algorand
+    }     // namespace core
 } // namespace ledger
-

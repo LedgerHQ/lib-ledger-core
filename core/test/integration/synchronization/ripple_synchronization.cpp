@@ -28,22 +28,22 @@
  *
  */
 
-#include <gtest/gtest.h>
 #include "../BaseFixture.h"
-#include <set>
+
+#include <api/BlockchainExplorerEngines.hpp>
 #include <api/KeychainEngines.hpp>
+#include <api/RippleLikeOperation.hpp>
+#include <api/RippleLikeTransaction.hpp>
+#include <gtest/gtest.h>
+#include <iostream>
+#include <set>
 #include <utils/DateUtils.hpp>
 #include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
 #include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
-#include <iostream>
-#include <api/BlockchainExplorerEngines.hpp>
-#include <api/RippleLikeOperation.hpp>
-#include <api/RippleLikeTransaction.hpp>
 
 using namespace std;
 
 class RippleLikeWalletSynchronization : public BaseFixture {
-
 };
 
 TEST_F(RippleLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
@@ -59,18 +59,18 @@ TEST_F(RippleLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
 
             auto account = createRippleLikeAccount(wallet, nextIndex, XRP_KEYS_INFO);
 
-            auto fees = uv::wait(account->getFees());
+            auto fees    = uv::wait(account->getFees());
             EXPECT_GT(fees->toLong(), 0L);
             auto baseReserve = uv::wait(account->getBaseReserve());
             EXPECT_GT(baseReserve->toLong(), 0L);
 
-            auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            auto receiver   = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                 EXPECT_EQ(event->getCode(),
-                          api::EventCode::SYNCHRONIZATION_SUCCEED);
+                            api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                 auto balance = uv::wait(account->getBalance());
                 std::cout << "Balance: " << balance->toString() << std::endl;
@@ -79,17 +79,16 @@ TEST_F(RippleLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
             });
 
             auto restoreKey = account->getRestoreKey();
-            auto bus = account->synchronize();
+            auto bus        = account->synchronize();
             bus->subscribe(getTestExecutionContext(), receiver);
 
             getTestExecutionContext()->waitUntilStopped();
 
             auto ops = uv::wait(
-                    std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete()
-                    ->addOrder(api::OperationOrderKey::DATE,false))->execute());
+                std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete()->addOrder(api::OperationOrderKey::DATE, false))->execute());
             std::cout << "Ops: " << ops.size() << std::endl;
 
-            auto firstOp = ops.front();
+            auto firstOp    = ops.front();
             auto firstXrpOp = firstOp->asRippleLikeOperation();
 
             EXPECT_EQ(firstOp->getSenders()[0], "rPVMhWBsfF9iMXYj3aAzJVkPDTFNSyWdKy");
@@ -101,7 +100,7 @@ TEST_F(RippleLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
             EXPECT_EQ(firstXrpOp->getTransaction()->getLedgerSequence()->intValue(), 48602088);
             EXPECT_EQ(firstXrpOp->getTransaction()->getDate(), DateUtils::fromJSON("2019-07-12T11:05:20Z"));
 
-            for (auto const& op : ops) {
+            for (auto const &op : ops) {
                 auto xrpOp = op->asRippleLikeOperation();
                 EXPECT_FALSE(xrpOp == nullptr);
                 EXPECT_FALSE(xrpOp->getTransaction()->getSequence() == nullptr);
@@ -134,13 +133,13 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
 
             std::shared_ptr<Amount> balance;
 
-            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
+            auto receiver   = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                 EXPECT_EQ(event->getCode(),
-                          api::EventCode::SYNCHRONIZATION_SUCCEED);
+                            api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                 balance = uv::wait(account->getBalance());
                 std::cout << "Balance: " << balance->toString() << std::endl;
@@ -149,11 +148,11 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
             });
 
             auto restoreKey = account->getRestoreKey();
-            auto bus = account->synchronize();
+            auto bus        = account->synchronize();
             bus->subscribe(getTestExecutionContext(), receiver);
 
             getTestExecutionContext()->waitUntilStopped();
-            
+
             auto now = std::time(nullptr);
             char now_str[256];
             std::strftime(now_str, sizeof(now_str), "%Y-%m-%dT%H:%M:%SZ", std::localtime(&now));
@@ -161,13 +160,12 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
             auto history = uv::wait(account->getBalanceHistory(
                 "2019-09-20T00:00:00Z",
                 now_str,
-                api::TimePeriod::DAY
-            ));
+                api::TimePeriod::DAY));
 
             EXPECT_EQ(history.back()->toString(), balance->toString());
 
             auto zero = std::make_shared<api::BigIntImpl>(BigInt::ZERO);
-            for (auto const& balance : history) {
+            for (auto const &balance : history) {
                 EXPECT_TRUE(balance->toBigInt()->compare(zero) > 0);
             }
         }
@@ -175,39 +173,39 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
 }
 
 TEST_F(RippleLikeWalletSynchronization, VaultAccountSynchronization) {
-    auto pool = newDefaultPool();
+    auto pool          = newDefaultPool();
     auto configuration = DynamicObject::newInstance();
     configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
                              "44'/<coin_type>'/<account>'/<node>/<address>");
-    auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
+    auto wallet    = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
     auto nextIndex = uv::wait(wallet->getNextAccountIndex());
-    auto account = createRippleLikeAccount(wallet, nextIndex, VAULT_XRP_KEYS_INFO);
-    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    auto account   = createRippleLikeAccount(wallet, nextIndex, VAULT_XRP_KEYS_INFO);
+    auto receiver  = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
             return;
         EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
         EXPECT_EQ(event->getCode(),
-                  api::EventCode::SYNCHRONIZATION_SUCCEED);
+                   api::EventCode::SYNCHRONIZATION_SUCCEED);
 
         dispatcher->stop();
     });
 
-    auto bus = account->synchronize();
+    auto bus       = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
     dispatcher->waitUntilStopped();
 
     auto ops = uv::wait(
-            std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+        std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
     std::cout << "Ops: " << ops.size() << std::endl;
 
     int64_t destinationTag = 0;
-    for (auto const& op : ops) {
+    for (auto const &op : ops) {
         auto xrpOp = op->asRippleLikeOperation();
 
-        if (xrpOp->getTransaction()->getHash() == "EE38840B83CAB39216611D2F6E4F9828818514C3EA47504AE2521D8957331D3C" ) {
-          destinationTag = xrpOp->getTransaction()->getDestinationTag().value_or(0);
-          break;
+        if (xrpOp->getTransaction()->getHash() == "EE38840B83CAB39216611D2F6E4F9828818514C3EA47504AE2521D8957331D3C") {
+            destinationTag = xrpOp->getTransaction()->getDestinationTag().value_or(0);
+            break;
         }
     }
 

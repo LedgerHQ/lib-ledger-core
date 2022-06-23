@@ -30,21 +30,23 @@
  */
 
 #include "BitcoinLikeWalletFactory.hpp"
+
 #include "../networks.hpp"
-#include <wallet/currencies.hpp>
-#include <api/KeychainEngines.hpp>
-#include <wallet/pool/WalletPool.hpp>
+
+#include <api/BlockchainExplorerEngines.hpp>
 #include <api/ConfigurationDefaults.hpp>
-#include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
-#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
+#include <api/KeychainEngines.hpp>
 #include <api/SynchronizationEngines.hpp>
+#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
+#include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/bitcoin/factories/keystores/BitcoinLikeCommonKeychainFactory.h>
 #include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
 #include <wallet/bitcoin/keychains/P2SHBitcoinLikeKeychain.hpp>
 #include <wallet/bitcoin/keychains/P2WPKHBitcoinLikeKeychain.hpp>
 #include <wallet/bitcoin/keychains/P2WSHBitcoinLikeKeychain.hpp>
-#include <wallet/bitcoin/factories/keystores/BitcoinLikeCommonKeychainFactory.h>
-#include <api/BlockchainExplorerEngines.hpp>
 #include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
+#include <wallet/currencies.hpp>
+#include <wallet/pool/WalletPool.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -52,14 +54,12 @@ namespace ledger {
     namespace core {
         BitcoinLikeWalletFactory::BitcoinLikeWalletFactory(
             const api::Currency &currency,
-            const std::shared_ptr<WalletPool> &pool
-        ): AbstractWalletFactory(currency, pool) {
+            const std::shared_ptr<WalletPool> &pool) : AbstractWalletFactory(currency, pool) {
             _keychainFactories = {
                 {api::KeychainEngines::BIP32_P2PKH, std::make_shared<BitcoinLikeCommonKeychainFactory<P2PKHBitcoinLikeKeychain>>()},
                 {api::KeychainEngines::BIP49_P2SH, std::make_shared<BitcoinLikeCommonKeychainFactory<P2SHBitcoinLikeKeychain>>()},
                 {api::KeychainEngines::BIP173_P2WPKH, std::make_shared<BitcoinLikeCommonKeychainFactory<P2WPKHBitcoinLikeKeychain>>()},
-                {api::KeychainEngines::BIP173_P2WSH, std::make_shared<BitcoinLikeCommonKeychainFactory<P2WSHBitcoinLikeKeychain>>()}
-            };
+                {api::KeychainEngines::BIP173_P2WSH, std::make_shared<BitcoinLikeCommonKeychainFactory<P2WSHBitcoinLikeKeychain>>()}};
         }
 
         std::shared_ptr<AbstractWallet> BitcoinLikeWalletFactory::build(const WalletDatabaseEntry &entry) {
@@ -85,15 +85,15 @@ namespace ledger {
             }
 
             // Configure synchronizer
-            using BitcoinLikeAccountSynchronizerFactory = std::function<std::shared_ptr<BitcoinLikeAccountSynchronizer> ()>;
+            using BitcoinLikeAccountSynchronizerFactory = std::function<std::shared_ptr<BitcoinLikeAccountSynchronizer>()>;
             Option<BitcoinLikeAccountSynchronizerFactory> synchronizerFactory;
 
             {
                 auto engine = entry.configuration->getString(api::Configuration::SYNCHRONIZATION_ENGINE)
-                                           .value_or(api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION);
+                                  .value_or(api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION);
                 if (engine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
                     std::weak_ptr<WalletPool> p = pool;
-                    synchronizerFactory = Option<BitcoinLikeAccountSynchronizerFactory>([p, explorer]() {
+                    synchronizerFactory         = Option<BitcoinLikeAccountSynchronizerFactory>([p, explorer]() {
                         auto pool = p.lock();
                         if (!pool) {
                             throw make_exception(api::ErrorCode::NULL_POINTER, "WalletPool was released.");
@@ -111,15 +111,14 @@ namespace ledger {
             DerivationScheme scheme(STRING(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>"));
 
             return std::make_shared<BitcoinLikeWallet>(
-                    entry.name,
-                    explorer,
-                    keychainFactory->second,
-                    synchronizerFactory.getValue(),
-                    pool,
-                    currency.getValue(),
-                    entry.configuration,
-                    scheme
-            );
+                entry.name,
+                explorer,
+                keychainFactory->second,
+                synchronizerFactory.getValue(),
+                pool,
+                currency.getValue(),
+                entry.configuration,
+                scheme);
         }
 
         std::shared_ptr<BitcoinLikeBlockchainExplorer>
@@ -139,23 +138,21 @@ namespace ledger {
                 }
             }
 
-            auto pool = getPool();
+            auto pool   = getPool();
             auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
-                                       .value_or(api::BlockchainExplorerEngines::LEDGER_API);
+                              .value_or(api::BlockchainExplorerEngines::LEDGER_API);
             std::shared_ptr<BitcoinLikeBlockchainExplorer> explorer = nullptr;
             if (engine == api::BlockchainExplorerEngines::LEDGER_API) {
                 auto http = pool->getHttpClient(
-                        configuration->getString(
-                                api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
-                        ).value_or(api::ConfigurationDefaults::BLOCKCHAIN_DEFAULT_API_ENDPOINT)
-                );
-                auto& networkParams = getCurrency().bitcoinLikeNetworkParameters.value();
+                    configuration->getString(
+                                     api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
+                        .value_or(api::ConfigurationDefaults::BLOCKCHAIN_DEFAULT_API_ENDPOINT));
+                auto &networkParams = getCurrency().bitcoinLikeNetworkParameters.value();
 
-                auto context = pool->getDispatcher()->getThreadPoolExecutionContext(
-                    fmt::format("{}-{}-explorer",
-                        api::BlockchainExplorerEngines::LEDGER_API,
-                        networkParams.Identifier)
-                );
+                auto context        = pool->getDispatcher()->getThreadPoolExecutionContext(
+                           fmt::format("{}-{}-explorer",
+                                       api::BlockchainExplorerEngines::LEDGER_API,
+                                       networkParams.Identifier));
                 explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(context, http, networkParams, configuration);
             }
 
@@ -166,5 +163,5 @@ namespace ledger {
             return explorer;
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

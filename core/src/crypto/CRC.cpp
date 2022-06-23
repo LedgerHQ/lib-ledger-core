@@ -30,6 +30,7 @@
  */
 
 #include "CRC.hpp"
+
 #include <CRC.h>
 #include <mutex>
 
@@ -37,14 +38,14 @@ namespace ledger {
     namespace core {
 
         struct CRC::CRC16Profile {
-            explicit CRC16Profile(const ::CRC::Parameters<uint16_t, 16>& params) : table(params.MakeTable()) {}
+            explicit CRC16Profile(const ::CRC::Parameters<uint16_t, 16> &params) : table(params.MakeTable()) {}
             const ::CRC::Table<uint16_t, 16> table;
         };
 
-        CRC::CRC16Profile CRC::XMODEM {::CRC::CRC_16_XMODEM()};
+        CRC::CRC16Profile CRC::XMODEM{::CRC::CRC_16_XMODEM()};
 
-        uint16_t CRC::calculate(const std::vector<uint8_t> &bytes, CRC16Profile& profile) {
+        uint16_t CRC::calculate(const std::vector<uint8_t> &bytes, CRC16Profile &profile) {
             return ::CRC::Calculate(bytes.data(), bytes.size(), profile.table);
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

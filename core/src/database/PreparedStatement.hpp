@@ -40,8 +40,8 @@ namespace ledger {
 
         template <class Bindings>
         class PreparedStatement {
-        public:
-            PreparedStatement() {};
+          public:
+            PreparedStatement(){};
             void execute() {
                 if (statement.isEmpty()) {
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Cannot execute not prepared statement");
@@ -52,36 +52,34 @@ namespace ledger {
             Option<soci::statement> statement;
         };
 
-        template<class Bindings>
+        template <class Bindings>
         class StatementDeclaration {
-        public:
+          public:
             using BindFunction = std::function<void(soci::details::prepare_temp_type &, Bindings &)>;
 
             StatementDeclaration(const std::string &sqlQuery, const BindFunction &binder)
-                    : _query(sqlQuery), _binder(binder) {
-
+                : _query(sqlQuery), _binder(binder) {
             }
 
-            void operator()(soci::session &sql, PreparedStatement<Bindings>& out) const {
+            void operator()(soci::session &sql, PreparedStatement<Bindings> &out) const {
                 soci::details::prepare_temp_type prepare = sql.prepare << _query;
                 _binder(prepare, out.bindings);
                 out.statement = (prepare);
             }
 
-        private:
+          private:
             std::string _query;
             BindFunction _binder;
         };
 
         namespace db {
-            template<class Bindings>
+            template <class Bindings>
             StatementDeclaration<Bindings> stmt(const std::string &sqlQuery, const typename StatementDeclaration<Bindings>::BindFunction &binder) {
                 return StatementDeclaration<Bindings>(sqlQuery, binder);
             }
-        }
+        } // namespace db
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_PREPAREDSTATEMENT_HPP
+#endif // LEDGER_CORE_PREPAREDSTATEMENT_HPP

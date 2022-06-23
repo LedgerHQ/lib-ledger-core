@@ -31,17 +31,17 @@
 #ifndef LEDGER_CORE_VECTOR_HPP
 #define LEDGER_CORE_VECTOR_HPP
 
-#include <soci.h>
 #include <algorithm>
-#include <vector>
 #include <functional>
+#include <soci.h>
+#include <vector>
 
 namespace ledger {
     namespace core {
         namespace vector {
 
             template <typename T>
-            std::vector<T> concat(const std::vector<T>& a,  const std::vector<T>& b) {
+            std::vector<T> concat(const std::vector<T> &a, const std::vector<T> &b) {
                 std::vector<T> result;
                 result.reserve(a.size() + b.size());
                 result.insert(result.end(), a.begin(), a.end());
@@ -50,30 +50,28 @@ namespace ledger {
             }
 
             template <typename U, typename T>
-            inline std::vector<U> map(const std::vector<T>& source,
-                     const std::function<U (const T&)>& f) {
+            inline std::vector<U> map(const std::vector<T> &source,
+                                      const std::function<U(const T &)> &f) {
                 std::vector<U> out;
-                for (const auto& item : source) {
+                for (const auto &item : source) {
                     out.push_back(f(item));
                 }
                 return out;
             };
 
             template <typename Result, typename Function>
-            std::vector<Result> fromRowset(soci::rowset<soci::row>& rows, Function&& function) {
+            std::vector<Result> fromRowset(soci::rowset<soci::row> &rows, Function &&function) {
                 auto result = std::vector<Result>{};
                 std::transform(
                     rows.begin(),
                     rows.end(),
                     std::back_inserter(result),
-                    std::forward<Function>(function)
-                );
+                    std::forward<Function>(function));
                 return result;
             }
 
-        }
-    }
-}
+        } // namespace vector
+    }     // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_VECTOR_HPP
+#endif // LEDGER_CORE_VECTOR_HPP

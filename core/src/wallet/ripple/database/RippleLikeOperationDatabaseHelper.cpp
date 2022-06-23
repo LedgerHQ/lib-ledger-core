@@ -30,12 +30,13 @@
  */
 
 #include "RippleLikeOperationDatabaseHelper.hpp"
+
 #include <database/PreparedStatement.hpp>
+#include <database/soci-date.h>
+#include <database/soci-number.h>
+#include <database/soci-option.h>
 #include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
 #include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
-#include <database/soci-date.h>
-#include <database/soci-option.h>
-#include <database/soci-number.h>
 
 using namespace soci;
 
@@ -57,8 +58,7 @@ namespace {
         std::vector<Option<int64_t>> tag;
         std::vector<int32_t> status;
 
-        void update(const std::string& txUid, const Option<std::string>& bUid,
-                const RippleLikeBlockchainExplorerTransaction& tx) {
+        void update(const std::string &txUid, const Option<std::string> &bUid, const RippleLikeBlockchainExplorerTransaction &tx) {
             uid.push_back(txUid);
             hash.push_back(tx.hash);
             value.push_back(tx.value.toHexString());
@@ -78,22 +78,21 @@ namespace {
         ":transaction_uid, :hash, :value, :block_uid, :time, :sender,"
         ":receiver, :fees, :confirmations, :sequence, :tag, :status"
         ") ON CONFLICT(transaction_uid) DO UPDATE SET block_uid = :block_uid, status = :status",
-        [] (auto& s, auto& b) {
+        [](auto &s, auto &b) {
             s,
-            use(b.uid, "transaction_uid"),
-            use(b.hash, "hash"),
-            use(b.value, "value"),
-            use(b.blockUid, "block_uid"),
-            use(b.time, "time"),
-            use(b.sender, "sender"),
-            use(b.receiver, "receiver"),
-            use(b.fees, "fees"),
-            use(b.confirmations, "confirmations"),
-            use(b.sequence, "sequence"),
-            use(b.tag, "tag"),
-            use(b.status, "status");
-        }
-    );
+                use(b.uid, "transaction_uid"),
+                use(b.hash, "hash"),
+                use(b.value, "value"),
+                use(b.blockUid, "block_uid"),
+                use(b.time, "time"),
+                use(b.sender, "sender"),
+                use(b.receiver, "receiver"),
+                use(b.fees, "fees"),
+                use(b.confirmations, "confirmations"),
+                use(b.sequence, "sequence"),
+                use(b.tag, "tag"),
+                use(b.status, "status");
+        });
 
     // Ripple Memo
     struct MemoBinding {
@@ -103,9 +102,9 @@ namespace {
         std::vector<std::string> ty;
         std::vector<int> index;
 
-        void update(const RippleLikeBlockchainExplorerTransaction& tx) {
+        void update(const RippleLikeBlockchainExplorerTransaction &tx) {
             auto i = 0;
-            for (const auto& memo : tx.memos) {
+            for (const auto &memo : tx.memos) {
                 txUid.push_back(tx.hash);
                 data.push_back(memo.data);
                 mfmt.push_back(memo.fmt);
@@ -116,13 +115,12 @@ namespace {
         }
     };
     const auto UPSERT_MEMO = db::stmt<MemoBinding>(
-            "INSERT INTO ripple_memos VALUES ("
-            ":tx_uid, :data, :fmt, :ty, :i"
-            ") ON CONFLICT DO NOTHING",
-            [] (auto& s, auto& b) {
-                s, use(b.txUid), use(b.data), use(b.mfmt), use(b.ty), use(b.index);
-            }
-    );
+        "INSERT INTO ripple_memos VALUES ("
+        ":tx_uid, :data, :fmt, :ty, :i"
+        ") ON CONFLICT DO NOTHING",
+        [](auto &s, auto &b) {
+            s, use(b.txUid), use(b.data), use(b.mfmt), use(b.ty), use(b.index);
+        });
 
     // Operation
     struct RippleOperationBinding {
@@ -130,7 +128,7 @@ namespace {
         std::vector<std::string> txUid;
         std::vector<std::string> txHash;
 
-        void update(const std::string& opUid, const std::string& tUid, const std::string& tHash) {
+        void update(const std::string &opUid, const std::string &tUid, const std::string &tHash) {
             uid.push_back(opUid);
             txUid.push_back(tUid);
             txHash.push_back(tHash);
@@ -140,18 +138,17 @@ namespace {
         "INSERT INTO ripple_operations VALUES("
         ":uid, :transaction_uid, :transaction_hash"
         ") ON CONFLICT DO NOTHING",
-        [] (auto& s, auto& b) {
+        [](auto &s, auto &b) {
             s, use(b.uid), use(b.txUid), use(b.txHash);
-        }
-    );
-}
+        });
+} // namespace
 
 namespace ledger {
     namespace core {
 
         void RippleLikeOperationDatabaseHelper::bulkInsert(soci::session &sql, const std::vector<Operation> &ops) {
             if (ops.empty())
-                return ;
+                return;
             PreparedStatement<OperationBinding> opStmt;
             PreparedStatement<BlockBinding> blockStmt;
             PreparedStatement<TransactionBinding> txStmt;
@@ -164,15 +161,15 @@ namespace ledger {
             UPSERT_RIPPLE_OPERATION(sql, rippleOpStmt);
             UPSERT_MEMO(sql, memoStmt);
 
-            for (const auto& op : ops) {
-                const auto& tx = op.rippleTransaction.getValue();
+            for (const auto &op : ops) {
+                const auto &tx = op.rippleTransaction.getValue();
                 if (op.block.nonEmpty()) {
                     blockStmt.bindings.update(op.block.getValue());
                 }
-                auto blockUid = op.block.map<std::string>([] (const auto& b) {
+                auto blockUid = op.block.map<std::string>([](const auto &b) {
                     return b.getUid();
                 });
-                auto txUid = RippleLikeTransactionDatabaseHelper::createRippleTransactionUid(op.accountUid, tx.hash);
+                auto txUid    = RippleLikeTransactionDatabaseHelper::createRippleTransactionUid(op.accountUid, tx.hash);
                 txStmt.bindings.update(txUid, blockUid, tx);
                 memoStmt.bindings.update(tx);
                 rippleOpStmt.bindings.update(op.uid, txUid, tx.hash);
@@ -184,5 +181,5 @@ namespace ledger {
             opStmt.execute();
             rippleOpStmt.execute();
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

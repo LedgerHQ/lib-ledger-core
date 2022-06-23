@@ -32,16 +32,16 @@
 #define LEDGER_CORE_CURRENCIES_HPP
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER)
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 #include <api/Currency.hpp>
-#include <wallet/cosmos/CosmosLikeCurrencies.hpp>  // Declares ATOM
-#include <wallet/algorand/AlgorandLikeCurrencies.hpp>  // Declares ALGO
+#include <wallet/algorand/AlgorandLikeCurrencies.hpp> // Declares ALGO
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>     // Declares ATOM
 
 namespace ledger {
     namespace core {
@@ -77,9 +77,8 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::Currency RIPPLE;
             extern LIBCORE_EXPORT const api::Currency TEZOS;
             extern LIBCORE_EXPORT const api::Currency STELLAR;
-        };
-    }
-}
+        }; // namespace currencies
+    }      // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_CURRENCIES_HPP
+#endif // LEDGER_CORE_CURRENCIES_HPP

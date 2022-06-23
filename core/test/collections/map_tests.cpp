@@ -37,8 +37,7 @@ using namespace ledger::core;
 TEST(Map, InitializeAndGet) {
     Map<std::string, int> map = {
         {"my_key", 12},
-        {"my_other_key", 13}
-    };
+        {"my_other_key", 13}};
     EXPECT_EQ(map["my_key"], 12);
 }
 

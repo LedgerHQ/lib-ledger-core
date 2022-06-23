@@ -29,10 +29,12 @@
  *
  */
 #include "SECP256k1Point.hpp"
+
 #include "../utils/Exception.hpp"
-#include <utils/VectorUtils.h>
-#include <include/secp256k1.h>
+
 #include <debug/Benchmarker.h>
+#include <include/secp256k1.h>
+#include <utils/VectorUtils.h>
 
 namespace ledger {
     namespace core {
@@ -58,7 +60,7 @@ namespace ledger {
         }
 
         SECP256k1Point::SECP256k1Point(const SECP256k1Point &p) : SECP256k1Point() {
-           *this = p;
+            *this = p;
         }
 
         SECP256k1Point &SECP256k1Point::operator=(const SECP256k1Point &p) {
@@ -81,9 +83,10 @@ namespace ledger {
             std::unique_ptr<secp256k1_pubkey> pubKey(new secp256k1_pubkey());
             memcpy(pubKey.get(), _pubKey, sizeof(*pubKey));
             std::vector<uint8_t> serializedKey(33);
-            auto len = serializedKey.size();
+            auto len  = serializedKey.size();
             auto flag = secp256k1_ec_pubkey_tweak_add(_context.ptr, _pubKey, num.data());
-            if (flag == 0) throw Exception(api::ErrorCode::RUNTIME_ERROR, "SECP256k1Point SECP256k1Point::generatorMultiply(const std::vector<uint8_t> &n) failed");
+            if (flag == 0)
+                throw Exception(api::ErrorCode::RUNTIME_ERROR, "SECP256k1Point SECP256k1Point::generatorMultiply(const std::vector<uint8_t> &n) failed");
             secp256k1_ec_pubkey_serialize(_context.ptr, serializedKey.data(), &len, _pubKey, SECP256K1_EC_COMPRESSED);
             return SECP256k1Point(serializedKey);
         }
@@ -97,7 +100,6 @@ namespace ledger {
                 return result;
             }
             return std::vector<uint8_t>(_pubKey->data, _pubKey->data + sizeof(_pubKey->data));
-
         }
 
         void SECP256k1Point::ensurePubkeyIsNotNull() const {
@@ -105,5 +107,5 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Public key is null, cannot do any computation on the point.");
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger

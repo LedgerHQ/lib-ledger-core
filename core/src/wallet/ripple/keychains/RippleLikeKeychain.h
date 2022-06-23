@@ -28,38 +28,34 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKEKEYCHAIN_H
 #define LEDGER_CORE_RIPPLELIKEKEYCHAIN_H
 
-
-#include <string>
-#include <vector>
-#include <utils/DerivationScheme.hpp>
-#include <utils/Option.hpp>
-#include <preferences/Preferences.hpp>
-#include <api/Configuration.hpp>
-#include <api/DynamicObject.hpp>
-#include <api/Currency.hpp>
 #include <api/AccountCreationInfo.hpp>
+#include <api/Configuration.hpp>
+#include <api/Currency.hpp>
+#include <api/DynamicObject.hpp>
 #include <api/ExtendedKeyAccountCreationInfo.hpp>
 #include <api/Keychain.hpp>
 #include <api/RippleLikeExtendedPublicKey.hpp>
+#include <preferences/Preferences.hpp>
 #include <ripple/RippleLikeAddress.h>
+#include <string>
+#include <utils/DerivationScheme.hpp>
+#include <utils/Option.hpp>
+#include <vector>
 
 namespace ledger {
     namespace core {
 
-        class RippleLikeKeychain: public api::Keychain {
-
-        public:
+        class RippleLikeKeychain : public api::Keychain {
+          public:
             using Address = std::shared_ptr<RippleLikeAddress>;
 
             RippleLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
                                const api::Currency &params,
                                int account,
                                const std::shared_ptr<Preferences> &preferences);
-
 
             RippleLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
                                const api::Currency &params,
@@ -89,7 +85,6 @@ namespace ledger {
 
             Option<std::vector<uint8_t>> getPublicKey(const std::string &address) const;
 
-
             std::shared_ptr<api::DynamicObject> getConfiguration() const;
 
             const DerivationScheme &getDerivationScheme() const;
@@ -103,11 +98,11 @@ namespace ledger {
             int32_t getOutputSizeAsSignedTxInput() const;
 
             std::shared_ptr<Preferences> getPreferences() const;
-        protected:
 
+          protected:
             DerivationScheme &getDerivationScheme();
 
-        private:
+          private:
             RippleLikeKeychain::Address derive();
 
             const api::Currency _currency;
@@ -120,8 +115,7 @@ namespace ledger {
             std::string _localPath;
             std::string _address;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_RIPPLELIKEKEYCHAIN_H
+#endif // LEDGER_CORE_RIPPLELIKEKEYCHAIN_H

@@ -32,28 +32,28 @@
 // Seed generated with "ghost rookie muffin"
 
 #include <gtest/gtest.h>
+#include <ledger/core/bytes/BytesReader.h>
+#include <ledger/core/collections/DynamicObject.hpp>
 #include <ledger/core/crypto/DeterministicPublicKey.hpp>
 #include <ledger/core/math/Base58.hpp>
-#include <ledger/core/bytes/BytesReader.h>
 #include <ledger/core/utils/hex.h>
-#include <ledger/core/collections/DynamicObject.hpp>
 using namespace ledger::core;
 
 static const std::string XPUB_1 = "xpub6EedcbfDs3pkzgqvoRxTW6P8NcCSaVbMQsb6xwCdEBzqZBronwY3Nte1Vjunza8f6eSMrYvbM5CMihGo6SbzpHxn4R5pvcr2ZbZ6wkDmgpy";
 
-static DeterministicPublicKey createKeyFromXpub(const std::string& xpub) {
+static DeterministicPublicKey createKeyFromXpub(const std::string &xpub) {
     auto networkIdentifier = "btc";
-    auto config = std::make_shared<DynamicObject>();
+    auto config            = std::make_shared<DynamicObject>();
     config->putString("networkIdentifier", networkIdentifier);
     auto raw = Base58::decode(xpub, config);
     BytesReader reader(raw);
 
     reader.readNextBeUint(); // READ MAGIC
-    auto depth = reader.readNextByte();
+    auto depth       = reader.readNextByte();
     auto fingerprint = reader.readNextBeUint();
-    auto childNum = reader.readNextBeUint();
-    auto chainCode = reader.read(32);
-    auto publicKey = reader.read(33);
+    auto childNum    = reader.readNextBeUint();
+    auto chainCode   = reader.read(32);
+    auto publicKey   = reader.read(33);
     return DeterministicPublicKey(publicKey, chainCode, childNum, depth, fingerprint, networkIdentifier);
 }
 

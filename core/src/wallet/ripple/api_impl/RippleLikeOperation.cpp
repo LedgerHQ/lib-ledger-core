@@ -28,18 +28,18 @@
  *
  */
 
-
 #include "RippleLikeOperation.h"
+
 #include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
 
 namespace ledger {
     namespace core {
 
-        RippleLikeOperation::RippleLikeOperation(const std::shared_ptr<OperationApi>& baseOp) {
+        RippleLikeOperation::RippleLikeOperation(const std::shared_ptr<OperationApi> &baseOp) {
             _transaction = std::make_shared<RippleLikeTransactionApi>(baseOp);
         }
         std::shared_ptr<api::RippleLikeTransaction> RippleLikeOperation::getTransaction() {
             return _transaction;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

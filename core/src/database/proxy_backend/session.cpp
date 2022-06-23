@@ -62,11 +62,11 @@ void proxy_session_backend::clean_up() {
 }
 
 proxy_statement_backend *proxy_session_backend::make_statement_backend() {
-   return new proxy_statement_backend(*this);
+    return new proxy_statement_backend(*this);
 }
 
 proxy_rowid_backend *proxy_session_backend::make_rowid_backend() {
-    throw make_exception(api::ErrorCode::DATABASE_EXCEPTION , "ROWID is not supported by database backend");
+    throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "ROWID is not supported by database backend");
 }
 
 proxy_blob_backend *proxy_session_backend::make_blob_backend() {

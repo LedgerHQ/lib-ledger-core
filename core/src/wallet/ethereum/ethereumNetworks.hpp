@@ -32,11 +32,11 @@
 #define LEDGER_CORE_ETH_NETWORKS_HPP
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER)
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 #include "../../api/EthereumLikeNetworkParameters.hpp"
@@ -48,23 +48,20 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::EthereumLikeNetworkParameters getEthLikeNetworkParameters(const std::string &networkName);
             extern LIBCORE_EXPORT const std::vector<api::EthereumLikeNetworkParameters> ALL_ETH;
 
-            template<class Archive>
-            void serialize(Archive & archive,
-                           api::EthereumLikeNetworkParameters & p)
-            {
+            template <class Archive>
+            void serialize(Archive &archive,
+                           api::EthereumLikeNetworkParameters &p) {
                 archive(
                     p.Identifier,
                     p.MessagePrefix,
                     p.ChainID,
                     p.XPUBVersion,
                     p.AdditionalEIPs,
-                    p.TimestampDelay
-                );
+                    p.TimestampDelay);
             }
 
-        }
-    }
-}
+        } // namespace networks
+    }     // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_ETH_NETWORKS_HPP
+#endif // LEDGER_CORE_ETH_NETWORKS_HPP

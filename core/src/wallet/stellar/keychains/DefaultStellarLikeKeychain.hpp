@@ -37,11 +37,11 @@
 namespace ledger {
     namespace core {
         class DefaultStellarLikeKeychain : public StellarLikeKeychain {
-        public:
-            DefaultStellarLikeKeychain( const Address& address,
-                                        const std::shared_ptr<api::DynamicObject>& configuration,
-                                        const api::Currency& currency,
-                                        const std::shared_ptr<Preferences>& preferences);
+          public:
+            DefaultStellarLikeKeychain(const Address &address,
+                                       const std::shared_ptr<api::DynamicObject> &configuration,
+                                       const api::Currency &currency,
+                                       const std::shared_ptr<Preferences> &preferences);
 
             Address getAddress() const override;
 
@@ -49,12 +49,11 @@ namespace ledger {
 
             std::string getRestoreKey() const override;
 
-        private:
+          private:
             Address _address;
             std::vector<uint8_t> _pubKey;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_DEFAULTSTELLARLIKEKEYCHAIN_HPP
+#endif // LEDGER_CORE_DEFAULTSTELLARLIKEKEYCHAIN_HPP

@@ -37,15 +37,14 @@ namespace soci {
     template <>
     struct type_conversion<std::chrono::system_clock::time_point> {
         typedef std::string base_type;
-        static void from_base(base_type const & in, indicator ind, std::chrono::system_clock::time_point & out) {
+        static void from_base(base_type const &in, indicator ind, std::chrono::system_clock::time_point &out) {
             out = ledger::core::DateUtils::fromJSON(in);
         }
 
-        static void to_base(std::chrono::system_clock::time_point const & in, base_type & out, indicator & ind) {
-           out = ledger::core::DateUtils::toJSON(in);
+        static void to_base(std::chrono::system_clock::time_point const &in, base_type &out, indicator &ind) {
+            out = ledger::core::DateUtils::toJSON(in);
         }
-
     };
-}
+} // namespace soci
 
-#endif //LEDGER_CORE_SOCI_DATE_H
+#endif // LEDGER_CORE_SOCI_DATE_H

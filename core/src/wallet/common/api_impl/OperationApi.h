@@ -31,20 +31,20 @@
 #ifndef LEDGER_CORE_OPERATIONAPI_H
 #define LEDGER_CORE_OPERATIONAPI_H
 
-#define CORRELATIONID_PREFIX(id) id.empty()?"":(std::string("ledger.correlation_id=")+id)
+#define CORRELATIONID_PREFIX(id) id.empty() ? "" : (std::string("ledger.correlation_id=") + id)
 
-#include <api/Operation.hpp>
-#include <wallet/common/Operation.h>
 #include <api/Currency.hpp>
+#include <api/Operation.hpp>
 #include <metrics/ManagedObject.hpp>
+#include <wallet/common/Operation.h>
 
 namespace ledger {
     namespace core {
 
         class AbstractAccount;
         class OperationApi : public api::Operation, public ManagedObject<OperationApi>, public std::enable_shared_from_this<OperationApi> {
-        public:
-            OperationApi(const std::shared_ptr<AbstractAccount>& account);
+          public:
+            OperationApi(const std::shared_ptr<AbstractAccount> &account);
             std::string getUid() override;
             int32_t getAccountIndex() override;
             api::OperationType getOperationType() override;
@@ -75,22 +75,21 @@ namespace ledger {
 
             bool isComplete() override;
             api::WalletType getWalletType() override;
-            ledger::core::Operation& getBackend();
-            const ledger::core::Operation& getBackend() const;
-            const std::shared_ptr<AbstractAccount>& getAccount() const;
+            ledger::core::Operation &getBackend();
+            const ledger::core::Operation &getBackend() const;
+            const std::shared_ptr<AbstractAccount> &getAccount() const;
 
             api::Currency getCurrency() override;
 
-            ~OperationApi() {};
+            ~OperationApi(){};
 
-        private:
+          private:
             ledger::core::Operation _backend;
             std::shared_ptr<AbstractAccount> _account;
             std::shared_ptr<api::Amount> _fees;
             std::shared_ptr<api::Amount> _amount;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_OPERATIONAPI_H
+#endif // LEDGER_CORE_OPERATIONAPI_H

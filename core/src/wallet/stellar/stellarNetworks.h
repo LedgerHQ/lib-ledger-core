@@ -28,17 +28,15 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_STELLARNETWORKS_H
 #define LEDGER_CORE_STELLARNETWORKS_H
 
-
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
+#if defined(_MSC_VER) && _MSC_VER <= 1900
+#include <libcore_export.h>
+#else
+#define LIBCORE_EXPORT
+#endif
 #endif
 
 #include <api/StellarLikeNetworkParameters.hpp>
@@ -48,22 +46,19 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::StellarLikeNetworkParameters getStellarLikeNetworkParameters(const std::string &networkName);
             extern LIBCORE_EXPORT const std::vector<api::StellarLikeNetworkParameters> ALL_STELLAR;
 
-            template<class Archive>
-            void serialize(Archive & archive,
-                           api::StellarLikeNetworkParameters & p)
-            {
+            template <class Archive>
+            void serialize(Archive &archive,
+                           api::StellarLikeNetworkParameters &p) {
                 archive(
-                        p.Identifier,
-                        p.Version,
-                        p.BaseReserve,
-                        p.BaseFee,
-                        p.AdditionalSEPs
-                );
+                    p.Identifier,
+                    p.Version,
+                    p.BaseReserve,
+                    p.BaseFee,
+                    p.AdditionalSEPs);
             }
 
-        }
-    }
-}
+        } // namespace networks
+    }     // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_STELLARNETWORKS_H
+#endif // LEDGER_CORE_STELLARNETWORKS_H

@@ -32,22 +32,19 @@
 #ifndef LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H
 #define LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H
 
-#include <unordered_set>
-
-#include <api/BitcoinLikeTransactionBuilder.hpp>
-#include <api/BitcoinLikePickingStrategy.hpp>
-#include <api/BitcoinLikeNetworkParameters.hpp>
-#include <api/BitcoinLikeTransaction.hpp>
 #include <api/Amount.hpp>
+#include <api/BitcoinLikeNetworkParameters.hpp>
+#include <api/BitcoinLikePickingStrategy.hpp>
+#include <api/BitcoinLikeTransaction.hpp>
+#include <api/BitcoinLikeTransactionBuilder.hpp>
+#include <api/Currency.hpp>
+#include <async/Future.hpp>
 #include <functional>
 #include <list>
-#include <async/Future.hpp>
 #include <math/BigInt.h>
 #include <spdlog/logger.h>
-#include <api/Currency.hpp>
+#include <unordered_set>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
-
-
 
 namespace ledger {
     namespace core {
@@ -60,7 +57,7 @@ namespace ledger {
         };
 
         struct BitcoinLikeTransactionUtxoDescriptorHash {
-            size_t operator()(BitcoinLikeTransactionUtxoDescriptor const& utxo) const;
+            size_t operator()(BitcoinLikeTransactionUtxoDescriptor const &utxo) const;
         };
 
         struct BitcoinLikeTransactionInputDescriptor {
@@ -69,14 +66,14 @@ namespace ledger {
             uint64_t sequence;
         };
 
-        struct BitcoinUtxoPickerParams{
+        struct BitcoinUtxoPickerParams {
             api::BitcoinLikePickingStrategy strategy;
             int32_t sequence;
             optional<int32_t> maxUtxo;
         };
 
         struct BitcoinLikeTransactionBuildRequest {
-            BitcoinLikeTransactionBuildRequest(const std::shared_ptr<BigInt>& minChange);
+            BitcoinLikeTransactionBuildRequest(const std::shared_ptr<BigInt> &minChange);
             std::vector<BitcoinLikeTransactionInputDescriptor> inputs;
             std::list<std::tuple<std::shared_ptr<BigInt>, std::shared_ptr<api::BitcoinLikeScript>>> outputs;
             std::list<std::string> changePaths;
@@ -90,17 +87,17 @@ namespace ledger {
             std::string correlationId;
         };
 
-        using BitcoinLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::BitcoinLikeTransaction>> (const BitcoinLikeTransactionBuildRequest&)>;
+        using BitcoinLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::BitcoinLikeTransaction>>(const BitcoinLikeTransactionBuildRequest &)>;
 
         class BitcoinLikeTransactionBuilder : public api::BitcoinLikeTransactionBuilder, public std::enable_shared_from_this<BitcoinLikeTransactionBuilder> {
-        public:
+          public:
             explicit BitcoinLikeTransactionBuilder(
-                    const std::shared_ptr<api::ExecutionContext>& context,
-                    const api::Currency& params,
-                    const std::shared_ptr<spdlog::logger>& logger,
-                    const BitcoinLikeTransactionBuildFunction& buildFunction,
-                    bool allowP2TR = false);
-            BitcoinLikeTransactionBuilder(const BitcoinLikeTransactionBuilder& cpy);
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const api::Currency &params,
+                const std::shared_ptr<spdlog::logger> &logger,
+                const BitcoinLikeTransactionBuildFunction &buildFunction,
+                bool allowP2TR = false);
+            BitcoinLikeTransactionBuilder(const BitcoinLikeTransactionBuilder &cpy);
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder> addOutput(const std::shared_ptr<api::Amount> &amount,
                                                                           const std::shared_ptr<api::BitcoinLikeScript> &script) override;
@@ -139,7 +136,8 @@ namespace ledger {
 
             void build(const std::shared_ptr<api::BitcoinLikeTransactionCallback> &callback) override;
             Future<std::shared_ptr<api::BitcoinLikeTransaction>> build();
-        private:
+
+          private:
             api::Currency _currency;
             std::shared_ptr<api::BitcoinLikeScript> createSendScript(const std::string &address);
             BitcoinLikeTransactionBuildFunction _build;
@@ -148,7 +146,7 @@ namespace ledger {
             std::shared_ptr<spdlog::logger> _logger;
             bool _allowP2TR = false;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H
+#endif // LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H

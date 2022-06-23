@@ -32,35 +32,33 @@
 #ifndef LEDGER_CORE_STELLARLIKEKEYCHAINFACTORY_HPP
 #define LEDGER_CORE_STELLARLIKEKEYCHAINFACTORY_HPP
 
-
 #include <api/AccountCreationInfo.hpp>
-#include <collections/DynamicObject.hpp>
-#include <utils/DerivationPath.hpp>
-#include <preferences/Preferences.hpp>
 #include <api/Currency.hpp>
+#include <collections/DynamicObject.hpp>
+#include <preferences/Preferences.hpp>
+#include <utils/DerivationPath.hpp>
 #include <wallet/stellar/keychains/StellarLikeKeychain.hpp>
 
 namespace ledger {
     namespace core {
         class StellarLikeKeychain;
         class StellarLikeKeychainFactory {
-        public:
+          public:
             std::shared_ptr<StellarLikeKeychain> build(int32_t index,
-                                                        const DerivationPath &path,
-                                                        const std::shared_ptr<DynamicObject>& configuration,
-                                                        const api::AccountCreationInfo& info,
-                                                        const std::shared_ptr<Preferences>& accountPreferences,
-                                                        const api::Currency& currency);
+                                                       const DerivationPath &path,
+                                                       const std::shared_ptr<DynamicObject> &configuration,
+                                                       const api::AccountCreationInfo &info,
+                                                       const std::shared_ptr<Preferences> &accountPreferences,
+                                                       const api::Currency &currency);
 
             std::shared_ptr<StellarLikeKeychain> restore(int32_t index,
                                                          const DerivationPath &path,
-                                                         const std::shared_ptr<DynamicObject>& configuration,
-                                                         const std::string& address,
-                                                         const std::shared_ptr<Preferences>& accountPreferences,
-                                                         const api::Currency& currency);
+                                                         const std::shared_ptr<DynamicObject> &configuration,
+                                                         const std::string &address,
+                                                         const std::shared_ptr<Preferences> &accountPreferences,
+                                                         const api::Currency &currency);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_STELLARLIKEKEYCHAINFACTORY_HPP
+#endif // LEDGER_CORE_STELLARLIKEKEYCHAINFACTORY_HPP

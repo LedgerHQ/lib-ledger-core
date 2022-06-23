@@ -33,7 +33,6 @@
 #define __BITCOINLIKEUTXO_H_
 
 #include <string>
-
 #include <utils/Option.hpp>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/common/Amount.h>
@@ -55,13 +54,13 @@ namespace ledger {
             Option<uint64_t> blockHeight;
 
             operator BitcoinLikeBlockchainExplorerOutput() const;
-            BitcoinLikeUtxo() = default;
+            BitcoinLikeUtxo()  = default;
             ~BitcoinLikeUtxo() = default;
         };
 
-        BitcoinLikeUtxo makeUtxo(BitcoinLikeBlockchainExplorerOutput const& output, api::Currency const& currency);
-        BitcoinLikeBlockchainExplorerOutput toExplorerOutput(BitcoinLikeUtxo const& utxo);
-    }
-}
+        BitcoinLikeUtxo makeUtxo(BitcoinLikeBlockchainExplorerOutput const &output, api::Currency const &currency);
+        BitcoinLikeBlockchainExplorerOutput toExplorerOutput(BitcoinLikeUtxo const &utxo);
+    } // namespace core
+} // namespace ledger
 
 #endif // __BITCOINLIKEUTXO_H_

@@ -30,13 +30,13 @@
  */
 
 #include "ProxyBackend.hpp"
+
 #include <database/proxy_backend/soci-proxy.h>
 
 namespace ledger {
     namespace core {
 
-        ProxyBackend::ProxyBackend(const std::shared_ptr<ledger::core::api::DatabaseEngine> &engine) :
-            DatabaseBackend(), _engine(engine), _factory(soci::factory_proxy(engine)) {
+        ProxyBackend::ProxyBackend(const std::shared_ptr<ledger::core::api::DatabaseEngine> &engine) : DatabaseBackend(), _engine(engine), _factory(soci::factory_proxy(engine)) {
         }
 
         int32_t ProxyBackend::getConnectionPoolSize() {
@@ -68,8 +68,8 @@ namespace ledger {
             session.open(*_factory, parameters);
         }
 
-        void ProxyBackend::changePassword(const std::string & oldPassword,
-                                          const std::string & newPassword,
+        void ProxyBackend::changePassword(const std::string &oldPassword,
+                                          const std::string &newPassword,
                                           soci::session &session) {
             if (_dbName.empty()) {
                 throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Database should be initiated before changing password.");
@@ -91,5 +91,5 @@ namespace ledger {
         ProxyBackend::~ProxyBackend() {
             delete _factory;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger

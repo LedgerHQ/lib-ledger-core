@@ -31,41 +31,42 @@
 #ifndef LEDGER_CORE_COMMONBITCOINLIKEKEYCHAINS_H
 #define LEDGER_CORE_COMMONBITCOINLIKEKEYCHAINS_H
 
-#include "BitcoinLikeKeychain.hpp"
-#include <set>
 #include "../../../collections/DynamicObject.hpp"
+#include "BitcoinLikeKeychain.hpp"
+
 #include <bitcoin/BitcoinLikeAddress.hpp>
+#include <set>
 
 namespace ledger {
     namespace core {
 
         struct KeychainPersistentState {
-            uint32_t maxConsecutiveChangeIndex {0};
-            uint32_t maxConsecutiveReceiveIndex {0};
+            uint32_t maxConsecutiveChangeIndex{0};
+            uint32_t maxConsecutiveReceiveIndex{0};
             std::set<uint32_t> nonConsecutiveChangeIndexes;
             std::set<uint32_t> nonConsecutiveReceiveIndexes;
-            bool empty {true};
+            bool empty{true};
 
             template <class Archive>
-            void serialize(Archive& archive, std::uint32_t const version) {
+            void serialize(Archive &archive, std::uint32_t const version) {
                 if (version == 0) {
                     archive(
-                            maxConsecutiveChangeIndex,
-                            maxConsecutiveReceiveIndex,
-                            nonConsecutiveChangeIndexes,
-                            nonConsecutiveReceiveIndexes,
-                            empty
-                    );
+                        maxConsecutiveChangeIndex,
+                        maxConsecutiveReceiveIndex,
+                        nonConsecutiveChangeIndexes,
+                        nonConsecutiveReceiveIndexes,
+                        empty);
                 }
             }
         };
 
         class CommonBitcoinLikeKeychains : public BitcoinLikeKeychain {
-        public:
+          public:
             CommonBitcoinLikeKeychains(const std::shared_ptr<api::DynamicObject> &configuration,
-                                     const api::Currency &params, int account,
-                                     const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
-                                     const std::shared_ptr<Preferences> &preferences);
+                                       const api::Currency &params,
+                                       int account,
+                                       const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
+                                       const std::shared_ptr<Preferences> &preferences);
 
             bool markPathAsUsed(const DerivationPath &path, bool needExtendKeychain = true) override;
 
@@ -87,29 +88,28 @@ namespace ledger {
 
             Option<std::vector<uint8_t>> getPublicKey(const std::string &address) const override;
 
-
             /**
              * @brief Get the State object from user preferences
-             * 
+             *
              * @return persisted state
              */
             KeychainPersistentState getState() const;
 
-            const std::string& getKeychainEngine() const;
+            const std::string &getKeychainEngine() const;
 
-        protected:
+          protected:
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _internalNodeXpub;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _publicNodeXpub;
             uint32_t _observableRange;
             std::string _keychainEngine;
 
-        private:
+          private:
             BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index);
             void saveState(KeychainPersistentState state) const;
-            
+
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-#endif //LEDGER_CORE_COMMONBITCOINLIKEKEYCHAINS_H
+#endif // LEDGER_CORE_COMMONBITCOINLIKEKEYCHAINS_H

@@ -29,19 +29,19 @@
  *
  */
 
+#include <NativeThreadDispatcher.hpp>
 #include <gtest/gtest.h>
 #include <ledger/core/async/Promise.hpp>
-#include <NativeThreadDispatcher.hpp>
 
 using namespace ledger::core;
 
 TEST(Promise, Success) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
 
     Promise<std::string> promise;
 
-    promise.getFuture().foreach(queue, [dispatcher] (const std::string& result) {
+    promise.getFuture().foreach (queue, [dispatcher](const std::string &result) {
         EXPECT_EQ("Hello world", result);
         dispatcher->stop();
     });
@@ -52,11 +52,11 @@ TEST(Promise, Success) {
 
 TEST(Promise, Failure) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
 
     Promise<std::string> promise;
 
-    promise.getFuture().failed().foreach(queue, [dispatcher] (const Exception& result) {
+    promise.getFuture().failed().foreach (queue, [dispatcher](const Exception &result) {
         EXPECT_EQ(api::ErrorCode::ILLEGAL_STATE, result.getErrorCode());
         dispatcher->stop();
     });
@@ -67,11 +67,11 @@ TEST(Promise, Failure) {
 
 TEST(Promise, Complete) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
 
     Promise<std::string> promise;
 
-    promise.getFuture().foreach(queue, [dispatcher] (const std::string& result) {
+    promise.getFuture().foreach (queue, [dispatcher](const std::string &result) {
         EXPECT_EQ("Hello world", result);
         dispatcher->stop();
     });
@@ -82,16 +82,16 @@ TEST(Promise, Complete) {
 
 TEST(Promise, CompleteWith) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
 
     Promise<std::string> promise;
 
-    promise.getFuture().foreach(queue, [dispatcher] (const std::string& result) {
+    promise.getFuture().foreach (queue, [dispatcher](const std::string &result) {
         EXPECT_EQ("Hello world", result);
         dispatcher->stop();
     });
 
-    promise.completeWith(Future<std::string>::async(queue, [] () {
+    promise.completeWith(Future<std::string>::async(queue, []() {
         return "Hello world";
     }));
     dispatcher->waitUntilStopped();
@@ -99,16 +99,16 @@ TEST(Promise, CompleteWith) {
 
 TEST(Promise, CompleteWithFailure) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
 
     Promise<std::string> promise;
 
-    promise.getFuture().failed().foreach(queue, [dispatcher] (const Exception& result) {
+    promise.getFuture().failed().foreach (queue, [dispatcher](const Exception &result) {
         EXPECT_EQ(api::ErrorCode::ILLEGAL_STATE, result.getErrorCode());
         dispatcher->stop();
     });
 
-    promise.completeWith(Future<std::string>::async(queue, [] () -> std::string {
+    promise.completeWith(Future<std::string>::async(queue, []() -> std::string {
         throw Exception(api::ErrorCode::ILLEGAL_STATE, "Nuke");
     }));
     dispatcher->waitUntilStopped();
@@ -116,11 +116,11 @@ TEST(Promise, CompleteWithFailure) {
 
 TEST(Promise, TrySuccess) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();
-    auto queue = dispatcher->getSerialExecutionContext("queue");
+    auto queue      = dispatcher->getSerialExecutionContext("queue");
 
     Promise<std::string> promise;
 
-    promise.getFuture().foreach(queue, [dispatcher] (const std::string& result) {
+    promise.getFuture().foreach (queue, [dispatcher](const std::string &result) {
         EXPECT_EQ("Hello world", result);
         dispatcher->stop();
     });

@@ -31,22 +31,21 @@
 
 #pragma once
 
+#include <api/TimePeriod.hpp>
 #include <chrono>
 #include <string>
-#include <api/TimePeriod.hpp>
 
 namespace ledger {
     namespace core {
         class DateUtils {
-        public:
-            static std::chrono::system_clock::time_point fromJSON(const std::string& str);
-            static std::string formatDateFromJSON(const std::string& str);
-            static std::string toJSON(const std::chrono::system_clock::time_point& date);
+          public:
+            static std::chrono::system_clock::time_point fromJSON(const std::string &str);
+            static std::string formatDateFromJSON(const std::string &str);
+            static std::string toJSON(const std::chrono::system_clock::time_point &date);
             static std::chrono::system_clock::time_point now();
             static std::chrono::system_clock::time_point incrementDate(
                 const std::chrono::system_clock::time_point &date,
-                api::TimePeriod precision
-            );
+                api::TimePeriod precision);
         };
-    }
-}
+    } // namespace core
+} // namespace ledger

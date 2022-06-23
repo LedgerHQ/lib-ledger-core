@@ -28,44 +28,41 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ABSTRACTBLOCKCHAINEXPLORER_H
 #define LEDGER_CORE_ABSTRACTBLOCKCHAINEXPLORER_H
 
-#include <string>
-#include <chrono>
-#include <vector>
-
 #include <async/Future.hpp>
+#include <chrono>
 #include <collections/collections.hpp>
-#include <utils/optional.hpp>
+#include <string>
 #include <utils/Option.hpp>
+#include <utils/optional.hpp>
+#include <vector>
 #include <wallet/common/Block.h>
 
 namespace ledger {
     namespace core {
         template <typename Transaction>
         class AbstractBlockchainExplorer {
-        public:
+          public:
             struct TransactionsBulk {
                 std::vector<Transaction> transactions;
                 bool hasNext;
-                std::string paginationMarker; //Needed for pagination for XRP: https://developers.ripple.com/markers-and-pagination.html
+                std::string paginationMarker; // Needed for pagination for XRP: https://developers.ripple.com/markers-and-pagination.html
             };
 
-            virtual Future<void *> startSession() = 0;
-            virtual Future<Unit> killSession(void *session) = 0;
-            virtual FuturePtr<TransactionsBulk> getTransactions(const std::vector<std::string>& addresses,
+            virtual Future<void *> startSession()                                                                                  = 0;
+            virtual Future<Unit> killSession(void *session)                                                                        = 0;
+            virtual FuturePtr<TransactionsBulk> getTransactions(const std::vector<std::string> &addresses,
                                                                 Option<std::string> fromBlockHash = Option<std::string>(),
-                                                                Option<void*> session = Option<void *>()) = 0;
-            virtual FuturePtr<Block> getCurrentBlock() const = 0;
-            virtual Future<Bytes> getRawTransaction(const String& transactionHash) = 0;
-            virtual FuturePtr<Transaction> getTransactionByHash(const String& transactionHash) const = 0;
-            virtual Future<String> pushTransaction(const std::vector<uint8_t>& transaction, const std::string& correlationId="") = 0;
-            virtual Future<int64_t> getTimestamp() const = 0;
+                                                                Option<void *> session            = Option<void *>())                         = 0;
+            virtual FuturePtr<Block> getCurrentBlock() const                                                                       = 0;
+            virtual Future<Bytes> getRawTransaction(const String &transactionHash)                                                 = 0;
+            virtual FuturePtr<Transaction> getTransactionByHash(const String &transactionHash) const                               = 0;
+            virtual Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") = 0;
+            virtual Future<int64_t> getTimestamp() const                                                                           = 0;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
-
-#endif //LEDGER_CORE_ABSTRACTBLOCKCHAINEXPLORER_H
+#endif // LEDGER_CORE_ABSTRACTBLOCKCHAINEXPLORER_H

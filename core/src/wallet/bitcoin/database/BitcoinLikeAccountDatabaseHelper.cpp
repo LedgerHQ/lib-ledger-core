@@ -29,29 +29,27 @@
  *
  */
 #include "BitcoinLikeAccountDatabaseHelper.h"
+
 #include <wallet/common/database/AccountDatabaseHelper.h>
 
 using namespace soci;
 
 namespace ledger {
     namespace core {
-        void
-        BitcoinLikeAccountDatabaseHelper::createAccount(soci::session &sql, const std::string walletUid, int32_t index,
-                                                        const std::string &xpub) {
+        void BitcoinLikeAccountDatabaseHelper::createAccount(soci::session &sql, const std::string walletUid, int32_t index, const std::string &xpub) {
             auto uid = AccountDatabaseHelper::createAccountUid(walletUid, index);
             sql << "INSERT INTO bitcoin_accounts VALUES(:uid, :wallet, :idx, :xpub)", use(uid), use(walletUid),
-                    use(index), use(xpub);
+                use(index), use(xpub);
         }
 
-        bool BitcoinLikeAccountDatabaseHelper::queryAccount(soci::session &sql, const std::string &accountUid,
-                                                            BitcoinLikeAccountDatabaseEntry &entry) {
+        bool BitcoinLikeAccountDatabaseHelper::queryAccount(soci::session &sql, const std::string &accountUid, BitcoinLikeAccountDatabaseEntry &entry) {
             rowset<row> rows = (sql.prepare << "SELECT idx, xpub FROM bitcoin_accounts WHERE uid = :uid", use(accountUid));
-            for (auto& row : rows) {
+            for (auto &row : rows) {
                 entry.index = row.get<int32_t>(0);
-                entry.xpub = row.get<std::string>(1);
+                entry.xpub  = row.get<std::string>(1);
                 return true;
             }
             return false;
         }
-    }
-}
+    } // namespace core
+} // namespace ledger
