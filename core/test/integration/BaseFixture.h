@@ -84,6 +84,7 @@ extern api::ExtendedKeyAccountCreationInfo ETH_MAIN_XPUB_INFO;
 extern api::AccountCreationInfo ETH_KEYS_INFO;
 extern api::AccountCreationInfo ETH_KEYS_INFO_VAULT;
 extern api::AccountCreationInfo ETH_KEYS_INFO_LIVE;
+extern api::AccountCreationInfo ETH_KEYS_INPUT_DATA;
 extern api::AccountCreationInfo ETC_KEYS_INFO_LIVE;
 extern api::AccountCreationInfo XRP_KEYS_INFO;
 extern api::AccountCreationInfo VAULT_XRP_KEYS_INFO;

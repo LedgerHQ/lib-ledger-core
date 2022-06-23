@@ -288,6 +288,44 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
     }
 }
 
+TEST_F(EthereumLikeWalletSynchronization, BigInputData) {
+  auto pool = newDefaultPool();
+  {
+    auto configuration = DynamicObject::newInstance();
+    configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
+    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.vault.ledger.com");
+    auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
+    {
+      auto nextIndex = uv::wait(wallet->getNextAccountIndex());
+      EXPECT_EQ(nextIndex, 0);
+
+      auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INPUT_DATA);
+      auto keychain = account->getRestoreKey();
+
+      auto keyStore = account->getRestoreKey();
+
+      auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+        fmt::print("Received event {}\n", api::to_string(event->getCode()));
+        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+          return;
+        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+        EXPECT_EQ(event->getCode(),
+                  api::EventCode::SYNCHRONIZATION_SUCCEED);
+        dispatcher->stop();
+      });
+
+      auto restoreKey = account->getRestoreKey();
+      auto eventBus2 = account->synchronize();
+      eventBus2->subscribe(getTestExecutionContext(),receiver);
+
+      dispatcher->waitUntilStopped();
+
+      auto transaction = uv::wait(account->getTransaction("0x90f99a093b57052f393ed43be1abb40a54b41f6aad38f6b6e9c159f3adbdc02a"));
+      EXPECT_EQ(transaction->inputData.size(), 228);
+    }
+  }
+}
+
 TEST_F(EthereumLikeWalletSynchronization, XpubETCSynchronization) {
     auto pool = newDefaultPool();
     {

@@ -220,12 +220,10 @@ namespace ledger {
                     issNonce >> _transaction->nonce;
                 } else if (_lastKey == "input") {
                     const auto inputData = fromStringToBytes(value);
-                    if (value.size() <= ledger::core::MAX_LENGTH_VAR_CHAR) {
-                        if (isInternalTx) {
-                            _transaction->internalTransactions.back().inputData = std::move(inputData);
-                        } else {
-                            _transaction->inputData = std::move(inputData);
-                        }
+                    if (isInternalTx) {
+                        _transaction->internalTransactions.back().inputData = std::move(inputData);
+                    } else {
+                        _transaction->inputData = std::move(inputData);
                     }
                 } else if (_lastKey == "contract" && !_transaction->erc20Transactions.empty()) {
                     _transaction->erc20Transactions.back().contractAddress = value;
