@@ -103,6 +103,12 @@ api::AccountCreationInfo ETH_KEYS_INFO_LIVE(
         {hex::toByteArray("2a224ce46d853d381a68c6b819dabc7d00b14aaa538b6d472963820a48092cff")}
 );
 
+api::AccountCreationInfo ETH_KEYS_INPUT_DATA(
+        0, {"main"}, {"44'/60'/0'"},
+        {hex::toByteArray("02F4DFEEBA10021E8974D8E761D212A204CCBFA203696AF8623217EA189CBCDCB9")},
+        {hex::toByteArray("5C45FC22F2BE928ACDE3CD6F5BAE963DF7667BD18411A3F8406599C4DECD9F84")}
+);
+
 api::AccountCreationInfo ETC_KEYS_INFO_LIVE(
         0, {"main"}, {"44'/60'/0'/0/0"},
         {hex::toByteArray("0408b2ddef4cb4af62412ea70cce188ba1318651bb9c0ad599b2714d245109212fb2c79871ec5d35f479ee502c3d7a927908301823f6152823d37da9bd4cb31de7")},
