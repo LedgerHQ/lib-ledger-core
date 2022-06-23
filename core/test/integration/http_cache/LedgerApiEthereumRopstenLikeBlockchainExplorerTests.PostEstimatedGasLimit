@@ -1,0 +1,6 @@
+POST https://explorers.api.live.ledger.com/blockchain/v3/eth_ropsten/addresses/0x57e8ba2a915285f984988282ab9346c1336a4e11/estimate-gas-limit
+1
+{"data":"0xa9059cbb00000000000000000000000013C5d95f25688f8A7544582D9e311f201A56de630000000000000000000000000000000000000000000000000000000000000000","amplifier":"1.5"}
+1
+{"to":"0x57e8ba2a915285f984988282ab9346c1336a4e11","estimated_gas_limit":29282,"error":false,"valid":true}
+
