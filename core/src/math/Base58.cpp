@@ -137,6 +137,10 @@ std::string ledger::core::Base58::encodeWithEIP55(const std::string &address) {
 // refer to https://bitcoin.stackexchange.com/questions/76480/encode-decode-base-58-c
 std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str,
                                                   const std::shared_ptr<api::DynamicObject> &config) {
+    if (str.empty()) {
+        throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid base 58 format: empty string");
+    }
+
     auto useBase58Dict    = shouldUseNetworkBase58Dictionary(config);
     auto base58Dictionary = useBase58Dict ? getNetworkBase58Dictionary(config) : DIGITS;
     int len               = str.size();
