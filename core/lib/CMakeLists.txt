@@ -54,3 +54,8 @@ add_subdirectory(soci_sqlite3)
 if (PG_SUPPORT)
     add_subdirectory(soci_postgresql)
 endif()
+
+include(FetchContent)
+
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.10.5/json.tar.xz)
+FetchContent_MakeAvailable(json)

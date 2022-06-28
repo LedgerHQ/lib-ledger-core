@@ -49,6 +49,7 @@
 #include <rapidjson/document.h>
 #include <rapidjson/reader.h>
 #include <unordered_map>
+#include <nlohmann/json.hpp>
 
 namespace ledger {
     namespace core {
@@ -88,6 +89,49 @@ namespace ledger {
                         rapidjson::Reader reader;
                         reader.Parse<rapidjson::ParseFlag::kParseNumbersAsStringsFlag>(is, h);
                         return (Either<Failure, std::shared_ptr<Success>>)h.build();
+                    });
+            }
+
+            template <typename Success, typename JParser, typename Failure>
+            Future<Either<Failure, std::shared_ptr<Success>>> json(bool multiThread = false) const {
+                _context = (multiThread ? _threadpoolContext : _sequentialContext);
+                return operator()().recover(_context, [](const Exception &exception) {
+                                       if (HttpRequest::isHttpError(exception.getErrorCode()) &&
+                                           exception.getUserData().nonEmpty()) {
+                                           return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
+                                       }
+                                       throw exception;
+                                   })
+                    .template map<Either<Failure, std::shared_ptr<Success>>>(_context, [](const std::shared_ptr<api::HttpUrlConnection> &c) -> Either<Failure, std::shared_ptr<Success>> {
+                        auto result = c->readBody();
+                        if (result.error) {
+                            throw Exception(result.error.value().code,
+                                            result.error.value().message,
+                                            std::static_pointer_cast<void>(c));
+                        }
+
+                        std::vector<uint8_t> buffer = result.data.value();
+                        std::stringstream ss;
+                        std::copy(buffer.begin(), buffer.end(), std::ostream_iterator<char>(ss, ""));
+                        std::string str = ss.str();
+
+                        auto statusCode = c->getStatusCode();
+                        bool isFailure =  statusCode < 200 || statusCode >= 400;
+                        if (isFailure) {
+                            return Either<Exception, std::shared_ptr<Success>>(make_exception(api::ErrorCode::API_ERROR, "{} - {}: {}", statusCode, c->getStatusText(), str));
+                        }
+
+                        try {
+                            auto json = nlohmann::json::parse(str);
+                            auto parser = JParser();
+                            Success success;
+                            parser.from_json(json, success);
+                            return Either<Exception, std::shared_ptr<Success>>(std::make_shared<Success>(success));
+                        } catch (Exception &e) {
+                            return Either<Exception, std::shared_ptr<Success>>(e);
+                        } catch (std::exception &e) {
+                            return Either<Exception, std::shared_ptr<Success>>(make_exception(api::ErrorCode::API_ERROR, "Failed to parse response body: {}: {}", e.what(), str));
+                        }
                     });
             }
 
