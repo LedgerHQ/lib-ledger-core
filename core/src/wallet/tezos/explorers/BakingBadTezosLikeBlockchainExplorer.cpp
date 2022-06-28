@@ -41,6 +41,85 @@
 
 namespace ledger {
     namespace core {
+        namespace api {
+            void from_json(const nlohmann::json &j, TezosOperationTag &t) {
+                auto value = j.get<std::string>();
+                static std::unordered_map<std::string, api::TezosOperationTag> opTags{
+                    std::make_pair("reveal", api::TezosOperationTag::OPERATION_TAG_REVEAL),
+                    std::make_pair("transaction", api::TezosOperationTag::OPERATION_TAG_TRANSACTION),
+                    std::make_pair("origination", api::TezosOperationTag::OPERATION_TAG_ORIGINATION),
+                    std::make_pair("delegation", api::TezosOperationTag::OPERATION_TAG_DELEGATION),
+                };
+
+                if (opTags.count(value)) {
+                    t = opTags[value];
+                } else {
+                    t = api::TezosOperationTag::OPERATION_TAG_NONE;
+                }
+            }
+        } // namespace api
+
+        void from_json(const nlohmann::json &j, BigInt &i) {
+            if (j.is_number_integer()) {
+                i = ledger::core::BigInt::fromScalar(j.get<int>());
+            } else {
+                i = ledger::core::BigInt::fromString(j.get<std::string>());
+            }
+        }
+
+        void from_json(const nlohmann::json &j, TezosLikeBlockchainExplorer::Transaction &t) {
+            j.at("hash").get_to(t.hash);
+            auto timestamp  = j.at("timestamp").get<std::string>();
+            t.receivedAt    = DateUtils::fromJSON(timestamp);
+            t.fees          = BigInt(j.value("bakerFee", 0) + j.value("storageFee", 0) + j.value("allocationFee", 0));
+            t.storage_limit = BigInt(j.value("storageLimit", 0));
+            j.at("gasLimit").get_to(t.gas_limit);
+            j.at("sender").at("address").get_to(t.sender);
+            TezosLikeBlockchainExplorer::Block block;
+            j.at("block").get_to(block.hash);
+            block.currencyName = currencies::TEZOS.name;
+            block.time         = t.receivedAt;
+            t.block            = block;
+            j.at("type").get_to(t.type);
+            t.status = static_cast<uint64_t>(j.at("status").get<std::string>() == "applied");
+            j.at("counter").get_to(t.counter);
+            // TODO: missing confirmation ?
+            // j.at("confirmation").get_to(t.confirmations);
+
+            switch (t.type) {
+            case api::TezosOperationTag::OPERATION_TAG_REVEAL:
+                // TODO: missing info ?
+                // j.at("hash").get_to(t.publicKey);
+                break;
+            case api::TezosOperationTag::OPERATION_TAG_TRANSACTION:
+                j.at("amount").get_to(t.value);
+                j.at("target").at("address").get_to(t.receiver);
+                break;
+            case api::TezosOperationTag::OPERATION_TAG_ORIGINATION:
+                t.originatedAccount = TezosLikeBlockchainExplorerOriginatedAccount();
+                j.at("originatedContract").at("address").get_to(t.originatedAccount->address);
+                break;
+            case api::TezosOperationTag::OPERATION_TAG_DELEGATION:
+                j.at("amount").get_to(t.value);
+                break;
+            default: break;
+            }
+        }
+
+        struct TzKTParser {
+            void from_json(const nlohmann::json &j, TezosLikeBlockchainExplorer::TransactionsBulk &b) {
+                j.get_to(b.transactions);
+            }
+
+            void from_json(const nlohmann::json &j, Block &b) {
+                b.currencyName = currencies::TEZOS.name;
+                j.at("hash").get_to(b.hash);
+                j.at("level").get_to(b.height);
+                std::string timestamp = j.at("timetamp").get<std::string>();
+                b.time                = DateUtils::fromJSON(timestamp);
+            }
+        };
+
         BakingBadTezosLikeBlockchainExplorer::BakingBadTezosLikeBlockchainExplorer(
             const std::shared_ptr<api::ExecutionContext> &context,
             const std::shared_ptr<HttpClient> &http,
@@ -304,18 +383,15 @@ namespace ledger {
             }
             std::string params = fmt::format("?limit={}", limit);
             if (localOffset > 0) {
-                params += fmt::format("&offset={}", localOffset);
+                params += fmt::format("&lastId={}", localOffset);
             }
             using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
-            return _http->GET(fmt::format("account/{}/op{}", addresses[0], params))
-                .template json<TransactionsBulk, Exception>(
-                    LedgerApiParser<TransactionsBulk,
-                                    TezosLikeTransactionsBulkParser>())
+            return _http->GET(fmt::format("v1/accounts/{}/operations{}", addresses[0], params))
+                .template json<TezosLikeBlockchainExplorer::TransactionsBulk, TzKTParser, Exception>()
                 .template mapPtr<TransactionsBulk>(getExplorerContext(),
                                                    [limit](const EitherTransactionsBulk &result) {
                                                        if (result.isLeft()) {
-                                                           // Because it fails when there are no ops
-                                                           return std::make_shared<TransactionsBulk>();
+                                                           throw result.getLeft();
                                                        } else {
                                                            result.getRight()->hasNext = result.getRight()->transactions.size() == limit;
                                                            return result.getRight();
@@ -323,19 +399,9 @@ namespace ledger {
                                                    });
         }
 
-        struct TzKTBlockParser {
-            void from_json(const nlohmann::json &j, Block &b) {
-                b.currencyName = currencies::TEZOS.name;
-                j.at("hash").get_to(b.hash);
-                j.at("level").get_to(b.height);
-                std::string timestamp = j.at("timetamp").get<std::string>();
-                b.time                = DateUtils::fromJSON(timestamp);
-            }
-        };
-
         FuturePtr<Block> BakingBadTezosLikeBlockchainExplorer::getCurrentBlock() const {
             return _http->GET("v1/blocks?sort.desc=id&limit=1")
-                .template json<Block, TzKTBlockParser, Exception>()
+                .template json<Block, TzKTParser, Exception>()
                 .template mapPtr<Block>(getExplorerContext(),
                                         [](const Either<Exception, std::shared_ptr<Block>> &result) {
                                             if (result.isLeft()) {
