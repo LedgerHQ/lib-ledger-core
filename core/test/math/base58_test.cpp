@@ -69,3 +69,9 @@ TEST(Base58, Decode) {
         EXPECT_EQ(result.getValue(), data);
     }
 }
+
+TEST(Base58, DecodeBadFormat) {
+    auto config = std::make_shared<DynamicObject>();
+    EXPECT_THROW(Base58::decode("", config), Exception);
+    EXPECT_THROW(Base58::decode("'", config), Exception);
+}
