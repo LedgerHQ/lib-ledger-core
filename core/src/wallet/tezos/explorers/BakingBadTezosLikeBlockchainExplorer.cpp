@@ -149,13 +149,13 @@ namespace ledger {
             return _http->GET(fmt::format("v1/accounts/{}/balance", addressesStr))
                 .template json<BigInt, TzKTParser, Exception>()
                 .template mapPtr<BigInt>(getExplorerContext(),
-                                        [](const Either<Exception, std::shared_ptr<BigInt>> &result) {
-                                            if (result.isLeft()) {
-                                                throw result.getLeft();
-                                            } else {
-                                                return result.getRight();
-                                            }
-                                        });
+                                         [](const Either<Exception, std::shared_ptr<BigInt>> &result) {
+                                             if (result.isLeft()) {
+                                                 throw result.getLeft();
+                                             } else {
+                                                 return result.getRight();
+                                             }
+                                         });
         }
 
         Future<std::shared_ptr<BigInt>>
@@ -580,28 +580,10 @@ namespace ledger {
         }
 
         Future<bool> BakingBadTezosLikeBlockchainExplorer::isFunded(const std::string &address) {
-            return _http->GET(fmt::format("account/{}", address))
-                .json(false, true)
-                .map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
-                    auto &connection = *std::get<0>(result);
-                    if (connection.getStatusCode() == 404) {
-                        // an empty account
-                        return false;
-                    } else if (connection.getStatusCode() < 200 || connection.getStatusCode() >= 300) {
-                        throw Exception(api::ErrorCode::HTTP_ERROR, connection.getStatusText());
-                    } else {
-                        auto &json       = *std::get<1>(result);
-
-                        // look for the is_funded field
-                        const auto field = "is_funded";
-                        if (!json.IsObject() || !json.HasMember(field) ||
-                            !json[field].IsBool()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 "Failed to get is_funded from network, no (or malformed) field \"result\" in response");
-                        }
-
-                        return json[field].GetBool();
-                    }
+            auto tzaddress = TezosLikeAddress::fromBase58(address, currencies::TEZOS);
+            return getBalance(std::vector<std::shared_ptr<TezosLikeAddress>>{tzaddress})
+                .map<bool>(getExplorerContext(), [](const std::shared_ptr<BigInt> &balance) {
+                    return balance->toInt64() != 0;
                 });
         }
 
