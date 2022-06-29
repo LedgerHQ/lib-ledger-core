@@ -111,6 +111,10 @@ namespace ledger {
                 j.get_to(b.transactions);
             }
 
+            void from_json(const nlohmann::json &j, BigInt &b) {
+                j.get_to(b);
+            }
+
             void from_json(const nlohmann::json &j, Block &b) {
                 b.currencyName = currencies::TEZOS.name;
                 j.at("hash").get_to(b.hash);
@@ -141,12 +145,17 @@ namespace ledger {
                                      addresses.size());
             }
             std::string addressesStr = addresses[0]->toString();
-            return getHelper(fmt::format("account/{}", addressesStr),
-                             "total_balance",
-                             std::unordered_map<std::string, std::string>{},
-                             "0",
-                             "",
-                             true);
+
+            return _http->GET(fmt::format("v1/accounts/{}/balance", addressesStr))
+                .template json<BigInt, TzKTParser, Exception>()
+                .template mapPtr<BigInt>(getExplorerContext(),
+                                        [](const Either<Exception, std::shared_ptr<BigInt>> &result) {
+                                            if (result.isLeft()) {
+                                                throw result.getLeft();
+                                            } else {
+                                                return result.getRight();
+                                            }
+                                        });
         }
 
         Future<std::shared_ptr<BigInt>>
