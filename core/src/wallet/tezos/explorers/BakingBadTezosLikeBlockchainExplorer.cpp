@@ -117,9 +117,9 @@ namespace ledger {
 
             void from_json(const nlohmann::json &j, Block &b) {
                 b.currencyName = currencies::TEZOS.name;
-                j.at("hash").get_to(b.hash);
-                j.at("level").get_to(b.height);
-                std::string timestamp = j.at("timetamp").get<std::string>();
+                j[0].at("hash").get_to(b.hash);
+                j[0].at("level").get_to(b.height);
+                std::string timestamp = j[0].at("timestamp").get<std::string>();
                 b.time                = DateUtils::fromJSON(timestamp);
             }
         };
