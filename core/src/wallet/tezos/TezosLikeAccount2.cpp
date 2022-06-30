@@ -438,40 +438,34 @@ namespace ledger {
                                                     return FuturePtr<TezosLikeTransactionApi>::successful(tx);
                                                 }).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, request] (const std::shared_ptr<TezosLikeTransactionApi> &tx) {
                                                     if (request.transactionGasLimit->toInt() == 0) {
-                                                        auto filledTx = tx;
-                                                        auto gasPriceFut = request.transactionFees->toInt() == 0
-                                                                ? self->getGasPrice()
-                                                                : FuturePtr<BigInt>::successful(request.transactionFees);
+                                                        const auto& filledTx = tx;
+                                                        return self->estimateGasLimit(filledTx).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, filledTx] (const std::shared_ptr<GasLimit> &gas) -> FuturePtr<TezosLikeTransactionApi> {
+                                                            filledTx->setRevealGasLimit(std::make_shared<BigInt>(gas->reveal));
+                                                            filledTx->setTransactionGasLimit(std::make_shared<BigInt>(gas->transaction));
 
-                                                        return gasPriceFut.flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, filledTx] (const std::shared_ptr<BigInt>&gasPrice) -> FuturePtr<TezosLikeTransactionApi> {
-                                                            return self->estimateGasLimit(filledTx).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, filledTx, gasPrice] (const std::shared_ptr<GasLimit> &gas) -> FuturePtr<TezosLikeTransactionApi> {
-                                                                filledTx->setRevealGasLimit(std::make_shared<BigInt>(gas->reveal));
-                                                                filledTx->setTransactionGasLimit(std::make_shared<BigInt>(gas->transaction));
+                                                            auto computeFees = [](const std::size_t& size, const BigInt& gasLimit) -> BigInt {
+                                                                const BigInt fullSize{static_cast<unsigned long long>(size + signatureSize)}; // Bytes
+                                                                BigInt truncated = (minimalFees + minimalNanotezPerByte * fullSize + minimalNanotezPerGazUnit * gasLimit) / BigInt(1000); // utz
+                                                                return ++truncated;
+                                                            };
 
-                                                                auto computeFees = [](const std::size_t& size, const BigInt& gasLimit) -> BigInt {
-                                                                    const BigInt fullSize{static_cast<unsigned long long>(size + signatureSize)}; // Bytes
-                                                                    BigInt truncated = (minimalFees + minimalNanotezPerByte * fullSize + minimalNanotezPerGazUnit * gasLimit) / BigInt(1000); // utz
-                                                                    return ++truncated;
-                                                                };
+                                                            const std::size_t txSize = filledTx->serialize().size();
+                                                            BigInt computedRevealFees = computeFees(txSize, gas->reveal);
+                                                            BigInt computedTransactionFees = computeFees(txSize, gas->transaction);
 
-                                                                const std::size_t txSize = filledTx->serialize().size();
-                                                                BigInt computedRevealFees = computeFees(txSize, gas->reveal);
-                                                                BigInt computedTransactionFees = computeFees(txSize, gas->transaction);
+                                                            const auto revealFees = std::make_shared<BigInt>(std::move(computedRevealFees));
+                                                            filledTx->setRevealFees(revealFees);
+                                                            const auto transactionFees = std::make_shared<BigInt>(std::move(computedTransactionFees));
+                                                            filledTx->setTransactionFees(transactionFees);
 
-                                                                const auto revealFees = std::make_shared<BigInt>(std::move(computedRevealFees));
-                                                                filledTx->setRevealFees(revealFees);
-                                                                const auto transactionFees = std::make_shared<BigInt>(std::move(computedTransactionFees));
-                                                                filledTx->setTransactionFees(transactionFees);
+                                                            self->logger()->info(
+                                                                "Raw transaction fees specifications: txfees={} txgazlimit={} revealfees={} revealgazlimit={}",
+                                                                transactionFees->toString(), gas->transaction.toString(),
+                                                                revealFees->toString(), gas->reveal.toString()
+                                                            );
 
-                                                                self->logger()->info(
-                                                                    "Raw transaction fees specifications: txfees={} txgazlimit={} revealfees={} revealgazlimit={}", 
-                                                                    transactionFees->toString(), gas->transaction.toString(),
-                                                                    revealFees->toString(), gas->reveal.toString()
-                                                                );
-
-                                                                return FuturePtr<TezosLikeTransactionApi>::successful(filledTx);
-                                            });
-                                        });
+                                                            return FuturePtr<TezosLikeTransactionApi>::successful(filledTx);
+                                                        });
                                                     }
                                                     return FuturePtr<TezosLikeTransactionApi>::successful(tx);
                                                 }).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, request, burned, senderAddress, balance] (const std::shared_ptr<TezosLikeTransactionApi> &tx) {
