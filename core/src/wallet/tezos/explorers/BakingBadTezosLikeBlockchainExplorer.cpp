@@ -77,14 +77,18 @@ namespace ledger {
             j.at("sender").at("address").get_to(t.sender);
             TezosLikeBlockchainExplorer::Block block;
             j.at("block").get_to(block.hash);
+            j.at("level").get_to(block.height);
             block.currencyName = currencies::TEZOS.name;
             block.time         = t.receivedAt;
             t.block            = block;
             j.at("type").get_to(t.type);
             t.status = static_cast<uint64_t>(j.at("status").get<std::string>() == "applied");
             j.at("counter").get_to(t.counter);
-            // TODO: missing confirmation ?
-            // j.at("confirmation").get_to(t.confirmations);
+
+            // Missing 'confirmation' data in api, but it doesn't seem quite important for WD as
+            // it is computed in co.ledger.walllet.daemon.models.Operations.scala::getView()
+            // but it might be an issue for lama if it relies on the "confirmation" field of the DB ?
+            t.confirmations = 0;
 
             switch (t.type) {
             case api::TezosOperationTag::OPERATION_TAG_REVEAL:
