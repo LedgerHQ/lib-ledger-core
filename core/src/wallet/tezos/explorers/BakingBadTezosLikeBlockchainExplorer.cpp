@@ -104,6 +104,9 @@ namespace ledger {
                 j.at("originatedContract").at("address").get_to(t.originatedAccount->address);
                 break;
             case api::TezosOperationTag::OPERATION_TAG_DELEGATION:
+                if (j.contains("newDelegate")) {
+                    j.at("newDelegate").at("address").get_to(t.receiver);
+                }
                 j.at("amount").get_to(t.value);
                 break;
             default: break;
