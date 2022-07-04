@@ -353,13 +353,5 @@ namespace ledger {
                     return json[field].GetBool();
                 });
         }
-
-        Future<std::shared_ptr<BigInt>>
-        NodeTezosLikeBlockchainExplorer::getTokenBalance(const std::string &accountAddress,
-                                                         const std::string &tokenAddress) const {
-            return Future<std::shared_ptr<BigInt>>::failure(
-                Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING,
-                          "Endpoint to get token balance is not implemented."));
-        }
     } // namespace core
 } // namespace ledger

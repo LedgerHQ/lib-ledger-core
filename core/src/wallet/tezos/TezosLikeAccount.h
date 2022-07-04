@@ -165,8 +165,6 @@ namespace ledger {
             void getCurrentDelegate(const std::shared_ptr<api::StringCallback> &callback) override;
             Future<std::string> getCurrentDelegate();
 
-            void getTokenBalance(const std::string &tokenAddress, const std::shared_ptr<api::BigIntCallback> &callback) override;
-
             const std::string &getAccountAddress() const;
 
             /// Return a common trace prefix for logs

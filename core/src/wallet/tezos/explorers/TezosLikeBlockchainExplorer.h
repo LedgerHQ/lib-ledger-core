@@ -174,11 +174,6 @@ namespace ledger {
 
             virtual Future<bool> isDelegate(const std::string &address) = 0;
 
-            /// Get a token balance for an account
-            virtual Future<std::shared_ptr<BigInt>>
-            getTokenBalance(const std::string &accountAddress,
-                            const std::string &tokenAddress) const = 0;
-
           protected:
             std::string getRPCNodeEndpoint() const {
                 return _rpcNode;

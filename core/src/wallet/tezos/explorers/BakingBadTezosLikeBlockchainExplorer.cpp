@@ -457,38 +457,6 @@ namespace ledger {
                                                                    getRPCNodeEndpoint());
         }
 
-        Future<std::shared_ptr<BigInt>>
-        BakingBadTezosLikeBlockchainExplorer::getTokenBalance(const std::string &accountAddress,
-                                                              const std::string &tokenAddress) const {
-            const auto parseNumbersAsString = true;
-            return _http->GET(fmt::format("/account/mainnet/{}", accountAddress), {}, _bcd)
-                .json(parseNumbersAsString)
-                .mapPtr<BigInt>(getContext(),
-                                [=](const HttpRequest::JsonResult &result) {
-                                    const auto &json = *std::get<1>(result);
-                                    if (!json.HasMember("tokens") || !json["tokens"].IsArray()) {
-                                        throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                             fmt::format("Failed to get tokens for {}, no (or malformed) field `tokens` in response", accountAddress));
-                                    }
-
-                                    const auto tokens = json["tokens"].GetArray();
-                                    for (const auto &token : tokens) {
-                                        if (!token.HasMember("contract") || !token["contract"].IsString()) {
-                                            throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                                 "Failed to get contract from network, no (or malformed) field `contract` in response");
-                                        }
-                                        if (token["contract"].GetString() == tokenAddress) {
-                                            if (!token.HasMember("balance") || !token["balance"].IsString()) {
-                                                throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                                     "Failed to get contract balance from network, no (or malformed) field `balance` in response");
-                                            }
-                                            return std::make_shared<BigInt>(BigInt::fromString(token["balance"].GetString()));
-                                        }
-                                    }
-                                    return std::make_shared<BigInt>(BigInt::ZERO);
-                                });
-        }
-
         Future<bool> BakingBadTezosLikeBlockchainExplorer::isFunded(const std::string &address) {
             auto tzaddress = TezosLikeAddress::fromBase58(address, currencies::TEZOS);
             return getBalance(std::vector<std::shared_ptr<TezosLikeAddress>>{tzaddress})
