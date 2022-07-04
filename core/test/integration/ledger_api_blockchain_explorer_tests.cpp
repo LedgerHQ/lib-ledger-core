@@ -31,11 +31,14 @@
 
 #include "BaseFixture.h"
 
+#include <api/TezosConfigurationDefaults.hpp>
 #include <gtest/gtest.h>
 #include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/bitcoin/networks.hpp>
 #include <wallet/ethereum/ethereumNetworks.hpp>
 #include <wallet/ethereum/explorers/LedgerApiEthereumLikeBlockchainExplorer.h>
+#include <wallet/tezos/explorers/BakingBadTezosLikeBlockchainExplorer.h>
+#include <wallet/tezos/tezosNetworks.h>
 
 template <typename CurrencyExplorer, typename NetworkParameters>
 class LedgerApiBlockchainExplorerTests : public BaseFixture {
@@ -202,4 +205,18 @@ TEST_F(LedgerApiEthereumLikeBlockchainExplorerTests, GeTransactionsInBigBlock) {
     auto result = uv::wait(explorer->getTransactions({"1H6ZZpRmMnrw8ytepV3BYwMjYYnEkWDqVP"}, std::string{"00000000000000000db3ab2b2d1075e4e80fa97e27aea55095a30559a3b0d721"}));
     EXPECT_NE(result->transactions.front().block.getValue().hash, result->transactions.back().block.getValue().hash);
     EXPECT_GT(result->transactions.size(), 1001);
+}
+
+class LedgerApiTezosLikeBlockchainExplorerTests : public LedgerApiBlockchainExplorerTests<BakingBadTezosLikeBlockchainExplorer, api::TezosLikeNetworkParameters> {
+  public:
+    LedgerApiTezosLikeBlockchainExplorerTests() {
+        params           = networks::getTezosLikeNetworkParameters("tezos");
+        explorerEndpoint = ledger::core::api::TezosConfigurationDefaults::TZKT_API_ENDPOINT;
+    }
+};
+
+TEST_F(LedgerApiTezosLikeBlockchainExplorerTests, GeTransactionsInBigBlock) {
+    auto result = uv::wait(explorer->getFees());
+    EXPECT_FALSE(result->isZero());
+    EXPECT_EQ(result->toUint64(), 650); // check is valid only with http cache
 }

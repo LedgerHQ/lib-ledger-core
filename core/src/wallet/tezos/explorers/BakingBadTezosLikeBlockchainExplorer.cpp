@@ -179,23 +179,20 @@ namespace ledger {
             // Therefore, we only return totalFees/n_tx and leave the caller make some adjustments on the value
             // afterwards
             const bool parseNumbersAsString = true;
-            return _http->GET("block/head")
+
+            // First we get the last block
+            return _http->GET("v1/blocks?sort.desc=id&limit=1")
                 .json(parseNumbersAsString)
-                .mapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) {
-                    auto &json = *std::get<1>(result);
+                .flatMapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) -> FuturePtr<BigInt> {
+                    auto &jarray = *std::get<1>(result);
 
                     // Is there a fees field ?
-                    if (!json.IsObject()) {
+                    if (!jarray.IsArray() || !jarray[rapidjson::SizeType(0)].IsObject()) {
                         throw make_exception(api::ErrorCode::HTTP_ERROR,
                                              fmt::format("Failed to get fees from network, no (or malformed) response"));
                     }
 
-                    // Return 0 if the block had no transaction at all
-                    const auto txCountField = "n_tx";
-                    if (!json.HasMember(txCountField) || !json[txCountField].IsString()) {
-                        return std::make_shared<BigInt>(0);
-                    }
-                    const auto totalTx = api::BigInt::fromIntegerString(json[txCountField].GetString(), 10);
+                    auto &json = jarray[rapidjson::SizeType(0)];
 
                     auto getFieldValue = [&json](const char *fieldName) -> std::string {
                         std::string value;
@@ -204,8 +201,11 @@ namespace ledger {
                         }
                         return value;
                     };
+
+                    std::string levelValueStr = getFieldValue("level");
+
                     // try first with "fee" else with "fees"
-                    std::string feesValueStr = getFieldValue("fee");
+                    std::string feesValueStr  = getFieldValue("fee");
                     if (feesValueStr.empty()) {
                         feesValueStr = getFieldValue("fees");
                     }
@@ -214,15 +214,24 @@ namespace ledger {
                                              "Failed to get fees from network, no (or malformed) response");
                     }
 
-                    const auto totalFees = api::BigInt::fromDecimalString(feesValueStr, 6, ".");
-                    std::string fees     = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
-                    if (fees != "0" && totalTx->intValue() != 0) {
-                        fees = totalFees->divide(totalTx)->toString(10);
-                    }
-                    // Since nodes are giving some awkward values, we set a threshold to avoid
-                    // having really fees
-                    // Factor for threshold is inspired from other XTZ wallets
-                    return std::make_shared<BigInt>(std::min(std::stoi(fees), std::stoi(api::TezosConfigurationDefaults::TEZOS_DEFAULT_MAX_FEES)));
+                    // Then we get the number of transactions for this block
+                    return _http->GET(fmt::format("v1/operations/transactions/count?level={}", levelValueStr))
+                        .template json<BigInt, TzKTParser, Exception>()
+                        .template mapPtr<BigInt>(getExplorerContext(),
+                                                 [=](const Either<Exception, std::shared_ptr<BigInt>> &result) {
+                                                     if (result.isLeft()) {
+                                                         throw result.getLeft();
+                                                     } else {
+                                                         const auto &totalTx  = result.getRight();
+
+                                                         const auto totalFees = BigInt::fromString(feesValueStr);
+                                                         BigInt fees          = BigInt::fromString(api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES);
+                                                         if (!fees.isZero() && !totalTx->isZero()) {
+                                                             fees = (totalFees / *totalTx).to_string();
+                                                         }
+                                                         return std::make_shared<BigInt>(std::min(fees, BigInt::fromString(api::TezosConfigurationDefaults::TEZOS_DEFAULT_MAX_FEES)));
+                                                     }
+                                                 });
                 });
         }
 
