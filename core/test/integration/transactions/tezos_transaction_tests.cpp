@@ -57,7 +57,7 @@ struct TezosMakeTransaction : public TezosMakeBaseTransaction {
     }
 };
 
-TEST_F(TezosMakeTransaction, CreateTx) {
+TEST_F(TezosMakeTransaction, DISABLED_CreateTx) {
     auto builder  = tx_builder();
 
     auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
@@ -80,7 +80,7 @@ TEST_F(TezosMakeTransaction, CreateTx) {
     builder->setGasLimit(api::Amount::fromLong(currency, 10000));
     builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("1000")));
     // Self-transaction not allowed
-//    EXPECT_THROW(builder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE"), Exception);
+    EXPECT_THROW(builder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE"), Exception);
     builder->wipeToAddress("tz1TRspM5SeZpaQUhzByXbEvqKF1vnCM2YTK");
     // TODO: activate when we got URL of our custom explorer
     auto f            = builder->build();

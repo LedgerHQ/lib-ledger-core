@@ -46,10 +46,10 @@
 #include "HttpUrlConnectionInputStream.hpp"
 
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <rapidjson/document.h>
 #include <rapidjson/reader.h>
 #include <unordered_map>
-#include <nlohmann/json.hpp>
 
 namespace ledger {
     namespace core {
@@ -116,13 +116,13 @@ namespace ledger {
                         std::string str = ss.str();
 
                         auto statusCode = c->getStatusCode();
-                        bool isFailure =  statusCode < 200 || statusCode >= 400;
+                        bool isFailure  = statusCode < 200 || statusCode >= 400;
                         if (isFailure) {
                             return Either<Exception, std::shared_ptr<Success>>(make_exception(api::ErrorCode::API_ERROR, "{} - {}: {}", statusCode, c->getStatusText(), str));
                         }
 
                         try {
-                            auto json = nlohmann::json::parse(str);
+                            auto json   = nlohmann::json::parse(str);
                             auto parser = JParser();
                             Success success;
                             parser.from_json(json, success);

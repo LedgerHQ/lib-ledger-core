@@ -192,7 +192,7 @@ namespace ledger {
                                              fmt::format("Failed to get fees from network, no (or malformed) response"));
                     }
 
-                    auto &json = jarray[rapidjson::SizeType(0)];
+                    auto &json         = jarray[rapidjson::SizeType(0)];
 
                     auto getFieldValue = [&json](const char *fieldName) -> std::string {
                         std::string value;
