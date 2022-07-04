@@ -60,7 +60,7 @@ namespace ledger {
             getFees() override;
 
             Future<std::shared_ptr<BigInt>>
-            getGasPrice() override;
+            getGasPrice();
 
             Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
 

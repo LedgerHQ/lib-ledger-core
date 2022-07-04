@@ -651,20 +651,6 @@ namespace ledger {
             return _explorer->getCurrentDelegate(getKeychain()->getAddress()->toString());
         }
 
-        void TezosLikeAccount::getGasPrice(const std::shared_ptr<api::BigIntCallback> &callback) {
-            getGasPrice().mapPtr<api::BigInt>(getMainExecutionContext(), [](const std::shared_ptr<BigInt> &gasPrice) -> std::shared_ptr<api::BigInt> {
-                             if (!gasPrice) {
-                                 throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve gasPrice from network");
-                             }
-                             return std::make_shared<api::BigIntImpl>(*gasPrice);
-                         })
-                .callback(getMainExecutionContext(), callback);
-        }
-
-        FuturePtr<BigInt> TezosLikeAccount::getGasPrice() {
-            return _explorer->getGasPrice();
-        }
-
         FuturePtr<GasLimit> TezosLikeAccount::estimateGasLimit(const std::shared_ptr<TezosLikeTransactionApi> &tx, double adjustmentFactor) {
             return _explorer->getEstimatedGasLimit(tx).flatMapPtr<GasLimit>(
                                                           getMainExecutionContext(),

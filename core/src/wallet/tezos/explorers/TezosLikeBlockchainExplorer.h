@@ -114,10 +114,6 @@ namespace ledger {
             virtual Future<std::shared_ptr<BigInt>>
             getFees() = 0;
 
-            /// Return the gas Price of the last block in picotez (e-12) per gas
-            virtual Future<std::shared_ptr<BigInt>>
-            getGasPrice() = 0;
-
             virtual Future<std::shared_ptr<BigInt>>
             getEstimatedGasLimit(const std::string &address) = 0;
 
