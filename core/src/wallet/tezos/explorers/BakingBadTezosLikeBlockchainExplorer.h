@@ -63,7 +63,7 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getFees() override;
 
-            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
+            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) override;
 
             Future<void *> startSession() override;
 
@@ -71,12 +71,10 @@ namespace ledger {
 
             Future<Bytes> getRawTransaction(const String &transactionHash) override;
 
-            Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
+            Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) override;
 
             FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>
-            getTransactions(const std::vector<std::string> &addresses,
-                            Option<std::string> offset = Option<std::string>(),
-                            Option<void *> session     = Option<void *>()) override;
+            getTransactions(const std::vector<std::string> &addresses, Option<std::string> offset, Option<void *> session) override;
 
             FuturePtr<Block> getCurrentBlock() const override;
 
@@ -115,25 +113,8 @@ namespace ledger {
             Future<bool> isDelegate(const std::string &address) override;
 
           private:
-            /*
-             * Helper to a get specific field's value from given url
-             * WARNING: this is only useful for fields with an integer (decimal representation) value (with a string type)
-             * @param url : base url to fetch the value on,
-             * @param field: name of field we are interested into,
-             * @param params: additional params to query value of field
-             * @return BigInt representing the value of targetted field
-             */
-            Future<std::shared_ptr<BigInt>>
-            getHelper(const std::string &url,
-                      const std::string &field,
-                      const std::unordered_map<std::string, std::string> &params = std::unordered_map<std::string, std::string>(),
-                      const std::string &fallbackValue                           = "",
-                      const std::string &forceUrl                                = "",
-                      bool isDecimal                                             = false);
-
             api::TezosLikeNetworkParameters _parameters;
             std::unordered_map<std::string, uint64_t> _sessions;
-            std::string _bcd;
         };
     } // namespace core
 } // namespace ledger

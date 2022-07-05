@@ -36,7 +36,6 @@
 #include <api/ErrorCode.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
-#include <clocale>
 #include <sstream>
 
 namespace ledger {
@@ -135,12 +134,9 @@ namespace ledger {
             const std::shared_ptr<api::ExecutionContext> &context,
             const std::shared_ptr<HttpClient> &http,
             const api::TezosLikeNetworkParameters &parameters,
-            const std::shared_ptr<api::DynamicObject> &configuration) : DedicatedContext(context),
+            const std::shared_ptr<api::DynamicObject> &configuration) : DedicatedContext(context), _parameters(parameters),
                                                                         TezosLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
-            _http       = http;
-            _parameters = parameters;
-            _bcd        = configuration->getString(api::TezosConfiguration::BCD_API)
-                       .value_or(api::TezosConfigurationDefaults::BCD_API_ENDPOINT);
+            _http = http;
         }
 
         Future<std::shared_ptr<BigInt>>
@@ -159,9 +155,8 @@ namespace ledger {
                                          [](const Either<Exception, std::shared_ptr<BigInt>> &result) {
                                              if (result.isLeft()) {
                                                  throw result.getLeft();
-                                             } else {
-                                                 return result.getRight();
                                              }
+                                             return result.getRight();
                                          });
         }
 
@@ -187,12 +182,12 @@ namespace ledger {
                     auto &jarray = *std::get<1>(result);
 
                     // Is there a fees field ?
-                    if (!jarray.IsArray() || !jarray[rapidjson::SizeType(0)].IsObject()) {
+                    if (!jarray.IsArray() || !jarray[static_cast<rapidjson::SizeType>(0)].IsObject()) {
                         throw make_exception(api::ErrorCode::HTTP_ERROR,
                                              fmt::format("Failed to get fees from network, no (or malformed) response"));
                     }
 
-                    auto &json         = jarray[rapidjson::SizeType(0)];
+                    auto &json         = jarray[static_cast<rapidjson::SizeType>(0)];
 
                     auto getFieldValue = [&json](const char *fieldName) -> std::string {
                         std::string value;
@@ -221,22 +216,21 @@ namespace ledger {
                                                  [=](const Either<Exception, std::shared_ptr<BigInt>> &result) {
                                                      if (result.isLeft()) {
                                                          throw result.getLeft();
-                                                     } else {
-                                                         const auto &totalTx  = result.getRight();
-
-                                                         const auto totalFees = BigInt::fromString(feesValueStr);
-                                                         BigInt fees          = BigInt::fromString(api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES);
-                                                         if (!fees.isZero() && !totalTx->isZero()) {
-                                                             fees = (totalFees / *totalTx).to_string();
-                                                         }
-                                                         return std::make_shared<BigInt>(std::min(fees, BigInt::fromString(api::TezosConfigurationDefaults::TEZOS_DEFAULT_MAX_FEES)));
                                                      }
+                                                     const auto &totalTx  = result.getRight();
+
+                                                     const auto totalFees = BigInt::fromString(feesValueStr);
+                                                     BigInt fees          = BigInt::fromString(api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES);
+                                                     if (!fees.isZero() && !totalTx->isZero()) {
+                                                         fees = (totalFees / *totalTx).to_string();
+                                                     }
+                                                     return std::make_shared<BigInt>(std::min(fees, BigInt::fromString(api::TezosConfigurationDefaults::TEZOS_DEFAULT_MAX_FEES)));
                                                  });
                 });
         }
 
         Future<String>
-        BakingBadTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) {
+        BakingBadTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string & /*correlationId*/) {
             std::stringstream body;
             body << '"' << hex::toString(transaction) << '"';
             auto bodyString = body.str();
@@ -258,7 +252,7 @@ namespace ledger {
         }
 
         Future<void *> BakingBadTezosLikeBlockchainExplorer::startSession() {
-            std::string sessionToken = fmt::format("{}", std::rand());
+            std::string sessionToken = fmt::format("{}", std::rand()); // NOLINT(cert-msc50-cpp)
             _sessions.insert(std::make_pair(sessionToken, 0));
             return Future<void *>::successful(new std::string(sessionToken));
         }
@@ -270,7 +264,7 @@ namespace ledger {
             return Future<Unit>::successful(unit);
         }
 
-        Future<Bytes> BakingBadTezosLikeBlockchainExplorer::getRawTransaction(const String &transactionHash) {
+        Future<Bytes> BakingBadTezosLikeBlockchainExplorer::getRawTransaction(const String & /*transactionHash*/) {
             // WARNING: not implemented
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING,
                                  "Endpoint to get raw transactions is not implemented.");
@@ -291,7 +285,7 @@ namespace ledger {
             uint64_t localOffset = tryOffset.isSuccess() ? tryOffset.getValue() : 0;
             uint64_t limit       = 100;
             if (session.hasValue()) {
-                auto s = _sessions[*((std::string *)session.getValue())];
+                auto s = _sessions[*(static_cast<std::string *>(session.getValue()))];
                 localOffset += limit * s;
                 _sessions[*reinterpret_cast<std::string *>(session.getValue())]++;
             }
@@ -311,10 +305,9 @@ namespace ledger {
                                                    [limit](const EitherTransactionsBulk &result) {
                                                        if (result.isLeft()) {
                                                            throw result.getLeft();
-                                                       } else {
-                                                           result.getRight()->hasNext = result.getRight()->transactions.size() == limit;
-                                                           return result.getRight();
                                                        }
+                                                       result.getRight()->hasNext = result.getRight()->transactions.size() == limit;
+                                                       return result.getRight();
                                                    });
         }
 
@@ -325,9 +318,8 @@ namespace ledger {
                                         [](const Either<Exception, std::shared_ptr<Block>> &result) {
                                             if (result.isLeft()) {
                                                 throw result.getLeft();
-                                            } else {
-                                                return result.getRight();
                                             }
+                                            return result.getRight();
                                         });
         }
 
@@ -353,58 +345,7 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<BigInt>>
-        BakingBadTezosLikeBlockchainExplorer::getHelper(const std::string &url,
-                                                        const std::string &field,
-                                                        const std::unordered_map<std::string, std::string> &params,
-                                                        const std::string &fallbackValue,
-                                                        const std::string &forceUrl,
-                                                        bool isDecimal) {
-            const bool parseNumbersAsString = true;
-            const bool ignoreStatusCode     = true;
-            auto networkId                  = getNetworkParameters().Identifier;
-
-            std::string p, separator = "?";
-            for (auto &param : params) {
-                p += fmt::format("{}{}={}", separator, param.first, param.second);
-                separator = "&";
-            }
-
-            return _http->GET(url + p,
-                              std::unordered_map<std::string, std::string>(),
-                              forceUrl)
-                .json(parseNumbersAsString, ignoreStatusCode)
-                .mapPtr<BigInt>(getContext(),
-                                [field, networkId, fallbackValue, isDecimal](const HttpRequest::JsonResult &result) {
-                                    auto &connection = *std::get<0>(result);
-                                    if (connection.getStatusCode() == 404) {
-                                        // it means that it’s a “logical” error (i.e. some resources not found), which
-                                        // in this case we fallback to a given value
-                                        return std::make_shared<BigInt>(!fallbackValue.empty() ? fallbackValue : "0");
-                                    } else if (connection.getStatusCode() < 200 || connection.getStatusCode() >= 300) {
-                                        throw Exception(api::ErrorCode::HTTP_ERROR, connection.getStatusText());
-                                    }
-
-                                    auto &json = *std::get<1>(result);
-                                    if ((!json.IsObject() ||
-                                         !json.HasMember(field.c_str()) ||
-                                         !json[field.c_str()].IsString()) &&
-                                        !json.IsString()) {
-                                        throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                             fmt::format("Failed to get {} for {}", field,
-                                                                         networkId));
-                                    }
-                                    std::string value = json.IsString() ? json.GetString() : json[field.c_str()].GetString();
-                                    if (value == "0" && !fallbackValue.empty()) {
-                                        value = fallbackValue;
-                                    } else if (isDecimal || value.find('.') != std::string::npos) {
-                                        value = api::BigInt::fromDecimalString(value, 6, ".")->toString(10);
-                                    }
-                                    return std::make_shared<BigInt>(value);
-                                });
-        }
-
-        Future<std::shared_ptr<BigInt>>
-        BakingBadTezosLikeBlockchainExplorer::getEstimatedGasLimit(const std::string &address) {
+        BakingBadTezosLikeBlockchainExplorer::getEstimatedGasLimit(const std::string & /*address*/) {
             return FuturePtr<BigInt>::successful(
                 std::make_shared<BigInt>(api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT));
         }
@@ -415,18 +356,22 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<BigInt>>
-        BakingBadTezosLikeBlockchainExplorer::getStorage(const std::string &address) {
+        BakingBadTezosLikeBlockchainExplorer::getStorage(const std::string & /*address*/) {
             return FuturePtr<BigInt>::successful(
                 std::make_shared<BigInt>(api::TezosConfigurationDefaults::TEZOS_DEFAULT_STORAGE_LIMIT));
         }
 
         Future<std::shared_ptr<BigInt>>
         BakingBadTezosLikeBlockchainExplorer::getCounter(const std::string &address) {
-            return getHelper(fmt::format("/chains/main/blocks/head/context/contracts/{}/counter", address),
-                             "",
-                             std::unordered_map<std::string, std::string>{},
-                             "0",
-                             getRPCNodeEndpoint());
+            return _http->GET(fmt::format("/chains/main/blocks/head/context/contracts/{}/counter", address), std::unordered_map<std::string, std::string>(), getRPCNodeEndpoint())
+                .template json<BigInt, TzKTParser, Exception>()
+                .template mapPtr<BigInt>(getExplorerContext(),
+                                         [](const Either<Exception, std::shared_ptr<BigInt>> &result) {
+                                             if (result.isLeft()) {
+                                                 throw result.getLeft();
+                                             }
+                                             return result.getRight();
+                                         });
         }
 
         Future<std::vector<uint8_t>> BakingBadTezosLikeBlockchainExplorer::forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) {
@@ -469,9 +414,9 @@ namespace ledger {
             return _http->GET(fmt::format("v1/accounts/{}", address))
                 .json(false)
                 .map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
-                    auto &json       = *std::get<1>(result);
+                    auto &json              = *std::get<1>(result);
                     // look for the delegate field
-                    const auto field = "delegate";
+                    const auto *const field = "delegate";
                     if (!json.IsObject()) {
                         throw make_exception(api::ErrorCode::HTTP_ERROR,
                                              "Failed to get 'delegate' from network, no (or malformed) field in response");
