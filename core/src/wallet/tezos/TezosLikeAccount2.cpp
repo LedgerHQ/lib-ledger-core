@@ -101,6 +101,8 @@ namespace ledger {
             return _currentSyncEventBus != nullptr;
         }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "readability-function-cognitive-complexity"
         std::shared_ptr<api::EventBus> TezosLikeAccount::synchronize() {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
             if (_currentSyncEventBus)
@@ -214,6 +216,7 @@ namespace ledger {
                 });
             return eventPublisher->getEventBus();
         }
+#pragma clang diagnostic pop
 
         std::shared_ptr<TezosLikeAccount> TezosLikeAccount::getSelf() {
             return std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
@@ -293,6 +296,8 @@ namespace ledger {
             return buildTransaction(std::dynamic_pointer_cast<TezosLikeAddress>(getKeychain()->getAddress())->toString());
         }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "readability-function-cognitive-complexity"
         std::shared_ptr<api::TezosLikeTransactionBuilder> TezosLikeAccount::buildTransaction(const std::string &senderAddress) {
             auto self          = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             auto buildFunction = [self, senderAddress](const TezosLikeTransactionBuildRequest &request,
@@ -510,6 +515,7 @@ namespace ledger {
                                                                      ->getString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE)
                                                                      .value_or(""));
         }
+#pragma clang diagnostic pop
 
         std::string TezosLikeAccount::computeOperationUid(const std::shared_ptr<api::TezosLikeTransaction> &transaction) const {
             // The provided transaction has not necessarily been forged already, so we have to
