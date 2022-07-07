@@ -356,7 +356,7 @@ namespace ledger {
                                     });
                                 };
 
-                                return setRevealStatus().flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [=](const Unit &/*result*/) { // NOLINT(readability-function-cognitive-complexity)
+                                return setRevealStatus().flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [=](const Unit & /*result*/) { // NOLINT(readability-function-cognitive-complexity)
                                     // initialize the value
                                     // note that the value will be recalculated for the wipe mode after calculating fees
                                     if (request.type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
