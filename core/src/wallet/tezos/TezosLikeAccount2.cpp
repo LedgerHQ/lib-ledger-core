@@ -356,7 +356,7 @@ namespace ledger {
                                     });
                                 };
 
-                                return setRevealStatus().flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [=](const Unit &result) { // NOLINT(readability-function-cognitive-complexity)
+                                return setRevealStatus().flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [=](const Unit &/*result*/) { // NOLINT(readability-function-cognitive-complexity)
                                     // initialize the value
                                     // note that the value will be recalculated for the wipe mode after calculating fees
                                     if (request.type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
@@ -375,7 +375,8 @@ namespace ledger {
                                     auto getCurveHelper = [](const std::string &xpubConfig) -> api::TezosCurve {
                                         if (xpubConfig == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519) {
                                             return api::TezosCurve::ED25519;
-                                        } else if (xpubConfig == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1) {
+                                        }
+                                        if (xpubConfig == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1) {
                                             return api::TezosCurve::SECP256K1;
                                         }
                                         return api::TezosCurve::P256;
