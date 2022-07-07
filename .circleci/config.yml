@@ -161,6 +161,15 @@ jobs:
                 cd ../lib-ledger-core-build
 
                 ~/cmake-3.16.5-Linux-x86_64/bin/ctest --output-on-failure -timeout 120
+        - run:
+            name: Code_coverage
+            command: |
+              pip install gcovr==5.0 'jinja2<3.1'
+              cd ../lib-ledger-core-build
+              
+              gcovr -r ~/lib-ledger-core --html-details ~/code_coverage/coverage.html
+        - store_artifacts:
+            path: ~/code_coverage
   build_macos_release:
     macos:
       xcode: "12.0.0"
