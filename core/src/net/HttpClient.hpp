@@ -92,7 +92,22 @@ namespace ledger {
                     });
             }
 
-            template <typename Success, typename JParser, typename Failure>
+            struct NoCustomParser {
+                template <class T>
+                static void from_json(const nlohmann::json & /*unused*/, T & /*unused*/) {}
+            };
+
+            template <typename T, typename CustomParser, std::enable_if_t<!std::is_same<CustomParser, NoCustomParser>::value, bool> = true>
+            static void parse_json(const nlohmann::json & json, T &obj) {
+                CustomParser::from_json(json, obj);
+            }
+
+            template <typename T, typename CustomParser, std::enable_if_t<std::is_same<CustomParser, NoCustomParser>::value, bool> = true>
+            static void parse_json(const nlohmann::json & json, T &obj) {
+                from_json(json, obj);
+            }
+
+            template <typename Success, typename Failure, typename CustomParser = NoCustomParser>
             Future<Either<Failure, std::shared_ptr<Success>>> json(bool multiThread = false) const {
                 _context = (multiThread ? _threadpoolContext : _sequentialContext);
                 return operator()().recover(_context, [](const Exception &exception) {
@@ -122,10 +137,9 @@ namespace ledger {
                         }
 
                         try {
-                            auto json   = nlohmann::json::parse(str);
-                            auto parser = JParser();
+                            auto json = nlohmann::json::parse(str);
                             Success success;
-                            parser.from_json(json, success);
+                            parse_json<Success, CustomParser>(json, success);
                             return Either<Exception, std::shared_ptr<Success>>(std::make_shared<Success>(success));
                         } catch (Exception &e) {
                             return Either<Exception, std::shared_ptr<Success>>(e);

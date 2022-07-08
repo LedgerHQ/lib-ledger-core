@@ -218,5 +218,6 @@ class LedgerApiTezosLikeBlockchainExplorerTests : public LedgerApiBlockchainExpl
 TEST_F(LedgerApiTezosLikeBlockchainExplorerTests, GeTransactionsInBigBlock) {
     auto result = uv::wait(explorer->getFees());
     EXPECT_FALSE(result->isZero());
-    EXPECT_EQ(result->toUint64(), 650); // check is valid only with http cache
+    EXPECT_GT(result->toUint64(), 0);
+    EXPECT_LT(result->toUint64(), 10000);
 }

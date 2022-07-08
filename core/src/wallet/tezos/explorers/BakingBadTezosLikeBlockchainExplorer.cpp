@@ -90,10 +90,6 @@ namespace ledger {
             t.confirmations = 0;
 
             switch (t.type) {
-            case api::TezosOperationTag::OPERATION_TAG_REVEAL:
-                // TODO: missing info ?
-                // j.at("hash").get_to(t.publicKey);
-                break;
             case api::TezosOperationTag::OPERATION_TAG_TRANSACTION:
                 j.at("amount").get_to(t.value);
                 j.at("target").at("address").get_to(t.receiver);
@@ -112,16 +108,12 @@ namespace ledger {
             }
         }
 
+        void from_json(const nlohmann::json &j, TezosLikeBlockchainExplorer::TransactionsBulk &b) {
+            j.get_to(b.transactions);
+        }
+
         struct TzKTParser {
-            void from_json(const nlohmann::json &j, TezosLikeBlockchainExplorer::TransactionsBulk &b) {
-                j.get_to(b.transactions);
-            }
-
-            void from_json(const nlohmann::json &j, BigInt &b) {
-                j.get_to(b);
-            }
-
-            void from_json(const nlohmann::json &j, Block &b) {
+            static void from_json(const nlohmann::json &j, Block &b) {
                 b.currencyName = currencies::TEZOS.name;
                 j[0].at("hash").get_to(b.hash);
                 j[0].at("level").get_to(b.height);
@@ -150,7 +142,7 @@ namespace ledger {
             std::string addressesStr = addresses[0]->toString();
 
             return _http->GET(fmt::format("v1/accounts/{}/balance", addressesStr))
-                .template json<BigInt, TzKTParser, Exception>()
+                .template json<BigInt, Exception>()
                 .template mapPtr<BigInt>(getExplorerContext(),
                                          [](const Either<Exception, std::shared_ptr<BigInt>> &result) {
                                              if (result.isLeft()) {
@@ -211,7 +203,7 @@ namespace ledger {
 
                     // Then we get the number of transactions for this block
                     return _http->GET(fmt::format("v1/operations/transactions/count?level={}", levelValueStr))
-                        .template json<BigInt, TzKTParser, Exception>()
+                        .template json<BigInt, Exception>()
                         .template mapPtr<BigInt>(getExplorerContext(),
                                                  [=](const Either<Exception, std::shared_ptr<BigInt>> &result) {
                                                      if (result.isLeft()) {
@@ -300,7 +292,7 @@ namespace ledger {
             }
             using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
             return _http->GET(fmt::format("v1/accounts/{}/operations{}", addresses[0], params))
-                .template json<TezosLikeBlockchainExplorer::TransactionsBulk, TzKTParser, Exception>()
+                .template json<TezosLikeBlockchainExplorer::TransactionsBulk, Exception>()
                 .template mapPtr<TransactionsBulk>(getExplorerContext(),
                                                    [limit](const EitherTransactionsBulk &result) {
                                                        if (result.isLeft()) {
@@ -308,12 +300,44 @@ namespace ledger {
                                                        }
                                                        result.getRight()->hasNext = result.getRight()->transactions.size() == limit;
                                                        return result.getRight();
-                                                   });
+                                                   })
+                .flatMapPtr<TransactionsBulk>(getExplorerContext(),
+                                              [=](const std::shared_ptr<TransactionsBulk> &bulk) -> FuturePtr<TransactionsBulk> {
+                                                  std::vector<std::vector<Transaction>::iterator> revealTx;
+
+                                                  // Gather pointers to each REVEAL operations
+                                                  for (auto it = bulk->transactions.begin(); it < bulk->transactions.end(); ++it) {
+                                                      if (it->type == api::TezosOperationTag::OPERATION_TAG_REVEAL) {
+                                                          revealTx.push_back(it);
+                                                      }
+                                                  }
+                                                  if (revealTx.empty()) {
+                                                      return FuturePtr<TransactionsBulk>::successful(bulk);
+                                                  }
+
+                                                  return _http->GET(fmt::format("v1/accounts/{}", addresses[0]))
+                                                      .json(false)
+                                                      .mapPtr<TransactionsBulk>(getExplorerContext(), [=](const HttpRequest::JsonResult &account) {
+                                                          auto &json = *std::get<1>(account);
+                                                          if (!json.IsObject() && !json.HasMember("publicKey")) {
+                                                              throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                                                   "Failed to get 'publicKey' from network, no (or malformed) field in response");
+                                                          }
+
+                                                          // Set publicKey to each gathered REAVEAL operations
+                                                          std::string pubkey = json["publicKey"].GetString();
+                                                          for (const auto &tx : revealTx) {
+                                                              tx->publicKey = pubkey;
+                                                          }
+                                                          return bulk;
+                                                      });
+                                              });
+            // TODO: iterate over all transactions to get publicKey if REVEAL transaction
         }
 
         FuturePtr<Block> BakingBadTezosLikeBlockchainExplorer::getCurrentBlock() const {
             return _http->GET("v1/blocks?sort.desc=id&limit=1")
-                .template json<Block, TzKTParser, Exception>()
+                .template json<Block, Exception, TzKTParser>()
                 .template mapPtr<Block>(getExplorerContext(),
                                         [](const Either<Exception, std::shared_ptr<Block>> &result) {
                                             if (result.isLeft()) {
@@ -364,7 +388,7 @@ namespace ledger {
         Future<std::shared_ptr<BigInt>>
         BakingBadTezosLikeBlockchainExplorer::getCounter(const std::string &address) {
             return _http->GET(fmt::format("/chains/main/blocks/head/context/contracts/{}/counter", address), std::unordered_map<std::string, std::string>(), getRPCNodeEndpoint())
-                .template json<BigInt, TzKTParser, Exception>()
+                .template json<BigInt, Exception>()
                 .template mapPtr<BigInt>(getExplorerContext(),
                                          [](const Either<Exception, std::shared_ptr<BigInt>> &result) {
                                              if (result.isLeft()) {
