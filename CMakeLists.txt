@@ -37,7 +37,7 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Cotire.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake-scripts/c++-standards.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake-scripts/tools.cmake")
 
-cxx_14()
+cxx_17()
 clang_tidy("-checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus*,cppcoreguidelines-*,modernize-*")            # add cmake conf option CLANG_TIDY=ON to activate
 include_what_you_use()  # add cmake conf option IWYU=ON to activate
 

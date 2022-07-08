@@ -54,7 +54,7 @@ class EthereumKeychains : public BaseFixture {
                 0,
                 ledger::core::EthereumLikeExtendedPublicKey::fromBase58(data.currency,
                                                                         data.xpub,
-                                                                        optional<std::string>(data.derivationPath)),
+                                                                        experimental::optional<std::string>(data.derivationPath)),
                 std::make_shared<ledger::core::Preferences>(*backend, randomKeychainName()));
             f(keychain);
             dispatcher->stop();
@@ -85,7 +85,7 @@ TEST_F(EthereumKeychains, EthereumEmptyAddressValidation) {
 TEST_F(EthereumKeychains, EthereumAddressValidationFromXpub) {
     auto extKey = ledger::core::EthereumLikeExtendedPublicKey::fromBase58(ETHEREUM_DATA.currency,
                                                                           ETHEREUM_DATA.xpub,
-                                                                          optional<std::string>(ETHEREUM_DATA.derivationPath));
+                                                                          experimental::optional<std::string>(ETHEREUM_DATA.derivationPath));
     EXPECT_EQ(extKey->toBase58(), ETHEREUM_DATA.xpub);
 
     auto derivedPubKey = "xpub6DrvMc6me5H6sV3Wrva6thZyhxMZ7WMyB8nMWLe3T5xr79bBsDJn2zgSQiVWEbU5XfoLMEz7oZT9G49AoCcxYNrz2dVBrySzUw4k9GTNyoW";
@@ -102,7 +102,7 @@ TEST_F(EthereumKeychains, EthereumChildAddressValidationFromPubKeyAndChainCode) 
     auto pubKey    = "035dd2992d954b3d232037aba9cc7fc08c2155e4f3616aa1290edc9cc09f8d64f0";
     auto chainCode = "6a4e60e6fbd45355d840ff7a18bc7cb628318f1ba6fbcfb0c07626d8ea768aca";
     auto ethXpub   = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
-                                                                          optional<std::vector<uint8_t>>(),
+                                                                          experimental::optional<std::vector<uint8_t>>(),
                                                                           hex::toByteArray(pubKey),
                                                                           hex::toByteArray(chainCode),
                                                                           path);
@@ -116,7 +116,7 @@ TEST_F(EthereumKeychains, EthereumExoticDerivationPaths) {
     auto pubKey    = "04b82b5c9394ba9b3575e425f09955901a92c1bd2b9e301aede6a1ab9f118290030c6e093d70add73af6b29444d525aab35201e8806ad4dcd4924dedb5afabb9fa";
     auto chainCode = "224eb6e0384eb6193e355195bc76d5bbf2210eb1e9f61b9c826a3a2db18355f0";
     auto ethXpub   = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
-                                                                          optional<std::vector<uint8_t>>(),
+                                                                          experimental::optional<std::vector<uint8_t>>(),
                                                                           hex::toByteArray(pubKey),
                                                                           hex::toByteArray(chainCode),
                                                                           path);
@@ -176,7 +176,7 @@ TEST_F(EthereumKeychains, EthereumAddressValidationFromPubKeyAndChainCode) {
         auto config           = DynamicObject::newInstance();
         config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, derivationScheme);
         auto ethXpub        = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
-                                                                                   optional<std::vector<uint8_t>>(),
+                                                                                   experimental::optional<std::vector<uint8_t>>(),
                                                                                    hex::toByteArray(publicKey),
                                                                                    hex::toByteArray(chainCode),
                                                                                    path);
