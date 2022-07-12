@@ -30,9 +30,13 @@
 
 #include "NodeTezosLikeBlockchainExplorer.h"
 
+#include "../TezosLikeAccount.h"
+
 #include <api/Configuration.hpp>
 #include <api/ErrorCode.hpp>
+#include <api/OperationQuery.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <api/TezosLikeOriginatedAccount.hpp>
 #include <rapidjson/document.h>
 #include <utils/Exception.hpp>
 #include <wallet/common/api_impl/OperationApi.h>
@@ -352,6 +356,16 @@ namespace ledger {
                     }
                     return json[field].GetBool();
                 });
+        }
+
+        Future<std::string> NodeTezosLikeBlockchainExplorer::getSynchronisationOffset(const std::shared_ptr<TezosLikeAccount> &account, std::experimental::optional<size_t> originatedAccountId) {
+            bool descending      = true;
+            auto queryOperations = originatedAccountId ? account->getOriginatedAccounts()[*originatedAccountId]->queryOperations() : account->queryOperations();
+            auto ops             = std::dynamic_pointer_cast<OperationQuery>(queryOperations->complete()->limit(1)->addOrder(api::OperationOrderKey::TIME, descending))->execute();
+            return ops.map<std::string>(getContext(), [](const std::vector<std::shared_ptr<api::Operation>> &ops) -> std::string {
+                const auto &tx = std::dynamic_pointer_cast<OperationApi>(ops[0])->getBackend().tezosTransaction.getValue();
+                return tx.block.getValueOr(Block()).hash;
+            });
         }
     } // namespace core
 } // namespace ledger

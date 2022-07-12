@@ -30,12 +30,15 @@
 
 #include "BakingBadTezosLikeBlockchainExplorer.h"
 
+#include "../TezosLikeAccount.h"
 #include "wallet/currencies.hpp"
 
 #include <api/Configuration.hpp>
 #include <api/ErrorCode.hpp>
+#include <api/OperationQuery.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <api/TezosLikeOriginatedAccount.hpp>
 #include <sstream>
 
 namespace ledger {
@@ -67,6 +70,7 @@ namespace ledger {
         }
 
         void from_json(const nlohmann::json &j, TezosLikeBlockchainExplorer::Transaction &t) {
+            t.explorerId = std::to_string(j.at("id").get<int>());
             j.at("hash").get_to(t.hash);
             auto timestamp  = j.at("timestamp").get<std::string>();
             t.receivedAt    = DateUtils::fromJSON(timestamp);
@@ -266,21 +270,54 @@ namespace ledger {
             return pushLedgerApiTransaction(transaction, correlationId);
         }
 
+        std::function<FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>(const std::shared_ptr<TezosLikeBlockchainExplorer::TransactionsBulk> &)>
+        BakingBadTezosLikeBlockchainExplorer::AddPublicKeyToRevealTx(const std::vector<std::string> &addresses) {
+            return [=](const std::shared_ptr<TransactionsBulk> &bulk) {
+                std::vector<std::vector<Transaction>::iterator> revealTx;
+
+                // Gather pointers to each REVEAL operations
+                for (auto it = bulk->transactions.begin(); it < bulk->transactions.end(); ++it) {
+                    if (it->type == api::TezosOperationTag::OPERATION_TAG_REVEAL) {
+                        revealTx.push_back(it);
+                    }
+                }
+                if (revealTx.empty()) {
+                    return FuturePtr<TransactionsBulk>::successful(bulk);
+                }
+
+                return _http->GET(fmt::format("v1/accounts/{}", addresses[0]))
+                    .json(false)
+                    .mapPtr<TransactionsBulk>(getExplorerContext(), [=](const HttpRequest::JsonResult &account) {
+                        auto &json = *std::get<1>(account);
+                        if (!json.IsObject() && !json.HasMember("publicKey")) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                 "Failed to get 'publicKey' from network, no (or malformed) field in response");
+                        }
+
+                        // Set publicKey to each gathered REAVEAL operations
+                        std::string pubkey = json.HasMember("publicKey") ? json["publicKey"].GetString() : "";
+                        if (pubkey.empty()) {
+                            pubkey = json.HasMember("manager") && json["manager"].HasMember("publicKey") ? json["manager"]["publicKey"].GetString() : "";
+                        }
+                        for (const auto &tx : revealTx) {
+                            tx->publicKey = pubkey;
+                        }
+                        return bulk;
+                    });
+            };
+        }
+
         FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>
         BakingBadTezosLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                               Option<std::string> offset,
-                                                              Option<void *> session) {
+                                                              Option<void *> /*session*/) {
             auto tryOffset       = Try<uint64_t>::from([=]() -> uint64_t {
                 return std::stoul(offset.getValueOr(""), nullptr, 10);
             });
 
             uint64_t localOffset = tryOffset.isSuccess() ? tryOffset.getValue() : 0;
             uint64_t limit       = 100;
-            if (session.hasValue()) {
-                auto s = _sessions[*(static_cast<std::string *>(session.getValue()))];
-                localOffset += limit * s;
-                _sessions[*reinterpret_cast<std::string *>(session.getValue())]++;
-            }
+
             if (addresses.size() != 1) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "Can only get transactions for 1 address from Tezos Node, but got {} addresses",
@@ -301,38 +338,7 @@ namespace ledger {
                                                        result.getRight()->hasNext = result.getRight()->transactions.size() == limit;
                                                        return result.getRight();
                                                    })
-                .flatMapPtr<TransactionsBulk>(getExplorerContext(),
-                                              [=](const std::shared_ptr<TransactionsBulk> &bulk) -> FuturePtr<TransactionsBulk> {
-                                                  std::vector<std::vector<Transaction>::iterator> revealTx;
-
-                                                  // Gather pointers to each REVEAL operations
-                                                  for (auto it = bulk->transactions.begin(); it < bulk->transactions.end(); ++it) {
-                                                      if (it->type == api::TezosOperationTag::OPERATION_TAG_REVEAL) {
-                                                          revealTx.push_back(it);
-                                                      }
-                                                  }
-                                                  if (revealTx.empty()) {
-                                                      return FuturePtr<TransactionsBulk>::successful(bulk);
-                                                  }
-
-                                                  return _http->GET(fmt::format("v1/accounts/{}", addresses[0]))
-                                                      .json(false)
-                                                      .mapPtr<TransactionsBulk>(getExplorerContext(), [=](const HttpRequest::JsonResult &account) {
-                                                          auto &json = *std::get<1>(account);
-                                                          if (!json.IsObject() && !json.HasMember("publicKey")) {
-                                                              throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                                                   "Failed to get 'publicKey' from network, no (or malformed) field in response");
-                                                          }
-
-                                                          // Set publicKey to each gathered REAVEAL operations
-                                                          std::string pubkey = json["publicKey"].GetString();
-                                                          for (const auto &tx : revealTx) {
-                                                              tx->publicKey = pubkey;
-                                                          }
-                                                          return bulk;
-                                                      });
-                                              });
-            // TODO: iterate over all transactions to get publicKey if REVEAL transaction
+                .flatMapPtr<TransactionsBulk>(getExplorerContext(), AddPublicKeyToRevealTx(addresses));
         }
 
         FuturePtr<Block> BakingBadTezosLikeBlockchainExplorer::getCurrentBlock() const {
@@ -447,6 +453,19 @@ namespace ledger {
                     }
                     return json.HasMember(field) && !json[field].IsNull();
                 });
+        }
+
+        Future<std::string> BakingBadTezosLikeBlockchainExplorer::getSynchronisationOffset(const std::shared_ptr<TezosLikeAccount> &account, std::experimental::optional<size_t> originatedAccountId) {
+            bool descending      = false;
+            auto queryOperations = originatedAccountId ? account->getOriginatedAccounts()[*originatedAccountId]->queryOperations() : account->queryOperations();
+            auto ops             = std::dynamic_pointer_cast<OperationQuery>(queryOperations->complete()->limit(1)->addOrder(api::OperationOrderKey::TIME, descending))->execute();
+            return ops.map<std::string>(getContext(), [](const std::vector<std::shared_ptr<api::Operation>> &ops) -> std::string {
+                if (ops.empty()) {
+                    return "";
+                }
+                const auto &tx = std::dynamic_pointer_cast<OperationApi>(ops[0])->getBackend().tezosTransaction.getValue();
+                return tx.explorerId.getValueOr("");
+            });
         }
     } // namespace core
 } // namespace ledger

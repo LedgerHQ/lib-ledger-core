@@ -98,12 +98,12 @@ namespace ledger {
             };
 
             template <typename T, typename CustomParser, std::enable_if_t<!std::is_same<CustomParser, NoCustomParser>::value, bool> = true>
-            static void parse_json(const nlohmann::json & json, T &obj) {
+            static void parse_json(const nlohmann::json &json, T &obj) {
                 CustomParser::from_json(json, obj);
             }
 
             template <typename T, typename CustomParser, std::enable_if_t<std::is_same<CustomParser, NoCustomParser>::value, bool> = true>
-            static void parse_json(const nlohmann::json & json, T &obj) {
+            static void parse_json(const nlohmann::json &json, T &obj) {
                 from_json(json, obj);
             }
 

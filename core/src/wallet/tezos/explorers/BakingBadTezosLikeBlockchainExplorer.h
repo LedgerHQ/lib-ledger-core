@@ -112,9 +112,13 @@ namespace ledger {
 
             Future<bool> isDelegate(const std::string &address) override;
 
+            Future<std::string> getSynchronisationOffset(const std::shared_ptr<TezosLikeAccount> &account, std::experimental::optional<size_t> originatedAccountId) override;
+
           private:
             api::TezosLikeNetworkParameters _parameters;
             std::unordered_map<std::string, uint64_t> _sessions;
+            std::function<FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>(const std::shared_ptr<TezosLikeBlockchainExplorer::TransactionsBulk> &)>
+                AddPublicKeyToRevealTx(const std::vector<std::string> &addresses);
         };
     } // namespace core
 } // namespace ledger

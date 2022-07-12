@@ -30,10 +30,14 @@
 
 #include "ExternalTezosLikeBlockchainExplorer.h"
 
+#include "../TezosLikeAccount.h"
+
 #include <api/Configuration.hpp>
 #include <api/ErrorCode.hpp>
+#include <api/OperationQuery.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <api/TezosLikeOriginatedAccount.hpp>
 #include <clocale>
 #include <sstream>
 
@@ -177,18 +181,14 @@ namespace ledger {
         FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>
         ExternalTezosLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                              Option<std::string> offset,
-                                                             Option<void *> session) {
+                                                             Option<void *> /*session*/) {
             auto tryOffset       = Try<uint64_t>::from([=]() -> uint64_t {
                 return std::stoul(offset.getValueOr(""), nullptr, 10);
             });
 
             uint64_t localOffset = tryOffset.isSuccess() ? tryOffset.getValue() : 0;
             uint64_t limit       = 100;
-            if (session.hasValue()) {
-                auto s = _sessions[*((std::string *)session.getValue())];
-                localOffset += limit * s;
-                _sessions[*reinterpret_cast<std::string *>(session.getValue())]++;
-            }
+
             if (addresses.size() != 1) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "Can only get transactions for 1 address from Tezos Node, but got {} addresses",
@@ -394,6 +394,15 @@ namespace ledger {
                     }
                     return json[field].GetBool();
                 });
+        }
+
+        Future<std::string> ExternalTezosLikeBlockchainExplorer::getSynchronisationOffset(const std::shared_ptr<TezosLikeAccount> &account, std::experimental::optional<size_t> originatedAccountId) {
+            auto queryOperations = originatedAccountId ? account->getOriginatedAccounts()[*originatedAccountId]->queryOperations() : account->queryOperations();
+            auto ops = std::dynamic_pointer_cast<OperationQuery>(queryOperations->partial())->count();
+            return ops.map<std::string>(getContext(), [](const std::vector<api::OperationCount> &ops) -> std::string {
+                auto count = std::accumulate(ops.begin(), ops.end(), 0, [](auto accum, const api::OperationCount &op) { return accum + op.count; });
+                return std::to_string(count);
+            });
         }
     } // namespace core
 } // namespace ledger

@@ -48,6 +48,7 @@
 
 namespace ledger {
     namespace core {
+        class TezosLikeAccount;
 
         struct TezosLikeBlockchainExplorerOriginatedAccount {
             TezosLikeBlockchainExplorerOriginatedAccount(const std::string &a = "",
@@ -79,6 +80,7 @@ namespace ledger {
             std::string originatedAccountUid;
             std::string originatedAccountAddress;
             int64_t counter{0};
+            Option<std::string> explorerId; // For BakingBad only
 
             TezosLikeBlockchainExplorerTransaction() {
                 confirmations = 0;
@@ -173,6 +175,8 @@ namespace ledger {
             virtual Future<bool> isFunded(const std::string &address)   = 0;
 
             virtual Future<bool> isDelegate(const std::string &address) = 0;
+
+            virtual Future<std::string> getSynchronisationOffset(const std::shared_ptr<TezosLikeAccount> &account, std::experimental::optional<size_t> originatedAccountId = std::experimental::nullopt) = 0;
 
           protected:
             std::string getRPCNodeEndpoint() const {

@@ -394,14 +394,7 @@ namespace ledger {
             bool hadTransactions) {
             buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
 
-            Option<std::string> blockHash;
-            auto self        = shared_from_this();
-            auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
-
-            if (batchState.blockHeight > 0) {
-                blockHash = Option<std::string>(batchState.blockHash);
-            }
-
+            auto self                = shared_from_this();
             auto derivationBenchmark = std::make_shared<Benchmarker>(
                 fmt::format("derivations/{}", buddy->synchronizationTag),
                 buddy->logger);
@@ -421,11 +414,16 @@ namespace ledger {
                 fmt::format("explorer_calls/{}", buddy->synchronizationTag),
                 buddy->logger);
             benchmark->start();
-            return _explorer->getTransactions(batch, blockHash, buddy->token)
+
+            using Bulk = TezosLikeBlockchainExplorer::TransactionsBulk;
+            return _explorer->getSynchronisationOffset(buddy->account)
+                .flatMapPtr<Bulk>(buddy->account->getContext(),
+                                  [self, batch, buddy](const std::string &offset) -> FuturePtr<Bulk> {
+                                      return self->_explorer->getTransactions(batch, offset, buddy->token);
+                                  })
                 .flatMap<bool>(
                     buddy->account->getContext(),
-                    [self, currentBatchIndex, buddy, hadTransactions, benchmark](
-                        const std::shared_ptr<typename TezosLikeBlockchainExplorer::TransactionsBulk> &bulk) {
+                    [self, currentBatchIndex, buddy, hadTransactions, benchmark](const std::shared_ptr<Bulk> &bulk) {
                         benchmark->stop();
 
                         auto interpretBenchmark = std::make_shared<Benchmarker>(
@@ -490,9 +488,8 @@ namespace ledger {
                                 api::ErrorCode::RUNTIME_ERROR,
                                 "Synchronization failed for batch {} ({})",
                                 currentBatchIndex, tryPutTx.exception().getValue().getMessage());
-                        } else {
-                            count += tryPutTx.getValue();
                         }
+                        count += tryPutTx.getValue();
 
                         buddy->logger->info(
                             "Succeeded to insert {} txs on {} for account {}",
@@ -501,7 +498,7 @@ namespace ledger {
 
                         // END NEW CODE
 
-                        if (bulk->transactions.size() > 0 && lastBlock.nonEmpty()) {
+                        if (!bulk->transactions.empty() && lastBlock.nonEmpty()) {
                             batchState.blockHeight = static_cast<uint32_t>(lastBlock.getValue().height);
                             batchState.blockHash   = lastBlock.getValue().hash;
                             buddy->preferences->editor()->putObject<tezos::AccountSynchronizationSavedState>(
@@ -509,12 +506,11 @@ namespace ledger {
                                 ->commit();
                         }
 
-                        auto hadTX = hadTransactions || bulk->transactions.size() > 0;
+                        auto hadTX = hadTransactions || !bulk->transactions.empty();
                         if (bulk->hasNext) {
                             return self->synchronizeBatch(currentBatchIndex, buddy, hadTX);
-                        } else {
-                            return Future<bool>::successful(hadTX);
                         }
+                        return Future<bool>::successful(hadTX);
                     });
         }
 

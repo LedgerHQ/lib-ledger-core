@@ -124,7 +124,7 @@ namespace ledger {
 
             auto startTime = DateUtils::now();
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
-            future.flatMap<tezos::AccountSynchronizationContext>(getContext(), [self](const Try<tezos::AccountSynchronizationContext> &result) {
+            future.flatMap<tezos::AccountSynchronizationContext>(getContext(), [self](const Try<tezos::AccountSynchronizationContext> &result) { // NOLINT(readability-function-cognitive-complexity)
                       // Synchronize originated accounts ...
                       // Notes: We should rid of this part by implementing support for fetching
                       // txs for multiple addresses
@@ -142,14 +142,13 @@ namespace ledger {
                           [](const std::shared_ptr<TezosLikeAccount> &account, size_t id, void *session, tezos::AccountSynchronizationContext result) {
                               std::vector<std::string> addresses{account->_originatedAccounts[id]->getAddress()};
 
-                              // Get offset to not start sync from beginning
-                              auto offset = session ? Future<std::vector<std::shared_ptr<api::Operation>>>::successful(std::vector<std::shared_ptr<api::Operation>>()) : std::dynamic_pointer_cast<OperationQuery>(account->_originatedAccounts[id]->queryOperations()->partial())->execute();
+                              auto offset = account->_explorer->getSynchronisationOffset(account, id);
 
-                              return offset.flatMap<tezos::AccountSynchronizationContext>(account->getContext(), [=](const std::vector<std::shared_ptr<api::Operation>> &ops) mutable {
+                              return offset.flatMap<tezos::AccountSynchronizationContext>(account->getContext(), [=](const std::string &offset) mutable {
                                   // For the moment we start synchro from the beginning
                                   auto getSession = session ? Future<void *>::successful(session) : account->_explorer->startSession();
                                   return getSession.flatMap<tezos::AccountSynchronizationContext>(account->getContext(), [=](void *s) mutable {
-                                      return account->_explorer->getTransactions(addresses, std::to_string(ops.size()), s)
+                                      return account->_explorer->getTransactions(addresses, offset, s)
                                           .flatMap<tezos::AccountSynchronizationContext>(account->getContext(), [=](const std::shared_ptr<TxsBulk> &bulk) mutable {
                                               auto uid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(account->getAccountUid(), addresses[0]);
                                               {

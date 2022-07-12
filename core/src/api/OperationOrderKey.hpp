@@ -26,6 +26,7 @@ enum class OperationOrderKey : int {
     CURRENCY_NAME,
     FEES,
     BLOCK_HEIGHT,
+    TIME,
 };
 LIBCORE_EXPORT  std::string to_string(const OperationOrderKey& operationOrderKey);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const OperationOrderKey &o);

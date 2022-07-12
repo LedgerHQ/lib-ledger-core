@@ -138,8 +138,7 @@ namespace djinni {
             Handle(const Handle &)            = delete;
             Handle &operator=(const Handle &) = delete;
             ~Handle() {
-                if (m_obj)
-                    cleanup(m_cache, typeid(TagType), get_unowning(m_obj), true);
+                if (m_obj) cleanup(m_cache, typeid(TagType), get_unowning(m_obj), true);
             }
 
             void assign(const T &obj) { m_obj = obj; }
