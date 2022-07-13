@@ -47,7 +47,7 @@
 using namespace std;
 
 namespace {
-    const std::string kExplorerUrl = ledger::core::api::TezosConfigurationDefaults::TZKT_API_ENDPOINT;
+    const std::string kExplorerUrl = "https://api.tzkt.io";
 }
 
 class TezosLikeWalletSynchronization : public BaseFixture {
