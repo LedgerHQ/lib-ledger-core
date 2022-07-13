@@ -86,7 +86,7 @@ namespace ledger {
                 _builder.order("height", std::move(descending), "b");
                 break;
             case api::OperationOrderKey::TIME:
-                _builder.order("time", std::move(descending), "b"); //NOLINT
+                _builder.order("time", std::move(descending), "b"); // NOLINT
                 break;
             }
             return shared_from_this();

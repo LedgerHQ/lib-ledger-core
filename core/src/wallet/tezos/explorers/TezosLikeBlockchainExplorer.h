@@ -172,9 +172,9 @@ namespace ledger {
                                                           const std::string &rpcNode);
 
             /// Check that the account is funded.
-            virtual Future<bool> isFunded(const std::string &address)   = 0;
+            virtual Future<bool> isFunded(const std::string &address)                                                                                                                                    = 0;
 
-            virtual Future<bool> isDelegate(const std::string &address) = 0;
+            virtual Future<bool> isDelegate(const std::string &address)                                                                                                                                  = 0;
 
             virtual Future<std::string> getSynchronisationOffset(const std::shared_ptr<TezosLikeAccount> &account, std::experimental::optional<size_t> originatedAccountId = std::experimental::nullopt) = 0;
 
