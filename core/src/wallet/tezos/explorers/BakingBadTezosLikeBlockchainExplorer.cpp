@@ -34,11 +34,11 @@
 
 #include <api/Configuration.hpp>
 #include <api/ErrorCode.hpp>
-#include <wallet/common/OperationQuery.h>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/TezosLikeOriginatedAccount.hpp>
 #include <sstream>
+#include <wallet/common/OperationQuery.h>
 
 namespace ledger {
     namespace core {
@@ -63,8 +63,10 @@ namespace ledger {
         void from_json(const nlohmann::json &j, BigInt &i) {
             if (j.is_number_integer()) {
                 i = ledger::core::BigInt::fromScalar(j.get<int>());
-            } else {
+            } else if (j.is_string()) {
                 i = ledger::core::BigInt::fromString(j.get<std::string>());
+            } else {
+                throw make_exception(api::ErrorCode::API_ERROR, "Failed to parse BigInt from response");
             }
         }
 
