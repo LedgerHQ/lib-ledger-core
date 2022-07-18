@@ -113,19 +113,19 @@ namespace ledger {
                                             std::static_pointer_cast<void>(c));
                         }
 
-                        std::vector<uint8_t> buffer = result.data.value();
+                        const std::vector<uint8_t> &buffer = result.data.value();
                         std::stringstream ss;
                         std::copy(buffer.begin(), buffer.end(), std::ostream_iterator<char>(ss, ""));
-                        std::string str = ss.str();
+                        const std::string str = ss.str();
 
-                        auto statusCode = c->getStatusCode();
+                        const int32_t statusCode = c->getStatusCode();
                         bool isFailure  = statusCode < 200 || statusCode >= 400;
                         if (isFailure) {
                             return Either<Exception, std::shared_ptr<Success>>(make_exception(api::ErrorCode::API_ERROR, "{} - {}: {}", statusCode, c->getStatusText(), str));
                         }
 
                         try {
-                            auto json = nlohmann::json::parse(str);
+                            const auto json = nlohmann::json::parse(str);
                             Success success;
                             parse_json<Success, CustomParser>(json, success);
                             return Either<Exception, std::shared_ptr<Success>>(std::make_shared<Success>(success));
