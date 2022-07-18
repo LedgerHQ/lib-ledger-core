@@ -32,11 +32,11 @@
 
 #include <api/Configuration.hpp>
 #include <api/ErrorCode.hpp>
-#include <wallet/common/OperationQuery.h>
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/TezosLikeOriginatedAccount.hpp>
 #include <rapidjson/document.h>
 #include <utils/Exception.hpp>
+#include <wallet/common/OperationQuery.h>
 #include <wallet/common/api_impl/OperationApi.h>
 
 namespace ledger {

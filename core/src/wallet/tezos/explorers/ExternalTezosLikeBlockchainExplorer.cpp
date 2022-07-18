@@ -32,13 +32,13 @@
 
 #include <api/Configuration.hpp>
 #include <api/ErrorCode.hpp>
-#include <wallet/common/OperationQuery.h>
 #include <api/OperationQuery.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/TezosLikeOriginatedAccount.hpp>
 #include <clocale>
 #include <sstream>
+#include <wallet/common/OperationQuery.h>
 
 namespace ledger {
     namespace core {
