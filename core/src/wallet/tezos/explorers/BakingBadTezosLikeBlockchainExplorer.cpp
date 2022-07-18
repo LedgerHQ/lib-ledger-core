@@ -45,7 +45,7 @@ namespace ledger {
     namespace core {
         namespace api {
             void from_json(const nlohmann::json &j, TezosOperationTag &t) {
-                auto value = j.get<std::string>();
+                const auto value = j.get<std::string>();
                 static std::unordered_map<std::string, api::TezosOperationTag> opTags{
                     std::make_pair("reveal", api::TezosOperationTag::OPERATION_TAG_REVEAL),
                     std::make_pair("transaction", api::TezosOperationTag::OPERATION_TAG_TRANSACTION),
@@ -72,10 +72,10 @@ namespace ledger {
         void from_json(const nlohmann::json &j, TezosLikeBlockchainExplorer::Transaction &t) {
             t.explorerId = std::to_string(j.at("id").get<int>());
             j.at("hash").get_to(t.hash);
-            auto timestamp  = j.at("timestamp").get<std::string>();
-            t.receivedAt    = DateUtils::fromJSON(timestamp);
-            t.fees          = BigInt(j.value("bakerFee", 0) + j.value("storageFee", 0) + j.value("allocationFee", 0));
-            t.storage_limit = BigInt(j.value("storageLimit", 0));
+            const auto timestamp = j.at("timestamp").get<std::string>();
+            t.receivedAt         = DateUtils::fromJSON(timestamp);
+            t.fees               = BigInt(j.value("bakerFee", 0) + j.value("storageFee", 0) + j.value("allocationFee", 0));
+            t.storage_limit      = BigInt(j.value("storageLimit", 0));
             j.at("gasLimit").get_to(t.gas_limit);
             j.at("sender").at("address").get_to(t.sender);
             TezosLikeBlockchainExplorer::Block block;
@@ -137,13 +137,13 @@ namespace ledger {
 
         Future<std::shared_ptr<BigInt>>
         BakingBadTezosLikeBlockchainExplorer::getBalance(const std::vector<TezosLikeKeychain::Address> &addresses) {
-            auto size = addresses.size();
+            const auto size = addresses.size();
             if (size != 1) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "Can only get balance of 1 address from Tezos Node, but got {} addresses",
                                      addresses.size());
             }
-            std::string addressesStr = addresses[0]->toString();
+            const std::string addressesStr = addresses[0]->toString();
 
             return _http->GET(fmt::format("v1/accounts/{}/balance", addressesStr))
                 .template json<BigInt, Exception>()
@@ -175,7 +175,7 @@ namespace ledger {
             return _http->GET("v1/blocks?sort.desc=id&limit=1")
                 .json(parseNumbersAsString)
                 .flatMapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) -> FuturePtr<BigInt> {
-                    auto &jarray = *std::get<1>(result);
+                    const auto &jarray = *std::get<1>(result);
 
                     // Is there a fees field ?
                     if (!jarray.IsArray() || !jarray[static_cast<rapidjson::SizeType>(0)].IsObject()) {
@@ -183,9 +183,9 @@ namespace ledger {
                                              fmt::format("Failed to get fees from network, no (or malformed) response"));
                     }
 
-                    auto &json         = jarray[static_cast<rapidjson::SizeType>(0)];
+                    const auto &json         = jarray[static_cast<rapidjson::SizeType>(0)];
 
-                    auto getFieldValue = [&json](const char *fieldName) -> std::string {
+                    const auto getFieldValue = [&json](const char *fieldName) -> std::string {
                         std::string value;
                         if (json.HasMember(fieldName) && json[fieldName].IsString()) {
                             value = json[fieldName].GetString();
@@ -193,10 +193,10 @@ namespace ledger {
                         return value;
                     };
 
-                    std::string levelValueStr = getFieldValue("level");
+                    const std::string levelValueStr = getFieldValue("level");
 
                     // try first with "fee" else with "fees"
-                    std::string feesValueStr  = getFieldValue("fee");
+                    std::string feesValueStr        = getFieldValue("fee");
                     if (feesValueStr.empty()) {
                         feesValueStr = getFieldValue("fees");
                     }
@@ -229,7 +229,7 @@ namespace ledger {
         BakingBadTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string & /*correlationId*/) {
             std::stringstream body;
             body << '"' << hex::toString(transaction) << '"';
-            auto bodyString = body.str();
+            const auto bodyString = body.str();
             return _http->POST("/injection/operation?chain=main",
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
                                std::unordered_map<std::string, std::string>{{"Content-Type", "application/json"}},
@@ -237,7 +237,7 @@ namespace ledger {
                 .json()
                 .template map<String>(getExplorerContext(),
                                       [](const HttpRequest::JsonResult &result) -> String {
-                                          auto &json = *std::get<1>(result);
+                                          const auto &json = *std::get<1>(result);
 
                                           if (!json.IsString()) {
                                               throw make_exception(api::ErrorCode::HTTP_ERROR,
@@ -248,7 +248,7 @@ namespace ledger {
         }
 
         Future<void *> BakingBadTezosLikeBlockchainExplorer::startSession() {
-            std::string sessionToken = fmt::format("{}", std::rand()); // NOLINT(cert-msc50-cpp)
+            const std::string sessionToken = fmt::format("{}", std::rand()); // NOLINT(cert-msc50-cpp)
             _sessions.insert(std::make_pair(sessionToken, 0));
             return Future<void *>::successful(new std::string(sessionToken));
         }
@@ -288,7 +288,7 @@ namespace ledger {
                 return _http->GET(fmt::format("v1/accounts/{}", addresses[0]))
                     .json(false)
                     .mapPtr<TransactionsBulk>(getExplorerContext(), [=](const HttpRequest::JsonResult &account) {
-                        auto &json = *std::get<1>(account);
+                        const auto &json = *std::get<1>(account);
                         if (!json.IsObject() && !json.HasMember("publicKey")) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
                                                  "Failed to get 'publicKey' from network, no (or malformed) field in response");
@@ -311,12 +311,12 @@ namespace ledger {
         BakingBadTezosLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                               Option<std::string> offset,
                                                               Option<void *> /*session*/) {
-            auto tryOffset       = Try<uint64_t>::from([=]() -> uint64_t {
+            const auto tryOffset       = Try<uint64_t>::from([=]() -> uint64_t {
                 return std::stoul(offset.getValueOr(""), nullptr, 10);
             });
 
-            uint64_t localOffset = tryOffset.isSuccess() ? tryOffset.getValue() : 0;
-            uint64_t limit       = 100;
+            const uint64_t localOffset = tryOffset.isSuccess() ? tryOffset.getValue() : 0;
+            constexpr uint64_t limit   = 100;
 
             if (addresses.size() != 1) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
@@ -331,7 +331,7 @@ namespace ledger {
             return _http->GET(fmt::format("v1/accounts/{}/operations{}", addresses[0], params))
                 .template json<TezosLikeBlockchainExplorer::TransactionsBulk, Exception>()
                 .template mapPtr<TransactionsBulk>(getExplorerContext(),
-                                                   [limit](const EitherTransactionsBulk &result) {
+                                                   [](const EitherTransactionsBulk &result) {
                                                        if (result.isLeft()) {
                                                            throw result.getLeft();
                                                        }
@@ -433,7 +433,7 @@ namespace ledger {
         }
 
         Future<bool> BakingBadTezosLikeBlockchainExplorer::isFunded(const std::string &address) {
-            auto tzaddress = TezosLikeAddress::fromBase58(address, currencies::TEZOS);
+            const auto tzaddress = TezosLikeAddress::fromBase58(address, currencies::TEZOS);
             return getBalance(std::vector<std::shared_ptr<TezosLikeAddress>>{tzaddress})
                 .map<bool>(getExplorerContext(), [](const std::shared_ptr<BigInt> &balance) {
                     return balance->toInt64() != 0;
@@ -444,7 +444,7 @@ namespace ledger {
             return _http->GET(fmt::format("v1/accounts/{}", address))
                 .json(false)
                 .map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
-                    auto &json              = *std::get<1>(result);
+                    const auto &json        = *std::get<1>(result);
                     // look for the delegate field
                     const auto *const field = "delegate";
                     if (!json.IsObject()) {
@@ -456,9 +456,9 @@ namespace ledger {
         }
 
         Future<std::string> BakingBadTezosLikeBlockchainExplorer::getSynchronisationOffset(const std::shared_ptr<TezosLikeAccount> &account, std::experimental::optional<size_t> originatedAccountId) {
-            bool descending      = false;
-            auto queryOperations = originatedAccountId ? account->getOriginatedAccounts()[*originatedAccountId]->queryOperations() : account->queryOperations();
-            auto ops             = std::dynamic_pointer_cast<OperationQuery>(queryOperations->complete()->limit(1)->addOrder(api::OperationOrderKey::TIME, descending))->execute();
+            constexpr bool descending  = false;
+            const auto queryOperations = originatedAccountId ? account->getOriginatedAccounts()[*originatedAccountId]->queryOperations() : account->queryOperations();
+            auto ops                   = std::dynamic_pointer_cast<OperationQuery>(queryOperations->complete()->limit(1)->addOrder(api::OperationOrderKey::TIME, descending))->execute();
             return ops.map<std::string>(getContext(), [](const std::vector<std::shared_ptr<api::Operation>> &ops) -> std::string {
                 if (ops.empty()) {
                     return "";

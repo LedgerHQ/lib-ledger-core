@@ -127,7 +127,7 @@ namespace ledger {
                               .value_or(api::BlockchainExplorerEngines::TEZOS_NODE);
             std::shared_ptr<TezosLikeBlockchainExplorer> explorer = nullptr;
             auto isTzStats                                        = engine == api::BlockchainExplorerEngines::TZSTATS_API;
-            auto isTzKT                                           = engine == api::BlockchainExplorerEngines::BAKING_BAD_API;
+            auto isTzKT                                           = engine == api::BlockchainExplorerEngines::TZKT_API;
             if (engine == api::BlockchainExplorerEngines::TEZOS_NODE || isTzStats || isTzKT) {
                 auto defaultValue   = isTzStats ? api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT : (isTzKT ? api::TezosConfigurationDefaults::TZKT_API_ENDPOINT : api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT);
                 auto http           = pool->getHttpClient(fmt::format("{}",

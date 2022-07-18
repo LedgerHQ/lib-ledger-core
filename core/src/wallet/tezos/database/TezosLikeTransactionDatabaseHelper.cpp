@@ -48,7 +48,7 @@ namespace ledger {
                                                                       const std::string &operationUid,
                                                                       TezosLikeBlockchainExplorerTransaction &tx) {
             rowset<row> rows = (sql.prepare << "SELECT tx.hash, tx.value, tx.time, "
-                                               " tx.sender, tx.receiver, tx.fees, tx.gas_limit, tx.storage_limit, tx.confirmations, tx.type, tx.public_key, tx.originated_account, tx.status, tx.explorerId, "
+                                               "tx.sender, tx.receiver, tx.fees, tx.gas_limit, tx.storage_limit, tx.confirmations, tx.type, tx.public_key, tx.originated_account, tx.status, tx.explorer_id, "
                                                "block.height, block.hash, block.time, block.currency_name "
                                                "FROM tezos_transactions AS tx "
                                                "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "

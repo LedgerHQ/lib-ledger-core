@@ -1258,12 +1258,12 @@ namespace ledger {
 
         template <>
         void migrate<31>(soci::session &sql, api::DatabaseBackendType /*type*/) {
-            sql << "ALTER TABLE tezos_transactions ADD explorerId VARCHAR(255) DEFAULT 01;";
+            sql << "ALTER TABLE tezos_transactions ADD explorer_id VARCHAR(255) DEFAULT '';";
         }
 
         template <>
         void rollback<31>(soci::session &sql, api::DatabaseBackendType /*type*/) {
-            sql << "ALTER TABLE tezos_transactions DROP explorerId";
+            sql << "ALTER TABLE tezos_transactions DROP explorer_id";
         }
     } // namespace core
 } // namespace ledger

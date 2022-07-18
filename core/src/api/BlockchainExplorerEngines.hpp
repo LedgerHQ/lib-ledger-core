@@ -32,7 +32,7 @@ public:
 
     static std::string const TZSTATS_API;
 
-    static std::string const BAKING_BAD_API;
+    static std::string const TZKT_API;
 };
 
 } } }  // namespace ledger::core::api

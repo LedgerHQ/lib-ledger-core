@@ -43,7 +43,7 @@ struct TezosAccount : public TezosMakeBaseTransaction {
     void SetUpConfig() override {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::TezosConfiguration::TEZOS_NODE, "https://xtz-node.api.live.ledger.com");
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::BAKING_BAD_API);
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZKT_API);
         configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
         configuration->putString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
         testData.configuration = configuration;
