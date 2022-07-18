@@ -30,12 +30,11 @@
 
 #include "BakingBadTezosLikeBlockchainExplorer.h"
 
-#include "../TezosLikeAccount.h"
 #include "wallet/currencies.hpp"
 
 #include <api/Configuration.hpp>
 #include <api/ErrorCode.hpp>
-#include <api/OperationQuery.hpp>
+#include <wallet/common/OperationQuery.h>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/TezosLikeOriginatedAccount.hpp>
@@ -455,10 +454,9 @@ namespace ledger {
                 });
         }
 
-        Future<std::string> BakingBadTezosLikeBlockchainExplorer::getSynchronisationOffset(const std::shared_ptr<TezosLikeAccount> &account, std::experimental::optional<size_t> originatedAccountId) {
-            constexpr bool descending  = false;
-            const auto queryOperations = originatedAccountId ? account->getOriginatedAccounts()[*originatedAccountId]->queryOperations() : account->queryOperations();
-            auto ops                   = std::dynamic_pointer_cast<OperationQuery>(queryOperations->complete()->limit(1)->addOrder(api::OperationOrderKey::TIME, descending))->execute();
+        Future<std::string> BakingBadTezosLikeBlockchainExplorer::getSynchronisationOffset(const std::shared_ptr<api::OperationQuery> &operations) {
+            constexpr bool descending = false;
+            auto ops                  = std::dynamic_pointer_cast<OperationQuery>(operations->complete()->limit(1)->addOrder(api::OperationOrderKey::TIME, descending))->execute();
             return ops.map<std::string>(getContext(), [](const std::vector<std::shared_ptr<api::Operation>> &ops) -> std::string {
                 if (ops.empty()) {
                     return "";

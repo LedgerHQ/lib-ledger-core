@@ -142,7 +142,7 @@ namespace ledger {
                           [](const std::shared_ptr<TezosLikeAccount> &account, size_t id, void *session, tezos::AccountSynchronizationContext result) {
                               std::vector<std::string> addresses{account->_originatedAccounts[id]->getAddress()};
 
-                              auto offset = account->_explorer->getSynchronisationOffset(account, id);
+                              auto offset = account->_explorer->getSynchronisationOffset(account->_originatedAccounts[id]->queryOperations());
 
                               return offset.flatMap<tezos::AccountSynchronizationContext>(account->getContext(), [=](const std::string &offset) mutable {
                                   // For the moment we start synchro from the beginning

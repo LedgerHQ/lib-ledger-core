@@ -150,13 +150,7 @@ namespace ledger {
 
         Future<HttpRequest::JsonResult> HttpRequest::json(bool parseNumbersAsString, bool ignoreStatusCode, bool multiThread) const {
             _context = (multiThread ? _threadpoolContext : _sequentialContext);
-            return operator()().recover(_context, [](const Exception &exception) {
-                                   if (HttpRequest::isHttpError(exception.getErrorCode()) &&
-                                       exception.getUserData().nonEmpty()) {
-                                       return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
-                                   }
-                                   throw exception;
-                               })
+            return operator()().recover(_context, handleHttpError)
                 .map<JsonResult>(_context, [parseNumbersAsString, ignoreStatusCode](const std::shared_ptr<api::HttpUrlConnection> &co) {
                     std::shared_ptr<api::HttpUrlConnection> connection = co;
                     auto doc                                           = std::make_shared<rapidjson::Document>();

@@ -416,7 +416,7 @@ namespace ledger {
             benchmark->start();
 
             using Bulk = TezosLikeBlockchainExplorer::TransactionsBulk;
-            return _explorer->getSynchronisationOffset(buddy->account)
+            return _explorer->getSynchronisationOffset(buddy->account->queryOperations())
                 .flatMapPtr<Bulk>(buddy->account->getContext(),
                                   [self, batch, buddy](const std::string &offset) -> FuturePtr<Bulk> {
                                       return self->_explorer->getTransactions(batch, offset, buddy->token);

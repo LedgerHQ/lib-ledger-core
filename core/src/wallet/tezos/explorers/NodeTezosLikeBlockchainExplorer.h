@@ -115,7 +115,7 @@ namespace ledger {
 
             Future<bool> isDelegate(const std::string &address) override;
 
-            Future<std::string> getSynchronisationOffset(const std::shared_ptr<TezosLikeAccount> &account, std::experimental::optional<size_t> originatedAccountId) override;
+            Future<std::string> getSynchronisationOffset(const std::shared_ptr<api::OperationQuery> &operations) override;
 
           private:
             /*

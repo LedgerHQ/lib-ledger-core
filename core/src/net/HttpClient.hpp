@@ -74,13 +74,7 @@ namespace ledger {
             template <typename Success, typename Failure, typename Handler>
             Future<Either<Failure, std::shared_ptr<Success>>> json(Handler handler, bool multiThread = false) const {
                 _context = (multiThread ? _threadpoolContext : _sequentialContext);
-                return operator()().recover(_context, [](const Exception &exception) {
-                                       if (HttpRequest::isHttpError(exception.getErrorCode()) &&
-                                           exception.getUserData().nonEmpty()) {
-                                           return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
-                                       }
-                                       throw exception;
-                                   })
+                return operator()().recover(_context, handleHttpError)
                     .template map<Either<Failure, std::shared_ptr<Success>>>(_context, [handler](const std::shared_ptr<api::HttpUrlConnection> &c) -> Either<Failure, std::shared_ptr<Success>> {
                         Handler h                                          = handler;
                         std::shared_ptr<api::HttpUrlConnection> connection = c;
@@ -110,13 +104,7 @@ namespace ledger {
             template <typename Success, typename Failure, typename CustomParser = NoCustomParser>
             Future<Either<Failure, std::shared_ptr<Success>>> json(bool multiThread = false) const {
                 _context = (multiThread ? _threadpoolContext : _sequentialContext);
-                return operator()().recover(_context, [](const Exception &exception) {
-                                       if (HttpRequest::isHttpError(exception.getErrorCode()) &&
-                                           exception.getUserData().nonEmpty()) {
-                                           return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
-                                       }
-                                       throw exception;
-                                   })
+                return operator()().recover(_context, handleHttpError)
                     .template map<Either<Failure, std::shared_ptr<Success>>>(_context, [](const std::shared_ptr<api::HttpUrlConnection> &c) -> Either<Failure, std::shared_ptr<Success>> {
                         auto result = c->readBody();
                         if (result.error) {
@@ -147,6 +135,14 @@ namespace ledger {
                             return Either<Exception, std::shared_ptr<Success>>(make_exception(api::ErrorCode::API_ERROR, "Failed to parse response body: {}: {}", e.what(), str));
                         }
                     });
+            }
+
+            static std::shared_ptr<api::HttpUrlConnection> handleHttpError(const Exception &exception) noexcept(false) {
+                if (HttpRequest::isHttpError(exception.getErrorCode()) &&
+                    exception.getUserData().nonEmpty()) {
+                    return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
+                }
+                throw exception;
             }
 
             Future<JsonResult> json(bool parseNumbersAsString = false, bool ignoreStatusCode = false, bool multiThread = false) const;

@@ -30,10 +30,9 @@
 
 #include "ExternalTezosLikeBlockchainExplorer.h"
 
-#include "../TezosLikeAccount.h"
-
 #include <api/Configuration.hpp>
 #include <api/ErrorCode.hpp>
+#include <wallet/common/OperationQuery.h>
 #include <api/OperationQuery.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
@@ -396,9 +395,8 @@ namespace ledger {
                 });
         }
 
-        Future<std::string> ExternalTezosLikeBlockchainExplorer::getSynchronisationOffset(const std::shared_ptr<TezosLikeAccount> &account, std::experimental::optional<size_t> originatedAccountId) {
-            auto queryOperations = originatedAccountId ? account->getOriginatedAccounts()[*originatedAccountId]->queryOperations() : account->queryOperations();
-            auto ops             = std::dynamic_pointer_cast<OperationQuery>(queryOperations->partial())->count();
+        Future<std::string> ExternalTezosLikeBlockchainExplorer::getSynchronisationOffset(const std::shared_ptr<api::OperationQuery> &operations) {
+            auto ops = std::dynamic_pointer_cast<OperationQuery>(operations->partial())->count();
             return ops.map<std::string>(getContext(), [](const std::vector<api::OperationCount> &ops) -> std::string {
                 auto count = std::accumulate(ops.begin(), ops.end(), 0, [](auto accum, const api::OperationCount &op) { return accum + op.count; });
                 return std::to_string(count);
