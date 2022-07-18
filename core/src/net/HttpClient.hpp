@@ -81,7 +81,7 @@ namespace ledger {
                     HttpUrlConnectionInputStream is(connection);
                     rapidjson::Reader reader;
                     reader.Parse<rapidjson::ParseFlag::kParseNumbersAsStringsFlag>(is, h);
-                    return (Either<Failure, std::shared_ptr<Success>>)h.build();
+                    return static_cast<Either<Failure, std::shared_ptr<Success>>>(h.build());
                 });
             }
 
