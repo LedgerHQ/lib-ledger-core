@@ -22,4 +22,4 @@ jobs:
           exclude: "core/test/*,core/lib/*,core/test/lib/*,core/src/api/*,core/src/jni/*"
           config_file: '.clang-tidy'
           # CMake command to run in order to generate compile_commands.json
-          cmake_command: cmake . -B build -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE -DTARGET_JNI=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=on && cmake --build build --target secp256k1
+          cmake_command: cmake . -B build -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql -DTARGET_JNI=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=on && cmake --build build --target secp256k1
