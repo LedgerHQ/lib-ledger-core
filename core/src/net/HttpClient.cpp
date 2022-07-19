@@ -150,29 +150,30 @@ namespace ledger {
 
         Future<HttpRequest::JsonResult> HttpRequest::json(bool parseNumbersAsString, bool ignoreStatusCode, bool multiThread) const {
             _context = (multiThread ? _threadpoolContext : _sequentialContext);
-            return operator()().recover(_context, [](const Exception &exception) {
-                                   if (HttpRequest::isHttpError(exception.getErrorCode()) &&
-                                       exception.getUserData().nonEmpty()) {
-                                       return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
-                                   }
-                                   throw exception;
-                               })
-                .map<JsonResult>(_context, [parseNumbersAsString, ignoreStatusCode](const std::shared_ptr<api::HttpUrlConnection> &co) {
-                    std::shared_ptr<api::HttpUrlConnection> connection = co;
-                    auto doc                                           = std::make_shared<rapidjson::Document>();
-                    HttpUrlConnectionInputStream is(connection);
-                    if (parseNumbersAsString) {
-                        doc->ParseStream<rapidjson::kParseNumbersAsStringsFlag>(is);
-                    } else {
-                        doc->ParseStream(is);
-                    }
-                    std::shared_ptr<JsonResult> result(new std::tuple<std::shared_ptr<api::HttpUrlConnection>, std::shared_ptr<rapidjson::Document>>(std::make_tuple(connection, doc)));
-                    if (!ignoreStatusCode && (connection->getStatusCode() < 200 || connection->getStatusCode() >= 300)) {
-                        throw Exception(HttpRequest::getErrorCode(connection->getStatusCode()), connection->getStatusText(),
-                                        Option<std::shared_ptr<void>>(std::static_pointer_cast<void>(result)));
-                    }
-                    return std::make_tuple(connection, doc);
-                });
+            return operator()().recover(_context, handleHttpError).map<JsonResult>(_context, [parseNumbersAsString, ignoreStatusCode](const std::shared_ptr<api::HttpUrlConnection> &co) {
+                std::shared_ptr<api::HttpUrlConnection> connection = co;
+                auto doc                                           = std::make_shared<rapidjson::Document>();
+                HttpUrlConnectionInputStream is(connection);
+                if (parseNumbersAsString) {
+                    doc->ParseStream<rapidjson::kParseNumbersAsStringsFlag>(is);
+                } else {
+                    doc->ParseStream(is);
+                }
+                std::shared_ptr<JsonResult> result(new std::tuple<std::shared_ptr<api::HttpUrlConnection>, std::shared_ptr<rapidjson::Document>>(std::make_tuple(connection, doc)));
+                if (!ignoreStatusCode && (connection->getStatusCode() < 200 || connection->getStatusCode() >= 300)) {
+                    throw Exception(HttpRequest::getErrorCode(connection->getStatusCode()), connection->getStatusText(),
+                                    Option<std::shared_ptr<void>>(std::static_pointer_cast<void>(result)));
+                }
+                return std::make_tuple(connection, doc);
+            });
+        }
+
+        std::shared_ptr<api::HttpUrlConnection> HttpRequest::handleHttpError(const Exception &exception) noexcept(false) {
+            if (HttpRequest::isHttpError(exception.getErrorCode()) &&
+                exception.getUserData().nonEmpty()) {
+                return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
+            }
+            throw exception;
         }
 
         api::HttpMethod HttpRequest::ApiRequest::getMethod() {

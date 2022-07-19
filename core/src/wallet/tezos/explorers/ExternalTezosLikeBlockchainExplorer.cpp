@@ -32,10 +32,13 @@
 
 #include <api/Configuration.hpp>
 #include <api/ErrorCode.hpp>
+#include <api/OperationQuery.hpp>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <api/TezosLikeOriginatedAccount.hpp>
 #include <clocale>
 #include <sstream>
+#include <wallet/common/OperationQuery.h>
 
 namespace ledger {
     namespace core {
@@ -129,112 +132,6 @@ namespace ledger {
                 });
         }
 
-        Future<std::shared_ptr<BigInt>>
-        ExternalTezosLikeBlockchainExplorer::getGasPrice() {
-            const bool parseNumbersAsString = true;
-            // Since tzindex 12.01, we don't have gas_price field anymore
-            // We have to calculate it instead from gas_used and fee
-            const auto gasUsedField         = "gas_used";
-            const auto feeField             = "fee";
-            // We still use the legacy field in case we have a rollback
-            const auto gasPriceField        = "gas_price";
-
-            return _http->GET("block/head")
-                .json(parseNumbersAsString)
-                .mapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) {
-                    // Fix locale issue in conversion string from/to double
-                    struct ScopedLocale {
-                        ScopedLocale() {
-                            _locale = std::setlocale(LC_NUMERIC, nullptr);
-                            std::setlocale(LC_NUMERIC, "C");
-                        }
-                        ~ScopedLocale() {
-                            std::setlocale(LC_NUMERIC, _locale.c_str());
-                        }
-
-                      private:
-                        std::string _locale;
-                    } _;
-
-                    auto &json = *std::get<1>(result);
-
-                    if (!json.IsObject()) {
-                        throw make_exception(
-                            api::ErrorCode::HTTP_ERROR, "Failed to compute gas_price from network, block/head is not a JSON object");
-                    }
-                    std::string gasPrice;
-                    // Legacy field access
-                    if (json.HasMember(gasPriceField) && json[gasPriceField].IsString()) {
-                        gasPrice = json[gasPriceField].GetString();
-                    }
-                    // OR
-                    // tzindex v12+ gas_price compute
-                    else {
-                        if (!json.HasMember(gasUsedField) || !json[gasUsedField].IsString()) {
-                            throw make_exception(
-                                api::ErrorCode::HTTP_ERROR, fmt::format(
-                                                                "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
-                                                                gasUsedField));
-                        }
-                        if (!json.HasMember(feeField) || !json[feeField].IsString()) {
-                            throw make_exception(
-                                api::ErrorCode::HTTP_ERROR, fmt::format(
-                                                                "Failed to compute gas_price from network, no (or malformed) field \"{}\" in response",
-                                                                feeField));
-                        }
-                        const uint64_t apiGasUsed = std::stoull(json[gasUsedField].GetString());
-                        if (apiGasUsed == 0) {
-                            throw make_exception(
-                                api::ErrorCode::HTTP_ERROR, "Failed to compute gas_price from network, gas_used of HEAD block is 0");
-                        }
-
-                        const auto &feeFieldStringValue = json[feeField].GetString();
-                        double apiFee                   = 0.;
-                        try {
-                            apiFee = std::stod(feeFieldStringValue);
-                        } catch (const std::invalid_argument &e) {
-                            throw make_exception(
-                                api::ErrorCode::INVALID_ARGUMENT, fmt::format(
-                                                                      "Failed to compute gas_price from network, issue converting from string with fee of HEAD block equal to \"{}\": {}",
-                                                                      feeFieldStringValue,
-                                                                      e.what()));
-                        } catch (const std::out_of_range &e) {
-                            throw make_exception(
-                                api::ErrorCode::OUT_OF_RANGE, fmt::format(
-                                                                  "Failed to compute gas_price from network, issue casting to double with fee of HEAD block equal to \"{}\" : {}",
-                                                                  feeFieldStringValue,
-                                                                  e.what()));
-                        }
-
-                        const double numericGasPrice = apiFee / static_cast<double>(apiGasUsed);
-                        std::ostringstream ss;
-                        ss.precision(std::numeric_limits<double>::digits10);
-                        ss << std::fixed << numericGasPrice;
-                        gasPrice = ss.str();
-                    }
-
-                    const std::string picoTezGasPrice = api::BigInt::fromDecimalString(gasPrice, 6, ".")->toString(10);
-                    int intPicoTezGasPrice            = 0;
-                    try {
-                        intPicoTezGasPrice = std::stoi(picoTezGasPrice);
-                    } catch (const std::invalid_argument &e) {
-                        throw make_exception(
-                            api::ErrorCode::INVALID_ARGUMENT, fmt::format(
-                                                                  "Failed to compute gas_price from network, issue converting from string with picoTezGasPrice equal to \"{}\": {}",
-                                                                  picoTezGasPrice,
-                                                                  e.what()));
-                    } catch (const std::out_of_range &e) {
-                        throw make_exception(
-                            api::ErrorCode::OUT_OF_RANGE, fmt::format(
-                                                              "Failed to compute gas_price from network, issue casting to int with picoTezGasPrice equal to \"{}\" : {}",
-                                                              picoTezGasPrice,
-                                                              e.what()));
-                    }
-
-                    return std::make_shared<BigInt>(intPicoTezGasPrice);
-                });
-        }
-
         Future<String>
         ExternalTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) {
             std::stringstream body;
@@ -283,18 +180,14 @@ namespace ledger {
         FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>
         ExternalTezosLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                              Option<std::string> offset,
-                                                             Option<void *> session) {
+                                                             Option<void *> /*session*/) {
             auto tryOffset       = Try<uint64_t>::from([=]() -> uint64_t {
                 return std::stoul(offset.getValueOr(""), nullptr, 10);
             });
 
             uint64_t localOffset = tryOffset.isSuccess() ? tryOffset.getValue() : 0;
             uint64_t limit       = 100;
-            if (session.hasValue()) {
-                auto s = _sessions[*((std::string *)session.getValue())];
-                localOffset += limit * s;
-                _sessions[*reinterpret_cast<std::string *>(session.getValue())]++;
-            }
+
             if (addresses.size() != 1) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "Can only get transactions for 1 address from Tezos Node, but got {} addresses",
@@ -460,38 +353,6 @@ namespace ledger {
                                                                    getRPCNodeEndpoint());
         }
 
-        Future<std::shared_ptr<BigInt>>
-        ExternalTezosLikeBlockchainExplorer::getTokenBalance(const std::string &accountAddress,
-                                                             const std::string &tokenAddress) const {
-            const auto parseNumbersAsString = true;
-            return _http->GET(fmt::format("/account/mainnet/{}", accountAddress), {}, _bcd)
-                .json(parseNumbersAsString)
-                .mapPtr<BigInt>(getContext(),
-                                [=](const HttpRequest::JsonResult &result) {
-                                    const auto &json = *std::get<1>(result);
-                                    if (!json.HasMember("tokens") || !json["tokens"].IsArray()) {
-                                        throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                             fmt::format("Failed to get tokens for {}, no (or malformed) field `tokens` in response", accountAddress));
-                                    }
-
-                                    const auto tokens = json["tokens"].GetArray();
-                                    for (const auto &token : tokens) {
-                                        if (!token.HasMember("contract") || !token["contract"].IsString()) {
-                                            throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                                 "Failed to get contract from network, no (or malformed) field `contract` in response");
-                                        }
-                                        if (token["contract"].GetString() == tokenAddress) {
-                                            if (!token.HasMember("balance") || !token["balance"].IsString()) {
-                                                throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                                     "Failed to get contract balance from network, no (or malformed) field `balance` in response");
-                                            }
-                                            return std::make_shared<BigInt>(BigInt::fromString(token["balance"].GetString()));
-                                        }
-                                    }
-                                    return std::make_shared<BigInt>(BigInt::ZERO);
-                                });
-        }
-
         Future<bool> ExternalTezosLikeBlockchainExplorer::isFunded(const std::string &address) {
             return _http->GET(fmt::format("account/{}", address))
                 .json(false, true)
@@ -532,6 +393,14 @@ namespace ledger {
                     }
                     return json[field].GetBool();
                 });
+        }
+
+        Future<std::string> ExternalTezosLikeBlockchainExplorer::getSynchronisationOffset(const std::shared_ptr<api::OperationQuery> &operations) {
+            auto ops = std::dynamic_pointer_cast<OperationQuery>(operations->partial())->count();
+            return ops.map<std::string>(getContext(), [](const std::vector<api::OperationCount> &ops) -> std::string {
+                auto count = std::accumulate(ops.begin(), ops.end(), 0, [](auto accum, const api::OperationCount &op) { return accum + op.count; });
+                return std::to_string(count);
+            });
         }
     } // namespace core
 } // namespace ledger

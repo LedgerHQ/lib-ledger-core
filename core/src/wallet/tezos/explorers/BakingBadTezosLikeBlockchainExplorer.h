@@ -1,8 +1,8 @@
 /*
  *
- * NodeTezosLikeBlockchainExplorer
+ * BakingBadTezosLikeBlockchainExplorer
  *
- * Created by El Khalil Bellakrid on 29/04/2019.
+ * Created by El Khalil Bellakrid on 20/10/2019.
  *
  * The MIT License (MIT)
  *
@@ -28,9 +28,7 @@
  *
  */
 
-#ifndef LEDGER_CORE_NODETEZOSLIKEBLOCKCHAINEXPLORER_H
-#define LEDGER_CORE_NODETEZOSLIKEBLOCKCHAINEXPLORER_H
-
+#pragma once
 #include <api/TezosLikeNetworkParameters.hpp>
 #include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
 #include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
@@ -41,19 +39,23 @@
 
 namespace ledger {
     namespace core {
-        class TezosLikeAccount;
+        using BakingBadApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<
+            TezosLikeBlockchainExplorerTransaction,
+            TezosLikeBlockchainExplorer::TransactionsBulk,
+            TezosLikeTransactionsParser,
+            TezosLikeTransactionsBulkParser,
+            TezosLikeBlockParser,
+            api::TezosLikeNetworkParameters>;
 
-        using LedgerApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<TezosLikeBlockchainExplorerTransaction, TezosLikeBlockchainExplorer::TransactionsBulk, TezosLikeTransactionsParser, TezosLikeTransactionsBulkParser, TezosLikeBlockParser, api::TezosLikeNetworkParameters>;
-
-        class NodeTezosLikeBlockchainExplorer : public TezosLikeBlockchainExplorer,
-                                                public LedgerApiBlockchainExplorer,
-                                                public DedicatedContext,
-                                                public std::enable_shared_from_this<NodeTezosLikeBlockchainExplorer> {
+        class BakingBadTezosLikeBlockchainExplorer : public TezosLikeBlockchainExplorer,
+                                                     public BakingBadApiBlockchainExplorer,
+                                                     public DedicatedContext,
+                                                     public std::enable_shared_from_this<BakingBadTezosLikeBlockchainExplorer> {
           public:
-            NodeTezosLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
-                                            const std::shared_ptr<HttpClient> &http,
-                                            const api::TezosLikeNetworkParameters &parameters,
-                                            const std::shared_ptr<api::DynamicObject> &configuration);
+            BakingBadTezosLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
+                                                 const std::shared_ptr<HttpClient> &http,
+                                                 const api::TezosLikeNetworkParameters &parameters,
+                                                 const std::shared_ptr<api::DynamicObject> &configuration);
 
             Future<std::shared_ptr<BigInt>>
             getBalance(const std::vector<TezosLikeKeychain::Address> &addresses) override;
@@ -61,10 +63,7 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getFees() override;
 
-            Future<std::shared_ptr<BigInt>>
-            getGasPrice();
-
-            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
+            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) override;
 
             Future<void *> startSession() override;
 
@@ -72,12 +71,10 @@ namespace ledger {
 
             Future<Bytes> getRawTransaction(const String &transactionHash) override;
 
-            Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
+            Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) override;
 
             FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>
-            getTransactions(const std::vector<std::string> &addresses,
-                            Option<std::string> fromBlockHash = Option<std::string>(),
-                            Option<void *> session            = Option<void *>()) override;
+            getTransactions(const std::vector<std::string> &addresses, Option<std::string> offset, Option<void *> session) override;
 
             FuturePtr<Block> getCurrentBlock() const override;
 
@@ -95,7 +92,7 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getEstimatedGasLimit(const std::string &address) override;
 
-            virtual Future<std::shared_ptr<GasLimit>>
+            Future<std::shared_ptr<GasLimit>>
             getEstimatedGasLimit(const std::shared_ptr<TezosLikeTransactionApi> &transaction) override;
 
             Future<std::shared_ptr<BigInt>>
@@ -118,23 +115,10 @@ namespace ledger {
             Future<std::string> getSynchronisationOffset(const std::shared_ptr<api::OperationQuery> &operations) override;
 
           private:
-            /*
-             * Helper to a get specific field's value from given url
-             * WARNING: this is only useful for fields with an integer (decimal representation) value (with a string type)
-             * @param url : base url to fetch the value on,
-             * @param field: name of field we are interested into,
-             * @param params: additional params to query value of field
-             * @return BigInt representing the value of targetted field
-             */
-            Future<std::shared_ptr<BigInt>>
-            getHelper(const std::string &url,
-                      const std::string &field,
-                      const std::unordered_map<std::string, std::string> &params = std::unordered_map<std::string, std::string>(),
-                      const std::string &fallbackValue                           = "");
-
             api::TezosLikeNetworkParameters _parameters;
-            std::string _explorerVersion;
+            std::unordered_map<std::string, uint64_t> _sessions;
+            std::function<FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>(const std::shared_ptr<TezosLikeBlockchainExplorer::TransactionsBulk> &)>
+            AddPublicKeyToRevealTx(const std::vector<std::string> &addresses);
         };
     } // namespace core
 } // namespace ledger
-#endif // LEDGER_CORE_NODETEZOSLIKEBLOCKCHAINEXPLORER_H

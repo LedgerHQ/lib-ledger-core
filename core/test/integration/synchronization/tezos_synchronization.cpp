@@ -47,7 +47,7 @@
 using namespace std;
 
 namespace {
-    const std::string kExplorerUrl = "https://xtz-explorer.api.live.ledger.com/explorer";
+    const std::string kExplorerUrl = "https://api.tzkt.io";
 }
 
 class TezosLikeWalletSynchronization : public BaseFixture {
@@ -64,7 +64,7 @@ TEST_F(TezosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
             auto configuration = DynamicObject::newInstance();
             configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>'/<address>");
             configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
-            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
+            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZKT_API);
             configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, explorerURL);
             configuration->putString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
             auto wallet = uv::wait(pool->createWallet(walletName, "tezos", configuration));
@@ -167,7 +167,7 @@ TEST_F(TezosLikeWalletSynchronization, SynchronizeAccountWithMoreThan100OpsAndDe
     configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>'/<address>");
     configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
     configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, true);
-    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
+    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZKT_API);
     configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, kExplorerUrl);
     auto wallet  = uv::wait(pool->createWallet("xtz", "tezos", configuration));
     auto account = createTezosLikeAccount(wallet, 0, XTZ_WITH_100_OPS_KEYS_INFO);
@@ -182,7 +182,7 @@ TEST_F(TezosLikeWalletSynchronization, SynchronizeAccountWithMoreThan100OpsAndDe
                    }));
     dispatcher->waitUntilStopped();
     auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations())->execute());
-    EXPECT_GT(ops.size(), 100);
+    EXPECT_GT(ops.size(), 300);
 }
 
 TEST_F(TezosLikeWalletSynchronization, NonActivated) {
@@ -193,8 +193,8 @@ TEST_F(TezosLikeWalletSynchronization, NonActivated) {
     configuration->putString(
         api::TezosConfiguration::TEZOS_XPUB_CURVE,
         api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
-    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
-    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://api.tzstats.com/explorer");
+    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZKT_API);
+    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, kExplorerUrl);
 
     auto wallet    = uv::wait(pool->createWallet("tezos wallet", "tezos", configuration));
 

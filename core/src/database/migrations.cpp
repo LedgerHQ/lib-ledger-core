@@ -1255,5 +1255,15 @@ namespace ledger {
         void rollback<30>(soci::session &sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE bech32_parameters DROP p2trversion";
         }
+
+        template <>
+        void migrate<31>(soci::session &sql, api::DatabaseBackendType /*type*/) {
+            sql << "ALTER TABLE tezos_transactions ADD explorer_id VARCHAR(255) DEFAULT '';";
+        }
+
+        template <>
+        void rollback<31>(soci::session &sql, api::DatabaseBackendType /*type*/) {
+            sql << "ALTER TABLE tezos_transactions DROP explorer_id";
+        }
     } // namespace core
 } // namespace ledger

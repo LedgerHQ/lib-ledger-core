@@ -16,6 +16,7 @@ std::string to_string(const OperationOrderKey& operationOrderKey) {
         case OperationOrderKey::CURRENCY_NAME: return "CURRENCY_NAME";
         case OperationOrderKey::FEES: return "FEES";
         case OperationOrderKey::BLOCK_HEIGHT: return "BLOCK_HEIGHT";
+        case OperationOrderKey::TIME: return "TIME";
     };
 };
 template <>
@@ -27,7 +28,8 @@ OperationOrderKey from_string(const std::string& operationOrderKey) {
     else if (operationOrderKey == "TYPE") return OperationOrderKey::TYPE;
     else if (operationOrderKey == "CURRENCY_NAME") return OperationOrderKey::CURRENCY_NAME;
     else if (operationOrderKey == "FEES") return OperationOrderKey::FEES;
-    else return OperationOrderKey::BLOCK_HEIGHT;
+    else if (operationOrderKey == "BLOCK_HEIGHT") return OperationOrderKey::BLOCK_HEIGHT;
+    else return OperationOrderKey::TIME;
 };
 
 std::ostream &operator<<(std::ostream &os, const OperationOrderKey &o)
@@ -41,6 +43,7 @@ std::ostream &operator<<(std::ostream &os, const OperationOrderKey &o)
         case OperationOrderKey::CURRENCY_NAME:  return os << "CURRENCY_NAME";
         case OperationOrderKey::FEES:  return os << "FEES";
         case OperationOrderKey::BLOCK_HEIGHT:  return os << "BLOCK_HEIGHT";
+        case OperationOrderKey::TIME:  return os << "TIME";
     }
 }
 

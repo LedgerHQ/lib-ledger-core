@@ -154,15 +154,10 @@ TezosLikeAccount = interface +c {
 	getEstimatedGasLimit(address: string, callback: Callback<BigInt>);
 	# Get fees from network
 	getFees(callback: Callback<BigInt>);
-	# Get gas price from network
-	getGasPrice(callback: Callback<BigInt>);
 	# Get originated accounts by current account
 	getOriginatedAccounts(): list<TezosLikeOriginatedAccount>;
 	# Get current delegate
 	getCurrentDelegate(callback: Callback<string>);
-	# Get the balance of the account for a given token
-	# @param tokenAddress Address of the contract
-	getTokenBalance(tokenAddress: string, callback: Callback<BigInt>);
 	# Get the deterministic operation Uid
 	const computeOperationUid(transaction: TezosLikeTransaction): string;
 }
@@ -203,8 +198,9 @@ TezosConfigurationDefaults = interface +c {
     const BCD_API_ENDPOINT: string = "https://api.better-call.dev/v1";
     const TEZOS_DEFAULT_API_ENDPOINT: string = "https://explorers.api.live.ledger.com";
     const TEZOS_DEFAULT_API_VERSION: string = "v3";
-    const TZSTATS_API_ENDPOINT: string = "https://api.tzstats.com/explorer";
-    const TEZOS_DEFAULT_NODE: string = "https://mainnet.tezrpc.me";
+    const TZSTATS_API_ENDPOINT: string = "https://xtz-explorer.api.vault.ledger.com/explorer";
+    const TZKT_API_ENDPOINT: string = "https://api.tzkt.io";
+    const TEZOS_DEFAULT_NODE: string = "https://xtz-node.api.vault.ledger.com";
     const TEZOS_OBSERVER_NODE_ENDPOINT_S3: string = "https://s3.tezos.com";
     const TEZOS_OBSERVER_WS_ENDPOINT_S2: string = "wss://s2.tezos.com";
     const TEZOS_OBSERVER_WS_ENDPOINT_S3: string = "wss://s3.tezos.com";

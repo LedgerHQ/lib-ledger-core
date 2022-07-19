@@ -184,6 +184,7 @@ namespace ledger {
                 }
 
 #ifndef ALLOW_HTTP_ACCESS
+                std::cout << "response not found in cache : " << request->getUrl() << std::endl;
                 throw std::runtime_error("HTTP access isn't allowed.");
 #endif
                 if (_logger) {
