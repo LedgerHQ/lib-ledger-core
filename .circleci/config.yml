@@ -79,65 +79,6 @@ jobs:
           command: |
             . .circleci/deploy.sh
 
-  build_android_release:
-    <<: *linux_job
-    environment:
-      CORE_SSL_1_1: arch_ssl_1_1
-    working_directory: ~/lib-ledger-core
-    steps:
-      - checkout
-      - run:
-          name: Submodule_Initialization
-          command: |
-            . .circleci/init_submodules.sh
-      - run:
-          name: Export_Lib_Version
-          command: |
-            . .circleci/export_lib_version.sh
-      - run:
-          name: Setup NDK
-          command: |
-            apt-get install -y zip unzip
-            wget --quiet https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip
-            unzip -q android-ndk-r18b-linux-x86_64.zip -d /home/circleci
-            ls -la /home/circleci/android-ndk-r18b
-      - run:
-          name: Build_Library_android
-          command: |
-            . .circleci/build_lib.sh android
-      - run:
-          name: Copy_Artifacts_Android
-          command: |
-            . .circleci/copy_artifacts.sh android
-      - run:
-          name: Build_Library_android_x86_64
-          command: |
-            . .circleci/build_lib.sh android x86_64
-      - run:
-          name: Copy_Artifacts_Android_x86_64
-          command: |
-            . .circleci/copy_artifacts.sh android x86_64
-      - run:
-          name: Build_Library_android_armeabi-v7a
-          command: |
-            . .circleci/build_lib.sh android armeabi-v7a
-      - run:
-          name: Copy_Artifacts_Android_armeabi-v7a
-          command: |
-            . .circleci/copy_artifacts.sh android armeabi-v7a
-      - run:
-          name: Build_Library_android_arm64-v8a
-          command: |
-            . .circleci/build_lib.sh android arm64-v8a
-      - run:
-          name: Copy_Artifacts_Android_arm64-v8a
-          command: |
-            . .circleci/copy_artifacts.sh android arm64-v8a
-      - deploy:
-          name: Deploy_Artifacts
-          command: |
-            . .circleci/deploy.sh
-
   build_linux_debug:
       <<: *linux_job
       working_directory: ~/lib-ledger-core
@@ -380,13 +321,6 @@ workflows:
             tags:
               only: /.*/
       - build_linux_jni_release:
-          <<: *default_context
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              only: /^(?!pull\/).*$/
-      - build_android_release:
           <<: *default_context
           filters:
             tags:
