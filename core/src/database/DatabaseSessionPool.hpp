@@ -66,7 +66,6 @@ namespace ledger {
             void performDatabaseRollback();
             void performChangePassword(const std::string &oldPassword,
                                        const std::string &newPassword);
-            bool isSqlite() const;
             bool isPostgres() const;
 
           private:

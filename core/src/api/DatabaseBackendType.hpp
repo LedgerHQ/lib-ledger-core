@@ -18,7 +18,6 @@
 namespace ledger { namespace core { namespace api {
 
 enum class DatabaseBackendType : int {
-    SQLITE3,
     POSTGRESQL,
 };
 LIBCORE_EXPORT  std::string to_string(const DatabaseBackendType& databaseBackendType);

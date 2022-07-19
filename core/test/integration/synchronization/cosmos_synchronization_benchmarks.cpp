@@ -92,15 +92,9 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
         auto client           = std::make_shared<HttpClient>(
             api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT, http, worker, threadpoolWorker);
 
-#ifdef PG_SUPPORT
-        const bool usePostgreSQL = true;
         auto poolConfig          = DynamicObject::newInstance();
-        poolConfig->putString(
-            api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-        pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
-#else
-        pool = newDefaultPool();
-#endif
+        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+        pool = newDefaultPool("postgres", "", poolConfig);
 
         explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
             worker, client, PARAMS, std::make_shared<DynamicObject>());

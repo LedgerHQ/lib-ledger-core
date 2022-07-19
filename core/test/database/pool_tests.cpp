@@ -38,7 +38,10 @@
 #include <src/api/DynamicObject.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <src/wallet/pool/WalletPool.hpp>
+#include <api/PoolConfiguration.hpp>
 #include <unordered_set>
+
+#include "api/ConfigurationDefaults.hpp"
 
 using namespace ledger::core;
 
@@ -63,8 +66,9 @@ static const std::unordered_set<std::string> ALL_TABLE_NAMES = {
 TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto resolver   = std::make_shared<NativePathResolver>();
-    auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-    DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, nullptr, "test")
+    auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
+
+    DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, nullptr, "postgres://localhost:5432/test_db")
         .onComplete(dispatcher->getMainExecutionContext(), [&](const TryPtr<DatabaseSessionPool> &result) {
             EXPECT_TRUE(result.isSuccess());
             if (result.isFailure()) {
@@ -72,9 +76,9 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
             } else {
                 auto tables = ALL_TABLE_NAMES;
                 soci::session sql(result.getValue()->getPool());
-                soci::rowset<soci::row> rows = (sql.prepare << "SELECT name FROM sqlite_master WHERE type = 'table'");
+                soci::rowset<soci::row> rows = (sql.prepare << "SELECT table_name::text FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'");
                 for (auto &row : rows) {
-                    auto name = row.get<std::string>("name");
+                    auto name = row.get<std::string>("table_name");
                     tables.erase(name);
                 }
                 EXPECT_TRUE(tables.empty());
@@ -88,8 +92,12 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
 TEST(DatabaseSessionPool, InitializeCurrencies) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto resolver   = std::make_shared<NativePathResolver>();
-    auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+    auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
     auto printer    = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+
+    std::shared_ptr<api::DynamicObject> configuration = api::DynamicObject::newInstance();
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+
     auto pool       = WalletPool::newInstance(
               "my_pool",
               "",
@@ -100,7 +108,7 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
               dispatcher,
               nullptr,
               backend,
-              api::DynamicObject::newInstance(),
+              configuration,
               std::make_shared<ledger::core::test::MemPreferencesBackend>(),
               std::make_shared<ledger::core::test::MemPreferencesBackend>());
 

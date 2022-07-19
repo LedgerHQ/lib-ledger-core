@@ -70,14 +70,9 @@ class CosmosLikeWalletSynchronization : public BaseFixture {
         auto client           = std::make_shared<HttpClient>(
             api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT, http, worker, threadpoolWorker);
 
-#ifdef PG_SUPPORT
-        const bool usePostgreSQL = true;
-        auto poolConfig          = DynamicObject::newInstance();
+        auto poolConfig       = DynamicObject::newInstance();
         poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-        pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
-#else
-        pool = newDefaultPool();
-#endif
+        pool = newDefaultPool("postgres", "", poolConfig);
 
         explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
             worker,
@@ -312,14 +307,11 @@ TEST_F(CosmosLikeWalletSynchronization, DISABLED_GetCurrentBlockWithExplorer) {
 
 TEST_F(CosmosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
     auto walletName = "8d99cc44-9061-43a4-9edd-f938d2007926";
-#ifdef PG_SUPPORT
-    const bool usePostgreSQL = true;
+
     auto poolConfig          = DynamicObject::newInstance();
     poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-    auto pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
-#else
-    auto pool = newDefaultPool();
-#endif
+    auto pool                = newDefaultPool("postgres", "", poolConfig);
+
     backend->enableQueryLogging(true);
 
     {

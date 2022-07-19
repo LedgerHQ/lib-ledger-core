@@ -48,7 +48,7 @@ struct BitcoinLikeWalletBtcRbfSynchronization : public BaseFixture {
     void SetUp() override {
         BaseFixture::SetUp();
         explorer = std::make_shared<test::ExplorerStorage>();
-        backend  = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+        backend  = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
     }
 
     void TearDown() override {

@@ -1,6 +1,5 @@
 # An enum representing a type of database backend (ones supported now through SOCI).
 DatabaseBackendType = enum {
-    SQLite3;
     PostgreSQL;
 }
 # An enum representing a SQL type.
@@ -249,10 +248,6 @@ DatabaseBackend = interface +c {
     # Return true if query logging is enabled.
     # @return trye if query logging is enabled, false otherwise.
     isLoggingEnabled(): bool;
-
-    # Create an instance of SQLite3 database.
-    # @return DatabaseBackend object
-    static getSqlite3Backend(): DatabaseBackend;
 
     # Create an instance of PostgreSQL database.
     # @return DatabaseBackend object

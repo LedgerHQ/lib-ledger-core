@@ -56,21 +56,8 @@ std::pair<std::shared_ptr<LambdaEventReceiver>, ledger::core::Future<bool>> crea
 TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction) {
     auto fakeHttp = std::make_shared<test::FakeHttpClient>();
 
-    backend       = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+    auto pool     = newDefaultPool(randomDBName(), "test", api::DynamicObject::newInstance(), fakeHttp);
 
-    auto pool     = WalletPool::newInstance(
-            "my_pool",
-            "",
-            fakeHttp,
-            ws,
-            resolver,
-            printer,
-            dispatcher,
-            rng,
-            backend,
-            api::DynamicObject::newInstance(),
-            std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-            std::make_shared<ledger::core::test::MemPreferencesBackend>());
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,

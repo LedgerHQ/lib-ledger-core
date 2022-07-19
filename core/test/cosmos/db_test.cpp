@@ -18,14 +18,11 @@ class CosmosDBTest : public BaseFixture {
   public:
     void SetUp() override {
         BaseFixture::SetUp();
-#ifdef PG_SUPPORT
-        const bool usePostgreSQL = true;
+
         auto poolConfig          = DynamicObject::newInstance();
         poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-        pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
-#else
-        pool = newDefaultPool();
-#endif
+        pool = newDefaultPool("postgres", "", poolConfig);
+
         backend->enableQueryLogging(true);
     }
 

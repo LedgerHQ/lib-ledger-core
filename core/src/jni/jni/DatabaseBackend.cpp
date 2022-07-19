@@ -60,15 +60,6 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_getSqlite3Backend(JNIEnv* jniEnv, jobject /*this*/)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        auto r = ::ledger::core::api::DatabaseBackend::getSqlite3Backend();
-        return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_getPostgreSQLBackend(JNIEnv* jniEnv, jobject /*this*/, jint j_connectionPoolSize, jint j_readonlyConnectionPoolSize)
 {
     try {

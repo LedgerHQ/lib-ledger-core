@@ -30,7 +30,6 @@
  */
 #include "DatabaseBackend.hpp"
 
-#include "SQLite3Backend.hpp"
 #ifdef PG_SUPPORT
 #include "PostgreSQLBackend.h"
 #endif
@@ -42,10 +41,6 @@
 
 namespace ledger {
     namespace core {
-
-        std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::getSqlite3Backend() {
-            return std::make_shared<SQLite3Backend>();
-        }
 
         std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::getPostgreSQLBackend(int32_t connectionPoolSize, int32_t readonlyConnectionPoolSize) {
 #ifdef PG_SUPPORT
