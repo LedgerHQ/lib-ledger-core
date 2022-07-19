@@ -46,6 +46,7 @@
 #include "HttpUrlConnectionInputStream.hpp"
 
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <rapidjson/document.h>
 #include <rapidjson/reader.h>
 #include <unordered_map>
@@ -73,23 +74,68 @@ namespace ledger {
             template <typename Success, typename Failure, typename Handler>
             Future<Either<Failure, std::shared_ptr<Success>>> json(Handler handler, bool multiThread = false) const {
                 _context = (multiThread ? _threadpoolContext : _sequentialContext);
-                return operator()().recover(_context, [](const Exception &exception) {
-                                       if (HttpRequest::isHttpError(exception.getErrorCode()) &&
-                                           exception.getUserData().nonEmpty()) {
-                                           return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
-                                       }
-                                       throw exception;
-                                   })
-                    .template map<Either<Failure, std::shared_ptr<Success>>>(_context, [handler](const std::shared_ptr<api::HttpUrlConnection> &c) -> Either<Failure, std::shared_ptr<Success>> {
-                        Handler h                                          = handler;
-                        std::shared_ptr<api::HttpUrlConnection> connection = c;
-                        h.attach(connection);
-                        HttpUrlConnectionInputStream is(connection);
-                        rapidjson::Reader reader;
-                        reader.Parse<rapidjson::ParseFlag::kParseNumbersAsStringsFlag>(is, h);
-                        return (Either<Failure, std::shared_ptr<Success>>)h.build();
-                    });
+                return operator()().recover(_context, handleHttpError).template map<Either<Failure, std::shared_ptr<Success>>>(_context, [handler](const std::shared_ptr<api::HttpUrlConnection> &c) -> Either<Failure, std::shared_ptr<Success>> {
+                    Handler h                                          = handler;
+                    std::shared_ptr<api::HttpUrlConnection> connection = c;
+                    h.attach(connection);
+                    HttpUrlConnectionInputStream is(connection);
+                    rapidjson::Reader reader;
+                    reader.Parse<rapidjson::ParseFlag::kParseNumbersAsStringsFlag>(is, h);
+                    return static_cast<Either<Failure, std::shared_ptr<Success>>>(h.build());
+                });
             }
+
+            struct NoCustomParser {
+                template <class T>
+                static void from_json(const nlohmann::json & /*unused*/, T & /*unused*/) {}
+            };
+
+            template <typename T, typename CustomParser, std::enable_if_t<!std::is_same<CustomParser, NoCustomParser>::value, bool> = true>
+            static void parse_json(const nlohmann::json &json, T &obj) {
+                CustomParser::from_json(json, obj);
+            }
+
+            template <typename T, typename CustomParser, std::enable_if_t<std::is_same<CustomParser, NoCustomParser>::value, bool> = true>
+            static void parse_json(const nlohmann::json &json, T &obj) {
+                from_json(json, obj);
+            }
+
+            template <typename Success, typename Failure, typename CustomParser = NoCustomParser>
+            Future<Either<Failure, std::shared_ptr<Success>>> json(bool multiThread = false) const {
+                _context = (multiThread ? _threadpoolContext : _sequentialContext);
+                return operator()().recover(_context, handleHttpError).template map<Either<Failure, std::shared_ptr<Success>>>(_context, [](const std::shared_ptr<api::HttpUrlConnection> &c) -> Either<Failure, std::shared_ptr<Success>> {
+                    auto result = c->readBody();
+                    if (result.error) {
+                        throw Exception(result.error.value().code,
+                                        result.error.value().message,
+                                        std::static_pointer_cast<void>(c));
+                    }
+
+                    const std::vector<uint8_t> &buffer = result.data.value();
+                    std::stringstream ss;
+                    std::copy(buffer.begin(), buffer.end(), std::ostream_iterator<char>(ss, ""));
+                    const std::string str    = ss.str();
+
+                    const int32_t statusCode = c->getStatusCode();
+                    bool isFailure           = statusCode < 200 || statusCode >= 400;
+                    if (isFailure) {
+                        return Either<Exception, std::shared_ptr<Success>>(make_exception(api::ErrorCode::API_ERROR, "{} - {}: {}", statusCode, c->getStatusText(), str));
+                    }
+
+                    try {
+                        const auto json = nlohmann::json::parse(str);
+                        Success success;
+                        parse_json<Success, CustomParser>(json, success);
+                        return Either<Exception, std::shared_ptr<Success>>(std::make_shared<Success>(success));
+                    } catch (Exception &e) {
+                        return Either<Exception, std::shared_ptr<Success>>(e);
+                    } catch (std::exception &e) {
+                        return Either<Exception, std::shared_ptr<Success>>(make_exception(api::ErrorCode::API_ERROR, "Failed to parse response body: {}: {}", e.what(), str));
+                    }
+                });
+            }
+
+            static std::shared_ptr<api::HttpUrlConnection> handleHttpError(const Exception &exception) noexcept(false);
 
             Future<JsonResult> json(bool parseNumbersAsString = false, bool ignoreStatusCode = false, bool multiThread = false) const;
             std::shared_ptr<api::HttpRequest> toApiRequest() const;

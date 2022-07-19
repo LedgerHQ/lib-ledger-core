@@ -158,6 +158,8 @@ endif()
 
 target_link_libraries(ledger-core-interface INTERFACE ethash)
 
+target_link_libraries(ledger-core-interface INTERFACE nlohmann_json::nlohmann_json)
+
 target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
 
 file(GLOB_RECURSE LEDGER_CORE_HEADERS

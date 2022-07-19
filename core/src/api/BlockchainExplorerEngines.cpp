@@ -17,4 +17,6 @@ std::string const BlockchainExplorerEngines::TEZOS_NODE = {"TEZOS_NODE"};
 
 std::string const BlockchainExplorerEngines::TZSTATS_API = {"TZSTATS_API"};
 
+std::string const BlockchainExplorerEngines::TZKT_API = {"TZKT_API"};
+
 } } }  // namespace ledger::core::api

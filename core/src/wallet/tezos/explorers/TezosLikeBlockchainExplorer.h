@@ -48,6 +48,9 @@
 
 namespace ledger {
     namespace core {
+        namespace api {
+            class OperationQuery;
+        }
 
         struct TezosLikeBlockchainExplorerOriginatedAccount {
             TezosLikeBlockchainExplorerOriginatedAccount(const std::string &a = "",
@@ -79,6 +82,7 @@ namespace ledger {
             std::string originatedAccountUid;
             std::string originatedAccountAddress;
             int64_t counter{0};
+            Option<std::string> explorerId; // For BakingBad only
 
             TezosLikeBlockchainExplorerTransaction() {
                 confirmations = 0;
@@ -113,10 +117,6 @@ namespace ledger {
 
             virtual Future<std::shared_ptr<BigInt>>
             getFees() = 0;
-
-            /// Return the gas Price of the last block in picotez (e-12) per gas
-            virtual Future<std::shared_ptr<BigInt>>
-            getGasPrice() = 0;
 
             virtual Future<std::shared_ptr<BigInt>>
             getEstimatedGasLimit(const std::string &address) = 0;
@@ -174,14 +174,11 @@ namespace ledger {
                                                           const std::string &rpcNode);
 
             /// Check that the account is funded.
-            virtual Future<bool> isFunded(const std::string &address)   = 0;
+            virtual Future<bool> isFunded(const std::string &address)                                                    = 0;
 
-            virtual Future<bool> isDelegate(const std::string &address) = 0;
+            virtual Future<bool> isDelegate(const std::string &address)                                                  = 0;
 
-            /// Get a token balance for an account
-            virtual Future<std::shared_ptr<BigInt>>
-            getTokenBalance(const std::string &accountAddress,
-                            const std::string &tokenAddress) const = 0;
+            virtual Future<std::string> getSynchronisationOffset(const std::shared_ptr<api::OperationQuery> &operations) = 0;
 
           protected:
             std::string getRPCNodeEndpoint() const {

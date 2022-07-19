@@ -31,3 +31,6 @@
 [submodule "cmake/cmake-scripts"]
 	path = cmake/cmake-scripts
 	url = https://github.com/StableCoder/cmake-scripts
+[submodule "core/lib/nlohmann_json"]
+	path = core/lib/nlohmann_json
+	url = https://github.com/nlohmann/json.git

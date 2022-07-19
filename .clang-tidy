@@ -1,0 +1,20 @@
+# Dumped from custom clion config
+# --> https://gist.github.com/ArnaudValensi/0d36639fb84b80ee57d0c3c977deb70e
+---
+Checks: >
+  -*,bugprone-*,
+  cert-dcl21-cpp,cert-dcl50-cpp,cert-env33-c,cert-err34-c,cert-err52-cpp,cert-flp30-c,cert-msc50-cpp,cert-msc51-cpp,
+  cppcoreguidelines-*,-cppcoreguidelines-macro-usage,-cppcoreguidelines-pro-type-reinterpret-cast,-cppcoreguidelines-pro-type-union-access,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-type-vararg,-cppcoreguidelines-avoid-magic-numbers,-cppcoreguidelines-owning-memory,
+  google-build-using-namespace,google-explicit-constructor,google-global-names-in-headers,google-readability-casting,google-runtime-int,google-runtime-operator,
+  hicpp-*,-hicpp-vararg,
+  misc-*,-misc-throw-by-value-catch-by-reference,
+  modernize-*,-modernize-use-trailing-return-type,
+  performance-*,
+  readability-*,-readability-named-parameter,-readability-identifier-length,-readability-implicit-bool-conversion,-readability-convert-member-functions-to-static,-readability-magic-numbers
+CheckOptions:
+  - key: bugprone-argument-comment.StrictMode
+    value: 1
+  - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+    value: 1
+...
+

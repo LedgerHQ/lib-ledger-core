@@ -19,6 +19,7 @@ git submodule update -- toolchains/polly || echo "===========Polly submodule alr
 git submodule update -- core/lib/spdlog || echo "===========spdlog submodule already updated"
 git submodule update -- core/lib/ethash || echo "===========ethash submodule already updated"
 git submodule update -- core/lib/fmt || echo "===========fmt submodule already updated"
+git submodule update -- core/lib/nlohmann_json || echo "===========nlohmann_json submodule already updated"
 git submodule update -- core/test/lib/googletest || echo "===========googletest submodule already updated"
 git submodule update -- core/lib/CRCpp || echo "===========CRCpp submodule already updated"
 git submodule update -- core/test/lib/libuv || echo "===========libuv submodule already updated"

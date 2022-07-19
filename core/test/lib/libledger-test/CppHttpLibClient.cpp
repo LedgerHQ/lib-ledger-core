@@ -109,13 +109,13 @@ namespace ledger {
                 switch(request->getMethod())
                 {
                     case core::api::HttpMethod::POST:
-                        res = cli.Post(path.c_str(), body, "text/plain");
+                        res = cli.Post(path.c_str(), body, headers.count("Content-Type") == 0 ? "text/plain" : headers.find("Content-Type")->second.c_str());
                     break;
                     case core::api::HttpMethod::GET:
                         res = cli.Get(path.c_str());
                     break;
                     case core::api::HttpMethod::PUT:
-                        res = cli.Put(path.c_str(), body, "text/plain");
+                        res = cli.Put(path.c_str(), body, headers.count("Content-Type") == 0 ? "text/plain" : headers.find("Content-Type")->second.c_str());
                     break;
                     case core::api::HttpMethod::DEL:
                         res = cli.Delete(path.c_str());
