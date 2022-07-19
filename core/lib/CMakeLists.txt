@@ -42,3 +42,13 @@ target_link_libraries(soci_core_static ${CMAKE_DL_LIBS})
 if (PG_SUPPORT)
     add_subdirectory(soci_postgresql)
 endif()
+
+# Typically you don't care so much for a third party library's tests to be
+# run from your own project's code.
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+
+# If you only include this third party in PRIVATE source files, you do not
+# need to install it when your main project gets installed.
+set(JSON_Install OFF CACHE INTERNAL "")
+
+add_subdirectory(nlohmann_json)

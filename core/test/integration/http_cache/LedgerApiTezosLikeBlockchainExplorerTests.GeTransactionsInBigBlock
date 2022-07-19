@@ -1,0 +1,10 @@
+GET https://api.tzkt.io/v1/operations/transactions/count?level=2504881
+0
+1
+37
+
+GET https://api.tzkt.io/v1/blocks?sort.desc=id&limit=1
+0
+1
+[{"cycle":499,"level":2504881,"hash":"BLdJnRA398hv3cd4ptqNTCrB8tVbEEUzV7oWuZ9eRsu1f4vtCgW","timestamp":"2022-07-04T10:11:29Z","proto":13,"payloadRound":0,"blockRound":0,"validations":6921,"deposit":0,"reward":10000000,"bonus":9660644,"fees":24064,"nonceRevealed":false,"proposer":{"alias":"TezosHODL","address":"tz1WnfXMPaNTBmH7DBPwqCWs9cPDJdkGBTZ8"},"producer":{"alias":"TezosHODL","address":"tz1WnfXMPaNTBmH7DBPwqCWs9cPDJdkGBTZ8"},"software":{"version":"v13.0","date":"2022-05-05T12:55:26Z"},"lbToggle":true,"lbToggleEma":131146050,"priority":0,"baker":{"alias":"TezosHODL","address":"tz1WnfXMPaNTBmH7DBPwqCWs9cPDJdkGBTZ8"},"lbEscapeVote":false,"lbEscapeEma":131146050}]
+

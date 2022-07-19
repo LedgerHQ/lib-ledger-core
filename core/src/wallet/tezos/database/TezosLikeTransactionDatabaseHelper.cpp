@@ -36,7 +36,6 @@
 #include <database/soci-date.h>
 #include <database/soci-number.h>
 #include <database/soci-option.h>
-#include <utils/Option.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/common/database/OperationDatabaseHelper.h>
 using namespace soci;
@@ -49,7 +48,7 @@ namespace ledger {
                                                                       const std::string &operationUid,
                                                                       TezosLikeBlockchainExplorerTransaction &tx) {
             rowset<row> rows = (sql.prepare << "SELECT tx.hash, tx.value, tx.time, "
-                                               " tx.sender, tx.receiver, tx.fees, tx.gas_limit, tx.storage_limit, tx.confirmations, tx.type, tx.public_key, tx.originated_account, tx.status, "
+                                               "tx.sender, tx.receiver, tx.fees, tx.gas_limit, tx.storage_limit, tx.confirmations, tx.type, tx.public_key, tx.originated_account, tx.status, tx.explorer_id, "
                                                "block.height, block.hash, block.time, block.currency_name "
                                                "FROM tezos_transactions AS tx "
                                                "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
@@ -87,13 +86,19 @@ namespace ledger {
                 tx.originatedAccount = TezosLikeBlockchainExplorerOriginatedAccount(values[0], static_cast<bool>(std::stoi(values[1])), static_cast<bool>(std::stoi(values[2])));
             }
 
-            tx.status = get_number<uint64_t>(row, 12);
+            tx.status       = get_number<uint64_t>(row, 12);
+
+            auto explorerId = row.get<std::string>(13);
+            if (!explorerId.empty()) {
+                tx.explorerId = explorerId;
+            }
+
             if (row.get_indicator(13) != i_null) {
                 TezosLikeBlockchainExplorer::Block block;
-                block.height       = get_number<uint64_t>(row, 13);
-                block.hash         = row.get<std::string>(14);
-                block.time         = row.get<std::chrono::system_clock::time_point>(15);
-                block.currencyName = row.get<std::string>(16);
+                block.height       = get_number<uint64_t>(row, 14);
+                block.hash         = row.get<std::string>(15);
+                block.time         = row.get<std::chrono::system_clock::time_point>(16);
+                block.currencyName = row.get<std::string>(17);
                 tx.block           = block;
             }
 
@@ -131,44 +136,46 @@ namespace ledger {
                         use(blockUid), use(tx.status), use(tx.hash), use(type), use(tx.confirmations);
                 }
                 return tezosTxUid;
-            } else {
-                // Insert
-                if (tx.block.nonEmpty()) {
-                    BlockDatabaseHelper::putBlock(sql, tx.block.getValue());
-                }
-                auto hexValue        = tx.value.toHexString();
-                auto hexFees         = tx.fees.toHexString();
-                auto hexGasLimit     = tx.gas_limit.toHexString();
-                auto hexStorageLimit = tx.storage_limit.toHexString();
-                auto type            = api::to_string(tx.type);
-                auto pubKey          = tx.publicKey.getValueOr("");
-
-                std::string sOrigAccount;
-                if (tx.originatedAccount.hasValue()) {
-                    std::stringstream origAccount;
-                    std::vector<std::string> vOrigAccount{tx.originatedAccount.getValue().address, std::to_string(tx.originatedAccount.getValue().spendable), std::to_string(tx.originatedAccount.getValue().delegatable)};
-                    strings::join(vOrigAccount, origAccount, ":");
-                    sOrigAccount = origAccount.str();
-                }
-                sql << "INSERT INTO tezos_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :gas_limit, :storage_limit, :confirmations, :type, :public_key, :originated_account, :status)",
-                    use(tezosTxUid),
-                    use(tx.hash),
-                    use(hexValue),
-                    use(blockUid),
-                    use(tx.receivedAt),
-                    use(tx.sender),
-                    use(tx.receiver),
-                    use(hexFees),
-                    use(hexGasLimit),
-                    use(hexStorageLimit),
-                    use(tx.confirmations),
-                    use(type),
-                    use(pubKey),
-                    use(sOrigAccount),
-                    use(tx.status);
-
-                return tezosTxUid;
             }
+
+            // Insert
+            if (tx.block.nonEmpty()) {
+                BlockDatabaseHelper::putBlock(sql, tx.block.getValue());
+            }
+            auto hexValue        = tx.value.toHexString();
+            auto hexFees         = tx.fees.toHexString();
+            auto hexGasLimit     = tx.gas_limit.toHexString();
+            auto hexStorageLimit = tx.storage_limit.toHexString();
+            auto type            = api::to_string(tx.type);
+            auto pubKey          = tx.publicKey.getValueOr("");
+            auto explorerId      = tx.publicKey.getValueOr("");
+
+            std::string sOrigAccount;
+            if (tx.originatedAccount.hasValue()) {
+                std::stringstream origAccount;
+                std::vector<std::string> vOrigAccount{tx.originatedAccount.getValue().address, std::to_string(tx.originatedAccount.getValue().spendable), std::to_string(tx.originatedAccount.getValue().delegatable)};
+                strings::join(vOrigAccount, origAccount, ":");
+                sOrigAccount = origAccount.str();
+            }
+            sql << "INSERT INTO tezos_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :gas_limit, :storage_limit, :confirmations, :type, :public_key, :originated_account, :status, :explorer_id)",
+                use(tezosTxUid),
+                use(tx.hash),
+                use(hexValue),
+                use(blockUid),
+                use(tx.receivedAt),
+                use(tx.sender),
+                use(tx.receiver),
+                use(hexFees),
+                use(hexGasLimit),
+                use(hexStorageLimit),
+                use(tx.confirmations),
+                use(type),
+                use(pubKey),
+                use(sOrigAccount),
+                use(tx.status),
+                use(explorerId);
+
+            return tezosTxUid;
         }
 
         void TezosLikeTransactionDatabaseHelper::eraseDataSince(

@@ -170,6 +170,7 @@ namespace {
         std::vector<std::string> publicKey;
         std::vector<std::string> originatedAccount;
         std::vector<uint64_t> status;
+        std::vector<std::string> explorerId;
 
         void update(const TezosLikeBlockchainExplorerTransaction &tx, const std::string &txUid) {
             uid.push_back(txUid);
@@ -197,6 +198,7 @@ namespace {
             }
             originatedAccount.push_back(sOrigAccount);
             status.push_back(tx.status);
+            explorerId.push_back(tx.explorerId.getValueOr(""));
         }
 
         void clear() {
@@ -221,7 +223,7 @@ namespace {
     const auto UPSERT_TRANSACTION = db::stmt<TransactionBinding>(
         "INSERT INTO tezos_transactions VALUES("
         " :tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :gas_limit, "
-        " :storage_limit, :confirmations, :type, :public_key, :originated_account, :status)"
+        " :storage_limit, :confirmations, :type, :public_key, :originated_account, :status, :explorer_id)"
         " ON CONFLICT(transaction_uid) DO UPDATE SET block_uid = :block, status = :code",
         [](auto &s, auto &b) {
             s,
@@ -240,6 +242,7 @@ namespace {
                 use(b.publicKey),
                 use(b.originatedAccount),
                 use(b.status),
+                use(b.explorerId),
                 use(b.blockUid),
                 use(b.status);
         });

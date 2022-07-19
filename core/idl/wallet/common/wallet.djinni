@@ -200,7 +200,7 @@ Operation = interface +c {
 }
 
 OperationOrderKey = enum {
-    date; amount; senders; recipients; type; currency_name; fees; block_height;
+    date; amount; senders; recipients; type; currency_name; fees; block_height; time;
 }
 
 #TODO
