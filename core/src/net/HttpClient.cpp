@@ -168,6 +168,14 @@ namespace ledger {
             });
         }
 
+        std::shared_ptr<api::HttpUrlConnection> HttpRequest::handleHttpError(const Exception &exception) noexcept(false) {
+            if (HttpRequest::isHttpError(exception.getErrorCode()) &&
+                exception.getUserData().nonEmpty()) {
+                return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
+            }
+            throw exception;
+        }
+
         api::HttpMethod HttpRequest::ApiRequest::getMethod() {
             return _self->_method;
         }

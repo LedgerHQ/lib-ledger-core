@@ -135,13 +135,7 @@ namespace ledger {
                 });
             }
 
-            static std::shared_ptr<api::HttpUrlConnection> handleHttpError(const Exception &exception) noexcept(false) {
-                if (HttpRequest::isHttpError(exception.getErrorCode()) &&
-                    exception.getUserData().nonEmpty()) {
-                    return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
-                }
-                throw exception;
-            }
+            static std::shared_ptr<api::HttpUrlConnection> handleHttpError(const Exception &exception) noexcept(false);
 
             Future<JsonResult> json(bool parseNumbersAsString = false, bool ignoreStatusCode = false, bool multiThread = false) const;
             std::shared_ptr<api::HttpRequest> toApiRequest() const;
