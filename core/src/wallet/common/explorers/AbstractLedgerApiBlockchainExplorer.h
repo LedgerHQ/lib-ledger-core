@@ -79,7 +79,7 @@ namespace ledger {
                 } else {
                     params = params + "?";
                 }
-                params = params + "batch_size=" + std::to_string(batch_size);
+                params = params + "batch_size=" + std::to_string(batch_size) + "&confirmedOnly=true";
                 return params;
             }
 
