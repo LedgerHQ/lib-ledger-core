@@ -30,18 +30,17 @@
  */
 
 #include "MemPreferencesBackend.hpp"
+#include "api/ConfigurationDefaults.hpp"
 
 #include <CoutLogPrinter.hpp>
 #include <NativePathResolver.hpp>
 #include <UvThreadDispatcher.hpp>
+#include <api/PoolConfiguration.hpp>
 #include <gtest/gtest.h>
 #include <src/api/DynamicObject.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <src/wallet/pool/WalletPool.hpp>
-#include <api/PoolConfiguration.hpp>
 #include <unordered_set>
-
-#include "api/ConfigurationDefaults.hpp"
 
 using namespace ledger::core;
 
@@ -90,27 +89,27 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
 }
 
 TEST(DatabaseSessionPool, InitializeCurrencies) {
-    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto resolver   = std::make_shared<NativePathResolver>();
-    auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
-    auto printer    = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    auto dispatcher                                   = std::make_shared<uv::UvThreadDispatcher>();
+    auto resolver                                     = std::make_shared<NativePathResolver>();
+    auto backend                                      = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
+    auto printer                                      = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
 
     std::shared_ptr<api::DynamicObject> configuration = api::DynamicObject::newInstance();
     configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
 
-    auto pool       = WalletPool::newInstance(
-              "my_pool",
-              "",
-              nullptr,
-              nullptr,
-              resolver,
-              printer,
-              dispatcher,
-              nullptr,
-              backend,
-              configuration,
-              std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-              std::make_shared<ledger::core::test::MemPreferencesBackend>());
+    auto pool = WalletPool::newInstance(
+        "my_pool",
+        "",
+        nullptr,
+        nullptr,
+        resolver,
+        printer,
+        dispatcher,
+        nullptr,
+        backend,
+        configuration,
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        std::make_shared<ledger::core::test::MemPreferencesBackend>());
 
     api::Currency bitcoin;
 

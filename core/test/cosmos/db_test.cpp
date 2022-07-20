@@ -19,7 +19,7 @@ class CosmosDBTest : public BaseFixture {
     void SetUp() override {
         BaseFixture::SetUp();
 
-        auto poolConfig          = DynamicObject::newInstance();
+        auto poolConfig = DynamicObject::newInstance();
         poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
         pool = newDefaultPool("postgres", "", poolConfig);
 

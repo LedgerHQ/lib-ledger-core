@@ -49,7 +49,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
     auto configuration = DynamicObject::newInstance();
 
     configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-    auto pool = newDefaultPool("postgres", "", configuration);
+    auto pool             = newDefaultPool("postgres", "", configuration);
 
     const auto walletName = randomWalletName();
 

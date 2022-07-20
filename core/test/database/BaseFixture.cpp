@@ -33,9 +33,9 @@
 
 #include "IntegrationEnvironment.h"
 #include "MemPreferencesBackend.hpp"
-#include <api/PoolConfiguration.hpp>
 
 #include <FilesystemUtils.hpp>
+#include <api/PoolConfiguration.hpp>
 
 api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
     0,
