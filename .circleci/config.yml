@@ -132,53 +132,6 @@ jobs:
           name: Deploy_Artifacts
           command: |
             . .circleci/deploy.sh
-  build_macos_ios_release:
-    macos:
-      xcode: "12.0.0"
-    working_directory: ~/lib-ledger-core
-    steps:
-      - checkout
-      - run:
-          name: Setup
-          command: |
-            .circleci/setup_macos.sh Release
-      - run:
-          name: Submodule_Initialization
-          command: |
-            . .circleci/init_submodules.sh
-      - run:
-          name: Export_Lib_Version
-          command: |
-            . .circleci/export_lib_version.sh
-      - run:
-          name: Build_Library_ios_x86
-          command: |
-            . .circleci/build_lib.sh ios
-      - run:
-          name: Copy_Artifacts_ios_x86
-          command: |
-            . .circleci/copy_artifacts.sh ios
-      - run:
-          name: Build_Library_ios_armv7
-          command: |
-            . .circleci/build_lib.sh ios armv7
-      - run:
-          name: Copy_Artifacts_ios_armv7
-          command: |
-            . .circleci/copy_artifacts.sh ios armv7
-      - run:
-          name: Build_Library_ios_arm64
-          command: |
-            . .circleci/build_lib.sh ios arm64
-      - run:
-          name: Copy_Artifacts_ios_arm64
-          command: |
-            . .circleci/copy_artifacts.sh ios arm64
-      - deploy:
-          name: Deploy_Artifacts
-          command: |
-            . .circleci/deploy.sh
-            . .circleci/deploy_fat_lib.sh
   build_macos_jni_release:
     macos:
       xcode: "12.0.0"
@@ -332,13 +285,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - build_macos_ios_release:
-          <<: *default_context
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              only: /^(?!pull\/).*$/
       - build_macos_jni_release:
           <<: *default_context
           filters:
