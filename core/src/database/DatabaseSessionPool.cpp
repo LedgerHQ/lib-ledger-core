@@ -31,8 +31,8 @@
 
 #include "DatabaseSessionPool.hpp"
 
-#include "migrations.hpp"
 #include "PostgreSQLBackend.h"
+#include "migrations.hpp"
 
 namespace ledger {
     namespace core {
