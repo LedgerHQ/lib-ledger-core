@@ -32,9 +32,7 @@
 #include "DatabaseSessionPool.hpp"
 
 #include "migrations.hpp"
-#ifdef PG_SUPPORT
 #include "PostgreSQLBackend.h"
-#endif
 
 namespace ledger {
     namespace core {
@@ -59,14 +57,11 @@ namespace ledger {
                 }
             }
 
-#ifdef PG_SUPPORT
             _type = api::DatabaseBackendType::POSTGRESQL;
             if (std::dynamic_pointer_cast<PostgreSQLBackend>(backend) == nullptr) {
                 throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Libcore supports only PostgreSQL backend.");
             }
-#else
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Libcore should be compiled with PG_SUPPORT flag.");
-#endif
+
             // Migrate database
             performDatabaseMigration();
             auto readonlyPoolSize = _backend->getReadonlyConnectionPoolSize();
@@ -134,11 +129,7 @@ namespace ledger {
         }
 
         bool DatabaseSessionPool::isPostgres() const {
-#ifndef PG_SUPPORT
-            return false;
-#else
             return std::dynamic_pointer_cast<PostgreSQLBackend>(_backend) != nullptr;
-#endif
         }
     } // namespace core
 } // namespace ledger

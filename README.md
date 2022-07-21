@@ -145,14 +145,14 @@ brew install openssl
 you can then use the argument `-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl` in the above cmake command
 "DOPENSSL_INCLUDE_DIR" and "DOPENSSL_SSL_LIBRARIES" are not necessary on mac.
 
-> On `Linux`, 
+> On `Linux`,
 ```
 apt-get install libssl-dev
 ```
 you can then use the argument `-DOPENSSL_SSL_LIBRARIES=/usr/lib/x86_64-linux-gnu -DOPENSSL_INCLUDE_DIR=/usr/include/openssl` in the above cmake command
 "DOPENSSL_ROOT_DIR" is not necessary on linux.
 
-> On `Windows`, 
+> On `Windows`,
 Openssl can be downloaded and installed from https://slproweb.com/products/Win32OpenSSL.html
 "DOPENSSL_ROOT_DIR" is then the installed path of Openssl in the above cmake command
 "DOPENSSL_INCLUDE_DIR" and "DOPENSSL_SSL_LIBRARIES" are not necessary on windows.
@@ -180,17 +180,14 @@ This will add JNI files to the library compilation and remove tests. You need at
 
 #### Dependencies
 
-Make sure that your have `PostgreSQL` installed on your machine, otherwise the `CMake` 
+Make sure that your have `PostgreSQL` installed on your machine, otherwise the `CMake`
 command `find_package(PostgreSQL REQUIRED)` will fail during configuration.
 
 All Nix builds currently build with Postgres support by default.
 
 #### Build
 
-To compile libcore with PostgreSQL support, you should add `-DPG_SUPPORT=ON` to your 
-`CMake` configuration command.
-
-You also need to add `-DPostgreSQL_INCLUDE_DIR=path/to/include/dir` in your configuration
+You need to add `-DPostgreSQL_INCLUDE_DIR=path/to/include/dir` in your configuration
 as a hint for headers' location (e.g. `/usr/include/postgresql`).
 
 All Nix builds currently build with Postgres support by default.
@@ -200,16 +197,15 @@ All Nix builds currently build with Postgres support by default.
 To use with libcore, simply set value of the key `api::PoolConfiguration::DATABASE_NAME`
 to the database's URL connection and set it in the pool's configuration.
 
-It is also possible to configure the size of the connection pool and read-only connection pool when instantiating the 
+It is also possible to configure the size of the connection pool and read-only connection pool when instantiating the
 PostgreSQL `DatabaseBackend` : `api::DatabaseBackend::getPostgreSQLBackend(int32_t connectionPoolSize, int32_t readonlyConnectionPoolSize)`.
 
 #### Local testing
 
-If you don't build the library with PostgreSQL, sqlite3 shall be used as Database.
-If you build the library with PostgreSQL, make sure to have a running PostgreSQL server or PostgreSQL docker container
+Make sure to have a running PostgreSQL server or PostgreSQL docker container.
 As an example, if you are running it on `localhost:5432` and `test_db` as database name,
-database's name forwarded to the pool (through configuration key `api::PoolConfiguration::DATABASE_NAME`)  
-should look like : `postgres://localhost:5432/test_db` .  
+database's name forwarded to the pool (through configuration key `api::PoolConfiguration::DATABASE_NAME`)
+should look like : `postgres://localhost:5432/test_db` .
 In order to run local tests
 ```
 cd lib-ledger-core-build

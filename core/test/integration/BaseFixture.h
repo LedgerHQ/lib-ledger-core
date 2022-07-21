@@ -104,7 +104,6 @@ class BaseFixture : public ::testing::Test {
                                                const std::string &password                              = "test",
                                                const std::shared_ptr<api::DynamicObject> &configuration = api::DynamicObject::newInstance(),
                                                const std::shared_ptr<api::HttpClient> &httpClient       = nullptr,
-                                               bool usePostgreSQL                                       = true,
                                                bool httpclientMultiThread                               = false);
     void createWallet(const std::shared_ptr<WalletPool> &pool,
                       const std::string &walletName,

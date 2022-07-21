@@ -226,15 +226,10 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolN
                                                         const std::string &password,
                                                         const std::shared_ptr<api::DynamicObject> &configuration,
                                                         const std::shared_ptr<api::HttpClient> &httpClient,
-                                                        bool usePostgreSQL,
                                                         bool httpclientMultiThread) {
     // If poolName has the sentinel value "", build a default pool with specific settings according to
     // compilation flags.
     auto actualPoolName = poolName;
-
-    if (!usePostgreSQL) {
-        throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Libcore supports only PostgreSQL.");
-    }
 
     configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
     if (actualPoolName == "") {

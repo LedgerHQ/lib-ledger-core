@@ -10,7 +10,6 @@ option(NIX_BUILD "Indicates whether this build is using nix dependencies." OFF)
 option(SYS_LIBUV "Indicates whether this build is using system libuv." OFF)
 option(SYS_SECP256K1 "Indicates whether this build is using system libsecp256k1." OFF)
 option(SYS_OPENSSL "Indicates whether this build is using system openssl." OFF)
-option(PG_SUPPORT "Indicates whether this build is using PostgreSql." ON)
 if(NIX_BUILD)
     set(SYS_LIBUV ON CACHE BOOL "Building with Nix implies using system UV" FORCE)
     set(SYS_SECP256K1 ON CACHE BOOL "Building with Nix implies using system secp256k1" FORCE)
@@ -57,11 +56,6 @@ set(BOOST_INCLUDEDIR "${CMAKE_CURRENT_SOURCE_DIR}/core/lib/boost/")
 set(CMAKE_MACOSX_RPATH 1)
 
 add_definitions("-DSQLITE_HAS_CODEC")
-
-# To compile with PostgreSQL support
-if (PG_SUPPORT)
-    add_definitions("-DPG_SUPPORT")
-endif()
 
 # To add SSL support
 if (SSL_SUPPORT)

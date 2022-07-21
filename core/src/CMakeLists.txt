@@ -38,11 +38,6 @@ list(FILTER SRC_FILES EXCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/.*")
 list(FILTER HEADERS_FILES EXCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/.*")
 list(FILTER HEADERS_FILES INCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/include/.*")
 
-if (NOT PG_SUPPORT)
-    list(REMOVE_ITEM SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.cpp)
-    list(REMOVE_ITEM HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.h)
-endif()
-
 add_library(ledger-core-interface INTERFACE)
 
 target_compile_definitions(ledger-core-interface INTERFACE ledger_core_EXPORTS)
@@ -137,9 +132,7 @@ endif()
 
 target_link_libraries(ledger-core-interface INTERFACE blake)
 
-if (PG_SUPPORT)
-    target_link_libraries(ledger-core-interface INTERFACE soci_postgresql)
-endif()
+target_link_libraries(ledger-core-interface INTERFACE soci_postgresql)
 
 target_link_libraries(ledger-core-interface INTERFACE soci_core_static)
 

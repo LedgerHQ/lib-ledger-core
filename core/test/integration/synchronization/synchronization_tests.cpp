@@ -682,9 +682,9 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFilterOperationsByBlockHe
 }
 
 TEST_F(BitcoinLikeWalletSynchronization, SynchronizeWithMultiThreading) {
-    // change to auto pool = newDefaultPool("my_ppol", "test", api::DynamicObject::newInstance(), nullptr, true, false); if we want to test single thread http client
+    // change to auto pool = newDefaultPool("my_ppol", "test", api::DynamicObject::newInstance(), nullptr, false); if we want to test single thread http client
     const auto walletName = randomWalletName();
-    auto pool             = newDefaultPool(randomDBName(), "test", api::DynamicObject::newInstance(), nullptr, true, true);
+    auto pool             = newDefaultPool(randomDBName(), "test", api::DynamicObject::newInstance(), nullptr, true);
     {
         auto wallet      = uv::wait(pool->createWallet(walletName, "bitcoin",
                                                        api::DynamicObject::newInstance()));
