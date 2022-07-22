@@ -29,6 +29,7 @@
  *
  */
 
+#include "../common/test_config.h"
 #include "MemPreferencesBackend.hpp"
 #include "api/ConfigurationDefaults.hpp"
 
@@ -41,7 +42,6 @@
 #include <src/database/DatabaseSessionPool.hpp>
 #include <src/wallet/pool/WalletPool.hpp>
 #include <unordered_set>
-#include "../common/test_config.h"
 
 using namespace ledger::core;
 

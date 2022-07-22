@@ -1,3 +1,4 @@
+#include "../common/test_config.h"
 #include "../integration/BaseFixture.h"
 #include "Fixtures.hpp"
 
@@ -11,7 +12,6 @@
 #include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 #include <wallet/cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
 #include <wallet/pool/WalletPool.hpp>
-#include "../common/test_config.h"
 
 using namespace ledger::testing::cosmos;
 

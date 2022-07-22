@@ -29,6 +29,7 @@
  *
  */
 
+#include "../../common/test_config.h"
 #include "../BaseFixture.h"
 #include "ExplorerStorage.hpp"
 #include "HttpClientOnFakeExplorer.hpp"
@@ -41,7 +42,6 @@
 #include <set>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
-#include "../../common/test_config.h"
 
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 };

@@ -29,6 +29,7 @@
  *
  */
 
+#include "../../common/test_config.h"
 #include "../BaseFixture.h"
 
 #include <api/Configuration.hpp>
@@ -54,7 +55,6 @@
 #include <wallet/cosmos/database/CosmosLikeOperationDatabaseHelper.hpp>
 #include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
-#include "../../common/test_config.h"
 
 using namespace std;
 using namespace ledger::core;

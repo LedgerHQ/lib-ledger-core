@@ -31,6 +31,7 @@
 
 #pragma once
 
+#include "../common/test_config.h"
 #include "BaseFixture.h"
 
 #include <api/ErrorCode.hpp>
@@ -39,7 +40,6 @@
 #include <fmt/format.h>
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/pool/WalletPool.hpp>
-#include "../common/test_config.h"
 
 template <class WalletFactory>
 class WalletFixture : public BaseFixture {

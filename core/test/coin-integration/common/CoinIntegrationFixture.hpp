@@ -32,6 +32,7 @@
 #ifndef LEDGER_CORE_COININTEGRATIONFIXTURE_HPP
 #define LEDGER_CORE_COININTEGRATIONFIXTURE_HPP
 
+#include "../../common/test_config.h"
 #include "../integration/IntegrationEnvironment.h"
 #include "MemPreferencesBackend.hpp"
 
@@ -68,7 +69,6 @@
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
-#include "../../common/test_config.h"
 
 using namespace ledger::core; // don't do this at home. Only for testing contexts
 using namespace ledger::core::test;
