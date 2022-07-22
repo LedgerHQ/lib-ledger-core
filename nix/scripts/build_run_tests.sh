@@ -6,7 +6,7 @@ echo "LOAD_LIMIT==" ${LOAD_LIMIT}
 
 mkdir _build_tests
 cd _build_tests
-cmake .. -DBUILD_TESTS=ON -DNIX_BUILD=ON
+cmake .. -DBUILD_TESTS=ON -DNIX_BUILD=ON -DCCACHE=ON
 echo "========= Building libcore"
 make -j -l"${LOAD_LIMIT}" ledger-core-static
 make -j -l"${LOAD_LIMIT}" ledger-core

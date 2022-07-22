@@ -23,6 +23,7 @@ let
   ++ jniFlag
   ++ [
     "-DNIX_BUILD=ON"
+    "-DCCACHE=ON"
   ];
 in
 
