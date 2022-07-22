@@ -41,6 +41,7 @@
 #include <src/database/DatabaseSessionPool.hpp>
 #include <src/wallet/pool/WalletPool.hpp>
 #include <unordered_set>
+#include "../common/test_config.h"
 
 using namespace ledger::core;
 
@@ -67,7 +68,7 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
     auto resolver   = std::make_shared<NativePathResolver>();
     auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
 
-    DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, nullptr, "postgres://localhost:5432/test_db")
+    DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, nullptr, POSTGRES_TEST_DB_ON_LOCALHOST)
         .onComplete(dispatcher->getMainExecutionContext(), [&](const TryPtr<DatabaseSessionPool> &result) {
             EXPECT_TRUE(result.isSuccess());
             if (result.isFailure()) {
@@ -95,7 +96,7 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
     auto printer                                      = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
 
     std::shared_ptr<api::DynamicObject> configuration = api::DynamicObject::newInstance();
-    configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
 
     auto pool = WalletPool::newInstance(
         "my_pool",

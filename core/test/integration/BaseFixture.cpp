@@ -38,6 +38,8 @@
 #include <api/PoolConfiguration.hpp>
 #include <utils/hex.h>
 
+#include "../common/test_config.h"
+
 api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
     0,
     {"main"},
@@ -231,7 +233,7 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolN
     // compilation flags.
     auto actualPoolName = poolName;
 
-    configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
     if (actualPoolName == "") {
         actualPoolName = randomDBName();
     }

@@ -68,6 +68,7 @@
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
+#include "../../common/test_config.h"
 
 using namespace ledger::core; // don't do this at home. Only for testing contexts
 using namespace ledger::core::test;
@@ -97,7 +98,7 @@ class CoinIntegrationFixture : public ::testing::Test {
 
     virtual std::shared_ptr<WalletPool> newPool(std::string poolName = "my_pool") {
         std::shared_ptr<api::DynamicObject> configuration = api::DynamicObject::newInstance();
-        configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+        configuration->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
 
         return WalletPool::newInstance(
             poolName,

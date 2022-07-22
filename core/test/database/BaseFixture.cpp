@@ -36,6 +36,7 @@
 
 #include <FilesystemUtils.hpp>
 #include <api/PoolConfiguration.hpp>
+#include "../common/test_config.h"
 
 api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
     0,
@@ -71,7 +72,7 @@ void BaseFixture::TearDown() {
 
 std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
     std::shared_ptr<api::DynamicObject> configuration = api::DynamicObject::newInstance();
-    configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
 
     return WalletPool::newInstance(
         poolName,

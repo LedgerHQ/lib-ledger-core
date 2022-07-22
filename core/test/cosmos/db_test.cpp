@@ -11,6 +11,7 @@
 #include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 #include <wallet/cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
 #include <wallet/pool/WalletPool.hpp>
+#include "../common/test_config.h"
 
 using namespace ledger::testing::cosmos;
 
@@ -20,7 +21,7 @@ class CosmosDBTest : public BaseFixture {
         BaseFixture::SetUp();
 
         auto poolConfig = DynamicObject::newInstance();
-        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
         pool = newDefaultPool("postgres", "", poolConfig);
 
         backend->enableQueryLogging(true);

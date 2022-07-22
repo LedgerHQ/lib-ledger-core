@@ -41,6 +41,7 @@
 #include <set>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
+#include "../../common/test_config.h"
 
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 };
@@ -48,7 +49,7 @@ class BitcoinLikeWalletSynchronization : public BaseFixture {
 TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
     auto configuration = DynamicObject::newInstance();
 
-    configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
     auto pool             = newDefaultPool("postgres", "", configuration);
 
     const auto walletName = randomWalletName();

@@ -54,6 +54,7 @@
 #include <wallet/cosmos/database/CosmosLikeOperationDatabaseHelper.hpp>
 #include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
+#include "../../common/test_config.h"
 
 using namespace std;
 using namespace ledger::core;
@@ -71,7 +72,7 @@ class CosmosLikeWalletSynchronization : public BaseFixture {
             api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT, http, worker, threadpoolWorker);
 
         auto poolConfig = DynamicObject::newInstance();
-        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
         pool     = newDefaultPool("postgres", "", poolConfig);
 
         explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
@@ -309,7 +310,7 @@ TEST_F(CosmosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
     auto walletName = "8d99cc44-9061-43a4-9edd-f938d2007926";
 
     auto poolConfig = DynamicObject::newInstance();
-    poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+    poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
     auto pool = newDefaultPool("postgres", "", poolConfig);
 
     backend->enableQueryLogging(true);
