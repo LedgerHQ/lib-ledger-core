@@ -2,6 +2,7 @@
 set -euo pipefail
 
 LOAD_LIMIT="${BUILD_LOAD_LIMIT:-2.5}"
+echo "LOAD_LIMIT==" ${LOAD_LIMIT}
 
 mkdir _build_tests
 cd _build_tests
