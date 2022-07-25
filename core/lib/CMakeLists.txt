@@ -29,17 +29,6 @@ add_subdirectory(sha512256)
 
 add_subdirectory(spdlog)
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Android")
-  # On Android, temporary directories are a bit special and are not located in the same place, such
-  # as /tmp or /usr/tmp; for this reason, we ask temporary files to be stored in memory instead
-  message("Compiling SQLCipher for Android with file temporary directory disabled (all-on-memory).")
-  add_definitions(-DSQLITE_TEMP_STORE=3)
-endif ()
-
-add_subdirectory(sqlcipher)
-
-set(SQLITE_LIB sqlcipher)
-
 # SOCI configuration
 set(SOCI_STATIC ON)
 #set(SOCI_SHARED OFF)
@@ -49,11 +38,8 @@ add_subdirectory(soci)
 # Fix undefined symbol related to dl library on Unix system
 # The dl library is linked here to avoid to modify vendor cmake files
 target_link_libraries(soci_core_static ${CMAKE_DL_LIBS})
-add_subdirectory(soci_sqlite3)
 
-if (PG_SUPPORT)
-    add_subdirectory(soci_postgresql)
-endif()
+add_subdirectory(soci_postgresql)
 
 # Typically you don't care so much for a third party library's tests to be
 # run from your own project's code.

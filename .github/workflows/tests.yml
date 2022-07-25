@@ -44,4 +44,4 @@ jobs:
     - name: Build and run tests
       run: nix-shell --run "bash nix/scripts/build_run_tests.sh" default.nix
       env:
-        BUILD_LOAD_LIMIT: 3
+        BUILD_LOAD_LIMIT: 2

@@ -29,6 +29,7 @@
  *
  */
 
+#include "../../common/test_config.h"
 #include "../BaseFixture.h"
 #include "ExplorerStorage.hpp"
 #include "HttpClientOnFakeExplorer.hpp"
@@ -47,13 +48,10 @@ class BitcoinLikeWalletSynchronization : public BaseFixture {
 
 TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
     auto configuration = DynamicObject::newInstance();
-#ifdef PG_SUPPORT
-    const bool usePostgreSQL = true;
-    configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-    auto pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);
-#else
-    auto pool = newDefaultPool();
-#endif
+
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
+    auto pool             = newDefaultPool("postgres", "", configuration);
+
     const auto walletName = randomWalletName();
 
     {
@@ -552,20 +550,9 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnFakeExplorer) {
     explorer->addTransaction(TX_3);
     explorer->addTransaction(TX_4);
 
-    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-    auto pool    = WalletPool::newInstance(
-           "my_ppol",
-           "test",
-           fake_http,
-           ws,
-           resolver,
-           printer,
-           dispatcher,
-           rng,
-           backend,
-           api::DynamicObject::newInstance(),
-           std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-           std::make_shared<ledger::core::test::MemPreferencesBackend>());
+    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
+    auto pool    = newDefaultPool("postgres", "", api::DynamicObject::newInstance(), fake_http);
+
     {
         const auto walletName = randomWalletName();
         auto wallet           = uv::wait(pool->createWallet(walletName, "bitcoin",
@@ -696,9 +683,9 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFilterOperationsByBlockHe
 }
 
 TEST_F(BitcoinLikeWalletSynchronization, SynchronizeWithMultiThreading) {
-    // change to auto pool = newDefaultPool("my_ppol", "test", api::DynamicObject::newInstance(), false, false); if we want to test single thread http client
+    // change to auto pool = newDefaultPool("my_ppol", "test", api::DynamicObject::newInstance(), nullptr, false); if we want to test single thread http client
     const auto walletName = randomWalletName();
-    auto pool             = newDefaultPool(randomDBName(), "test", api::DynamicObject::newInstance(), false, true);
+    auto pool             = newDefaultPool(randomDBName(), "test", api::DynamicObject::newInstance(), nullptr, true);
     {
         auto wallet      = uv::wait(pool->createWallet(walletName, "bitcoin",
                                                        api::DynamicObject::newInstance()));

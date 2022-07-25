@@ -22,7 +22,6 @@ let
   ++ testFlag
   ++ jniFlag
   ++ [
-    "-DPG_SUPPORT=ON"
     "-DNIX_BUILD=ON"
   ];
 in

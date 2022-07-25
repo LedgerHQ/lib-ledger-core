@@ -29,11 +29,14 @@
  *
  */
 
+#include "../common/test_config.h"
 #include "MemPreferencesBackend.hpp"
+#include "api/ConfigurationDefaults.hpp"
 
 #include <CoutLogPrinter.hpp>
 #include <NativePathResolver.hpp>
 #include <UvThreadDispatcher.hpp>
+#include <api/PoolConfiguration.hpp>
 #include <gtest/gtest.h>
 #include <src/api/DynamicObject.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
@@ -63,8 +66,9 @@ static const std::unordered_set<std::string> ALL_TABLE_NAMES = {
 TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto resolver   = std::make_shared<NativePathResolver>();
-    auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-    DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, nullptr, "test")
+    auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
+
+    DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, nullptr, POSTGRES_TEST_DB_ON_LOCALHOST)
         .onComplete(dispatcher->getMainExecutionContext(), [&](const TryPtr<DatabaseSessionPool> &result) {
             EXPECT_TRUE(result.isSuccess());
             if (result.isFailure()) {
@@ -72,9 +76,9 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
             } else {
                 auto tables = ALL_TABLE_NAMES;
                 soci::session sql(result.getValue()->getPool());
-                soci::rowset<soci::row> rows = (sql.prepare << "SELECT name FROM sqlite_master WHERE type = 'table'");
+                soci::rowset<soci::row> rows = (sql.prepare << "SELECT table_name::text FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'");
                 for (auto &row : rows) {
-                    auto name = row.get<std::string>("name");
+                    auto name = row.get<std::string>("table_name");
                     tables.erase(name);
                 }
                 EXPECT_TRUE(tables.empty());
@@ -86,23 +90,27 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
 }
 
 TEST(DatabaseSessionPool, InitializeCurrencies) {
-    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
-    auto resolver   = std::make_shared<NativePathResolver>();
-    auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-    auto printer    = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    auto pool       = WalletPool::newInstance(
-              "my_pool",
-              "",
-              nullptr,
-              nullptr,
-              resolver,
-              printer,
-              dispatcher,
-              nullptr,
-              backend,
-              api::DynamicObject::newInstance(),
-              std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-              std::make_shared<ledger::core::test::MemPreferencesBackend>());
+    auto dispatcher                                   = std::make_shared<uv::UvThreadDispatcher>();
+    auto resolver                                     = std::make_shared<NativePathResolver>();
+    auto backend                                      = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
+    auto printer                                      = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+
+    std::shared_ptr<api::DynamicObject> configuration = api::DynamicObject::newInstance();
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
+
+    auto pool = WalletPool::newInstance(
+        "my_pool",
+        "",
+        nullptr,
+        nullptr,
+        resolver,
+        printer,
+        dispatcher,
+        nullptr,
+        backend,
+        configuration,
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        std::make_shared<ledger::core::test::MemPreferencesBackend>());
 
     api::Currency bitcoin;
 

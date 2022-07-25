@@ -392,22 +392,9 @@ TEST_F(EthereumLikeWalletSynchronization, ReorgLastBlock) {
     auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
     {
         auto fakeHttp = std::make_shared<test::FakeHttpClient>();
+        backend       = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
+        auto pool     = newDefaultPool("", "", api::DynamicObject::newInstance(), fakeHttp);
 
-        backend       = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-
-        auto pool     = WalletPool::newInstance(
-                "my_ppol",
-                "",
-                fakeHttp,
-                ws,
-                resolver,
-                printer,
-                dispatcher,
-                rng,
-                backend,
-                api::DynamicObject::newInstance(),
-                std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-                std::make_shared<ledger::core::test::MemPreferencesBackend>());
         {
             auto configuration = DynamicObject::newInstance();
             configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/60'/0'/0/<account>'");

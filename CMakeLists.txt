@@ -57,11 +57,6 @@ set(CMAKE_MACOSX_RPATH 1)
 
 add_definitions("-DSQLITE_HAS_CODEC")
 
-# To compile with PostgreSQL support
-if (PG_SUPPORT)
-    add_definitions("-DPG_SUPPORT")
-endif()
-
 # To add SSL support
 if (SSL_SUPPORT)
     add_definitions("-DSSL_SUPPORT")

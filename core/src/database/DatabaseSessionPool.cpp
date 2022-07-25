@@ -31,11 +31,8 @@
 
 #include "DatabaseSessionPool.hpp"
 
-#include "SQLite3Backend.hpp"
-#include "migrations.hpp"
-#ifdef PG_SUPPORT
 #include "PostgreSQLBackend.h"
-#endif
+#include "migrations.hpp"
 
 namespace ledger {
     namespace core {
@@ -60,11 +57,11 @@ namespace ledger {
                 }
             }
 
-#ifdef PG_SUPPORT
-            _type = std::dynamic_pointer_cast<PostgreSQLBackend>(backend) != nullptr ? api::DatabaseBackendType::POSTGRESQL : api::DatabaseBackendType::SQLITE3;
-#else
-            _type = api::DatabaseBackendType::SQLITE3;
-#endif
+            _type = api::DatabaseBackendType::POSTGRESQL;
+            if (std::dynamic_pointer_cast<PostgreSQLBackend>(backend) == nullptr) {
+                throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Libcore supports only PostgreSQL backend.");
+            }
+
             // Migrate database
             performDatabaseMigration();
             auto readonlyPoolSize = _backend->getReadonlyConnectionPoolSize();
@@ -131,16 +128,8 @@ namespace ledger {
             }
         }
 
-        bool DatabaseSessionPool::isSqlite() const {
-            return std::dynamic_pointer_cast<SQLite3Backend>(_backend) != nullptr;
-        }
-
         bool DatabaseSessionPool::isPostgres() const {
-#ifndef PG_SUPPORT
-            return false;
-#else
             return std::dynamic_pointer_cast<PostgreSQLBackend>(_backend) != nullptr;
-#endif
         }
     } // namespace core
 } // namespace ledger

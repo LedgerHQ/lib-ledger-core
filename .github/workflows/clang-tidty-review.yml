@@ -16,10 +16,10 @@ jobs:
         with:
           build_dir: build
           # List of packages to install
-          apt_packages: libssl-dev
+          apt_packages: libssl-dev,libpq-dev,postgresql-server-dev-all
           # Googletest triggers a _lot_ of clang-tidy warnings, so ignore all
           # the unit tests until they're fixed or ignored upstream
           exclude: "core/test/*,core/lib/*,core/test/lib/*,core/src/api/*,core/src/jni/*"
           config_file: '.clang-tidy'
           # CMake command to run in order to generate compile_commands.json
-          cmake_command: cmake . -B build -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE -DTARGET_JNI=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=on && cmake --build build --target secp256k1
+          cmake_command: cmake . -B build -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql -DTARGET_JNI=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=on && cmake --build build --target secp256k1

@@ -63,6 +63,8 @@ void TezosMakeBaseTransaction::recreate() {
 }
 
 void TezosMakeBaseTransaction::TearDown() {
+    uv::wait(pool->deleteWallet(testData.walletName));
+
     BaseFixture::TearDown();
     pool    = nullptr;
     wallet  = nullptr;
