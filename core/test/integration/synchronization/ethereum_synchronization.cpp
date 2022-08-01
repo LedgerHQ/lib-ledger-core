@@ -260,9 +260,9 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
                 auto erc20Accounts = account->getERC20Accounts();
                 std::shared_ptr<api::ERC20LikeAccount> erc20Account;
                 for (const auto &item : erc20Accounts) {
-                    if (item->getToken().contractAddress == "0xE41d2489571d322189246DaFA5ebDe1F4699F498") {
-                        erc20Account = item;
-                        continue;
+                      if (item->getToken().contractAddress == "0xE41d2489571d322189246DaFA5ebDe1F4699F498") {
+                          erc20Account = item;
+                          continue;
                     }
                 }
                 EXPECT_GT(erc20Accounts.size(), 0);
