@@ -61,7 +61,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
             auto configuration = DynamicObject::newInstance();
             configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/60'/0'/0/<account>'");
             configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, true);
-            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://explorers.api.live.ledger.com");
+            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://explorers.api.vault.ledger.com");
             auto wallet = uv::wait(pool->createWallet(walletName, "ethereum", configuration));
             {
                 auto nextIndex = uv::wait(wallet->getNextAccountIndex());
@@ -164,7 +164,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_BalanceHistory) {
         {
             auto configuration = DynamicObject::newInstance();
             configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/60'/0'/0/<account>'");
-            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://explorers.api.live.ledger.com");
+            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://explorers.api.vault.ledger.com");
             auto wallet = uv::wait(pool->createWallet(walletName, "ethereum", configuration));
 
             {
@@ -235,7 +235,7 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/60'/0'/0/<account>'");
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://explorers.api.live.ledger.com");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://explorers.api.vault.ledger.com");
         auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
@@ -246,7 +246,7 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
 
             auto keyStore   = account->getRestoreKey();
 
-            auto receiver   = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            auto receiver   = make_receiver([=](const std::shared_ptr<api::Event> &event) { // NOLINT(readability-function-cognitive-complexity)
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
@@ -258,15 +258,22 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
                 cout << " ETH Balance: " << balance->toLong() << endl;
                 auto txBuilder     = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
                 auto erc20Accounts = account->getERC20Accounts();
+                std::shared_ptr<api::ERC20LikeAccount> erc20Account;
+                for (const auto &item : erc20Accounts) {
+                    if (item->getToken().contractAddress == "0xE41d2489571d322189246DaFA5ebDe1F4699F498") {
+                        erc20Account = item;
+                        continue;
+                    }
+                }
                 EXPECT_GT(erc20Accounts.size(), 0);
-                EXPECT_GT(erc20Accounts[0]->getOperations().size(), 0);
-                auto erc20Balance = uv::wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getBalance());
+                EXPECT_GT(erc20Account->getOperations().size(), 0);
+                auto erc20Balance = uv::wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Account)->getBalance());
                 EXPECT_TRUE(BigInt(erc20Balance->toString(10)) > BigInt("0"));
-                auto contractAddress = erc20Accounts[0]->getToken().contractAddress;
+                auto contractAddress = erc20Account->getToken().contractAddress;
                 std::cout << "Contract Address: " << contractAddress << std::endl;
                 std::cout << "ERC20 balance: " << erc20Balance->toString(10) << std::endl;
-                auto erc20Ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
-                EXPECT_EQ(erc20Accounts[0]->getOperations().size(), erc20Ops.size());
+                auto erc20Ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(erc20Account->queryOperations()->complete())->execute());
+                EXPECT_EQ(erc20Account->getOperations().size(), erc20Ops.size());
                 EXPECT_EQ(erc20Ops[0]->isComplete(), true);
                 dispatcher->stop();
             });
