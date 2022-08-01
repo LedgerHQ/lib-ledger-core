@@ -1,10 +1,10 @@
-GET https://explorers.api.live.ledger.com/blockchain/v3/eth/addresses/0x18E328355Ee0703A36DD3bbe3678A3B900726d3d/nonce
+GET https://explorers.api.vault.ledger.com/blockchain/v3/eth/addresses/0x18E328355Ee0703A36DD3bbe3678A3B900726d3d/nonce
 0
 1
-[{"address":"0x18E328355Ee0703A36DD3bbe3678A3B900726d3d","nonce":0}]
+[{"address":"0x18e328355ee0703a36dd3bbe3678a3b900726d3d","nonce":0}]
 
-GET https://explorers.api.live.ledger.com/blockchain/v3/eth/addresses/0x18E328355Ee0703A36DD3bbe3678A3B900726d3d/balance
+GET https://explorers.api.vault.ledger.com/blockchain/v3/eth/addresses/0x18E328355Ee0703A36DD3bbe3678A3B900726d3d/balance
 0
 1
-[{"address":"0x18E328355Ee0703A36DD3bbe3678A3B900726d3d","balance":0}]
+[{"address":"0x18e328355ee0703a36dd3bbe3678a3b900726d3d","balance":0,"balance_str":"0"}]
 
