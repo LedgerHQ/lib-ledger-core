@@ -259,14 +259,30 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
                 auto txBuilder     = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
                 auto erc20Accounts = account->getERC20Accounts();
                 EXPECT_GT(erc20Accounts.size(), 0);
-                EXPECT_GT(erc20Accounts[0]->getOperations().size(), 0);
-                auto erc20Balance = uv::wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getBalance());
+
+                int accountIdx = -1;
+                for (int i = 0; i < erc20Accounts.size(); ++i) {
+                    const auto& erc20Account = erc20Accounts[i];
+                    const auto& token = erc20Account->getToken();
+                    cout << "addr=" << token.contractAddress << endl;
+                    if ("0xE41d2489571d322189246DaFA5ebDe1F4699F498" == token.contractAddress) {
+                        accountIdx = i;
+                        break;
+                    }
+                }
+
+                EXPECT_GE(accountIdx, 0);
+                const auto& erc20Account = erc20Accounts[accountIdx];
+
+                EXPECT_GT(erc20Account->getOperations().size(), 0);
+
+                auto erc20Balance = uv::wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Account)->getBalance());
                 EXPECT_TRUE(BigInt(erc20Balance->toString(10)) > BigInt("0"));
-                auto contractAddress = erc20Accounts[0]->getToken().contractAddress;
+                auto contractAddress = erc20Account->getToken().contractAddress;
                 std::cout << "Contract Address: " << contractAddress << std::endl;
                 std::cout << "ERC20 balance: " << erc20Balance->toString(10) << std::endl;
-                auto erc20Ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
-                EXPECT_EQ(erc20Accounts[0]->getOperations().size(), erc20Ops.size());
+                auto erc20Ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(erc20Account->queryOperations()->complete())->execute());
+                EXPECT_EQ(erc20Account->getOperations().size(), erc20Ops.size());
                 EXPECT_EQ(erc20Ops[0]->isComplete(), true);
                 dispatcher->stop();
             });
