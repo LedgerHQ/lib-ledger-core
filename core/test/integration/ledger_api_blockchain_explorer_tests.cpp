@@ -108,11 +108,12 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash) {
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash_2) {
     auto transaction = uv::wait(explorer->getTransactionByHash("16da85a108a63ff318458be597f34f0a7f6b9f703528249056ba2f48722ae44e"));
     auto &tx         = *transaction;
-    EXPECT_EQ(tx.inputs.size(), 1);
+    EXPECT_EQ(tx.inputs.size(), 0);
     EXPECT_EQ(tx.hash, "16da85a108a63ff318458be597f34f0a7f6b9f703528249056ba2f48722ae44e");
-    EXPECT_EQ(tx.inputs.size(), 1);
+    EXPECT_EQ(tx.inputs.size(), 0);
     EXPECT_EQ(tx.outputs.size(), 1);
-    EXPECT_EQ(tx.inputs[0].coinbase.getValue(), "03070c070004ebabf05804496e151608bef5342d8b2800000a425720537570706f727420384d200a666973686572206a696e78696e092f425720506f6f6c2f");
+    //EXPECT_EQ(tx.inputs[0].coinbase.getValue(), "03070c070004ebabf05804496e151608bef5342d8b2800000a425720537570706f727420384d200a666973686572206a696e78696e092f425720506f6f6c2f");
+    // explorers v3 don't provide inputs for coinbase transactions
     EXPECT_EQ(tx.outputs[0].address.getValue(), "1BQLNJtMDKmMZ4PyqVFfRuBNvoGhjigBKF");
     EXPECT_EQ(tx.outputs[0].value.toString(), "1380320309");
 }
@@ -164,7 +165,7 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetFees) {
 class LedgerApiEthereumRopstenLikeBlockchainExplorerTests : public LedgerApiBlockchainExplorerTests<LedgerApiEthereumLikeBlockchainExplorer, api::EthereumLikeNetworkParameters> {
   public:
     LedgerApiEthereumRopstenLikeBlockchainExplorerTests() {
-        params           = networks::getEthLikeNetworkParameters("ethereum_ropsten");
+        params           = networks::getEthLikeNetworkParameters("ethereum_goerli");
         explorerEndpoint = "https://explorers.api.live.ledger.com";
     }
 };
