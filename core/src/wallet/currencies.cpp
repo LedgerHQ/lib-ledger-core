@@ -289,6 +289,17 @@ namespace ledger {
                     .unit("mwei", 6, "mwei")
                     .unit("gwei", 9, "gwei");
 
+            const api::Currency ETHEREUM_GOERLI =
+                Currency("ethereum_goerli")
+                    .bip44(1)
+                    .forkOfEthereum(networks::getEthLikeNetworkParameters("ethereum_goerli"))
+                    .paymentUri("ethereum")
+                    .unit("wei", 0, "wei")
+                    .unit("ether", 18, "ETH")
+                    .unit("kwei", 3, "kwei")
+                    .unit("mwei", 6, "mwei")
+                    .unit("gwei", 9, "gwei");
+
             const api::Currency ETHEREUM_CLASSIC =
                 Currency("ethereum_classic")
                     .bip44(61)
