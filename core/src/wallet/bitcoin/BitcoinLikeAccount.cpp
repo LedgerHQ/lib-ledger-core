@@ -450,11 +450,10 @@ namespace ledger {
         BitcoinLikeAccount::getUTXO(int32_t from, int32_t to) {
             auto self = getSelf();
             return async<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>([=]() -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
-                auto keychain = self->getKeychain();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxo;
-                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, utxo, [&keychain](const std::string &addr) {
-                    return keychain->contains(addr);
+                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, utxo, [](const std::string &addr) {
+                    return true;
                 });
                 auto currency = self->getWallet()->getCurrency();
                 return functional::map<BitcoinLikeBlockchainExplorerOutput, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency](const BitcoinLikeBlockchainExplorerOutput &output) -> std::shared_ptr<api::BitcoinLikeOutput> {
@@ -483,10 +482,9 @@ namespace ledger {
         Future<int32_t> BitcoinLikeAccount::getUTXOCount() {
             auto self = getSelf();
             return async<int32_t>([=]() -> int32_t {
-                auto keychain = self->getKeychain();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
-                return (int32_t)BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), [keychain](const std::string &addr) -> bool {
-                    return keychain->contains(addr);
+                return (int32_t)BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), [](const std::string &addr) -> bool {
+                    return true;
                 });
             });
         }
@@ -536,9 +534,8 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
                 BigInt sum(0);
-                auto keychain                                   = self->getKeychain();
-                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-                    return keychain->contains(addr);
+                std::function<bool(const std::string &)> filter = [](const std::string addr) -> bool {
+                    return true;
                 };
                 BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), utxos, filter);
                 switch (strategy) {
@@ -579,9 +576,8 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
                 BigInt sum(0);
-                auto keychain                                   = self->getKeychain();
-                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-                    return keychain->contains(addr);
+                std::function<bool(const std::string &)> filter = [](const std::string addr) -> bool {
+                    return true;
                 };
                 BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), utxos, filter);
                 for (const auto &utxo : utxos) {
@@ -610,9 +606,8 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain                                   = self->getKeychain();
-                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-                    return keychain->contains(addr);
+                std::function<bool(const std::string &)> filter = [](const std::string addr) -> bool {
+                    return true;
                 };
 
                 // Get operations related to an account
