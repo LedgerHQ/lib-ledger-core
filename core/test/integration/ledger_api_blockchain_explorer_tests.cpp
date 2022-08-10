@@ -169,17 +169,20 @@ class LedgerApiEthereumRopstenLikeBlockchainExplorerTests : public LedgerApiBloc
     }
 };
 
-TEST_F(LedgerApiEthereumRopstenLikeBlockchainExplorerTests, GetGasPrice) {
+// Disabled because of ropsten decomission
+TEST_F(LedgerApiEthereumRopstenLikeBlockchainExplorerTests, DISABLED_GetGasPrice) {
     auto result = uv::wait(explorer->getGasPrice());
     EXPECT_NE(result->toUint64(), 0);
 }
 
-TEST_F(LedgerApiEthereumRopstenLikeBlockchainExplorerTests, GetEstimatedGasLimit) {
+// Disabled because of ropsten decomission
+TEST_F(LedgerApiEthereumRopstenLikeBlockchainExplorerTests, DISABLED_GetEstimatedGasLimit) {
     auto result = uv::wait(explorer->getEstimatedGasLimit("0x57e8ba2a915285f984988282ab9346c1336a4e11"));
     EXPECT_GE(result->toUint64(), 10000);
 }
 
-TEST_F(LedgerApiEthereumRopstenLikeBlockchainExplorerTests, PostEstimatedGasLimit) {
+// Disabled because of ropsten decomission
+TEST_F(LedgerApiEthereumRopstenLikeBlockchainExplorerTests, DISABLED_PostEstimatedGasLimit) {
     auto request = api::EthereumGasLimitRequest(
         optional<std::string>(),
         optional<std::string>(),
@@ -203,6 +206,8 @@ class LedgerApiEthereumLikeBlockchainExplorerTests : public LedgerApiBlockchainE
 
 TEST_F(LedgerApiEthereumLikeBlockchainExplorerTests, GeTransactionsInBigBlock) {
     auto result = uv::wait(explorer->getTransactions({"1H6ZZpRmMnrw8ytepV3BYwMjYYnEkWDqVP"}, std::string{"00000000000000000db3ab2b2d1075e4e80fa97e27aea55095a30559a3b0d721"}));
+    EXPECT_FALSE(result->transactions.empty());
+    EXPECT_TRUE(result->transactions.front().block.hasValue() && result->transactions.back().block.hasValue());
     EXPECT_NE(result->transactions.front().block.getValue().hash, result->transactions.back().block.getValue().hash);
     EXPECT_GT(result->transactions.size(), 1001);
 }

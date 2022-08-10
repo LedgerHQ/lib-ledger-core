@@ -56,7 +56,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
 
     {
         // configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://explorers.api.live.ledger.com");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://explorers.api.vault.ledger.com");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
         configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, true);
         configuration->putInt(api::Configuration::MEMPOOL_GRACE_PERIOD_SECS, 10);

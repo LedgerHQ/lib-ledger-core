@@ -1,10 +1,10 @@
-GET https://explorers.api.live.ledger.com/blockchain/v2/btg/blocks/current
+GET https://explorers.api.vault.ledger.com/blockchain/v3/btg/blocks/current
 0
 1
-{"hash":"00000002e58fec3340bff49c71af407b30b956ff3ad51f05d28cea151dff5a65","height":720148,"time":"2022-01-08T00:13:18Z","txs":["9ceaceebf4750495d56f0c4fe32e018e5a5e573809cfeaae5e04bd30f98f290b","052fd762405513541d393234aa0b9fd590e108b38e2d6beca97a65c23dfb9f4a","dd78e763fcdbf23112564ef939dbb4c935465788d8b9fa83b0fd114637a25b38"]}
+{"hash":"00000000e359e31fcf979c3035e7227d48532b618b8c0f9eb8ea33dde70ad37d","height":748182,"time":"2022-07-22T13:32:13Z","txs":["02537f8ac9cfa4cc5df25ba474f18e32af8cfc2e15c478be010301fdf4d31fa2","b7f97969a931fb56eaace1c71539ba29cc51aa1f43fad031bb24631ab0d76a03","5525b90712407e1dc7694acce937988a0f1020958d16fa6bcf5381799a0331be","7771f9ddcaa7c4f717e8c276cfe6d0ad4775885f6b3d90b4f15e9fa7be5ca912"]}
 
-GET https://explorers.api.live.ledger.com/timestamp
+GET https://explorers.api.vault.ledger.com/timestamp
 0
 1
-{"timestamp":1641601718}
+{"timestamp":1658497095}
 
