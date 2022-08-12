@@ -19,6 +19,19 @@ if (TARGET_JNI)
     message(STATUS "Configure project for JNI")
 
     if(NOT ANDROID)
+        if (CMAKE_HOST_APPLE)
+            ## NOTE remove these JAVA*INCLUDE lines when this is fixed:
+            ## https://gitlab.kitware.com/cmake/cmake/-/issues/23364
+            set(JAVA_INCLUDE_PATH "$ENV{JAVA_HOME}/include")
+            find_path(JAVA_INCLUDE_PATH2 NAMES jni_md.h jniport.h
+                      PATHS ${JAVA_INCLUDE_PATH}
+                      ${JAVA_INCLUDE_PATH}/darwin
+                      ${JAVA_INCLUDE_PATH}/win32
+                      ${JAVA_INCLUDE_PATH}/linux
+            )
+            set(JAVA_AWT_INCLUDE_PATH "$ENV{JAVA_HOME}/include")
+        endif()
+        
         find_package(JNI REQUIRED)
     endif()
     list(APPEND ledger-core-sources ${ledger-core-jni-sources})
