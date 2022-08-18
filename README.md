@@ -13,6 +13,7 @@ Core library which will be used by Ledger applications.
     - [Nix build](#nix-build)
     - [Non nix builds](#non-nix-builds)
     - [Build library with PostgreSQL](#build-library-with-postgresql)
+    - [Build production-like version of the library](#build-production-like-version-of-the-library)
   - [Documentation](#documentation)
   - [Binding to node.js](#binding-to-nodejs)
     - [Using the node module](#using-the-node-module)
@@ -222,6 +223,14 @@ if you want to run only one specific unit test. (e.g. the test case `BitcoinLike
 ```
 ./core/test/integration/build/ledger-core-integration-tests "--gtest_filter=BitcoinLikeWalletSynchronization.MediumXpubSynchronization"
 ```
+## Build production-like version of the library
+
+To build the production-like version of the library use script `tools/prod-like-build.sh`. This script requires
+Docker. It starts from building Docker image with required versions of the dependencies. Next it starts the
+Docker container with that image and the `lib-ledger-core` source code from the current directory. The resulting
+`ledger-lib-core.jar` will be copied from the container to the `artifacts` sub-directory of the current directory.
+By default the `Release` versions of the `lib-ledger-core` is created. To specify the required build type add
+it to the command line: `./tools/prod-like-build.sh Debug`.
 
 ## Documentation
 

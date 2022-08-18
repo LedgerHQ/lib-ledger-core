@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 BIN_DIR=~/lib-ledger-core-artifacts
 JAR_BUILD_DIR=build-jar
