@@ -20,7 +20,7 @@ echo "Use $PG_INCLUDE_DIR for PGSQL"
 
 function command_target_jni {
   if [[ "$unamestr" = "Darwin" ]]; then
-    export JAVA_HOME="$($(dirname $(readlink $(which javac)))/java_home)"
+    export JAVA_HOME="$(java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home' | grep -Eo '\/[^ ]+')"
     add_to_cmake_params -DOPENSSL_ROOT_DIR="/usr/local/opt/openssl"
   else
     export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which javac))))"
