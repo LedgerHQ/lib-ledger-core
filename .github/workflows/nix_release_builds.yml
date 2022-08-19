@@ -16,6 +16,8 @@ on:
       - develop
     tags:
       - '*'
+  release:
+    types: [published]
 jobs:
   libcore_version:
     name: Compute libcore version
