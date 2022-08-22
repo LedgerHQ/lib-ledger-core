@@ -47,7 +47,7 @@
 using namespace std;
 
 namespace {
-    const std::string kExplorerUrl = "https://api.tzkt.io";
+    const std::string kExplorerUrl = "https://xtz-tzkt-explorer.api.vault.ledger.com";
 }
 
 class TezosLikeWalletSynchronization : public BaseFixture {

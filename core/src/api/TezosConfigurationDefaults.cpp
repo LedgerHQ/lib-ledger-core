@@ -13,7 +13,7 @@ std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_API_VERSION = {"v3"}
 
 std::string const TezosConfigurationDefaults::TZSTATS_API_ENDPOINT = {"https://xtz-explorer.api.vault.ledger.com/explorer"};
 
-std::string const TezosConfigurationDefaults::TZKT_API_ENDPOINT = {"https://api.tzkt.io"};
+std::string const TezosConfigurationDefaults::TZKT_API_ENDPOINT = {"https://xtz-tzkt-explorer.api.vault.ledger.com/"};
 
 std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_NODE = {"https://xtz-node.api.vault.ledger.com"};
 

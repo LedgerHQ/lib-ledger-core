@@ -62,7 +62,7 @@ namespace ledger {
 
         void from_json(const nlohmann::json &j, BigInt &i) {
             if (j.is_number_integer()) {
-                i = ledger::core::BigInt::fromScalar(j.get<int>());
+                i = ledger::core::BigInt::fromScalar(j.get<int64_t>());
             } else if (j.is_string()) {
                 i = ledger::core::BigInt::fromString(j.get<std::string>());
             } else {
@@ -71,7 +71,7 @@ namespace ledger {
         }
 
         void from_json(const nlohmann::json &j, TezosLikeBlockchainExplorer::Transaction &t) {
-            t.explorerId = std::to_string(j.at("id").get<int>());
+            t.explorerId = std::to_string(j.at("id").get<int64_t>());
             j.at("hash").get_to(t.hash);
             const auto timestamp = j.at("timestamp").get<std::string>();
             t.receivedAt         = DateUtils::fromJSON(timestamp);
