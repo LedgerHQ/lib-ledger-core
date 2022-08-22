@@ -226,3 +226,11 @@ TEST_F(LedgerApiTezosLikeBlockchainExplorerTests, GeTransactionsInBigBlock) {
     EXPECT_GT(result->toUint64(), 0);
     EXPECT_LT(result->toUint64(), 10000);
 }
+
+TEST_F(LedgerApiTezosLikeBlockchainExplorerTests, GetHugeBalance) {
+    // This tests checks the fix of an overflow when getting account with huge balance
+    auto address = std::dynamic_pointer_cast<TezosLikeAddress>(TezosLikeAddress::parse("tz1YkqJKPWXjREzs9L32AZqe3yiEdfhSYx3x", Currency("tezos").forkOfTezos(params))); // Example address of a big delegator
+    auto result  = uv::wait(explorer->getBalance(std::vector<TezosLikeKeychain::Address>{address}));
+    EXPECT_TRUE(result->isPositive());
+    EXPECT_GT(result->toUint64(), std::numeric_limits<int>::max());
+}
