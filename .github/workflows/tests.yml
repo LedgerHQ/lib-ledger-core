@@ -13,10 +13,10 @@ jobs:
       matrix:
         os: [ubuntu-18.04, ubuntu-20.04, macos-latest]
     steps:
-    - name: Cancel Previous Runs
-      uses: styfle/cancel-workflow-action@0.9.1
-      with:
-        access_token: ${{ secrets.GITHUB_TOKEN }}
+#    - name: Cancel Previous Runs
+#      uses: styfle/cancel-workflow-action@0.9.1
+#      with:
+#        access_token: ${{ secrets.GITHUB_TOKEN }}
 #    - name: Disable Linux TCP/UDP offload
 #      if: ${{ startsWith(matrix.os, 'ubuntu') }}
 #      run: |
@@ -35,8 +35,6 @@ jobs:
         key: ${{ github.job }}-${{ matrix.os }}
         max-size: "3G"
     - name: Build and run tests
-      run: bash nix/scripts/build_run_tests.sh
-      env:
-        BUILD_LOAD_LIMIT: 2
+      run: nix/scripts/build_run_tests.sh
     - name: Print ccache stats
       run: ccache -s
