@@ -26,6 +26,14 @@
  *
  */
 
-#define POSTGRES_ON_LOCALHOST "postgres://localhost:5432"
+#ifndef POSTGRES_HOST
+#define POSTGRES_HOST "localhost"
+#endif
+
+#ifndef POSTGRES_PORT
+#define POSTGRES_PORT "5432"
+#endif
+
+#define POSTGRES_URL "postgres://" POSTGRES_HOST ":" POSTGRES_PORT
 #define POSTGRES_TEST_DB "test_db"
-#define POSTGRES_TEST_DB_ON_LOCALHOST POSTGRES_ON_LOCALHOST "/" POSTGRES_TEST_DB
+#define POSTGRES_TEST_DB_ON_LOCALHOST POSTGRES_URL "/" POSTGRES_TEST_DB

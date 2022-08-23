@@ -8,6 +8,17 @@ jobs:
       credentials:
         username: ${{ secrets.CI_BOT_USERNAME }}
         password: ${{ secrets.CI_BOT_TOKEN }}
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     strategy:
       fail-fast: false
       matrix:
@@ -36,5 +47,8 @@ jobs:
         max-size: "3G"
     - name: Build and run tests
       run: nix/scripts/build_run_tests.sh
+      env:
+        POSTGRES_HOST: postgres
+        POSTGRES_PORT: 5432
     - name: Print ccache stats
       run: ccache -s
