@@ -49,7 +49,7 @@ class BitcoinLikeWalletSynchronization : public BaseFixture {
 TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
     auto configuration = DynamicObject::newInstance();
 
-    configuration->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());
     auto pool             = newDefaultPool("postgres", "", configuration);
 
     const auto walletName = randomWalletName();

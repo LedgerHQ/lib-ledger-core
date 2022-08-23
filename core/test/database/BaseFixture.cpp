@@ -72,7 +72,7 @@ void BaseFixture::TearDown() {
 
 std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
     std::shared_ptr<api::DynamicObject> configuration = api::DynamicObject::newInstance();
-    configuration->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());
 
     return WalletPool::newInstance(
         poolName,

@@ -26,6 +26,31 @@
  *
  */
 
-#define POSTGRES_ON_LOCALHOST "postgres://postgres:5432"
-#define POSTGRES_TEST_DB "test_db"
-#define POSTGRES_TEST_DB_ON_LOCALHOST POSTGRES_ON_LOCALHOST "/" POSTGRES_TEST_DB
+#include <cstdlib>
+#include <string>
+
+inline std::string getPostgresUrl() {
+    const char *host = getenv("POSTGRES_HOST");
+    std::string host_var(host ? host : "localhost");
+
+    const char *port = getenv("POSTGRES_PORT");
+    std::string port_var(port ? port : "5432");
+
+    const char *dbname = getenv("POSTGRES_DB");
+    std::string dbname_var(dbname ? dbname : "test_db");
+
+    const char *user = getenv("POSTGRES_USER");
+    std::string user_var(user ? user : "");
+
+    const char *password = getenv("POSTGRES_PASSWORD");
+    std::string password_var(password ? password : "");
+
+    if (!user_var.empty()) {
+        if (!password_var.empty()) {
+            user_var.append(":").append(password_var);
+        }
+        user_var.append("@");
+    }
+
+    return std::string{"postgres://"} + user_var + host_var + ":" + port_var + "/" + dbname_var;
+}

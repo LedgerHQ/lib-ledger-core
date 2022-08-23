@@ -21,7 +21,7 @@ class CosmosDBTest : public BaseFixture {
         BaseFixture::SetUp();
 
         auto poolConfig = DynamicObject::newInstance();
-        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
+        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());
         pool = newDefaultPool("postgres", "", poolConfig);
 
         backend->enableQueryLogging(true);

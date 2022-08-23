@@ -48,7 +48,7 @@ class WalletFixture : public BaseFixture {
         BaseFixture::SetUp();
 
         auto poolConfig = DynamicObject::newInstance();
-        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
+        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());
         const auto dbName = randomDBName();
         pool              = newDefaultPool(dbName, "", poolConfig);
 

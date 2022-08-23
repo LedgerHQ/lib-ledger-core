@@ -98,7 +98,7 @@ class CoinIntegrationFixture : public ::testing::Test {
 
     virtual std::shared_ptr<WalletPool> newPool(std::string poolName = "my_pool") {
         std::shared_ptr<api::DynamicObject> configuration = api::DynamicObject::newInstance();
-        configuration->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
+        configuration->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());
 
         return WalletPool::newInstance(
             poolName,
