@@ -4,7 +4,7 @@ jobs:
   Unixes:
     runs-on: ${{ matrix.os }}
     container:
-      image: docker.pkg.github.com/ledgerhq/lib-ledger-core-build-env/lib-ledger-core-build-env:1.0.1
+      image: ghcr.io/ledgerhq/lib-ledger-core-build-env/lib-ledger-core-build-env:1.0.2
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
