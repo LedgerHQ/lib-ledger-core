@@ -1,15 +1,5 @@
 name: "Nix Tests"
-on:
-  pull_request:
-    branches:
-      - main
-      - release/4.0.0
-      - release/4.1.0
-      - release/4.2.0
-      - develop
-  push:
-    branches:
-      - *
+on: [push]
 jobs:
   Unixes:
     runs-on: ${{ matrix.os }}
