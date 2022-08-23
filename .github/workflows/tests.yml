@@ -6,8 +6,8 @@ jobs:
     container:
       image: ghcr.io/ledgerhq/lib-ledger-core-build-env/lib-ledger-core-build-env:1.0.2
       credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        username: ${{ secrets.CI_BOT_USERNAME }}
+        password: ${{ secrets.CI_BOT_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
