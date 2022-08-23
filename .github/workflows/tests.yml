@@ -9,11 +9,7 @@ on:
       - develop
   push:
     branches:
-      - main
-      - release/4.0.0
-      - release/4.1.0
-      - release/4.2.0
-      - develop
+      - *
 jobs:
   Unixes:
     runs-on: ${{ matrix.os }}
