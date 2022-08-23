@@ -8,7 +8,7 @@ apt-get update && apt-get install ninja-build  # TODO: move it to build env
 
 mkdir _build_tests
 cd _build_tests
-cmake .. -DBUILD_TESTS=ON -DNIX_BUILD=OFF -DCCACHE=ON -GNinja
+cmake .. -DBUILD_TESTS=ON -DNIX_BUILD=OFF -DCCACHE=ON -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE -GNinja
 echo "========= Building libcore"
 cmake --build . --parallel --target  ledger-core-static
 cmake --build . --parallel --target  ledger-core
