@@ -68,7 +68,7 @@ TEST_F(BitcoinMakeTransactionFromNativeSegwitToP2WSH, CreateStandardP2WSHWithOne
         {"", // This is a change output. Don't use it explicitely in building
          hex::toByteArray("00141017b1e1ca8632828f22a4d6c5260f3492b1dd08"),
          // yes, change goes to legacy address
-         std::make_shared<api::BigIntImpl>(BigInt(16396))}};
+         std::make_shared<api::BigIntImpl>(BigInt(15847))}};
 
     std::shared_ptr<api::BitcoinLikeTransaction> generatedTx = createTransaction(output_descrs);
 
@@ -114,7 +114,7 @@ TEST_F(BitcoinMakeTransactionFromLegacyToP2WSH, CreateStandardP2WSHWithOneOutput
         {"", // This is a change output. Don't use it explicitely in building
          hex::toByteArray("76a914d642b9c546d114dc634e65f72283e3458032a3d488ac"),
          // yes, change goes to legacy address
-         std::make_shared<api::BigIntImpl>(BigInt(86114))}};
+         std::make_shared<api::BigIntImpl>(BigInt(85565))}};
 
     std::shared_ptr<api::BitcoinLikeTransaction> generatedTx = createTransaction(output_descrs);
 

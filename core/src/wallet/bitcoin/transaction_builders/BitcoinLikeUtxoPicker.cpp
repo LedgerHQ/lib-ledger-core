@@ -117,9 +117,14 @@ namespace ledger {
 
             // Fill change outputs
             auto sizeWithChange = BitcoinLikeTransactionApi::estimateSize(buddy->transaction->getInputs().size(),
-                                                                          buddy->request.outputs.size() + 1,
+                                                                          buddy->transaction->getOutputs(),
                                                                           getCurrency(),
                                                                           buddy->keychain->getKeychainEngine());
+
+            int32_t changeOutputSize = BitcoinLikeTransactionApi::estimateOutputSize(buddy->keychain->getKeychainEngine());
+            sizeWithChange.Min += changeOutputSize;
+            sizeWithChange.Max += changeOutputSize;
+
             BigInt dustAmount(BitcoinLikeTransactionApi::computeDustAmount(getCurrency(), sizeWithChange.Max));
             if (buddy->changeAmount > dustAmount) {
                 // TODO implement multi change

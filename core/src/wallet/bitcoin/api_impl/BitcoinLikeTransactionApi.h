@@ -145,14 +145,34 @@ namespace ledger {
                                                                                           const std::vector<uint8_t> &rawTransaction,
                                                                                           int32_t currentBlockHeight);
 
+            static std::size_t estimateOutputSize(const std::string &keychainEngine);
+
             static api::EstimatedSize estimateSize(std::size_t inputCount,
                                                    std::size_t outputCount,
+                                                   const api::Currency &currency,
+                                                   const std::string &keychainEngine);
+
+            static api::EstimatedSize estimateSize(std::size_t inputCount,
+                                                   const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& outputs,
+                                                   const api::Currency &currency,
+                                                   const std::string &keychainEngine);
+
+            static api::EstimatedSize estimateSize(std::size_t inputCount,
+                                                   const std::list<std::tuple<std::shared_ptr<BigInt>, std::shared_ptr<api::BitcoinLikeScript>>>& outputs,
                                                    const api::Currency &currency,
                                                    const std::string &keychainEngine);
 
             static int64_t computeDustAmount(const api::Currency &currency, int32_t size);
 
           private:
+            static std::size_t estimateFixedTxSize(std::size_t inputCount, std::size_t outputCount, const api::Currency &currency);
+
+            static api::EstimatedSize estimateSize(std::size_t fixedSize,
+                                                   std::size_t inputCount,
+                                                   std::size_t minOutputsSize,
+                                                   std::size_t maxOutputsSize,
+                                                   const std::string &keychainEngine);
+
             inline bool isWriteable() const;
 
             inline bool isReadOnly() const;
