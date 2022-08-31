@@ -256,7 +256,8 @@ namespace ledger {
                                                 std::size_t minOutputsSize,
                                                 std::size_t maxOutputsSize,
                                                 const std::string &keychainEngine) {
-            std::size_t maxSize = 0, minSize = 0;
+            std::size_t maxSize = 0;
+            std::size_t minSize = 0;
             auto isSegwit = BitcoinLikeKeychain::isSegwit(keychainEngine);
 
             if (isSegwit) {
