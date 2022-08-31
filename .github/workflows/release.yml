@@ -1,0 +1,53 @@
+name: "Release libcore"
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version"
+        required: true
+        type: string
+      branch:
+        description: "Branch to release"
+        required: true
+        type: string
+        default: "main"
+      releaseNote:
+        description: "Should create a Release"
+        required: true
+        type: boolean
+        default: true
+jobs:
+  Release:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v2.3.4
+      with:
+        ref: ${{ github.event.inputs.branch }}
+        fetch-depth: 200
+    - name: Set version number
+      run: |
+        ./tools/set_version.sh ${{ github.event.inputs.version }}
+        head -n47 CMakeLists.txt | tail -n3
+        git add CMakeLists.txt
+        git commit -m "Set version to ${{ github.event.inputs.version }}"
+        git tag -a ${{ github.event.inputs.version }} -m "Version ${{ github.event.inputs.version }}"
+        git push -u origin HEAD --tags 
+    - name: Changelog
+      if: ${{ github.event.inputs.releaseNote }}
+      uses: scottbrenner/generate-changelog-action@master
+      id: Changelog
+      env:
+        REPO: ${{ github.repository }}
+    - name: Create Release
+      if: ${{ github.event.inputs.releaseNote }}
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          ${{ steps.Changelog.outputs.changelog }}
+        draft: false
+        prerelease: false
