@@ -1,5 +1,8 @@
 name: "Release libcore"
 on:
+  push:
+    branches:
+      - test_release_workflow
   workflow_dispatch:
     inputs:
       version:
@@ -15,8 +18,8 @@ jobs:
   Release:
     runs-on: ubuntu-22.04
     env:
-      VERSION: ${{ github.event.inputs.version }}
-      RELEASE_NOTE: ${{ github.event.inputs.releaseNote }}
+      VERSION: ${{ github.event.inputs.version || '4.3.4-testWorkflow2' }}
+      RELEASE_NOTE: ${{ github.event.inputs.releaseNote || 'false' }}
     steps:
     - uses: actions/checkout@v2.3.4
     - name: Set version number
