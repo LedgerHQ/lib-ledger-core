@@ -1,19 +1,5 @@
 name: "Nix Tests"
-on:
-  pull_request:
-    branches:
-      - main
-      - release/4.0.0
-      - release/4.1.0
-      - release/4.2.0
-      - develop
-  push:
-    branches:
-      - main
-      - release/4.0.0
-      - release/4.1.0
-      - release/4.2.0
-      - develop
+on: [push]
 jobs:
   Unixes:
     runs-on: ${{ matrix.os }}
@@ -41,6 +27,11 @@ jobs:
     - uses: cachix/install-nix-action@v14.1
       with:
         nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/5f746317f10f7206f1dbb8dfcfc2257b04507eee.tar.gz
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ${{ github.job }}-${{ matrix.os }}
+        max-size: "3G"
     - name: Build and run tests
       run: nix-shell --run "bash nix/scripts/build_run_tests.sh" default.nix
       env:

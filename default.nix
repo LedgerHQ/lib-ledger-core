@@ -23,6 +23,8 @@ let
   ++ jniFlag
   ++ [
     "-DNIX_BUILD=ON"
+    "-DCCACHE=ON"
+    "-GNinja"
   ];
 in
 
@@ -46,6 +48,8 @@ pkgs.compilationStdenv.mkDerivation {
     "libkrb5"
     "cryptopp"
     "libuv"
+    "ccache"
+    "ninja"
 
     # JNI bindings deps
     "jdk8"
