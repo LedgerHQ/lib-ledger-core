@@ -229,38 +229,6 @@ jobs:
           . .circleci/deploy.sh
     - store_artifacts:
         path: ~/lib-ledger-core-artifacts
-  generate_doc:
-    docker:
-      - image: circleci/buildpack-deps:stretch
-    steps:
-      - run:
-          command: git clone --depth 1 -b "$CIRCLE_TAG" --recurse-submodules "$CIRCLE_REPOSITORY_URL" .
-          environment:
-            GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt-get update -q=2
-            sudo apt-get install -qy doxygen rsync software-properties-common
-            wget https://cmake.org/files/v3.16/cmake-3.16.9.tar.gz
-            tar -xvf cmake-3.16.9.tar.gz
-            cd cmake-3.16.9 && ./bootstrap && make && sudo make install
-      - run: cmake -H. -Bbuild
-      - run:
-          command: make doc
-          working_directory: ~/project/build
-      - run:
-          name: Check that the index file is present
-          command: test -f build/doc/html/index.html
-      - run:
-          name: Setup the SSH private key
-          command: |
-            install -d -m 700 ~/.ssh/
-            gpg -d --passphrase "${GPG_PASSPHRASE}" --batch -o ~/.ssh/id_ed25519 .circleci/id_ed25519.gpg
-            chmod 400 ~/.ssh/id_ed25519
-      - run: >
-          rsync -e "ssh -o StrictHostKeyChecking=no" -a --chown :www-data --delete
-          build/doc/html/ docs.libcore.ledger.com@statics.ledger.fr:.
 
 default_context: &default_context
   context:
@@ -306,11 +274,3 @@ workflows:
           filters:
             tags:
               only: /.*/
-  documentation:
-    jobs:
-      - generate_doc:
-          filters:
-            tags:
-              only: /.+/
-            branches:
-              ignore: /.*/
