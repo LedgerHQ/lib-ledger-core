@@ -16,10 +16,15 @@ on:
       - develop
     tags:
       - '*'
+  workflow_run:
+    workflows: ["Release libcore"]
+    types:
+      - completed
 jobs:
   libcore_version:
     name: Compute libcore version
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     outputs:
       lib_version: ${{ steps.lib_version.outputs.lib_version }}
       deploy_dynlibs: ${{ steps.lib_version.outputs.deploy_dynlibs }}
