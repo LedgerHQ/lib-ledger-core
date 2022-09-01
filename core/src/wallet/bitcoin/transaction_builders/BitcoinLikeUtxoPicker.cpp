@@ -36,6 +36,7 @@
 #include <async/Promise.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
+#include <utils/NarrowingCast.h>
 
 namespace ledger {
     namespace core {
@@ -121,9 +122,9 @@ namespace ledger {
                                                                                    getCurrency(),
                                                                                    buddy->keychain->getKeychainEngine());
 
-            int32_t changeOutputSize = BitcoinLikeTransactionApi::estimateOutputSize(buddy->keychain->getKeychainEngine());
-            sizeWithChange.Min += changeOutputSize;
-            sizeWithChange.Max += changeOutputSize;
+            std::size_t changeOutputSize = BitcoinLikeTransactionApi::estimateOutputSize(buddy->keychain->getKeychainEngine());
+            sizeWithChange.Min += narrowing_cast<int32_t>(changeOutputSize);
+            sizeWithChange.Max += narrowing_cast<int32_t>(changeOutputSize);
 
             BigInt dustAmount(BitcoinLikeTransactionApi::computeDustAmount(getCurrency(), sizeWithChange.Max));
             if (buddy->changeAmount > dustAmount) {
