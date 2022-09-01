@@ -33,8 +33,8 @@ brew install --build-from-source cmake
 
 echo "========> Install PostgreSQL"
 # Install with verbose otherwise the setup may timeout the CI because it doesn't log.
-brew install --verbose postgresql
-export CPLUS_INCLUDE_PATH="/usr/local/Cellar/postgresql/12.3_4/include:$CPLUS_INCLUDE_PATH"
+brew install --verbose postgresql@13
+brew link --overwrite postgresql@13
 
 
 echo "========> Install Sqlite"
