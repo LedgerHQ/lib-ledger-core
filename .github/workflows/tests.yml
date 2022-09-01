@@ -71,7 +71,7 @@ jobs:
           pg_ctl start -D test_db -l db_log -o "-i -h localhost -p 5432"
           createdb -h localhost -p 5432 test_db
       - name: Build and run tests
-        run: nix/scripts/build_run_tests.sh -DPostgreSQL_ADDITIONAL_VERSIONS=14
+        run: nix/scripts/build_run_tests.sh -DPostgreSQL_INCLUDE_DIR=/usr/local/opt/postgresql/include
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
@@ -80,9 +80,9 @@ jobs:
           OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
       - name: Print ccache stats
         run: ccache -s
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: CMakeFiles
-          path: _build_tests/CMakeFiles/
-          retention-days: 30
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: CMakeFiles
+#          path: _build_tests/CMakeFiles/
+#          retention-days: 30
