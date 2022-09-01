@@ -116,10 +116,10 @@ namespace ledger {
             }
 
             // Fill change outputs
-            auto sizeWithChange = BitcoinLikeTransactionApi::estimateSize(buddy->transaction->getInputs().size(),
-                                                                          buddy->transaction->getOutputs(),
-                                                                          getCurrency(),
-                                                                          buddy->keychain->getKeychainEngine());
+            auto sizeWithChange          = BitcoinLikeTransactionApi::estimateSize(buddy->transaction->getInputs().size(),
+                                                                                   buddy->transaction->getOutputs(),
+                                                                                   getCurrency(),
+                                                                                   buddy->keychain->getKeychainEngine());
 
             int32_t changeOutputSize = BitcoinLikeTransactionApi::estimateOutputSize(buddy->keychain->getKeychainEngine());
             sizeWithChange.Min += changeOutputSize;
