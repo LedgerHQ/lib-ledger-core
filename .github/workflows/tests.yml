@@ -56,9 +56,9 @@ jobs:
         with:
           submodules: 'recursive'
       - name: Setup Macos
-        run: .circleci/setup_macos.sh Debug
-      - name: Install ninja
-        run: brew install ninja
+        run: |
+          brew install ninja
+          brew install openssl
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
@@ -71,11 +71,12 @@ jobs:
           pg_ctl start -D test_db -l db_log -o "-i -h localhost -p 5432"
           createdb -h localhost -p 5432 test_db
       - name: Build and run tests
-        run: nix/scripts/build_run_tests.sh
+        run: nix/scripts/build_run_tests.sh -DPostgreSQL_ADDITIONAL_VERSIONS=14
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_USER: postgres
           POSTGRES_DB: test_db
+          OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
       - name: Print ccache stats
         run: ccache -s
