@@ -50,7 +50,7 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::OUT_OF_RANGE,
                                      "narrowing_cast: value {} is too big", value);
 
-            if (value < 0 && value < static_cast<From>(std::numeric_limits<To>::min()))
+            if (value < 0 && value < static_cast<From>(std::numeric_limits<To>::min())) {
                 throw make_exception(api::ErrorCode::OUT_OF_RANGE,
                                      "narrowing_cast: value {} is too small", value);
 
