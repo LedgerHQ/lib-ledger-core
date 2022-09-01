@@ -35,10 +35,10 @@
 #include <api/BitcoinLikeScriptChunk.hpp>
 #include <numeric>
 #include <random>
+#include <utils/NarrowingCast.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
-#include <utils/NarrowingCast.h>
 
 namespace ledger {
     namespace core {

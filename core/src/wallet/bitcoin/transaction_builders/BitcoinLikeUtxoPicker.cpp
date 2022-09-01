@@ -34,9 +34,9 @@
 #include <api/BitcoinLikeScript.hpp>
 #include <api/BitcoinLikeScriptChunk.hpp>
 #include <async/Promise.hpp>
+#include <utils/NarrowingCast.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
-#include <utils/NarrowingCast.h>
 
 namespace ledger {
     namespace core {

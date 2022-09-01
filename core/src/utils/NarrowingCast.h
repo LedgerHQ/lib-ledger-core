@@ -30,21 +30,21 @@
 #ifndef LEDGER_CORE_NARROWINGCAST_H
 #define LEDGER_CORE_NARROWINGCAST_H
 
+#include <api/ErrorCode.hpp>
 #include <limits>
 #include <string>
-#include <api/ErrorCode.hpp>
 #include <utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
 
-        template<typename To, typename From>
+        template <typename To, typename From>
         inline To narrowing_cast(const From value) {
             static_assert(std::numeric_limits<To>::max() < std::numeric_limits<From>::max(),
-                    "narrowing_cast used in non-narrowing context (max)");
+                          "narrowing_cast used in non-narrowing context (max)");
 
             static_assert(std::numeric_limits<To>::min() > std::numeric_limits<From>::min(),
-                    "narrowing_cast used in non-narrowing context (min)");
+                          "narrowing_cast used in non-narrowing context (min)");
 
             if (value > static_cast<From>(std::numeric_limits<To>::max())) {
                 throw make_exception(api::ErrorCode::OUT_OF_RANGE,
@@ -59,7 +59,7 @@ namespace ledger {
             return static_cast<To>(value);
         }
 
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif // LEDGER_CORE_NARROWINGCAST_H
