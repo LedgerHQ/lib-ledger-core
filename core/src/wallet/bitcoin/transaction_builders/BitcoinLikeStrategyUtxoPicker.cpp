@@ -38,6 +38,7 @@
 #include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <utils/NarrowingCast.h>
 
 namespace ledger {
     namespace core {
@@ -132,9 +133,9 @@ namespace ledger {
                                                                            currency,
                                                                            buddy->keychain->getKeychainEngine());
                 if (addedOutputCount > 0) {
-                    auto addedOutputSize = addedOutputCount * BitcoinLikeTransactionApi::estimateOutputSize(buddy->keychain->getKeychainEngine());
-                    size.Min += addedOutputSize;
-                    size.Max += addedOutputSize;
+                    std::size_t addedOutputSize = addedOutputCount * BitcoinLikeTransactionApi::estimateOutputSize(buddy->keychain->getKeychainEngine());
+                    size.Min += narrowing_cast<int32_t>(addedOutputSize);
+                    size.Max += narrowing_cast<int32_t>(addedOutputSize);
                 }
                 buddy->logger->debug("Estimate for {} inputs with {} outputs", inputCount, buddy->request.outputs.size() + addedOutputCount);
                 buddy->logger->debug("Estimated size {} <> {}", size.Min, size.Max);
