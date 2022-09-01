@@ -25,19 +25,10 @@ jobs:
       matrix:
         os: [ubuntu-20.04, ubuntu-22.04]
     steps:
-#    - name: Cancel Previous Runs
-#      uses: styfle/cancel-workflow-action@0.9.1
-#      with:
-#        access_token: ${{ secrets.GITHUB_TOKEN }}
-#    - name: Disable Linux TCP/UDP offload
-#      if: ${{ startsWith(matrix.os, 'ubuntu') }}
-#      run: |
-#        sudo ethtool -K eth0 tx off rx off
-#    - name: Disable MacOS TCP/UDP offload
-#      if: ${{ startsWith(matrix.os, 'macos') }}
-#      run: |
-#        sudo sysctl -w net.link.generic.system.hwcksum_tx=0
-#        sudo sysctl -w net.link.generic.system.hwcksum_rx=0
+    - name: Cancel Previous Runs
+      uses: styfle/cancel-workflow-action@0.9.1
+      with:
+        access_token: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/checkout@v2.3.4
       with:
         submodules: 'recursive'
@@ -46,6 +37,8 @@ jobs:
       with:
         key: ${{ github.job }}-${{ matrix.os }}
         max-size: "3G"
+    - name: Install ninja
+      run: apt-get update && apt-get install ninja-build  # TODO: move it to build env
     - name: Build and run tests
       run: nix/scripts/build_run_tests.sh
       env:
@@ -56,3 +49,33 @@ jobs:
         POSTGRES_DB: test_db
     - name: Print ccache stats
       run: ccache -s
+  Macos:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v2.3.4
+        with:
+          submodules: 'recursive'
+      - name: Setup Macos
+        run: .circleci/setup_macos.sh Debug
+      - name: Install ninja
+        run: brew install ninja
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ github.job }}-${{ matrix.os }}
+          max-size: "3G"
+      - name: Prepare DB
+        run: |
+          mkdir test_db
+          initdb -D test_db
+          pg_ctl start -D test_db -l db_log -o "-i -h localhost -p 5432"
+          createdb -h localhost -p 5432 test_db
+      - name: Build and run tests
+        run: nix/scripts/build_run_tests.sh
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres
+          POSTGRES_DB: test_db
+      - name: Print ccache stats
+        run: ccache -s
