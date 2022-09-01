@@ -46,11 +46,11 @@ namespace ledger {
             static_assert(std::numeric_limits<To>::min() > std::numeric_limits<From>::min(),
                     "narrowing_cast used in non-narrowing context (min)");
 
-            if (value > static_cast<From>(std::numeric_limits<To>::max()))
+            if (value > static_cast<From>(std::numeric_limits<To>::max())) {
                 throw make_exception(api::ErrorCode::OUT_OF_RANGE,
                                      "narrowing_cast: value {} is too big", value);
 
-            if (value < 0 && value < static_cast<From>(std::numeric_limits<To>::min()))
+            if (value < 0 && value < static_cast<From>(std::numeric_limits<To>::min())) {
                 throw make_exception(api::ErrorCode::OUT_OF_RANGE,
                                      "narrowing_cast: value {} is too small", value);
 
