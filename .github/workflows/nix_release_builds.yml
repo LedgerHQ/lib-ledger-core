@@ -74,3 +74,22 @@ jobs:
         name: ${{ needs.libcore_version.outputs.lib_version }}-ledger-lib-core.jar
         path: jar_build/artifact/ledger-lib-core.jar
         retention-days: 90
+  Publish:
+    name: Publish to WD
+    needs: [JAR]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: LedgerHQ/ledger-wallet-daemon
+          submodules: true
+      - name: Fetch libcore JAR
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ needs.libcore_version.outputs.lib_version }}-ledger-lib-core.jar
+          path: ledger-lib-core.jar
+      - name: Update libcore
+        env:
+          VERSION: ${{ needs.libcore_version.outputs.lib_version }}
+        run: .github/scripts/publish_to_wd.sh
+          
