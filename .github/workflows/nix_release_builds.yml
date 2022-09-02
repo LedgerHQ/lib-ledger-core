@@ -24,7 +24,7 @@ jobs:
   libcore_version:
     name: Compute libcore version
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != "workflow_run" || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     outputs:
       lib_version: ${{ steps.lib_version.outputs.lib_version }}
       deploy_dynlibs: ${{ steps.lib_version.outputs.deploy_dynlibs }}
