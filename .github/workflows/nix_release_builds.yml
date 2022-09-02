@@ -72,7 +72,7 @@ jobs:
         retention-days: 90
   Publish:
     name: Publish to WD
-    needs: [JAR]
+    needs: [libcore_version, JAR]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
