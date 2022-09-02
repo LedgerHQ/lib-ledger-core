@@ -80,6 +80,7 @@ jobs:
           token: ${{ secrets.CI_BOT_TOKEN }}
           repository: LedgerHQ/ledger-wallet-daemon
           submodules: true
+      - uses: actions/checkout@v3
       - name: Fetch libcore JAR
         uses: actions/download-artifact@v2
         with:

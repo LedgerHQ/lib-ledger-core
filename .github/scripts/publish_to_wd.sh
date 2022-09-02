@@ -1,5 +1,5 @@
-cp -v ledger-lib-core.jar ledger-wallet-daemon/lib/ledger-lib-core.jar
-cd ledger-wallet-daemon/libcore/lib-ledger-core
+cp -v ledger-lib-core.jar $GITHUB_WORKSPACE/ledger-wallet-daemon/lib/ledger-lib-core.jar
+cd $GITHUB_WORKSPACE/ledger-wallet-daemon/libcore/lib-ledger-core
 git checkout ${{ github.ref }}
 cd ../..
 git checkout -b bump_libcore_$VERSION
