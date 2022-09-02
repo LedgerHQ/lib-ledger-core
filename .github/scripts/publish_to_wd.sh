@@ -3,6 +3,9 @@ set -euo pipefail
 
 # Update libcore submodule
 cd $GITHUB_WORKSPACE/ledger-wallet-daemon/libcore/lib-ledger-core
+git remote -v
+pwd
+ls -la
 git checkout ${GITHUB_REF#refs/heads/}
 
 # Commit & push changes
