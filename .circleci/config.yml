@@ -242,6 +242,8 @@ workflows:
       - build_linux_release:
           <<: *default_context
           filters:
+            branches:
+              only: main
             tags:
               only: /.*/
       - build_linux_jni_release:
@@ -250,23 +252,31 @@ workflows:
             tags:
               only: /.*/
             branches:
-              only: /^(?!pull\/).*$/
+              only: main
       - build_macos_release:
           <<: *default_context
           filters:
             tags:
               only: /.*/
+            branches:
+              only: main
       - build_macos_jni_release:
           <<: *default_context
           filters:
             tags:
               only: /.*/
             branches:
-              only: /^(?!pull\/).*$/
+              only: main
       - build_linux_debug:
           <<: *default_context
+          filters:
+            branches:
+              only: main
       - build_macos_debug:
           <<: *default_context
+          filters:
+            branches:
+              only: main
       - publish_jar:
           requires:
             - build_linux_jni_release
@@ -274,3 +284,5 @@ workflows:
           filters:
             tags:
               only: /.*/
+            branches:
+              only: main
