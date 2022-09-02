@@ -3,20 +3,32 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version"
+        description: "Release version (tag)"
         required: true
         type: string
       releaseNote:
-        description: "Should create a Release"
+        description: "Create a Github Release note"
         required: true
         type: boolean
         default: true
+      preRelease:
+        description: "This is a pre-release"
+        required: true
+        type: boolean
+        default: false
+      draft:
+        description: "Save Release as draft"
+        required: true
+        type: boolean
+        default: false
 jobs:
   Release:
     runs-on: ubuntu-22.04
     env:
       VERSION: ${{ github.event.inputs.version }}
       RELEASE_NOTE: ${{ github.event.inputs.releaseNote }}
+      PRE_RELEASE: ${{ github.event.inputs.preRelease }}
+      DRAFT: ${{ github.event.inputs.draft }}
     steps:
     - uses: actions/checkout@v2.3.4
     - name: Set version number
@@ -37,11 +49,11 @@ jobs:
         script: |
           try {
             await github.rest.repos.createRelease({
-              draft: false,
+              draft: process.env.DRAFT,
               generate_release_notes: true,
               name: process.env.RELEASE_TAG,
               owner: context.repo.owner,
-              prerelease: false,
+              prerelease: process.env.PRE_RELEASE,
               repo: context.repo.repo,
               tag_name: process.env.VERSION,
             });
