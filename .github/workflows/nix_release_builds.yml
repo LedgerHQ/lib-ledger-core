@@ -1,19 +1,9 @@
-name: "Nix Release builds"
+name: "Package libcore"
 on:
-  pull_request:
-    branches:
-      - main
-      - release/4.0.0
-      - release/4.1.0
-      - release/4.2.0
-      - develop
+  workflow_dispatch:
   push:
     branches:
       - main
-      - release/4.0.0
-      - release/4.1.0
-      - release/4.2.0
-      - develop
     tags:
       - '*'
   workflow_run:
@@ -83,7 +73,7 @@ jobs:
         retention-days: 30
   JAR:
     name: Jar build (MacOS + Linux)
-    needs: [Ubuntu_jni, MacOS_jni, libcore_version]
+    needs: [libcore_version]
     runs-on: ubuntu-latest
     steps:
     - name: Cancel Previous Runs
