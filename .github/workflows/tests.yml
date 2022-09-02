@@ -1,4 +1,4 @@
-name: "Nix Tests"
+name: "Build & Test"
 on: [push]
 jobs:
   Unixes:
