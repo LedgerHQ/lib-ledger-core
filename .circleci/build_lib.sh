@@ -10,7 +10,7 @@ unamestr=`uname`
 export ARCH=$2
 export CMAKE=cmake
 export PATH=$PATH:~/cmake_folder/bin
-export PG_INCLUDE_DIR=`[[ "$unamestr" = "Darwin" ]] && echo -n "/usr/local/opt/postgresql/include" || echo -n "/usr/include/postgresql"`
+export PG_INCLUDE_DIR=`[[ "$unamestr" = "Darwin" ]] && echo -n "/usr/local/opt/postgresql@13/include" || echo -n "/usr/include/postgresql"`
 
 echo "Use $PG_INCLUDE_DIR for PGSQL"
 

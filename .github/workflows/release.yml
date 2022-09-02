@@ -1,0 +1,50 @@
+name: "Release libcore"
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version"
+        required: true
+        type: string
+      releaseNote:
+        description: "Should create a Release"
+        required: true
+        type: boolean
+        default: true
+jobs:
+  Release:
+    runs-on: ubuntu-22.04
+    env:
+      VERSION: ${{ github.event.inputs.version }}
+      RELEASE_NOTE: ${{ github.event.inputs.releaseNote }}
+    steps:
+    - uses: actions/checkout@v2.3.4
+    - name: Set version number
+      run: |
+        ./tools/set_version.sh $VERSION
+        head -n47 CMakeLists.txt | tail -n3
+        git add CMakeLists.txt
+        git config --global user.name "${GITHUB_ACTOR}"
+        git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+        git commit -m "Set version to $VERSION"
+        git tag -a $VERSION -m "Version $VERSION"
+        git push -u origin HEAD --tags
+    - name: Create release
+      uses: actions/github-script@v5
+      if: env.RELEASE_NOTE == 'true'
+      with:
+        github-token: "${{ secrets.GITHUB_TOKEN }}"
+        script: |
+          try {
+            await github.rest.repos.createRelease({
+              draft: false,
+              generate_release_notes: true,
+              name: process.env.RELEASE_TAG,
+              owner: context.repo.owner,
+              prerelease: false,
+              repo: context.repo.repo,
+              tag_name: process.env.VERSION,
+            });
+          } catch (error) {
+            core.setFailed(error.message);
+          }
