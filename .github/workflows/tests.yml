@@ -81,5 +81,4 @@ jobs:
           POSTGRES_PORT: 5432
           POSTGRES_USER: postgres
           POSTGRES_DB: test_db
-          SYS_OPENSSL: OFF
-          OPENSSL_USE_STATIC_LIBS: FALSE
+          OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
