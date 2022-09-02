@@ -7,15 +7,11 @@ on:
       - package_jar
     tags:
       - '*'
-  workflow_run:
-    workflows: ["Release libcore"]
-    types:
-      - completed
+  workflow_call:
 jobs:
   libcore_version:
     name: Compute libcore version
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     outputs:
       lib_version: ${{ steps.lib_version.outputs.lib_version }}
       deploy_dynlibs: ${{ steps.lib_version.outputs.deploy_dynlibs }}
@@ -81,6 +77,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          token: ${{ secrets.CI_BOT_TOKEN }}
           repository: LedgerHQ/ledger-wallet-daemon
           submodules: true
       - name: Fetch libcore JAR
