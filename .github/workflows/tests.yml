@@ -49,7 +49,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: ${{ github.job }}-${{ matrix.os }}
+        key: ${{ matrix.os }}-${{ env.BUILD_TYPE }}
         max-size: "3G"
     - name: Install ninja
       run: apt-get update && apt-get install ninja-build  # TODO: move it to build env
@@ -92,7 +92,7 @@ jobs:
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          key: ${{ github.job }}-${{ matrix.os }}
+          key: macos-${{ env.BUILD_TYPE }}
           max-size: "3G"
       - name: Prepare DB
         run: |
@@ -102,6 +102,8 @@ jobs:
           createdb -h localhost -p 5432 test_db
       - name: Build
         run: .github/scripts/build.sh
+        env:
+          OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
       - name: Tests
         if: env.BUILD_TYPE == 'Debug'
         run: .github/scripts/test.sh
@@ -109,7 +111,6 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_DB: test_db
-          OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
       - uses: actions/upload-artifact@v2
         with:
           name: macos-libledgercore
