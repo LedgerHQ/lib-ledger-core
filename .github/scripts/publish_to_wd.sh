@@ -1,7 +1,12 @@
-cp -v ledger-lib-core.jar $GITHUB_WORKSPACE/ledger-wallet-daemon/lib/ledger-lib-core.jar
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Update libcore submodule
 cd $GITHUB_WORKSPACE/ledger-wallet-daemon/libcore/lib-ledger-core
-git checkout ${{ github.ref }}
-cd ../..
+git checkout $GITHUB_REF
+
+# Commit & push changes
+cd $GITHUB_WORKSPACE/ledger-wallet-daemon
 git checkout -b bump_libcore_$VERSION
 git add lib libcore
 git config --global user.name "${GITHUB_ACTOR}"

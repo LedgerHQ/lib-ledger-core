@@ -80,12 +80,13 @@ jobs:
           token: ${{ secrets.CI_BOT_TOKEN }}
           repository: LedgerHQ/ledger-wallet-daemon
           submodules: true
-      - uses: actions/checkout@v3
+          path: ledger-wallet-daemon
       - name: Fetch libcore JAR
         uses: actions/download-artifact@v2
         with:
           name: ${{ needs.libcore_version.outputs.lib_version }}-ledger-lib-core.jar
-          path: ledger-lib-core.jar
+          path: ledger-wallet-daemon/lib
+      - uses: actions/checkout@v3
       - name: Update libcore
         env:
           VERSION: ${{ needs.libcore_version.outputs.lib_version }}
