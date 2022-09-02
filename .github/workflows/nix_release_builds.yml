@@ -31,7 +31,7 @@ jobs:
         id: lib_version
         run: bash nix/scripts/export_libcore_version.sh ${{ github.event.pull_request.head.ref }}
   Build_Release_JNI:
-    name: Linux (with JNI)
+    name: Build Release with JNI
     uses: ./.github/workflows/tests.yml
     secrets: inherit # pass all secrets
     with:
