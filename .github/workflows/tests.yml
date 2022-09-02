@@ -1,5 +1,16 @@
 name: "Build & Test"
-on: [push]
+on:
+  push:
+  workflow_call:
+    inputs:
+      buildType:
+        required: true
+        type: string
+        default: 'Debug'
+      buildJni:
+        required: false
+        type: string
+        default: 'OFF'
 jobs:
   Unixes:
     runs-on: ${{ matrix.os }}
@@ -24,6 +35,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, ubuntu-22.04]
+    env:
+      BUILD_TYPE: ${{ inputs.buildType || 'Debug' }}
+      BUILD_JNI: ${{ inputs.buildJni || 'OFF' }}
     steps:
     - name: Cancel Previous Runs
       uses: styfle/cancel-workflow-action@0.9.1
@@ -39,16 +53,28 @@ jobs:
         max-size: "3G"
     - name: Install ninja
       run: apt-get update && apt-get install ninja-build  # TODO: move it to build env
-    - name: Build and run tests
-      run: nix/scripts/build_run_tests.sh
+    - name: Build
+      run: .github/scripts/build.sh
+    - name: Tests
+      if: env.BUILD_TYPE == 'Debug'
+      run: .github/scripts/test.sh
       env:
         POSTGRES_HOST: postgres
         POSTGRES_PORT: 5432
         POSTGRES_USER: libcore
         POSTGRES_PASSWORD: libcore_pwd
         POSTGRES_DB: test_db
+    - uses: actions/upload-artifact@v2
+      with:
+        name: linux-${{ matrix.os }}-libledgercore
+        path: _build_tests/core/src/libledger-core.so
+        retention-days: 30
+
   Macos:
     runs-on: macos-12
+    env:
+      BUILD_TYPE: ${{ inputs.buildType || 'Debug' }}
+      BUILD_JNI: ${{ inputs.buildJni || 'OFF' }}
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -74,10 +100,18 @@ jobs:
           initdb -D test_db
           pg_ctl start -D test_db -l db_log -o "-i -h localhost -p 5432"
           createdb -h localhost -p 5432 test_db
-      - name: Build and run tests
-        run: nix/scripts/build_run_tests.sh
+      - name: Build
+        run: .github/scripts/build.sh
+      - name: Tests
+        if: env.BUILD_TYPE == 'Debug'
+        run: .github/scripts/test.sh
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_DB: test_db
           OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: macos-libledgercore
+          path: _build_tests/core/src/libledger-core.dylib
+          retention-days: 30
