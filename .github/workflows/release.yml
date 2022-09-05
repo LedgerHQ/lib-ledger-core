@@ -62,6 +62,6 @@ jobs:
           }
   Publish:
     name: Build Release with JNI
-    uses: ./.github/workflows/bix_release_builds.yml
+    uses: ./.github/workflows/nix_release_builds.yml
     secrets: inherit # pass all secrets
     needs: [ Release ]
