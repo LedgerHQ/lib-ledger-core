@@ -228,7 +228,7 @@ namespace ledger {
         std::size_t BitcoinLikeTransactionApi::estimateOutputSize(const std::string &keychainEngine) {
             auto isSegwit = BitcoinLikeKeychain::isSegwit(keychainEngine);
             if (isSegwit) {
-                return 34;
+                return 32;
             } else {
                 return 34;
             }

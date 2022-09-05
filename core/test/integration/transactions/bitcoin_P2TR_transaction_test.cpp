@@ -73,7 +73,10 @@ TEST_F(BitcoinTestNetMakeP2TRTransaction, CreateP2TRWithOneOutput) {
     std::vector<OutputDescr> output_descrs = {
         {"tb1p2ruhtexffskh4r4kwdrza6xvpaga0aq9jjlt2gflkn4geymj697qlkqyqu",
          hex::toByteArray("512050f975e4c94c2d7a8eb673462ee8cc0f51d7f40594beb5213fb4ea8c9372d17c"),
-         std::make_shared<api::BigIntImpl>(BigInt(100))}};
+         std::make_shared<api::BigIntImpl>(BigInt(100))},
+        {"", // This is a change output. It isn't used for tx building.
+         hex::toByteArray("00147ab496acdfcc422f9486ccc7a66ddc4df2049811"),
+         std::make_shared<api::BigIntImpl>(BigInt(567))}};
 
     createAndVerifyTransaction(input_descrs, output_descrs);
 }
@@ -102,7 +105,7 @@ TEST_F(BitcoinMainNetMakeP2TRTransaction, CreateP2TRWithOneOutput) {
          std::make_shared<api::BigIntImpl>(BigInt(100))},
         {"", // This is a change output. It isn't used for tx building.
          hex::toByteArray("00141017b1e1ca8632828f22a4d6c5260f3492b1dd08"),
-         std::make_shared<api::BigIntImpl>(BigInt(15847))}};
+         std::make_shared<api::BigIntImpl>(BigInt(15969))}};
 
     createAndVerifyTransaction(input_descrs, output_descrs);
 }
