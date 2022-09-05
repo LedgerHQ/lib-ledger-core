@@ -51,6 +51,8 @@ jobs:
       with:
         key: ${{ matrix.os }}-${{ env.BUILD_TYPE }}
         max-size: "3G"
+    - name: Update sbt # TODO: move to build env
+      run: apt-get install -y sbt=1.5.1
     - name: Install ninja
       run: apt-get update && apt-get install ninja-build  # TODO: move it to build env
     - name: Build
