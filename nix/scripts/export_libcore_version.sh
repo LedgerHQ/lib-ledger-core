@@ -21,10 +21,12 @@ else
     printf "\nMarking for snapshot\n"
     echo "::set-output name=deploy_dynlibs::NO"
     BRANCH_NAME=${GITHUB_REF_NAME}
-    echo $BRANCH_NAME
-    echo ${GITHUB_BASE_REF-main}
+    echo "Branch name: " $BRANCH_NAME
+    echo "Base ref name: "${GITHUB_BASE_REF-main}
     BRANCH_LENGTH=`git rev-list --count ^remotes/origin/${GITHUB_BASE_REF-main} remotes/origin/${BRANCH_NAME}`
+    echo "Branch length: " $BRANCH_LENGTH
     ABBREV_COMMIT_HASH=`git rev-list ^remotes/origin/${GITHUB_BASE_REF-main} remotes/origin/${BRANCH_NAME} | head -n 1 | cut -c 1-6`
+    echo "Commit hash: " $ABBREV_COMMIT_HASH
     LIBCORE_VERSION=${LIB_VERSION}-${BRANCH_NAME}-${BRANCH_LENGTH}-${ABBREV_COMMIT_HASH}
     JAR_VERSION="${LIBCORE_VERSION}-SNAPSHOT"
 fi
