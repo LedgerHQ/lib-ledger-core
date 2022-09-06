@@ -7,17 +7,21 @@ on:
         required: true
         type: boolean
         default: false
+      version:
+        description: Custom version of jar package (applies only if `release` is true)
+        required: false
+        type: string
   push:
     branches:
-      - main
-      - package_jar
-    tags:
       - '*'
   workflow_call:
     inputs:
       release:
         required: false
         type: boolean
+      version:
+        required: false
+        type: string
 jobs:
   libcore_version:
     name: Compute libcore version
@@ -38,12 +42,12 @@ jobs:
         run: bash nix/scripts/export_libcore_version.sh
         env:
           RELEASE: ${{ inputs.release || 'false' }}
+          VERSION: ${{ inputs.version }}
   Build_Release_JNI:
     name: Build Release with JNI
     uses: ./.github/workflows/tests.yml
     secrets: inherit # pass all secrets
     with:
-      buildType: 'Release'
       buildJni: 'ON'
   JAR:
     name: Jar build (MacOS + Linux)
@@ -77,7 +81,6 @@ jobs:
         path: jar_build/src/main/resources/resources/djinni_native_libs
     - run: bash nix/scripts/build_jar.sh
       env:
-        LIB_VERSION: ${{ needs.libcore_version.outputs.lib_version }}
         GITHUB_TOKEN: ${{ secrets.CI_BOT_TOKEN }}
         JAR_VERSION: ${{ needs.libcore_version.outputs.jar_version }}
     - uses: actions/upload-artifact@v2

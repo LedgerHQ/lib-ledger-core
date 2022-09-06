@@ -65,3 +65,6 @@ jobs:
     uses: ./.github/workflows/nix_release_builds.yml
     secrets: inherit # pass all secrets
     needs: [ Release ]
+    with:
+      release: true
+      version: ${{ github.event.inputs.version }}

@@ -15,7 +15,11 @@ printf "# github event is **${GITHUB_EVENT_NAME}**\n"
 if [[ "${RELEASE}" == "true" ]]; then
     printf "\nMarking for deploy\n"
     echo "::set-output name=deploy_dynlibs::YES"
-    LIBCORE_VERSION=${LIB_VERSION}
+    if [[ "${VERSION:=none}" != "none" ]]; then
+      LIBCORE_VERSION=${VERSION}
+    else
+      LIBCORE_VERSION=${LIB_VERSION}
+    fi
     JAR_VERSION=${LIBCORE_VERSION}
 else
     printf "\nMarking for snapshot\n"
