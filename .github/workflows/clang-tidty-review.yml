@@ -3,8 +3,8 @@ on:
   pull_request:
     paths:
       - core/**
-      - .clang-format
-      - .github/workflows/clang-format-check.yml
+      - .clang-tidy
+      - .github/workflows/clang-tidy-review.yml
 
 jobs:
   build:
