@@ -1,5 +1,10 @@
 name: "Clang-tidy Code Review"
-on: [pull_request]
+on:
+  pull_request:
+    paths:
+      - core/**
+      - .clang-format
+      - .github/workflows/clang-format-check.yml
 
 jobs:
   build:

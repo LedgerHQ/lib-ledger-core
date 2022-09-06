@@ -1,5 +1,10 @@
 name: clang-format Check
-on: [push]
+on:
+  push:
+    paths:
+      - core/**
+      - .clang-format
+      - .github/workflows/clang-format-check.yml
 jobs:
   formatting-check:
     name: Formatting Check
