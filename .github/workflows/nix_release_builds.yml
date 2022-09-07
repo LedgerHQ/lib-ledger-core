@@ -95,20 +95,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        name: Checkout libcore
       - uses: actions/checkout@v3
+        name: Checkout WD
         with:
           token: ${{ secrets.CI_BOT_TOKEN }}
           repository: LedgerHQ/ledger-wallet-daemon
           submodules: true
           path: ledger-wallet-daemon
-      - name: Fetch libcore JAR
-        uses: actions/download-artifact@v2
-        with:
-          name: ${{ needs.libcore_version.outputs.lib_version }}-ledger-lib-core.jar
-          path: ledger-wallet-daemon/lib
-#      - name: Publish to WD
-#        env:
-#          GH_TOKEN: ${{ secrets.CI_BOT_TOKEN }}
-#          VERSION: ${{ needs.libcore_version.outputs.lib_version }}
-#        run: .github/scripts/publish_to_wd.sh
+      - name: Bump libcore version in WD
+        env:
+          GH_TOKEN: ${{ secrets.CI_BOT_TOKEN }}
+          LIB_VERSION: ${{ needs.libcore_version.outputs.lib_version }}
+          JAR_VERSION: ${{ needs.libcore_version.outputs.jar_version }}
+        run: .github/scripts/publish_to_wd.sh
           
