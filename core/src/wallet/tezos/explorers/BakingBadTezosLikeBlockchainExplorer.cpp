@@ -324,7 +324,8 @@ namespace ledger {
                                      "Can only get transactions for 1 address from Tezos Node, but got {} addresses",
                                      addresses.size());
             }
-            std::string params = fmt::format("?limit={}", limit);
+            // tzkt api: Sort mode (0 - ascending, 1 - descending)
+            std::string params = fmt::format("?limit={}&sort=0", limit);
             if (localOffset > 0) {
                 params += fmt::format("&lastId={}", localOffset);
             }
@@ -457,8 +458,8 @@ namespace ledger {
         }
 
         Future<std::string> BakingBadTezosLikeBlockchainExplorer::getSynchronisationOffset(const std::shared_ptr<api::OperationQuery> &operations) {
-            constexpr bool descending = false;
-            auto ops                  = std::dynamic_pointer_cast<OperationQuery>(operations->complete()->limit(1)->addOrder(api::OperationOrderKey::TIME, descending))->execute();
+            constexpr bool ascending = true;
+            auto ops                  = std::dynamic_pointer_cast<OperationQuery>(operations->complete()->limit(1)->addOrder(api::OperationOrderKey::TIME, ascending))->execute();
             return ops.map<std::string>(getContext(), [](const std::vector<std::shared_ptr<api::Operation>> &ops) -> std::string {
                 if (ops.empty()) {
                     return "";
