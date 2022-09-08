@@ -74,7 +74,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        name: Checkout libcore
       - uses: actions/checkout@v3
+        name: Checkout wallet-daemont
         with:
           token: ${{ secrets.CI_BOT_TOKEN }}
           repository: LedgerHQ/ledger-wallet-daemon

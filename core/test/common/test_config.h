@@ -31,19 +31,19 @@
 
 inline std::string getPostgresUrl() {
     const char *host = getenv("POSTGRES_HOST");
-    std::string host_var(host ? host : "localhost");
+    const std::string host_var(host ? host : "localhost");
 
     const char *port = getenv("POSTGRES_PORT");
-    std::string port_var(port ? port : "5432");
+    const std::string port_var(port ? port : "5432");
 
     const char *dbname = getenv("POSTGRES_DB");
-    std::string dbname_var(dbname ? dbname : "test_db");
+    const std::string dbname_var(dbname ? dbname : "test_db");
 
     const char *user = getenv("POSTGRES_USER");
     std::string user_var(user ? user : "");
 
     const char *password = getenv("POSTGRES_PASSWORD");
-    std::string password_var(password ? password : "");
+    const std::string password_var(password ? password : "");
 
     if (!user_var.empty()) {
         if (!password_var.empty()) {

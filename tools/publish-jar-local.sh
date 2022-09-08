@@ -1,15 +1,12 @@
+#!/bin/bash
 set -euo pipefail
 
-if [[ -f "$HOME/.jabba/jabba.sh" ]]; then
-  echo "Found jabba"
-  source "$HOME/.jabba/jabba.sh"
-  jabba use adopt@1.8.0-292
-fi
-
-JAVA_VERSION=`java -version 2>&1 | awk -F '"' '{print $2}'`
-if [[ $JAVA_VERSION != "1.8.0_292" ]]; then
-  echo "Wrong java version ! Required 1.8.0_292 but found $JAVA_VERSION"
-  exit 42
+IFS=. read major minor patch <<<$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
+if [ $major -ne 1 ] | [ $minor -ne 8 ]; then
+    printf "Openjdk should match version 1.8\n\n"
+    printf "Tip ! you can use:\n"
+    printf "$ jabba use adopt@1.8.0-292\n"
+    exit 1
 fi
 
 # This script works with a directory name as first parameter

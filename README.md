@@ -13,7 +13,7 @@ Core library which will be used by Ledger applications.
     - [Nix build](#nix-build)
     - [Non nix builds](#non-nix-builds)
     - [Build library with PostgreSQL](#build-library-with-postgresql)
-    - [Publish local JAR of libcore](#publish-local-jar-of-libcore)
+    - [Publish libcore JAR into local repository](#publish-libcore-JAR-into-local-repository)
     - [Build production-like version of the library](#build-production-like-version-of-the-library)
   - [Documentation](#documentation)
   - [Binding to node.js](#binding-to-nodejs)
@@ -226,7 +226,7 @@ if you want to run only one specific unit test. (e.g. the test case `BitcoinLike
 ./core/test/integration/build/ledger-core-integration-tests "--gtest_filter=BitcoinLikeWalletSynchronization.MediumXpubSynchronization"
 ```
 
-## Publish local JAR of libcore
+## Publish libcore JAR into local repository
 
 First you need to build the libcore with JNI enabled
 ```bash
