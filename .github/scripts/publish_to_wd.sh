@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Update libcore submodule
-#cd $GITHUB_WORKSPACE/ledger-wallet-daemon/libcore/lib-ledger-core
-#git remote -v
-#pwd
-#ls -la
-#git checkout ${GITHUB_REF#refs/heads/}
+cd $GITHUB_WORKSPACE/ledger-wallet-daemon
+
+# Bump libcore version
+sed -i -E 's/(val libcore *= *\")(.*)\"/\1'$VERSION'\"/' build.sbt
 
 # Commit & push changes
-cd $GITHUB_WORKSPACE/ledger-wallet-daemon
 git checkout -b bump_libcore_$VERSION
 git add lib # libcore
 git config --global user.name "${GITHUB_ACTOR}"

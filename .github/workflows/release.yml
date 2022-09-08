@@ -60,7 +60,7 @@ jobs:
           } catch (error) {
             core.setFailed(error.message);
           }
-  Publish:
+  Build:
     name: Build Release with JNI
     uses: ./.github/workflows/nix_release_builds.yml
     secrets: inherit # pass all secrets
@@ -68,3 +68,21 @@ jobs:
     with:
       release: true
       version: ${{ github.event.inputs.version }}
+  Publish:
+    name: Publish to WD
+    needs: [Build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.CI_BOT_TOKEN }}
+          repository: LedgerHQ/ledger-wallet-daemon
+          submodules: true
+          path: ledger-wallet-daemon
+      - name: Publish to WD
+        env:
+          GH_TOKEN: ${{ secrets.CI_BOT_TOKEN }}
+          VERSION: ${{ github.event.inputs.version }}
+        run: .github/scripts/publish_to_wd.sh
+
