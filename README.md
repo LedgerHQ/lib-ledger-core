@@ -13,6 +13,7 @@ Core library which will be used by Ledger applications.
     - [Nix build](#nix-build)
     - [Non nix builds](#non-nix-builds)
     - [Build library with PostgreSQL](#build-library-with-postgresql)
+    - [Publish local JAR of libcore](#publish-local-jar-of-libcore)
     - [Build production-like version of the library](#build-production-like-version-of-the-library)
   - [Documentation](#documentation)
   - [Binding to node.js](#binding-to-nodejs)
@@ -24,6 +25,7 @@ Core library which will be used by Ledger applications.
   - [Developement guidelines](#developement-guidelines)
     - [Local tests](#local-tests)
     - [CI](#ci)
+    - [Release process](#release-process)
   - [Q/A and troubleshooting](#qa-and-troubleshooting)
     - [I have updated an include file and test code doesn’t see the changes!](#i-have-updated-an-include-file-and-test-code-doesnt-see-the-changes)
     - [I have upgraded my macOSX system and now I can’t compile anymore.](#i-have-upgraded-my-macosx-system-and-now-i-cant-compile-anymore)
@@ -223,6 +225,24 @@ if you want to run only one specific unit test. (e.g. the test case `BitcoinLike
 ```
 ./core/test/integration/build/ledger-core-integration-tests "--gtest_filter=BitcoinLikeWalletSynchronization.MediumXpubSynchronization"
 ```
+
+## Publish local JAR of libcore
+
+First you need to build the libcore with JNI enabled
+```bash
+mkdir build_lib_jni
+cd build_lib_jni
+cmake .. -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE -DTARGET_JNI=ON -DPG_SUPPORT=ON
+cmake --build . --parallel
+```
+
+Then you can build & publish the jar with `sbt publishLocal`. A tool script wraps it:
+```bash
+./tools/publish-jar-local.sh ./lib_build_dir_jni
+```
+
+It will publish a maven artifact (available at ~/.ivy2/local/co.ledger/ledger-lib-core_2.12/local-SNAPSHOT) that can be used by any third party
+
 ## Build production-like version of the library
 
 To build the production-like version of the library use script `tools/prod-like-build.sh`. This script requires
@@ -340,26 +360,6 @@ sudo apt install clang-format-14
 
 ### CI
 
-#### Appveyor
-
-You are advised to link your GitHub account to both [CircleCI] and [Appveyor] by signing-in. Because
-we are using shared runners and resources, we have to share CI power with other teams. It’s
-important to note that we don’t always need to run the CI. Example of situations when we do not need
-it:
-
-  - When we are updating documentation.
-  - When we are changing a tooling script that is not part of any testing suite (yet).
-  - When we are making a *WIP* PR that doesn’t require running the CI until everyone has agreed on
-    the code (this is a tricky workflow but why not).
-
-In those cases, please include the `[skip ci]` or `[ci skip]` text **in your commit message’s
-title**. You could tempted to put it in the body of your message but that will not work with
-[Appveyor].
-
-Finally, it’s advised to put it on every commit and rebase at the end to remove the `[skip ci]` tag
-from your commits’ messags to have the CI re-enabled, but some runners might be smart enough to do
-it for all commits in the PR.
-
 #### Rebasing
 
 Rebasing is done easily. If your PR wants to merge `feature/stuff -> develop`, you can do something
@@ -373,6 +373,20 @@ git rebase -i origin/develop
 Change the `pick` to `r` or `reword` at the beginning of each lines **without changing the text of
 the commits** — this has no effect. Save the file and quit. You will be prompted to change the
 commits’ messages one by one, allowing you to remove the `[skip ci]` tag from all commits.
+
+### Release process
+
+To release the libcore, a Github action automates everything: 
+- Go to [Release libcore](https://github.com/LedgerHQ/lib-ledger-core/actions/workflows/release.yml) action
+- Select "Run workflow"
+- Set the version you want to tag
+
+It will automatically:
+- Push the tag
+- Create the Release note
+- Build libcore release (ubuntu 22 & macos 12)
+- Publish libcore jar
+- Update WD
 
 ## Q/A and troubleshooting
 

@@ -12,8 +12,18 @@ if [[ $JAVA_VERSION != "1.8.0_292" ]]; then
   exit 42
 fi
 
-JAR_BUILD_DIR=/tmp/build-jar
+# This script works with a directory name as first parameter
+# You need to have the libcore already built in this directory with JNI enabled
+# e.g.:
+# cd lib_build_dir_jni
+# cmake .. -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE -DTARGET_JNI=ON -DPG_SUPPORT=ON
+# cmake --build . --parallel
+#
+# And then you call the script:
+# ./publish-jar-local.sh ./lib_build_dir_jni
 LIB_BUILD_DIR=$1
+
+JAR_BUILD_DIR=/tmp/build-jar
 JAVA_API_DIR=api/core/java
 SCALA_API_DIR=api/core/scala
 SBT_DIR=nix/scripts/sbt
@@ -33,6 +43,10 @@ cp $LIB_BUILD_DIR/core/src/libledger-core.so $RESOURCE_DIR
 cd $JAR_BUILD_DIR
 export GITHUB_TOKEN="unused" # but mandatory
 
+# By default it will generate a package named local-SNAPSHOT, but you can override it by giving a 2nd parameter to the script
+# e.g.  ./publish-jar-local.sh ./lib_build_dir_jni custom_name
+#         -> will generate package custom_name-SNAPSHOT
+# You may find it under ~/.ivy2/local/co.ledger/ledger-lib-core_2.12/local-SNAPSHOT
 export JAR_VERSION=${2-local}-SNAPSHOT
 
 sbt publishLocal
