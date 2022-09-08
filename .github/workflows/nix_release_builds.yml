@@ -11,9 +11,6 @@ on:
         description: Custom version of jar package (applies only if `release` is true)
         required: false
         type: string
-  push:
-    branches:
-      - '*'
   workflow_call:
     inputs:
       release:
