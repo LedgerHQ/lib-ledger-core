@@ -459,7 +459,7 @@ namespace ledger {
 
         Future<std::string> BakingBadTezosLikeBlockchainExplorer::getSynchronisationOffset(const std::shared_ptr<api::OperationQuery> &operations) {
             constexpr bool ascending = true;
-            auto ops                  = std::dynamic_pointer_cast<OperationQuery>(operations->complete()->limit(1)->addOrder(api::OperationOrderKey::TIME, ascending))->execute();
+            auto ops                 = std::dynamic_pointer_cast<OperationQuery>(operations->complete()->limit(1)->addOrder(api::OperationOrderKey::TIME, ascending))->execute();
             return ops.map<std::string>(getContext(), [](const std::vector<std::shared_ptr<api::Operation>> &ops) -> std::string {
                 if (ops.empty()) {
                     return "";
