@@ -51,13 +51,11 @@ jobs:
     needs: [libcore_version, Build_Release_JNI]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/ledgerhq/lib-ledger-core-build-env/lib-ledger-core-build-env:1.0.2
+      image: ghcr.io/ledgerhq/lib-ledger-core-build-env/lib-ledger-core-build-env:1.0.3
       credentials:
         username: ${{ secrets.CI_BOT_USERNAME }}
         password: ${{ secrets.CI_BOT_TOKEN }}
     steps:
-    - name: Update sbt # TODO: move to build env
-      run: apt-get install -y sbt=1.5.1
     - name: Cancel Previous Runs
       uses: styfle/cancel-workflow-action@0.9.1
       with:
