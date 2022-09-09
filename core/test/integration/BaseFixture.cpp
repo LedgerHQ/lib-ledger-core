@@ -232,7 +232,7 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolN
     // compilation flags.
     auto actualPoolName = poolName;
 
-    configuration->putString(api::PoolConfiguration::DATABASE_NAME, POSTGRES_TEST_DB_ON_LOCALHOST);
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());
     if (actualPoolName == "") {
         actualPoolName = randomDBName();
     }

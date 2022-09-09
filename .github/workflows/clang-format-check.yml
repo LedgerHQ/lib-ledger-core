@@ -1,10 +1,19 @@
 name: clang-format Check
-on: [push, pull_request]
+on:
+  pull_request:
+    paths:
+      - core/**
+      - .clang-format
+      - .github/workflows/clang-format-check.yml
 jobs:
   formatting-check:
     name: Formatting Check
     runs-on: ubuntu-latest
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/checkout@v2
       - name: Run clang-format style check for C/C++/Protobuf programs.
         uses: jidicula/clang-format-action@v4.5.0
