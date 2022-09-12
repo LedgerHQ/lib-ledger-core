@@ -100,7 +100,8 @@ namespace ledger {
                              const std::shared_ptr<api::DynamicObject> &configuration,
                              const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
                              const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend,
-                             const std::shared_ptr<api::WalletPoolCallback> &listener);
+                             const std::shared_ptr<api::WalletPoolCallback> &listener,
+                             const std::shared_ptr<api::CoreTracer> &tracer);
         };
     } // namespace core
 } // namespace ledger

@@ -34,6 +34,7 @@
 #include "../common/test_config.h"
 #include "IntegrationEnvironment.h"
 #include "MemPreferencesBackend.hpp"
+#include "ProxyCoreTracer.h"
 
 #include <FilesystemUtils.hpp>
 #include <api/PoolConfiguration.hpp>
@@ -86,7 +87,8 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
         backend,
         configuration,
         std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-        std::make_shared<ledger::core::test::MemPreferencesBackend>());
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        std::make_shared<ledger::core::test::ProxyCoreTracer>());
 }
 
 BitcoinLikeWalletDatabase

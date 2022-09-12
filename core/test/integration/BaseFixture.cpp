@@ -34,6 +34,7 @@
 #include "../common/test_config.h"
 #include "IntegrationEnvironment.h"
 #include "MemPreferencesBackend.hpp"
+#include "ProxyCoreTracer.h"
 
 #include <api/ConfigurationDefaults.hpp>
 #include <api/PoolConfiguration.hpp>
@@ -242,6 +243,8 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolN
         http = std::make_shared<ProxyHttpClient>(std::make_shared<CppHttpLibClient>(dispatcher->getThreadPoolExecutionContext("test_threadpool_http")));
     }
 
+    auto tracer = std::make_shared<ProxyCoreTracer>();
+
     return WalletPool::newInstance(
         actualPoolName,
         password,
@@ -254,7 +257,8 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolN
         backend,
         configuration,
         std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-        std::make_shared<ledger::core::test::MemPreferencesBackend>());
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        tracer);
 }
 
 BitcoinLikeWalletDatabase

@@ -35,6 +35,7 @@
 #include "../../common/test_config.h"
 #include "../integration/IntegrationEnvironment.h"
 #include "MemPreferencesBackend.hpp"
+#include "ProxyCoreTracer.h"
 
 #include <CoutLogPrinter.hpp>
 #include <CppHttpLibClient.hpp>
@@ -112,7 +113,8 @@ class CoinIntegrationFixture : public ::testing::Test {
             backend,
             configuration,
             std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-            std::make_shared<ledger::core::test::MemPreferencesBackend>());
+            std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+            std::make_shared<ledger::core::test::ProxyCoreTracer>());
     }
 
     std::shared_ptr<uv::SequentialExecutionContext> getTestExecutionContext() {

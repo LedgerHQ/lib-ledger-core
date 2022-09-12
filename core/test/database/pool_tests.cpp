@@ -110,7 +110,8 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
         backend,
         configuration,
         std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-        std::make_shared<ledger::core::test::MemPreferencesBackend>());
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        nullptr);
 
     api::Currency bitcoin;
 

@@ -53,6 +53,8 @@ namespace ledger {
                 return api::StellarLikeMemoType::MEMO_HASH;
             case stellar::xdr::MemoType::MEMO_RETURN:
                 return api::StellarLikeMemoType::MEMO_RETURN;
+            default:
+                throw std::logic_error("Unmatched switch case");
             }
         }
 
@@ -98,6 +100,8 @@ namespace ledger {
                 return hex::toString(std::vector<uint8_t>(
                     boost::get<stellar::xdr::Hash>(_memo.content).begin(),
                     boost::get<stellar::xdr::Hash>(_memo.content).end()));
+            default:
+                throw std::logic_error("Unmatched switch case");
             }
         }
 

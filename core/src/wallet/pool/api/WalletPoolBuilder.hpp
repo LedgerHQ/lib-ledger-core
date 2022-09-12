@@ -49,6 +49,9 @@ namespace ledger {
             setHttpClient(const std::shared_ptr<api::HttpClient> &client) override;
 
             virtual std::shared_ptr<api::WalletPoolBuilder>
+            setTracer(const std::shared_ptr<api::CoreTracer> &tracer) override;
+
+            virtual std::shared_ptr<api::WalletPoolBuilder>
             setWebsocketClient(const std::shared_ptr<api::WebSocketClient> &client) override;
 
             virtual std::shared_ptr<api::WalletPoolBuilder>
@@ -81,6 +84,7 @@ namespace ledger {
 
           private:
             std::shared_ptr<api::HttpClient> _httpClient;
+            std::shared_ptr<api::CoreTracer> _tracer;
             std::shared_ptr<api::WebSocketClient> _webSocketClient;
             std::shared_ptr<api::PathResolver> _pathResolver;
             std::shared_ptr<api::LogPrinter> _logPrinter;
