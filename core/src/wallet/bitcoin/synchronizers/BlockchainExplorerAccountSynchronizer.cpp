@@ -63,6 +63,7 @@ namespace ledger {
         void BlockchainExplorerAccountSynchronizer::updateTransactionsToDrop(soci::session &sql,
                                                                              std::shared_ptr<SynchronizationBuddy> &buddy,
                                                                              const std::string &accountUid) {
+            auto span                    = _currentAccount->getTracer()->startSpan("BlockchainExplorerAccountSynchronizer::updateTransactionsToDrop");
             // Get all transactions in DB that may be dropped (txs without block_uid)
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.date, btc_op.transaction_hash FROM operations AS op "
                                                            "LEFT OUTER JOIN bitcoin_operations AS btc_op ON btc_op.uid = op.uid "
@@ -113,6 +114,7 @@ namespace ledger {
                     buddy->transactionsToDrop.insert(std::pair<std::string, std::string>(txHash, row.get<std::string>(OP_UID_COL)));
                 }
             }
+            span->close();
         }
 
         void BlockchainExplorerAccountSynchronizer::reset(const std::shared_ptr<BitcoinLikeAccount> &account,
@@ -291,6 +293,7 @@ namespace ledger {
 
         Future<std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>> BlockchainExplorerAccountSynchronizer::requestTransactionsFromExplorer(
             const std::shared_ptr<SynchronizationBuddy> &buddy) {
+            auto span    = _currentAccount->getTracer()->startSpan("BlockchainExplorerAccountSynchronizer::requestTransactionsFromExplorer");
             auto nbBatch = this->_addresses.size() / (buddy->halfBatchSize * 2);
             std::vector<Future<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>> batches;
             for (int currentBatchIndex = 0; currentBatchIndex < nbBatch; currentBatchIndex++) {
@@ -311,7 +314,8 @@ namespace ledger {
                                                                                                                         return std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>();
                                                                                                                     });
             }
-            return executeAll(buddy->account->getContext(), batches);
+            return executeAll(buddy->account->getContext(), batches)
+                .then(getContext(), [span]() { span->close(); });
         }
 
         Future<Unit> BlockchainExplorerAccountSynchronizer::synchronizeMempool(
@@ -401,6 +405,10 @@ namespace ledger {
         };
 
         Future<BlockchainExplorerAccountSynchronizationResult> BlockchainExplorerAccountSynchronizer::performSynchronization(const std::shared_ptr<BitcoinLikeAccount> &account) {
+            auto span = account->getTracer()->startSpan("BlockchainExplorerAccountSynchronizer::performSynchronization");
+            span->setTagInt("index", account->getIndex());
+            span->setTagStr("restoreKey", account->getKeychain()->getRestoreKey());
+            span->setTagStr("wallet", account->getWallet()->getName());
             auto buddy                = makeSynchronizationBuddy();
             buddy->account            = account;
             buddy->preferences        = std::static_pointer_cast<AbstractAccount>(account)->getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer");
@@ -514,6 +522,9 @@ namespace ledger {
 
                     self->_currentAccount = nullptr;
                     return buddy->context;
+                })
+                .then(account->getContext(), [span]() {
+                    span->close();
                 })
                 .recover(ImmediateExecutionContext::INSTANCE, [self, buddy](const Exception &ex) {
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(

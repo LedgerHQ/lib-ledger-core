@@ -36,6 +36,7 @@
 #include <api/HttpClient.hpp>
 #include <api/LogPrinter.hpp>
 #include <api/CoreTracer.hpp>
+#include <api/Span.hpp>
 #include <api/PathResolver.hpp>
 #include <api/RandomNumberGenerator.hpp>
 #include <api/ThreadDispatcher.hpp>

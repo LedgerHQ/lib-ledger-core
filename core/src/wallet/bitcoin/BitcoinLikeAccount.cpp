@@ -391,6 +391,7 @@ namespace ledger {
 
         std::shared_ptr<api::EventBus> BitcoinLikeAccount::synchronize() {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
+            auto span = getTracer()->startSpan("BitcoinLikeAccount::synchronize");
             if (_currentSyncEventBus)
                 return _currentSyncEventBus;
             auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
@@ -410,7 +411,8 @@ namespace ledger {
 
             auto startTime = DateUtils::now();
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
-            future.onComplete(getContext(), [eventPublisher, self, wasEmpty, startTime](auto const &result) {
+            future.onComplete(getContext(), [eventPublisher, self, wasEmpty, startTime, span](auto const &result) {
+                auto span2 = self->getTracer()->startSpan("BitcoinLikeAccount::synchronize.onComplete");
                 auto isEmpty = self->checkIfWalletIsEmpty();
                 api::EventCode code;
                 auto payload  = std::make_shared<DynamicObject>();
@@ -438,6 +440,8 @@ namespace ledger {
                 eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
                 std::lock_guard<std::mutex> lock(self->_synchronizationLock);
                 self->_currentSyncEventBus = nullptr;
+                span2->close();
+                span->close();
             });
             return eventPublisher->getEventBus();
         }

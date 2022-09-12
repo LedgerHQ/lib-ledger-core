@@ -13,6 +13,7 @@ namespace ledger {
           void setTagInt(const std::string & name, int32_t value) override;
           void setTagDouble(const std::string & name, double value) override;
           void setTagBool(const std::string & name, bool value) override;
+          void close() override;
       };
 
       class ProxyCoreTracer: public api::CoreTracer{

@@ -23,6 +23,10 @@ namespace ledger {
       void ProxySpan::setTagBool(const std::string & /*name*/, bool /*value*/){
         // Intentionnaly empty, not used in tests
       }
+
+      void ProxySpan::close(){
+        // Intentionnaly empty, not used in tests
+      }
     } // ledger
   } // core
 } // test
