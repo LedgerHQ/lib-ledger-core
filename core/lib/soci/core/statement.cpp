@@ -248,6 +248,7 @@ void statement_impl::undefine_and_bind()
 
 bool statement_impl::execute(bool withDataExchange)
 {
+    session_.get_tracer()->startSpan(query_);
     initialFetchSize_ = intos_size();
 
     if (intos_.empty() == false && initialFetchSize_ == 0)
@@ -334,6 +335,7 @@ bool statement_impl::execute(bool withDataExchange)
     post_use(gotData);
 
     session_.set_got_data(gotData);
+    session_.get_tracer()->finishSpan();
     return gotData;
 }
 

@@ -36,6 +36,12 @@ class blob_backend;
 
 class connection_pool;
 
+struct session_tracer {
+    virtual void startSpan(std::string &) {};
+    virtual void finishSpan() {};
+    virtual ~session_tracer() = default;
+};
+
 class SOCI_DECL session
 {
 private:
@@ -43,7 +49,7 @@ private:
     void set_query_transformation_(std::unique_ptr<details::query_transformation_function> qtf);
 
 public:
-    session();
+    session(std::shared_ptr<session_tracer> tracer = std::make_shared<session_tracer>());
     explicit session(connection_parameters const & parameters);
     session(backend_factory const & factory, std::string const & connectString);
     session(std::string const & backendName, std::string const & connectString);
@@ -128,6 +134,9 @@ public:
     // and try again; the default implementation assumes no timeout
     bool isAlive() const;
 
+    void set_tracer(std::unique_ptr<session_tracer> tracer) { tracer_ = std::move(tracer); }
+    std::shared_ptr<session_tracer> get_tracer() { return tracer_; }
+
 private:
     session(session const &);
     session& operator=(session const &);
@@ -137,6 +146,8 @@ private:
 
     std::ostream * logStream_;
     std::string lastQuery_;
+
+    std::shared_ptr<session_tracer> tracer_ = std::make_shared<session_tracer>();
 
     connection_parameters lastConnectParameters_;
 

@@ -41,6 +41,7 @@
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
+#include <utility>
 
 namespace ledger {
     namespace core {
@@ -110,6 +111,7 @@ namespace ledger {
             _database = std::make_shared<DatabaseSessionPool>(
                 std::static_pointer_cast<DatabaseBackend>(backend),
                 pathResolver,
+                getTracer(),
                 _logger,
                 Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(name),
                 password);

@@ -34,6 +34,7 @@
 
 #include <api/DatabaseBackendType.hpp>
 #include <api/ExecutionContext.hpp>
+#include <api/CoreTracer.hpp>
 #include <async/Future.hpp>
 #include <database/DatabaseBackend.hpp>
 #include <debug/LoggerStreamBuffer.h>
@@ -45,6 +46,7 @@ namespace ledger {
           public:
             DatabaseSessionPool(const std::shared_ptr<DatabaseBackend> &backend,
                                 const std::shared_ptr<api::PathResolver> &resolver,
+                                const std::shared_ptr<api::CoreTracer> &tracer,
                                 const std::shared_ptr<spdlog::logger> &logger,
                                 const std::string &dbName,
                                 const std::string &password);
@@ -56,6 +58,7 @@ namespace ledger {
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<DatabaseBackend> &backend,
                 const std::shared_ptr<api::PathResolver> &resolver,
+                const std::shared_ptr<api::CoreTracer> &tracer,
                 const std::shared_ptr<spdlog::logger> &logger,
                 const std::string &dbName,
                 const std::string &password = "");
