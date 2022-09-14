@@ -311,7 +311,7 @@ namespace ledger {
                                                 const std::list<std::tuple<std::shared_ptr<BigInt>, std::shared_ptr<api::BitcoinLikeScript>>> &outputs,
                                                 const api::Currency &currency,
                                                 const std::string &keychainEngine) {
-            std::size_t fixedSize   = estimateFixedTxSize(inputCount, outputs.size(), currency);
+            const std::size_t fixedSize   = estimateFixedTxSize(inputCount, outputs.size(), currency);
 
             std::size_t outputsSize = (8 + 1) * outputs.size(); // amount (8 bytes) + script length (1 byte)
             for (const auto &out : outputs) {
