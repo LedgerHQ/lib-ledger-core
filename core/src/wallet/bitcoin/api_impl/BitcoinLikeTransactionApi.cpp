@@ -259,7 +259,7 @@ namespace ledger {
                                                 const std::string &keychainEngine) {
             std::size_t maxSize = 0;
             std::size_t minSize = 0;
-            auto isSegwit       = BitcoinLikeKeychain::isSegwit(keychainEngine);
+            const auto isSegwit       = BitcoinLikeKeychain::isSegwit(keychainEngine);
 
             if (isSegwit) {
                 // Native Segwit: 32 PrevTxHash + 4 Index + 1 null byte + 4 sequence
