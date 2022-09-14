@@ -133,7 +133,7 @@ namespace ledger {
                                                                            currency,
                                                                            buddy->keychain->getKeychainEngine());
                 if (addedOutputCount > 0) {
-                    std::size_t addedOutputSize = addedOutputCount * BitcoinLikeTransactionApi::estimateOutputSize(buddy->keychain->getKeychainEngine());
+                    const std::size_t addedOutputSize = addedOutputCount * BitcoinLikeTransactionApi::estimateOutputSize(buddy->keychain->getKeychainEngine());
                     size.Min += narrowing_cast<int32_t>(addedOutputSize);
                     size.Max += narrowing_cast<int32_t>(addedOutputSize);
                 }
