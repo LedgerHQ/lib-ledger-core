@@ -264,7 +264,7 @@ namespace ledger {
             if (isSegwit) {
                 // Native Segwit: 32 PrevTxHash + 4 Index + 1 null byte + 4 sequence
                 // P2SH: 32 PrevTxHash + 4 Index + 23 scriptPubKey + 4 sequence
-                auto isNativeSegwit    = BitcoinLikeKeychain::isNativeSegwit(keychainEngine);
+                const auto isNativeSegwit    = BitcoinLikeKeychain::isNativeSegwit(keychainEngine);
                 std::size_t inputSize  = isNativeSegwit ? 41 : 63;
                 std::size_t noWitness  = fixedSize + inputSize * inputCount + maxOutputsSize;
 
