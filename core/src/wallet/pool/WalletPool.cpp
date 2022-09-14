@@ -40,6 +40,7 @@
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
+#include <utility>
 
 namespace ledger {
     namespace core {
@@ -54,12 +55,12 @@ namespace ledger {
             const std::shared_ptr<api::RandomNumberGenerator> &rng,
             const std::shared_ptr<api::DatabaseBackend> &backend,
             const std::shared_ptr<api::DynamicObject> &configuration,
-            const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
-            const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend,
+            std::shared_ptr<api::PreferencesBackend> externalPreferencesBackend,
+            std::shared_ptr<api::PreferencesBackend> internalPreferencesBackend,
             const std::shared_ptr<api::CoreTracer> &tracer) : DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))),
                                                               _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
                                                                                                    .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE))),
-                                                              _externalPreferencesBackend(externalPreferencesBackend), _internalPreferencesBackend(internalPreferencesBackend) {
+                                                              _externalPreferencesBackend(std::move(externalPreferencesBackend)), _internalPreferencesBackend(std::move(internalPreferencesBackend)) {
             // General
             _poolName      = name;
 

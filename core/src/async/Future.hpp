@@ -224,7 +224,7 @@ namespace ledger {
                 _defer->addCallback(f, context);
             };
 
-            Future<T> then(const Context &context, std::function<void(void)> finally) {
+            Future<T> then(const Context &context, std::function<void(void)> finally) { // NOLINT(performance-unnecessary-value-param)
                 return map<T>(context, [finally](const T &v) {
                     finally();
                     return v;

@@ -404,7 +404,7 @@ namespace ledger {
             return _notifier;
         };
 
-        Future<BlockchainExplorerAccountSynchronizationResult> BlockchainExplorerAccountSynchronizer::performSynchronization(const std::shared_ptr<BitcoinLikeAccount> &account) {
+        Future<BlockchainExplorerAccountSynchronizationResult> BlockchainExplorerAccountSynchronizer::performSynchronization(const std::shared_ptr<BitcoinLikeAccount> &account) { // NOLINT(readability-function-cognitive-complexity)
             auto span = account->getTracer()->startSpan("BlockchainExplorerAccountSynchronizer::performSynchronization");
             span->setTagInt("index", account->getIndex());
             span->setTagStr("restoreKey", account->getKeychain()->getRestoreKey());
@@ -471,20 +471,22 @@ namespace ledger {
             self->_cachedTransactionBulks.clear();
             self->_hashkeys.clear();
             _explorerBenchmark = NEW_BENCHMARK("explorer_calls");
-            return self->updateCurrentBlock(buddy).template flatMap<Unit>(account->getContext(), [self, buddy](std::shared_ptr<BitcoinLikeBlockchainExplorer::Block> block) {
-                                                      soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
-                                                      soci::transaction tr(sql);
-                                                      try {
-                                                          buddy->account->putBlock(sql, *block);
-                                                          tr.commit();
-                                                      } catch (...) {
-                                                          tr.rollback();
-                                                      }
-                                                      return self->extendKeychain(0, buddy);
-                                                  })
+            return self->updateCurrentBlock(buddy)
+                .template flatMap<Unit>(account->getContext(), [self, buddy](const std::shared_ptr<BitcoinLikeBlockchainExplorer::Block>& block) {
+                    soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
+                    soci::transaction tr(sql);
+                    try {
+                        buddy->account->putBlock(sql, *block);
+                        tr.commit();
+                    } catch (...) {
+                        tr.rollback();
+                    }
+                    return self->extendKeychain(0, buddy);
+                })
                 .template flatMap<std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>>(account->getContext(), [buddy, self](const Unit &) {
-                self->_explorerBenchmark->start();
-                return self->requestTransactionsFromExplorer(buddy); })
+                    self->_explorerBenchmark->start();
+                    return self->requestTransactionsFromExplorer(buddy);
+                })
                 .template flatMap<Unit>(account->getContext(), [buddy, self](const std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>> &txBulks) {
                     self->_explorerBenchmark->stop();
                     for (int i = 0; i < txBulks.size(); i++) {

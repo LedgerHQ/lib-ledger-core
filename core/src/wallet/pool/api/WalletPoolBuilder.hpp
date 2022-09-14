@@ -41,46 +41,46 @@ namespace ledger {
     namespace core {
         class WalletPoolBuilder : public api::WalletPoolBuilder, public std::enable_shared_from_this<WalletPoolBuilder> {
           public:
-            virtual std::shared_ptr<api::WalletPoolBuilder> setPassword(const std::string &password) override;
+            std::shared_ptr<api::WalletPoolBuilder> setPassword(const std::string &password) override;
 
             WalletPoolBuilder();
 
-            virtual std::shared_ptr<api::WalletPoolBuilder>
+            std::shared_ptr<api::WalletPoolBuilder>
             setHttpClient(const std::shared_ptr<api::HttpClient> &client) override;
 
-            virtual std::shared_ptr<api::WalletPoolBuilder>
+            std::shared_ptr<api::WalletPoolBuilder>
             setTracer(const std::shared_ptr<api::CoreTracer> &tracer) override;
 
-            virtual std::shared_ptr<api::WalletPoolBuilder>
+            std::shared_ptr<api::WalletPoolBuilder>
             setWebsocketClient(const std::shared_ptr<api::WebSocketClient> &client) override;
 
-            virtual std::shared_ptr<api::WalletPoolBuilder>
+            std::shared_ptr<api::WalletPoolBuilder>
             setPathResolver(const std::shared_ptr<api::PathResolver> &pathResolver) override;
 
-            virtual std::shared_ptr<api::WalletPoolBuilder>
+            std::shared_ptr<api::WalletPoolBuilder>
             setLogPrinter(const std::shared_ptr<api::LogPrinter> &printer) override;
 
-            virtual std::shared_ptr<api::WalletPoolBuilder>
+            std::shared_ptr<api::WalletPoolBuilder>
             setThreadDispatcher(const std::shared_ptr<api::ThreadDispatcher> &dispatcher) override;
 
-            virtual std::shared_ptr<api::WalletPoolBuilder> setName(const std::string &name) override;
+            std::shared_ptr<api::WalletPoolBuilder> setName(const std::string &name) override;
 
-            virtual std::shared_ptr<api::WalletPoolBuilder>
+            std::shared_ptr<api::WalletPoolBuilder>
             setRandomNumberGenerator(const std::shared_ptr<api::RandomNumberGenerator> &rng) override;
 
-            virtual std::shared_ptr<api::WalletPoolBuilder>
+            std::shared_ptr<api::WalletPoolBuilder>
             setDatabaseBackend(const std::shared_ptr<api::DatabaseBackend> &backend) override;
 
-            virtual std::shared_ptr<api::WalletPoolBuilder>
+            std::shared_ptr<api::WalletPoolBuilder>
             setConfiguration(const std::shared_ptr<api::DynamicObject> &configuration) override;
 
-            virtual std::shared_ptr<api::WalletPoolBuilder>
+            std::shared_ptr<api::WalletPoolBuilder>
             setExternalPreferencesBackend(const std::shared_ptr<api::PreferencesBackend> &backend) override;
 
-            virtual std::shared_ptr<api::WalletPoolBuilder>
+            std::shared_ptr<api::WalletPoolBuilder>
             setInternalPreferencesBackend(const std::shared_ptr<api::PreferencesBackend> &backend) override;
 
-            virtual void build(const std::shared_ptr<api::WalletPoolCallback> &listener) override;
+            void build(const std::shared_ptr<api::WalletPoolCallback> &listener) override;
 
           private:
             std::shared_ptr<api::HttpClient> _httpClient;

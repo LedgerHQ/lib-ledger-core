@@ -156,8 +156,8 @@ namespace ledger {
                 const std::shared_ptr<api::RandomNumberGenerator> &rng,
                 const std::shared_ptr<api::DatabaseBackend> &backend,
                 const std::shared_ptr<api::DynamicObject> &configuration,
-                const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
-                const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend,
+                std::shared_ptr<api::PreferencesBackend> externalPreferencesBackend,
+                std::shared_ptr<api::PreferencesBackend> internalPreferencesBackend,
                 const std::shared_ptr<api::CoreTracer> &tracer);
 
             void initializeCurrencies();
