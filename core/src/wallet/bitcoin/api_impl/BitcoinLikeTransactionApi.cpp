@@ -259,7 +259,7 @@ namespace ledger {
                                                 const std::string &keychainEngine) {
             std::size_t maxSize = 0;
             std::size_t minSize = 0;
-            const auto isSegwit       = BitcoinLikeKeychain::isSegwit(keychainEngine);
+            const auto isSegwit = BitcoinLikeKeychain::isSegwit(keychainEngine);
 
             if (isSegwit) {
                 // Native Segwit: 32 PrevTxHash + 4 Index + 1 null byte + 4 sequence
@@ -272,8 +272,8 @@ namespace ledger {
                 const std::size_t minWitness = noWitness + (106 * inputCount) + 2;
                 const std::size_t maxWitness = noWitness + (108 * inputCount) + 2;
 
-                minSize                = (noWitness * 3 + minWitness) / 4;
-                maxSize                = (noWitness * 3 + maxWitness) / 4;
+                minSize                      = (noWitness * 3 + minWitness) / 4;
+                maxSize                      = (noWitness * 3 + maxWitness) / 4;
             } else {
                 minSize = fixedSize + 146 * inputCount + minOutputsSize;
                 maxSize = fixedSize + 148 * inputCount + maxOutputsSize;
@@ -296,9 +296,9 @@ namespace ledger {
                                                 const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &outputs,
                                                 const api::Currency &currency,
                                                 const std::string &keychainEngine) {
-            const std::size_t fixedSize   = estimateFixedTxSize(inputCount, outputs.size(), currency);
+            const std::size_t fixedSize = estimateFixedTxSize(inputCount, outputs.size(), currency);
 
-            std::size_t outputsSize = (8 + 1) * outputs.size(); // amount (8 bytes) + script length (1 byte)
+            std::size_t outputsSize     = (8 + 1) * outputs.size(); // amount (8 bytes) + script length (1 byte)
             for (const auto &out : outputs) {
                 outputsSize += out->getScript().size();
             }
@@ -311,9 +311,9 @@ namespace ledger {
                                                 const std::list<std::tuple<std::shared_ptr<BigInt>, std::shared_ptr<api::BitcoinLikeScript>>> &outputs,
                                                 const api::Currency &currency,
                                                 const std::string &keychainEngine) {
-            const std::size_t fixedSize   = estimateFixedTxSize(inputCount, outputs.size(), currency);
+            const std::size_t fixedSize = estimateFixedTxSize(inputCount, outputs.size(), currency);
 
-            std::size_t outputsSize = (8 + 1) * outputs.size(); // amount (8 bytes) + script length (1 byte)
+            std::size_t outputsSize     = (8 + 1) * outputs.size(); // amount (8 bytes) + script length (1 byte)
             for (const auto &out : outputs) {
                 outputsSize += std::dynamic_pointer_cast<BitcoinLikeScriptApi>(std::get<1>(out))->getScript().serialize().size();
             }
