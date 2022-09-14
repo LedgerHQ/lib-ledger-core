@@ -265,8 +265,8 @@ namespace ledger {
                 // Native Segwit: 32 PrevTxHash + 4 Index + 1 null byte + 4 sequence
                 // P2SH: 32 PrevTxHash + 4 Index + 23 scriptPubKey + 4 sequence
                 const auto isNativeSegwit    = BitcoinLikeKeychain::isNativeSegwit(keychainEngine);
-                std::size_t inputSize  = isNativeSegwit ? 41 : 63;
-                std::size_t noWitness  = fixedSize + inputSize * inputCount + maxOutputsSize;
+                const std::size_t inputSize  = isNativeSegwit ? 41 : 63;
+                const std::size_t noWitness  = fixedSize + inputSize * inputCount + maxOutputsSize;
 
                 // Include flag and marker size (one byte each)
                 std::size_t minWitness = noWitness + (106 * inputCount) + 2;
