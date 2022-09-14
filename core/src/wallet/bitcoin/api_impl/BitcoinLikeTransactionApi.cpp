@@ -269,8 +269,8 @@ namespace ledger {
                 const std::size_t noWitness  = fixedSize + inputSize * inputCount + maxOutputsSize;
 
                 // Include flag and marker size (one byte each)
-                std::size_t minWitness = noWitness + (106 * inputCount) + 2;
-                std::size_t maxWitness = noWitness + (108 * inputCount) + 2;
+                const std::size_t minWitness = noWitness + (106 * inputCount) + 2;
+                const std::size_t maxWitness = noWitness + (108 * inputCount) + 2;
 
                 minSize                = (noWitness * 3 + minWitness) / 4;
                 maxSize                = (noWitness * 3 + maxWitness) / 4;
