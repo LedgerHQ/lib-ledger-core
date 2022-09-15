@@ -33,7 +33,6 @@
 #include "MemPreferencesBackend.hpp"
 #include "ProxyCoreTracer.h"
 #include "api/ConfigurationDefaults.hpp"
-#include "ProxyCoreTracer.h"
 
 #include <CoutLogPrinter.hpp>
 #include <NativePathResolver.hpp>

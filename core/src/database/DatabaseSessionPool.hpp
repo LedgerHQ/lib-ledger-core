@@ -32,9 +32,9 @@
 #ifndef LEDGER_CORE_DATABASESESSIONPOOL_HPP
 #define LEDGER_CORE_DATABASESESSIONPOOL_HPP
 
+#include <api/CoreTracer.hpp>
 #include <api/DatabaseBackendType.hpp>
 #include <api/ExecutionContext.hpp>
-#include <api/CoreTracer.hpp>
 #include <async/Future.hpp>
 #include <database/DatabaseBackend.hpp>
 #include <debug/LoggerStreamBuffer.h>

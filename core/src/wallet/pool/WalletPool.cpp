@@ -41,7 +41,6 @@
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
-#include <utility>
 
 namespace ledger {
     namespace core {
