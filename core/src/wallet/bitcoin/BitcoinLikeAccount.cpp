@@ -767,7 +767,7 @@ namespace ledger {
                     soci::session session(self->getWallet()->getDatabase()->getPool());
 
                     auto utxos         = BitcoinLikeUTXODatabaseHelper::queryAllUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency());
-                    const auto maxUtxo = self->getWallet()->getPreferences()->getInt("maxUTXO", std::numeric_limits<int>::max());
+                    const auto maxUtxo = self->getWallet()->getConfig()->getInt("MAX_UTXO").value_or(std::numeric_limits<int>::max());
 
                     if (utxos.size() > maxUtxo) {
                         throw std::runtime_error(fmt::format("Too many utxos. Got {}, but max is {}.", utxos.size(), maxUtxo));
