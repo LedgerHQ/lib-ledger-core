@@ -83,6 +83,7 @@ namespace ledger {
         NodeRippleLikeBlockchainExplorer::getServerState(const std::string &field) {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("server_state");
+            bodyRequest.pushParameter("ledger_index", "current");
             auto requestBody         = bodyRequest.getString();
             bool parseNumberAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
