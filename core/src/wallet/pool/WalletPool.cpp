@@ -35,12 +35,12 @@
 #include <database/soci-date.h>
 #include <math/bech32/Bech32Parameters.h>
 #include <preferences/Preferences.hpp>
+#include <utility>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/currencies.hpp>
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
-#include <utility>
 
 namespace ledger {
     namespace core {
@@ -73,7 +73,7 @@ namespace ledger {
             _httpEngine    = httpClient;
 
             // Tracing management
-            _tracer    = tracer;
+            _tracer        = tracer;
 
             // WS management
             _wsClient      = std::make_shared<WebSocketClient>(webSocketClient);

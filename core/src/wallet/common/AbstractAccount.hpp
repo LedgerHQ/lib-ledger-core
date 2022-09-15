@@ -42,8 +42,8 @@
 #include <api/BitcoinLikeAccount.hpp>
 #include <api/Block.hpp>
 #include <api/BlockCallback.hpp>
-#include <api/CosmosLikeAccount.hpp>
 #include <api/CoreTracer.hpp>
+#include <api/CosmosLikeAccount.hpp>
 #include <api/ErrorCodeCallback.hpp>
 #include <api/EthereumLikeAccount.hpp>
 #include <api/RippleLikeAccount.hpp>

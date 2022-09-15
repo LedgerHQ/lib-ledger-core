@@ -31,14 +31,14 @@
 #ifndef LEDGER_CORE_WALLETPOOL_HPP
 #define LEDGER_CORE_WALLETPOOL_HPP
 
+#include <api/CoreTracer.hpp>
 #include <api/DatabaseBackend.hpp>
 #include <api/DynamicObject.hpp>
 #include <api/HttpClient.hpp>
 #include <api/LogPrinter.hpp>
-#include <api/CoreTracer.hpp>
-#include <api/Span.hpp>
 #include <api/PathResolver.hpp>
 #include <api/RandomNumberGenerator.hpp>
+#include <api/Span.hpp>
 #include <api/ThreadDispatcher.hpp>
 #include <api/WalletPoolCallback.hpp>
 #include <api/WebSocketClient.hpp>

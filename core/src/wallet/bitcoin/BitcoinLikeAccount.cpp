@@ -412,7 +412,7 @@ namespace ledger {
             auto startTime = DateUtils::now();
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
             future.onComplete(getContext(), [eventPublisher, self, wasEmpty, startTime, span](auto const &result) {
-                auto span2 = self->getTracer()->startSpan("BitcoinLikeAccount::synchronize.onComplete");
+                auto span2   = self->getTracer()->startSpan("BitcoinLikeAccount::synchronize.onComplete");
                 auto isEmpty = self->checkIfWalletIsEmpty();
                 api::EventCode code;
                 auto payload  = std::make_shared<DynamicObject>();

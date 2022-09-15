@@ -472,7 +472,7 @@ namespace ledger {
             self->_hashkeys.clear();
             _explorerBenchmark = NEW_BENCHMARK("explorer_calls");
             return self->updateCurrentBlock(buddy)
-                .template flatMap<Unit>(account->getContext(), [self, buddy](const std::shared_ptr<BitcoinLikeBlockchainExplorer::Block>& block) {
+                .template flatMap<Unit>(account->getContext(), [self, buddy](const std::shared_ptr<BitcoinLikeBlockchainExplorer::Block> &block) {
                     soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
                     soci::transaction tr(sql);
                     try {
