@@ -766,7 +766,14 @@ namespace ledger {
                     auto keychain = self->getKeychain();
                     soci::session session(self->getWallet()->getDatabase()->getPool());
 
-                    return BitcoinLikeUTXODatabaseHelper::queryAllUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency());
+                    auto utxos         = BitcoinLikeUTXODatabaseHelper::queryAllUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency());
+                    const auto maxUtxo = self->getWallet()->getPreferences()->getInt("maxUTXO", std::numeric_limits<int>::max());
+
+                    if (utxos.size() > maxUtxo) {
+                        throw std::runtime_error(fmt::format("Too many utxos. Got {}, but max is {}.", utxos.size(), maxUtxo));
+                    }
+
+                    return utxos;
                 });
             };
             auto getTransaction = [self](const std::string &hash) -> FuturePtr<BitcoinLikeBlockchainExplorerTransaction> {
