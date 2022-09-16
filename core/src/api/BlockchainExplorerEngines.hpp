@@ -31,6 +31,8 @@ public:
     static std::string const TEZOS_NODE;
 
     static std::string const TZSTATS_API;
+
+    static std::string const TZKT_API;
 };
 
 } } }  // namespace ledger::core::api

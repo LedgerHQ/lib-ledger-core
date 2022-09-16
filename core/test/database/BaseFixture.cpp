@@ -31,10 +31,12 @@
 
 #include "BaseFixture.h"
 
+#include "../common/test_config.h"
 #include "IntegrationEnvironment.h"
 #include "MemPreferencesBackend.hpp"
 
 #include <FilesystemUtils.hpp>
+#include <api/PoolConfiguration.hpp>
 
 api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
     0,
@@ -58,7 +60,7 @@ void BaseFixture::SetUp() {
     FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     resolver   = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
-    backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+    backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
     printer    = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     http       = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
 }
@@ -69,6 +71,9 @@ void BaseFixture::TearDown() {
 }
 
 std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
+    std::shared_ptr<api::DynamicObject> configuration = api::DynamicObject::newInstance();
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());
+
     return WalletPool::newInstance(
         poolName,
         "",
@@ -79,7 +84,7 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
         dispatcher,
         nullptr,
         backend,
-        api::DynamicObject::newInstance(),
+        configuration,
         std::make_shared<ledger::core::test::MemPreferencesBackend>(),
         std::make_shared<ledger::core::test::MemPreferencesBackend>());
 }

@@ -287,6 +287,12 @@ namespace ledger {
         void migrate<30>(soci::session &sql, api::DatabaseBackendType type);
         template <>
         void rollback<30>(soci::session &sql, api::DatabaseBackendType type);
+
+        // add explorer uid for tezos transactions
+        template <>
+        void migrate<31>(soci::session &sql, api::DatabaseBackendType type);
+        template <>
+        void rollback<31>(soci::session &sql, api::DatabaseBackendType type);
     } // namespace core
 } // namespace ledger
 

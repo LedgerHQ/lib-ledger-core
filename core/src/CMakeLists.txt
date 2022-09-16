@@ -19,6 +19,19 @@ if (TARGET_JNI)
     message(STATUS "Configure project for JNI")
 
     if(NOT ANDROID)
+        if (CMAKE_HOST_APPLE)
+            ## NOTE remove these JAVA*INCLUDE lines when this is fixed:
+            ## https://gitlab.kitware.com/cmake/cmake/-/issues/23364
+            set(JAVA_INCLUDE_PATH "$ENV{JAVA_HOME}/include")
+            find_path(JAVA_INCLUDE_PATH2 NAMES jni_md.h jniport.h
+                      PATHS ${JAVA_INCLUDE_PATH}
+                      ${JAVA_INCLUDE_PATH}/darwin
+                      ${JAVA_INCLUDE_PATH}/win32
+                      ${JAVA_INCLUDE_PATH}/linux
+            )
+            set(JAVA_AWT_INCLUDE_PATH "$ENV{JAVA_HOME}/include")
+        endif()
+        
         find_package(JNI REQUIRED)
     endif()
     list(APPEND ledger-core-sources ${ledger-core-jni-sources})
@@ -37,11 +50,6 @@ list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 list(FILTER SRC_FILES EXCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/.*")
 list(FILTER HEADERS_FILES EXCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/.*")
 list(FILTER HEADERS_FILES INCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/include/.*")
-
-if (NOT PG_SUPPORT)
-    list(REMOVE_ITEM SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.cpp)
-    list(REMOVE_ITEM HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.h)
-endif()
 
 add_library(ledger-core-interface INTERFACE)
 
@@ -136,11 +144,8 @@ else()
 endif()
 
 target_link_libraries(ledger-core-interface INTERFACE blake)
-target_link_libraries(ledger-core-interface INTERFACE soci_sqlite3)
 
-if (PG_SUPPORT)
-    target_link_libraries(ledger-core-interface INTERFACE soci_postgresql)
-endif()
+target_link_libraries(ledger-core-interface INTERFACE soci_postgresql)
 
 target_link_libraries(ledger-core-interface INTERFACE soci_core_static)
 
@@ -158,6 +163,8 @@ else()
 endif()
 
 target_link_libraries(ledger-core-interface INTERFACE ethash)
+
+target_link_libraries(ledger-core-interface INTERFACE nlohmann_json::nlohmann_json)
 
 target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
 
@@ -189,7 +196,6 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
 target_include_directories(ledger-core-interface INTERFACE ../lib/sha512256)
 target_include_directories(ledger-core-interface INTERFACE ../lib/rapidjson/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci/core)
-target_include_directories(ledger-core-interface INTERFACE ../lib/soci_sqlite3)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci_postgresql)
 target_include_directories(ledger-core-interface INTERFACE ../lib/blake)
 if (SYS_OPENSSL)

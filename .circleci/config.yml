@@ -79,65 +79,6 @@ jobs:
           command: |
             . .circleci/deploy.sh
 
-  build_android_release:
-    <<: *linux_job
-    environment:
-      CORE_SSL_1_1: arch_ssl_1_1
-    working_directory: ~/lib-ledger-core
-    steps:
-      - checkout
-      - run:
-          name: Submodule_Initialization
-          command: |
-            . .circleci/init_submodules.sh
-      - run:
-          name: Export_Lib_Version
-          command: |
-            . .circleci/export_lib_version.sh
-      - run:
-          name: Setup NDK
-          command: |
-            apt-get install -y zip unzip
-            wget --quiet https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip
-            unzip -q android-ndk-r18b-linux-x86_64.zip -d /home/circleci
-            ls -la /home/circleci/android-ndk-r18b
-      - run:
-          name: Build_Library_android
-          command: |
-            . .circleci/build_lib.sh android
-      - run:
-          name: Copy_Artifacts_Android
-          command: |
-            . .circleci/copy_artifacts.sh android
-      - run:
-          name: Build_Library_android_x86_64
-          command: |
-            . .circleci/build_lib.sh android x86_64
-      - run:
-          name: Copy_Artifacts_Android_x86_64
-          command: |
-            . .circleci/copy_artifacts.sh android x86_64
-      - run:
-          name: Build_Library_android_armeabi-v7a
-          command: |
-            . .circleci/build_lib.sh android armeabi-v7a
-      - run:
-          name: Copy_Artifacts_Android_armeabi-v7a
-          command: |
-            . .circleci/copy_artifacts.sh android armeabi-v7a
-      - run:
-          name: Build_Library_android_arm64-v8a
-          command: |
-            . .circleci/build_lib.sh android arm64-v8a
-      - run:
-          name: Copy_Artifacts_Android_arm64-v8a
-          command: |
-            . .circleci/copy_artifacts.sh android arm64-v8a
-      - deploy:
-          name: Deploy_Artifacts
-          command: |
-            . .circleci/deploy.sh
-
   build_linux_debug:
       <<: *linux_job
       working_directory: ~/lib-ledger-core
@@ -169,6 +110,7 @@ jobs:
       - checkout
       - run:
           name: Setup
+          no_output_timeout: 30m
           command: |
             .circleci/setup_macos.sh Release
       - run:
@@ -191,53 +133,6 @@ jobs:
           name: Deploy_Artifacts
           command: |
             . .circleci/deploy.sh
-  build_macos_ios_release:
-    macos:
-      xcode: "12.5.1"
-    working_directory: ~/lib-ledger-core
-    steps:
-      - checkout
-      - run:
-          name: Setup
-          command: |
-            .circleci/setup_macos.sh Release
-      - run:
-          name: Submodule_Initialization
-          command: |
-            . .circleci/init_submodules.sh
-      - run:
-          name: Export_Lib_Version
-          command: |
-            . .circleci/export_lib_version.sh
-      - run:
-          name: Build_Library_ios_x86
-          command: |
-            . .circleci/build_lib.sh ios
-      - run:
-          name: Copy_Artifacts_ios_x86
-          command: |
-            . .circleci/copy_artifacts.sh ios
-      - run:
-          name: Build_Library_ios_armv7
-          command: |
-            . .circleci/build_lib.sh ios armv7
-      - run:
-          name: Copy_Artifacts_ios_armv7
-          command: |
-            . .circleci/copy_artifacts.sh ios armv7
-      - run:
-          name: Build_Library_ios_arm64
-          command: |
-            . .circleci/build_lib.sh ios arm64
-      - run:
-          name: Copy_Artifacts_ios_arm64
-          command: |
-            . .circleci/copy_artifacts.sh ios arm64
-      - deploy:
-          name: Deploy_Artifacts
-          command: |
-            . .circleci/deploy.sh
-            . .circleci/deploy_fat_lib.sh
   build_macos_jni_release:
     macos:
       xcode: "12.5.1"
@@ -246,6 +141,7 @@ jobs:
       - checkout
       - run:
           name: Setup
+          no_output_timeout: 30m
           command: |
             .circleci/setup_macos.sh Release
       - run:
@@ -281,6 +177,7 @@ jobs:
       - checkout
       - run:
           name: Setup
+          no_output_timeout: 30m
           command: |
             .circleci/setup_macos.sh Debug
       - run:
@@ -332,38 +229,6 @@ jobs:
           . .circleci/deploy.sh
     - store_artifacts:
         path: ~/lib-ledger-core-artifacts
-  generate_doc:
-    docker:
-      - image: circleci/buildpack-deps:stretch
-    steps:
-      - run:
-          command: git clone --depth 1 -b "$CIRCLE_TAG" --recurse-submodules "$CIRCLE_REPOSITORY_URL" .
-          environment:
-            GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt-get update -q=2
-            sudo apt-get install -qy doxygen rsync software-properties-common
-            wget https://cmake.org/files/v3.16/cmake-3.16.9.tar.gz
-            tar -xvf cmake-3.16.9.tar.gz
-            cd cmake-3.16.9 && ./bootstrap && make && sudo make install
-      - run: cmake -H. -Bbuild
-      - run:
-          command: make doc
-          working_directory: ~/project/build
-      - run:
-          name: Check that the index file is present
-          command: test -f build/doc/html/index.html
-      - run:
-          name: Setup the SSH private key
-          command: |
-            install -d -m 700 ~/.ssh/
-            gpg -d --passphrase "${GPG_PASSPHRASE}" --batch -o ~/.ssh/id_ed25519 .circleci/id_ed25519.gpg
-            chmod 400 ~/.ssh/id_ed25519
-      - run: >
-          rsync -e "ssh -o StrictHostKeyChecking=no" -a --chown :www-data --delete
-          build/doc/html/ docs.libcore.ledger.com@statics.ledger.fr:.
 
 default_context: &default_context
   context:
@@ -377,6 +242,8 @@ workflows:
       - build_linux_release:
           <<: *default_context
           filters:
+            branches:
+              only: main
             tags:
               only: /.*/
       - build_linux_jni_release:
@@ -385,37 +252,31 @@ workflows:
             tags:
               only: /.*/
             branches:
-              only: /^(?!pull\/).*$/
-      - build_android_release:
-          <<: *default_context
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              only: /^(?!pull\/).*$/
+              only: main
       - build_macos_release:
           <<: *default_context
           filters:
             tags:
               only: /.*/
-      - build_macos_ios_release:
-          <<: *default_context
-          filters:
-            tags:
-              only: /.*/
             branches:
-              only: /^(?!pull\/).*$/
+              only: main
       - build_macos_jni_release:
           <<: *default_context
           filters:
             tags:
               only: /.*/
             branches:
-              only: /^(?!pull\/).*$/
+              only: main
       - build_linux_debug:
           <<: *default_context
+          filters:
+            branches:
+              only: main
       - build_macos_debug:
           <<: *default_context
+          filters:
+            branches:
+              only: main
       - publish_jar:
           requires:
             - build_linux_jni_release
@@ -423,11 +284,5 @@ workflows:
           filters:
             tags:
               only: /.*/
-  documentation:
-    jobs:
-      - generate_doc:
-          filters:
-            tags:
-              only: /.+/
             branches:
-              ignore: /.*/
+              only: main

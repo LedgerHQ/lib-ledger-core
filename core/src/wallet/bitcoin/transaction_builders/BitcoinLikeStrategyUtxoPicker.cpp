@@ -35,6 +35,7 @@
 #include <api/BitcoinLikeScriptChunk.hpp>
 #include <numeric>
 #include <random>
+#include <utils/NarrowingCast.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
@@ -78,6 +79,8 @@ namespace ledger {
                         case api::BitcoinLikePickingStrategy::LIMIT_UTXO:
                             return filterWithLimitUtxo(buddy, utxos, amount, getCurrency(), picker.maxUtxo);
                         }
+
+                        throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Unknown UTXO picking strategy.");
                     });
             });
         }
@@ -126,9 +129,14 @@ namespace ledger {
             auto computeAmountWithFees = [&](int addedOutputCount) -> BigInt {
                 auto outputCount = buddy->request.outputs.size() + addedOutputCount;
                 auto size        = BitcoinLikeTransactionApi::estimateSize(inputCount,
-                                                                           outputCount,
+                                                                           buddy->request.outputs,
                                                                            currency,
                                                                            buddy->keychain->getKeychainEngine());
+                if (addedOutputCount > 0) {
+                    const std::size_t addedOutputSize = addedOutputCount * BitcoinLikeTransactionApi::estimateOutputSize(buddy->keychain->getKeychainEngine());
+                    size.Min += narrowing_cast<int32_t>(addedOutputSize);
+                    size.Max += narrowing_cast<int32_t>(addedOutputSize);
+                }
                 buddy->logger->debug("Estimate for {} inputs with {} outputs", inputCount, buddy->request.outputs.size() + addedOutputCount);
                 buddy->logger->debug("Estimated size {} <> {}", size.Min, size.Max);
                 return buddy->outputAmount + (*buddy->request.feePerByte * BigInt(size.Max));

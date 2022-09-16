@@ -41,6 +41,8 @@
 
 namespace ledger {
     namespace core {
+        class TezosLikeAccount;
+
         using LedgerApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<TezosLikeBlockchainExplorerTransaction, TezosLikeBlockchainExplorer::TransactionsBulk, TezosLikeTransactionsParser, TezosLikeTransactionsBulkParser, TezosLikeBlockParser, api::TezosLikeNetworkParameters>;
 
         class NodeTezosLikeBlockchainExplorer : public TezosLikeBlockchainExplorer,
@@ -60,7 +62,7 @@ namespace ledger {
             getFees() override;
 
             Future<std::shared_ptr<BigInt>>
-            getGasPrice() override;
+            getGasPrice();
 
             Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId = "") override;
 
@@ -111,10 +113,9 @@ namespace ledger {
 
             Future<bool> isFunded(const std::string &address) override;
 
-            Future<std::shared_ptr<BigInt>>
-            getTokenBalance(const std::string &accountAddress, const std::string &tokenAddress) const override;
-
             Future<bool> isDelegate(const std::string &address) override;
+
+            Future<std::string> getSynchronisationOffset(const std::shared_ptr<api::OperationQuery> &operations) override;
 
           private:
             /*

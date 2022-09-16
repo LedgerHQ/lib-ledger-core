@@ -44,7 +44,7 @@ include_what_you_use()  # add cmake conf option IWYU=ON to activate
 # The project version number.
 set(VERSION_MAJOR   4    CACHE STRING "Project major version number.")
 set(VERSION_MINOR   3    CACHE STRING "Project minor version number.")
-set(VERSION_PATCH   0    CACHE STRING "Project patch version number.")
+set(VERSION_PATCH   5    CACHE STRING "Project patch version number.")
 mark_as_advanced(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY build)
@@ -56,11 +56,6 @@ set(BOOST_INCLUDEDIR "${CMAKE_CURRENT_SOURCE_DIR}/core/lib/boost/")
 set(CMAKE_MACOSX_RPATH 1)
 
 add_definitions("-DSQLITE_HAS_CODEC")
-
-# To compile with PostgreSQL support
-if (PG_SUPPORT)
-    add_definitions("-DPG_SUPPORT")
-endif()
 
 # To add SSL support
 if (SSL_SUPPORT)

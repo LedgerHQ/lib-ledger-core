@@ -31,6 +31,7 @@
 
 #pragma once
 
+#include "../common/test_config.h"
 #include "BaseFixture.h"
 
 #include <api/ErrorCode.hpp>
@@ -46,15 +47,11 @@ class WalletFixture : public BaseFixture {
     void SetUp() override {
         BaseFixture::SetUp();
 
-#ifdef PG_SUPPORT
-        const bool usePostgreSQL = true;
-        auto poolConfig          = DynamicObject::newInstance();
-        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+        auto poolConfig = DynamicObject::newInstance();
+        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());
         const auto dbName = randomDBName();
-        pool              = newDefaultPool(dbName, "", poolConfig, usePostgreSQL);
-#else
-        pool = newDefaultPool();
-#endif
+        pool              = newDefaultPool(dbName, "", poolConfig);
+
         //  walletStore = newWalletStore(services);
     }
 

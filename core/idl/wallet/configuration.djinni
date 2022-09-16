@@ -13,6 +13,7 @@ BlockchainExplorerEngines = interface +c {
     const RIPPLE_NODE: string = "RIPPLE_NODE";
     const TEZOS_NODE: string = "TEZOS_NODE";
     const TZSTATS_API: string = "TZSTATS_API";
+    const TZKT_API: string = "TZKT_API";
 }
 
 # Available API to use with observers.
@@ -52,7 +53,7 @@ SynchronizationEngines = interface +c {
 # Default values you might want to use if you don’t know what values you should use.
 ConfigurationDefaults = interface +c {
     # The default Ledger API endpoint for the explorers.
-    const BLOCKCHAIN_DEFAULT_API_ENDPOINT: string = "https://explorers.api.live.ledger.com";
+    const BLOCKCHAIN_DEFAULT_API_ENDPOINT: string = "https://explorers.api.vault.ledger.com";
     # The default Ledger API endpoint for the observers.
     const BLOCKCHAIN_OBSERVER_WS_ENDPOINT: string = "wss://ws.ledgerwallet.com/blockchain/v2/{}/ws";
     # The default derivation scheme for BIP44 derivation.

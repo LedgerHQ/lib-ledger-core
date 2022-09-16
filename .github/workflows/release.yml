@@ -1,0 +1,90 @@
+name: "Release libcore"
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (tag)"
+        required: true
+        type: string
+      releaseNote:
+        description: "Create a Github Release note"
+        required: true
+        type: boolean
+        default: true
+      preRelease:
+        description: "This is a pre-release"
+        required: true
+        type: boolean
+        default: false
+      draft:
+        description: "Save Release as draft"
+        required: true
+        type: boolean
+        default: false
+jobs:
+  Release:
+    runs-on: ubuntu-22.04
+    env:
+      VERSION: ${{ github.event.inputs.version }}
+      RELEASE_NOTE: ${{ github.event.inputs.releaseNote }}
+      PRE_RELEASE: ${{ github.event.inputs.preRelease }}
+      DRAFT: ${{ github.event.inputs.draft }}
+    steps:
+    - uses: actions/checkout@v2.3.4
+    - name: Set version number
+      run: |
+        ./tools/set_version.sh $VERSION
+        head -n47 CMakeLists.txt | tail -n3
+        git add CMakeLists.txt
+        git config --global user.name "${GITHUB_ACTOR}"
+        git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+        git commit -m "Set version to $VERSION"
+        git tag -a $VERSION -m "Version $VERSION"
+        git push -u origin HEAD --tags
+    - name: Create release
+      uses: actions/github-script@v5
+      if: env.RELEASE_NOTE == 'true'
+      with:
+        github-token: "${{ secrets.GITHUB_TOKEN }}"
+        script: |
+          try {
+            await github.rest.repos.createRelease({
+              draft: process.env.DRAFT == "true",
+              generate_release_notes: true,
+              name: process.env.RELEASE_TAG,
+              owner: context.repo.owner,
+              prerelease: process.env.PRE_RELEASE == "true",
+              repo: context.repo.repo,
+              tag_name: process.env.VERSION,
+            });
+          } catch (error) {
+            core.setFailed(error.message);
+          }
+  Build:
+    name: Build Release with JNI
+    uses: ./.github/workflows/nix_release_builds.yml
+    secrets: inherit # pass all secrets
+    needs: [ Release ]
+    with:
+      release: true
+      version: ${{ github.event.inputs.version }}
+  Publish:
+    name: Publish to WD
+    needs: [Build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout libcore
+      - uses: actions/checkout@v3
+        name: Checkout wallet-daemont
+        with:
+          token: ${{ secrets.CI_BOT_TOKEN }}
+          repository: LedgerHQ/ledger-wallet-daemon
+          submodules: true
+          path: ledger-wallet-daemon
+      - name: Publish to WD
+        env:
+          GH_TOKEN: ${{ secrets.CI_BOT_TOKEN }}
+          VERSION: ${{ github.event.inputs.version }}
+        run: .github/scripts/publish_to_wd.sh
+

@@ -48,12 +48,6 @@ public:
     virtual bool isLoggingEnabled() = 0;
 
     /**
-     * Create an instance of SQLite3 database.
-     * @return DatabaseBackend object
-     */
-    static std::shared_ptr<DatabaseBackend> getSqlite3Backend();
-
-    /**
      * Create an instance of PostgreSQL database.
      * @return DatabaseBackend object
      */

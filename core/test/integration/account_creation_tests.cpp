@@ -77,42 +77,6 @@ TEST_F(AccountCreationTest, CreateBitcoinAccountWithInfoOnExistingWallet) {
     }
 }
 
-#ifdef _WIN32
-TEST_F(AccountCreationTest, DISABLED_ChangePassword) { // Change password of DB file doesn't work in windows
-#elif PG_SUPPORT
-TEST_F(AccountCreationTest, DISABLED_ChangePassword) { // Change password of DB doesn't work with Postgres
-#else
-TEST_F(AccountCreationTest, ChangePassword) {
-#endif
-    auto oldPassword      = "";
-    auto newPassword      = "new_test";
-
-    // Create wallet, account ... in plain DB
-    auto pool             = newDefaultPool("my_pool", oldPassword);
-    const auto walletName = "my_wallet_changepassword";
-    {
-        auto wallet  = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
-        auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithInfo(P2PKH_MEDIUM_KEYS_INFO)));
-        auto address = uv::wait(account->getFreshPublicAddresses())[0]->toString();
-        EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
-    }
-
-    auto changePasswordAndGetInfos = [walletName](const std::shared_ptr<WalletPool> &walletPool, const std::string &oldPassword, const std::string &newPassword) {
-        uv::wait(walletPool->changePassword(oldPassword, newPassword));
-        {
-            auto wallet  = uv::wait(walletPool->getWallet(walletName));
-            auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->getAccount(0)));
-            auto address = uv::wait(account->getFreshPublicAddresses())[0]->toString();
-            EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
-        }
-    };
-
-    changePasswordAndGetInfos(pool, "", "new_test");
-    changePasswordAndGetInfos(pool, "new_test", "new_test_0");
-    changePasswordAndGetInfos(pool, "new_test_0", "");
-    uv::wait(pool->deleteWallet(walletName));
-}
-
 TEST_F(AccountCreationTest, CreateBitcoinAccountTwiceShouldRaiseError) {
     CheckDoubleAccountCreation(P2PKH_MEDIUM_KEYS_INFO, "bitcoin", DynamicObject::newInstance());
 }

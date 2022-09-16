@@ -31,12 +31,13 @@
 #include "WalletPoolBuilder.hpp"
 
 #include "WalletPoolApi.hpp"
+#include "api/ConfigurationDefaults.hpp"
 
 namespace ledger {
     namespace core {
 
         WalletPoolBuilder::WalletPoolBuilder() {
-            _backend       = api::DatabaseBackend::getSqlite3Backend();
+            _backend       = api::DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE);
             _configuration = nullptr;
         }
 

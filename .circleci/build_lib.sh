@@ -10,7 +10,7 @@ unamestr=`uname`
 export ARCH=$2
 export CMAKE=cmake
 export PATH=$PATH:~/cmake_folder/bin
-export PG_INCLUDE_DIR=`[[ "$unamestr" = "Darwin" ]] && echo -n "/usr/local/opt/postgresql/include" || echo -n "/usr/include/postgresql"`
+export PG_INCLUDE_DIR=`[[ "$unamestr" = "Darwin" ]] && echo -n "/usr/local/opt/postgresql@13/include" || echo -n "/usr/include/postgresql"`
 
 echo "Use $PG_INCLUDE_DIR for PGSQL"
 
@@ -20,12 +20,12 @@ echo "Use $PG_INCLUDE_DIR for PGSQL"
 
 function command_target_jni {
   if [[ "$unamestr" = "Darwin" ]]; then
-    export JAVA_HOME="$($(dirname $(readlink $(which javac)))/java_home)"
+    export JAVA_HOME="$(java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home' | grep -Eo '\/[^ ]+')"
     add_to_cmake_params -DOPENSSL_ROOT_DIR="/usr/local/opt/openssl"
   else
     export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which javac))))"
   fi
-  add_to_cmake_params -DSYS_OPENSSL=ON -DTARGET_JNI=ON  -DSSL_SUPPORT=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR" #ACTIVATIN SSL ONLY WHEN USING PG FOR WD
+  add_to_cmake_params -DSYS_OPENSSL=ON -DTARGET_JNI=ON  -DSSL_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR" #ACTIVATIN SSL ONLY WHEN USING PG FOR WD
 }
 
 function command_Release {
@@ -35,7 +35,7 @@ function command_Release {
 
 function command_Debug {
   BUILD_CONFIG="Debug"
-  add_to_cmake_params -DBUILD_TESTS=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE 
+  add_to_cmake_params -DBUILD_TESTS=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE
 }
 
 function command_arch_ssl_1_1 {
@@ -139,9 +139,9 @@ echo "======> CMake config for $unamestr in $BUILD_CONFIG mode"
 
 if [ "$BUILD_CONFIG" == "Debug" ]; then
     if [ "$unamestr" == "Linux" ]; then
-        add_to_cmake_params "-DCMAKE_PREFIX=$HOME" "-DCMAKE_BUILD_TYPE=Debug" 
+        add_to_cmake_params "-DCMAKE_PREFIX=$HOME" "-DCMAKE_BUILD_TYPE=Debug"
     elif [ "$unamestr" == "Darwin" ]; then
-        add_to_cmake_params -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR" 
+        add_to_cmake_params -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR"
         add_to_cmake_params "-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl/"
     fi
 fi

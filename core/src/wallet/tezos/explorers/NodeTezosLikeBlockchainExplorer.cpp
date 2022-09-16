@@ -33,9 +33,12 @@
 #include <api/Configuration.hpp>
 #include <api/ErrorCode.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <api/TezosLikeOriginatedAccount.hpp>
 #include <rapidjson/document.h>
 #include <utils/Exception.hpp>
+#include <wallet/common/OperationQuery.h>
 #include <wallet/common/api_impl/OperationApi.h>
+
 namespace ledger {
     namespace core {
         NodeTezosLikeBlockchainExplorer::NodeTezosLikeBlockchainExplorer(
@@ -94,12 +97,6 @@ namespace ledger {
                     }
                     return std::make_shared<BigInt>(fees);
                 });
-        }
-
-        Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getGasPrice() {
-            throw make_exception(
-                api::ErrorCode::RUNTIME_ERROR,
-                "getGasPrice is unimplemented for NodeTezosLikeExplorer");
         }
 
         Future<String>
@@ -360,12 +357,13 @@ namespace ledger {
                 });
         }
 
-        Future<std::shared_ptr<BigInt>>
-        NodeTezosLikeBlockchainExplorer::getTokenBalance(const std::string &accountAddress,
-                                                         const std::string &tokenAddress) const {
-            return Future<std::shared_ptr<BigInt>>::failure(
-                Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING,
-                          "Endpoint to get token balance is not implemented."));
+        Future<std::string> NodeTezosLikeBlockchainExplorer::getSynchronisationOffset(const std::shared_ptr<api::OperationQuery> &operations) {
+            bool descending = true;
+            auto ops        = std::dynamic_pointer_cast<OperationQuery>(operations->complete()->limit(1)->addOrder(api::OperationOrderKey::TIME, descending))->execute();
+            return ops.map<std::string>(getContext(), [](const std::vector<std::shared_ptr<api::Operation>> &ops) -> std::string {
+                const auto &tx = std::dynamic_pointer_cast<OperationApi>(ops[0])->getBackend().tezosTransaction.getValue();
+                return tx.block.getValueOr(Block()).hash;
+            });
         }
     } // namespace core
 } // namespace ledger

@@ -31,6 +31,7 @@
 
 #include "BaseFixture.h"
 
+#include "../common/test_config.h"
 #include "IntegrationEnvironment.h"
 #include "MemPreferencesBackend.hpp"
 
@@ -225,30 +226,26 @@ std::string BaseFixture::randomName(const std::string &prefix, unsigned int suff
 std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolName,
                                                         const std::string &password,
                                                         const std::shared_ptr<api::DynamicObject> &configuration,
-                                                        bool usePostgreSQL,
+                                                        const std::shared_ptr<api::HttpClient> &httpClient,
                                                         bool httpclientMultiThread) {
     // If poolName has the sentinel value "", build a default pool with specific settings according to
     // compilation flags.
     auto actualPoolName = poolName;
-    auto wantPostgreSQL = usePostgreSQL;
+
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());
     if (actualPoolName == "") {
-#ifdef PG_SUPPORT
-        const bool usePostgreSQL = true;
-        configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
         actualPoolName = randomDBName();
-        wantPostgreSQL = true;
-#else
-        actualPoolName = "my_ppol";
-#endif
     }
-    backend = std::static_pointer_cast<DatabaseBackend>(wantPostgreSQL ? DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE) : DatabaseBackend::getSqlite3Backend());
+
+    backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
     if (httpclientMultiThread) {
         http = std::make_shared<ProxyHttpClient>(std::make_shared<CppHttpLibClient>(dispatcher->getThreadPoolExecutionContext("test_threadpool_http")));
     }
+
     return WalletPool::newInstance(
         actualPoolName,
         password,
-        http,
+        httpClient ? httpClient : http,
         ws,
         resolver,
         printer,
