@@ -174,16 +174,21 @@ namespace ledger {
         }
 
         FuturePtr<Amount> RippleLikeAccount::getBalance() {
+            auto span          = getTracer()->startSpan("RippleLikeAccount::getBalance");
             auto cachedBalance = getWallet()->getBalanceFromCache(getIndex());
             if (cachedBalance.hasValue()) {
+                span->close();
                 return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
             }
             std::vector<RippleLikeKeychain::Address> listAddresses{_keychain->getAddress()};
             auto currency = getWallet()->getCurrency();
             auto self     = getSelf();
-            return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [self, currency](const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
+            auto span2    = getTracer()->startSpan("get explorer balance");
+            return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [self, span, span2, currency](const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
+                span2->close();
                 Amount b(currency, 0, BigInt(balance->toString()));
                 self->getWallet()->updateBalanceCache(self->getIndex(), b);
+                span->close();
                 return std::make_shared<Amount>(b);
             });
         }
@@ -210,67 +215,75 @@ namespace ledger {
         RippleLikeAccount::getBalanceHistory(const std::string &start,
                                              const std::string &end,
                                              api::TimePeriod precision) {
+            auto span = getTracer()->startSpan("RippleLikeAccount::getBalanceHistory");
             auto self = std::dynamic_pointer_cast<RippleLikeAccount>(shared_from_this());
             return async<std::vector<std::shared_ptr<api::Amount>>>([=]() -> std::vector<std::shared_ptr<api::Amount>> {
-                auto startDate = DateUtils::fromJSON(start);
-                auto endDate   = DateUtils::fromJSON(end);
-                if (startDate >= endDate) {
-                    throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
-                                         "Start date should be strictly lower than end date");
-                }
+                       auto startDate = DateUtils::fromJSON(start);
+                       auto endDate   = DateUtils::fromJSON(end);
+                       if (startDate >= endDate) {
+                           throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
+                                                "Start date should be strictly lower than end date");
+                       }
 
-                const auto &uid = self->getAccountUid();
-                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
-                std::vector<Operation> operations;
+                       const auto &uid = self->getAccountUid();
+                       soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
+                       std::vector<Operation> operations;
 
-                auto keychain                                   = self->getKeychain();
-                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-                    return keychain->contains(addr);
-                };
+                       auto keychain                                   = self->getKeychain();
+                       std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
+                           return keychain->contains(addr);
+                       };
 
-                // Get operations related to an account
-                OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                       // Get operations related to an account
+                       auto span2 = getTracer()->startSpan("queryOperations");
+                       OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                       span2->close();
 
-                auto lowerDate = startDate;
-                auto upperDate = DateUtils::incrementDate(startDate, precision);
+                       auto lowerDate = startDate;
+                       auto upperDate = DateUtils::incrementDate(startDate, precision);
 
-                std::vector<std::shared_ptr<api::Amount>> amounts;
-                std::size_t operationsCount = 0;
-                BigInt sum;
-                while (lowerDate <= endDate && operationsCount < operations.size()) {
-                    auto operation = operations[operationsCount];
-                    while (operation.date > upperDate && lowerDate < endDate) {
-                        lowerDate = DateUtils::incrementDate(lowerDate, precision);
-                        upperDate = DateUtils::incrementDate(upperDate, precision);
-                        amounts.emplace_back(
-                            std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
-                    }
+                       span2 = getTracer()->startSpan("mergeOperations");
+                       std::vector<std::shared_ptr<api::Amount>> amounts;
+                       std::size_t operationsCount = 0;
+                       BigInt sum;
+                       while (lowerDate <= endDate && operationsCount < operations.size()) {
+                           auto operation = operations[operationsCount];
+                           while (operation.date > upperDate && lowerDate < endDate) {
+                               lowerDate = DateUtils::incrementDate(lowerDate, precision);
+                               upperDate = DateUtils::incrementDate(upperDate, precision);
+                               amounts.emplace_back(
+                                   std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                           }
 
-                    if (operation.date <= upperDate) {
-                        switch (operation.type) {
-                        case api::OperationType::RECEIVE: {
-                            sum = sum + operation.amount;
-                            break;
-                        }
-                        case api::OperationType::SEND: {
-                            sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
-                            break;
-                        }
-                        default:
-                            break;
-                        }
-                    }
-                    operationsCount += 1;
-                }
+                           if (operation.date <= upperDate) {
+                               switch (operation.type) {
+                               case api::OperationType::RECEIVE: {
+                                   sum = sum + operation.amount;
+                                   break;
+                               }
+                               case api::OperationType::SEND: {
+                                   sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
+                                   break;
+                               }
+                               default:
+                                   break;
+                               }
+                           }
+                           operationsCount += 1;
+                       }
+                       span2->close();
 
-                while (lowerDate < endDate) {
-                    lowerDate = DateUtils::incrementDate(lowerDate, precision);
-                    amounts.emplace_back(
-                        std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
-                }
+                       while (lowerDate < endDate) {
+                           lowerDate = DateUtils::incrementDate(lowerDate, precision);
+                           amounts.emplace_back(
+                               std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                       }
 
-                return amounts;
-            });
+                       return amounts;
+                   })
+                .then(getContext(), [span]() {
+                    span->close();
+                });
         }
 
         Future<api::ErrorCode> RippleLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point &date) {
