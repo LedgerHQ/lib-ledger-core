@@ -11,6 +11,11 @@ on:
         description: Custom version of jar package (applies only if `release` is true)
         required: false
         type: string
+      macos:
+        description: Build macos into jar
+        required: false
+        type: boolean
+        default: true
   workflow_call:
     inputs:
       release:
@@ -19,6 +24,10 @@ on:
       version:
         required: false
         type: string
+      macos:
+        required: false
+        type: boolean
+        default: true
 jobs:
   libcore_version:
     name: Compute libcore version
@@ -46,8 +55,9 @@ jobs:
     secrets: inherit # pass all secrets
     with:
       buildJni: 'ON'
+      buildMacos: ${{ inputs.macos }}
   JAR:
-    name: Jar build (MacOS + Linux)
+    name: Jar build
     needs: [libcore_version, Build_Release_JNI]
     runs-on: ubuntu-latest
     container:
@@ -70,6 +80,7 @@ jobs:
         name: linux-ubuntu-22.04-libledgercore
         path: jar_build/src/main/resources/resources/djinni_native_libs
     - name: Fetch MacOS dylib
+      if: ${{ inputs.macos }}
       uses: actions/download-artifact@v2
       with:
         name: macos-libledgercore

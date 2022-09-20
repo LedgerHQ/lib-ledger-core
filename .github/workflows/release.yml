@@ -21,6 +21,11 @@ on:
         required: true
         type: boolean
         default: false
+      macos:
+        description: "Build macos in JAR"
+        required: true
+        type: boolean
+        default: true
 jobs:
   Release:
     runs-on: ubuntu-22.04
@@ -68,6 +73,7 @@ jobs:
     with:
       release: true
       version: ${{ github.event.inputs.version }}
+      macos: ${{ github.event.inputs.macos }}
   Publish:
     name: Publish to WD
     needs: [Build]
