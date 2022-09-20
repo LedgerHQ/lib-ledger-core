@@ -573,8 +573,10 @@ namespace ledger {
         }
 
         FuturePtr<ledger::core::Amount> BitcoinLikeAccount::getBalance() {
+            auto span          = getTracer()->startSpan("BitcoinLikeAccount::getBalance");
             auto cachedBalance = getWallet()->getBalanceFromCache(getIndex());
             if (cachedBalance.hasValue()) {
+                span->close();
                 return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
             }
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
@@ -593,6 +595,7 @@ namespace ledger {
                 }
                 Amount balance(self->getWallet()->getCurrency(), 0, sum);
                 self->getWallet()->updateBalanceCache(self->getIndex(), balance);
+                span->close();
                 return std::make_shared<Amount>(balance);
             });
         }
@@ -601,68 +604,76 @@ namespace ledger {
         BitcoinLikeAccount::getBalanceHistory(const std::string &start,
                                               const std::string &end,
                                               api::TimePeriod precision) {
+            auto span = getTracer()->startSpan("BitcoinLikeAccount::getBalanceHistory");
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
             return Future<std::vector<std::shared_ptr<api::Amount>>>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=]() -> std::vector<std::shared_ptr<api::Amount>> {
-                auto startDate = DateUtils::fromJSON(start);
-                auto endDate   = DateUtils::fromJSON(end);
-                if (startDate >= endDate) {
-                    throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
-                                         "Start date should be strictly lower than end date");
-                }
+                       auto startDate = DateUtils::fromJSON(start);
+                       auto endDate   = DateUtils::fromJSON(end);
+                       if (startDate >= endDate) {
+                           throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
+                                                "Start date should be strictly lower than end date");
+                       }
 
-                const auto &uid = self->getAccountUid();
-                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
-                std::vector<Operation> operations;
+                       const auto &uid = self->getAccountUid();
+                       soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
+                       std::vector<Operation> operations;
 
-                auto keychain                                   = self->getKeychain();
-                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-                    return keychain->contains(addr);
-                };
+                       auto keychain                                   = self->getKeychain();
+                       std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
+                           return keychain->contains(addr);
+                       };
 
-                // Get operations related to an account
-                OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                       // Get operations related to an account
+                       auto span2 = getTracer()->startSpan("queryOperations");
+                       OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                       span2->close();
 
-                auto lowerDate = startDate;
-                auto upperDate = DateUtils::incrementDate(startDate, precision);
+                       auto lowerDate = startDate;
+                       auto upperDate = DateUtils::incrementDate(startDate, precision);
 
-                std::vector<std::shared_ptr<api::Amount>> amounts;
-                std::size_t operationsCount = 0;
-                BigInt sum;
-                while (lowerDate <= endDate && operationsCount < operations.size()) {
-                    auto operation = operations[operationsCount];
-                    while (operation.date > upperDate && lowerDate < endDate) {
-                        lowerDate = DateUtils::incrementDate(lowerDate, precision);
-                        upperDate = DateUtils::incrementDate(upperDate, precision);
-                        amounts.emplace_back(
-                            std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
-                    }
+                       span2 = getTracer()->startSpan("mergeOperations");
+                       std::vector<std::shared_ptr<api::Amount>> amounts;
+                       std::size_t operationsCount = 0;
+                       BigInt sum;
+                       while (lowerDate <= endDate && operationsCount < operations.size()) {
+                           auto operation = operations[operationsCount];
+                           while (operation.date > upperDate && lowerDate < endDate) {
+                               lowerDate = DateUtils::incrementDate(lowerDate, precision);
+                               upperDate = DateUtils::incrementDate(upperDate, precision);
+                               amounts.emplace_back(
+                                   std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                           }
 
-                    if (operation.date <= upperDate) {
-                        switch (operation.type) {
-                        case api::OperationType::RECEIVE: {
-                            sum = sum + operation.amount;
-                            break;
-                        }
-                        case api::OperationType::SEND: {
-                            sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
-                            break;
-                        }
-                        case api::OperationType::NONE:
-                        default:
-                            break;
-                        }
-                    }
-                    operationsCount += 1;
-                }
+                           if (operation.date <= upperDate) {
+                               switch (operation.type) {
+                               case api::OperationType::RECEIVE: {
+                                   sum = sum + operation.amount;
+                                   break;
+                               }
+                               case api::OperationType::SEND: {
+                                   sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
+                                   break;
+                               }
+                               case api::OperationType::NONE:
+                               default:
+                                   break;
+                               }
+                           }
+                           operationsCount += 1;
+                       }
+                       span2->close();
 
-                while (lowerDate < endDate) {
-                    lowerDate = DateUtils::incrementDate(lowerDate, precision);
-                    amounts.emplace_back(
-                        std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
-                }
+                       while (lowerDate < endDate) {
+                           lowerDate = DateUtils::incrementDate(lowerDate, precision);
+                           amounts.emplace_back(
+                               std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                       }
 
-                return amounts;
-            });
+                       return amounts;
+                   })
+                .then(getWallet()->getPool()->getThreadPoolExecutionContext(), [span]() {
+                    span->close();
+                });
         }
 
         std::shared_ptr<BitcoinLikeAccount> BitcoinLikeAccount::getSelf() {
