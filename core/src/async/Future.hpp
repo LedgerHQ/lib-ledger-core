@@ -224,6 +224,13 @@ namespace ledger {
                 _defer->addCallback(f, context);
             };
 
+            Future<T> then(const Context &context, std::function<void(void)> finally) { // NOLINT(performance-unnecessary-value-param)
+                return map<T>(context, [finally](const T &v) {
+                    finally();
+                    return v;
+                });
+            }
+
             template <typename Callback>
             typename std::enable_if<has_on_callback_method<Callback, void(T &)>::value, void>::type
             callback(const Context &context, std::shared_ptr<Callback> cb) {

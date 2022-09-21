@@ -19,6 +19,7 @@
 namespace ledger { namespace core { namespace api {
 
 class BlockCallback;
+class CoreTracer;
 class CurrencyCallback;
 class CurrencyListCallback;
 class DatabaseBackend;
@@ -57,7 +58,7 @@ public:
      * @param configuration, DynamicObject object, desired configuration for this wallet pool
      * @return WalletPool object, instance of WalletPool
      */
-    static std::shared_ptr<WalletPool> newInstance(const std::string & name, const std::string & password, const std::shared_ptr<HttpClient> & httpClient, const std::shared_ptr<WebSocketClient> & webSocketClient, const std::shared_ptr<PathResolver> & pathResolver, const std::shared_ptr<LogPrinter> & logPrinter, const std::shared_ptr<ThreadDispatcher> & dispatcher, const std::shared_ptr<RandomNumberGenerator> & rng, const std::shared_ptr<DatabaseBackend> & backend, const std::shared_ptr<DynamicObject> & configuration);
+    static std::shared_ptr<WalletPool> newInstance(const std::string & name, const std::string & password, const std::shared_ptr<HttpClient> & httpClient, const std::shared_ptr<WebSocketClient> & webSocketClient, const std::shared_ptr<PathResolver> & pathResolver, const std::shared_ptr<LogPrinter> & logPrinter, const std::shared_ptr<ThreadDispatcher> & dispatcher, const std::shared_ptr<RandomNumberGenerator> & rng, const std::shared_ptr<DatabaseBackend> & backend, const std::shared_ptr<DynamicObject> & configuration, const std::shared_ptr<CoreTracer> & tracer);
 
     /**
      * Return used logger to dump logs in defined log path by PathResolver.

@@ -35,6 +35,7 @@
 #include <database/soci-date.h>
 #include <math/bech32/Bech32Parameters.h>
 #include <preferences/Preferences.hpp>
+#include <utility>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/currencies.hpp>
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
@@ -54,11 +55,12 @@ namespace ledger {
             const std::shared_ptr<api::RandomNumberGenerator> &rng,
             const std::shared_ptr<api::DatabaseBackend> &backend,
             const std::shared_ptr<api::DynamicObject> &configuration,
-            const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
-            const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend) : DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))),
-                                                                                          _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
-                                                                                                                               .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE))),
-                                                                                          _externalPreferencesBackend(externalPreferencesBackend), _internalPreferencesBackend(internalPreferencesBackend) {
+            std::shared_ptr<api::PreferencesBackend> externalPreferencesBackend,
+            std::shared_ptr<api::PreferencesBackend> internalPreferencesBackend,
+            const std::shared_ptr<api::CoreTracer> &tracer) : DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))),
+                                                              _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
+                                                                                                   .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE))),
+                                                              _externalPreferencesBackend(std::move(externalPreferencesBackend)), _internalPreferencesBackend(std::move(internalPreferencesBackend)) {
             // General
             _poolName      = name;
 
@@ -69,6 +71,9 @@ namespace ledger {
 
             // HTTP management
             _httpEngine    = httpClient;
+
+            // Tracing management
+            _tracer        = tracer;
 
             // WS management
             _wsClient      = std::make_shared<WebSocketClient>(webSocketClient);
@@ -130,12 +135,13 @@ namespace ledger {
             const std::shared_ptr<api::DatabaseBackend> &backend,
             const std::shared_ptr<api::DynamicObject> &configuration,
             const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
-            const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend) {
+            const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend,
+            const std::shared_ptr<api::CoreTracer> &tracer) {
             auto pool = std::shared_ptr<WalletPool>(new WalletPool(
                 name, password, httpClient, webSocketClient, pathResolver,
                 logPrinter, dispatcher, rng, backend, configuration,
                 externalPreferencesBackend,
-                internalPreferencesBackend));
+                internalPreferencesBackend, tracer));
 
             // Initialization
             //  Load currencies
@@ -238,6 +244,13 @@ namespace ledger {
 
         std::shared_ptr<api::ThreadDispatcher> WalletPool::getDispatcher() const {
             return _threadDispatcher;
+        }
+
+        std::shared_ptr<api::CoreTracer> WalletPool::getTracer() const {
+            if (!_tracer) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Missing tracer");
+            }
+            return _tracer;
         }
 
         std::shared_ptr<HttpClient> WalletPool::getHttpClient(const std::string &baseUrl) {

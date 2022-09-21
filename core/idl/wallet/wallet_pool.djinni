@@ -31,6 +31,7 @@ WalletPool = interface +c {
     # @param rng, RandomNumberGenerator object, needed for generating random numbers (for seeds, salts ...)
     # @param backend, DatabseBackend object, DB in which wallet pool store all required infos (created wallets, their options, their accounts ...)
     # @param configuration, DynamicObject object, desired configuration for this wallet pool
+    # @param tracer, CoreTracer object, injected datadog tracer
     # @return WalletPool object, instance of WalletPool
     static newInstance(
         name: string,
@@ -42,7 +43,8 @@ WalletPool = interface +c {
         dispatcher: ThreadDispatcher,
         rng: RandomNumberGenerator,
         backend: DatabaseBackend,
-        configuration: DynamicObject
+        configuration: DynamicObject,
+        tracer: CoreTracer
     ): WalletPool;
 
     # Return used logger to dump logs in defined log path by PathResolver.
@@ -143,6 +145,11 @@ WalletPoolBuilder = interface +c {
     # @param client, HttpClient
     # @return WalletPoolBuilder object, instance with wallet pool http client set
     setHttpClient(client: HttpClient): WalletPoolBuilder;
+
+    # Set tracer to be used for wallet pool build.
+    # @param tracer, CoreTracer
+    # @return WalletPoolBuilder object, instance with wallet pool http client set
+    setTracer(tracer: CoreTracer): WalletPoolBuilder;
 
     # Set web socket client, through which wallet pool will listen and get notified (by explorers, DBs...).
     # @param client, WebSocketClient object

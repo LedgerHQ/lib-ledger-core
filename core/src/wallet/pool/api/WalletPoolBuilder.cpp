@@ -48,6 +48,12 @@ namespace ledger {
         }
 
         std::shared_ptr<api::WalletPoolBuilder>
+        WalletPoolBuilder::setTracer(const std::shared_ptr<api::CoreTracer> &tracer) {
+            _tracer = tracer;
+            return shared_from_this();
+        }
+
+        std::shared_ptr<api::WalletPoolBuilder>
         WalletPoolBuilder::setWebsocketClient(const std::shared_ptr<api::WebSocketClient> &client) {
             _webSocketClient = client;
             return shared_from_this();
@@ -107,7 +113,8 @@ namespace ledger {
                 _configuration,
                 _externalPreferencesBackend,
                 _internalPreferencesBackend,
-                listener);
+                listener,
+                _tracer);
         }
 
         std::shared_ptr<api::WalletPoolBuilder>

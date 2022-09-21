@@ -31,6 +31,7 @@
 
 #include "../common/test_config.h"
 #include "MemPreferencesBackend.hpp"
+#include "ProxyCoreTracer.h"
 #include "api/ConfigurationDefaults.hpp"
 
 #include <CoutLogPrinter.hpp>
@@ -110,7 +111,8 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
         backend,
         configuration,
         std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-        std::make_shared<ledger::core::test::MemPreferencesBackend>());
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        std::make_shared<ledger::core::test::ProxyCoreTracer>());
 
     api::Currency bitcoin;
 

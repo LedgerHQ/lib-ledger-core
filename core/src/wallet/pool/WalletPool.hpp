@@ -31,12 +31,14 @@
 #ifndef LEDGER_CORE_WALLETPOOL_HPP
 #define LEDGER_CORE_WALLETPOOL_HPP
 
+#include <api/CoreTracer.hpp>
 #include <api/DatabaseBackend.hpp>
 #include <api/DynamicObject.hpp>
 #include <api/HttpClient.hpp>
 #include <api/LogPrinter.hpp>
 #include <api/PathResolver.hpp>
 #include <api/RandomNumberGenerator.hpp>
+#include <api/Span.hpp>
 #include <api/ThreadDispatcher.hpp>
 #include <api/WalletPoolCallback.hpp>
 #include <api/WebSocketClient.hpp>
@@ -67,6 +69,7 @@ namespace ledger {
             std::shared_ptr<api::PathResolver> getPathResolver() const;
             std::shared_ptr<api::RandomNumberGenerator> rng() const;
             std::shared_ptr<api::ThreadDispatcher> getDispatcher() const;
+            std::shared_ptr<api::CoreTracer> getTracer() const;
             std::shared_ptr<spdlog::logger> logger() const;
             std::shared_ptr<DatabaseSessionPool> getDatabaseSessionPool() const;
             std::shared_ptr<DynamicObject> getConfiguration() const;
@@ -117,7 +120,8 @@ namespace ledger {
                 const std::shared_ptr<api::DatabaseBackend> &backend,
                 const std::shared_ptr<api::DynamicObject> &configuration,
                 const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
-                const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend);
+                const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend,
+                const std::shared_ptr<api::CoreTracer> &tracer);
 
             ~WalletPool() = default;
 
@@ -152,8 +156,9 @@ namespace ledger {
                 const std::shared_ptr<api::RandomNumberGenerator> &rng,
                 const std::shared_ptr<api::DatabaseBackend> &backend,
                 const std::shared_ptr<api::DynamicObject> &configuration,
-                const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
-                const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend);
+                std::shared_ptr<api::PreferencesBackend> externalPreferencesBackend,
+                std::shared_ptr<api::PreferencesBackend> internalPreferencesBackend,
+                const std::shared_ptr<api::CoreTracer> &tracer);
 
             void initializeCurrencies();
 
@@ -176,6 +181,9 @@ namespace ledger {
             // HTTP management
             std::shared_ptr<api::HttpClient> _httpEngine;
             std::unordered_map<std::string, std::weak_ptr<HttpClient>> _httpClients;
+
+            // Tracing management
+            std::shared_ptr<api::CoreTracer> _tracer;
 
             // WS management
             std::shared_ptr<WebSocketClient> _wsClient;

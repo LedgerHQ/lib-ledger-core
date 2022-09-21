@@ -155,6 +155,10 @@ namespace ledger {
             return wallet;
         }
 
+        std::shared_ptr<api::CoreTracer> AbstractAccount::getTracer() const {
+            return getWallet()->getPool()->getTracer();
+        }
+
         const std::shared_ptr<api::ExecutionContext> AbstractAccount::getMainExecutionContext() const {
             return _mainExecutionContext;
         }

@@ -22,7 +22,7 @@ add_library(ledger-test STATIC
             OpenSSLRandomNumberGenerator.cpp OpenSSLRandomNumberGenerator.hpp
             UvThreadDispatcher.hpp UvThreadDispatcher.cpp
             callbacks.cpp callbacks.hpp
-            route.cc route.h)
+            route.cc route.h ProxyCoreTracer.cpp ProxyCoreTracer.h)
 
 if (SYS_OPENSSL)
     include_directories(${CMAKE_BINARY_DIR}/include ${OPENSSL_INCLUDE_DIR})
