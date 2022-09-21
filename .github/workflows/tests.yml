@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: 'OFF'
+      buildMacos:
+        required: false
+        type: boolean
+        default: true
 jobs:
   Unixes:
     runs-on: ${{ matrix.os }}
@@ -64,6 +68,7 @@ jobs:
         retention-days: 30
 
   Macos:
+    if: ${{ github.event_name == 'push' || inputs.macos }}
     runs-on: macos-12
     env:
       BUILD_JNI: ${{ inputs.buildJni || 'OFF' }}
