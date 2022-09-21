@@ -24,7 +24,7 @@ POST https://s2.ripple.com:51234/
 
 POST https://s2.ripple.com:51234/
 1
-{"method":"account_tx","params":[{"account":"r4j2WKcuL3iRJ25QfKLv1JHQXmxM5Zhxuo","forward":1}]}
+{"method":"account_tx","params":[{"account":"r4j2WKcuL3iRJ25QfKLv1JHQXmxM5Zhxuo","forward":true}]}
 3
 {"result":{"account":"r4j2WKcuL3iRJ25QfKLv1JHQXmxM5Zhxuo","ledger_index_max":74406980,"ledger_index_min":32570,"limit":0,"status":"success","transactions":[],"used_postgres":true,"validated":true,"warnings":[{"id":1004,"message":"This is a reporting server.  The default behavior of a reporting server is to only return validated data. If you are looking for not yet validated data, include \"ledger_index : current\" in your request, which will cause this server to forward the request to a p2p node. If the forward is successful the response will include \"forwarded\" : \"true\""}]}}
 
