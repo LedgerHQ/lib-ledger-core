@@ -32,10 +32,10 @@ void ensureConnected(session_backend * backEnd)
 
 } // namespace anonymous
 
-session::session()
+session::session(std::shared_ptr<session_tracer> tracer)
     : once(this), prepare(this), logStream_(NULL),
-      uppercaseColumnNames_(false), backEnd_(NULL),
-      isFromPool_(false), pool_(NULL)
+      tracer_(tracer), uppercaseColumnNames_(false),
+      backEnd_(NULL), isFromPool_(false), pool_(NULL)
 {
 }
 

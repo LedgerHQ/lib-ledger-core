@@ -34,14 +34,54 @@
 #include "PostgreSQLBackend.h"
 #include "migrations.hpp"
 
+#include <api/Span.hpp>
+#include <memory>
+#include <utility>
+
 namespace ledger {
     namespace core {
+        namespace impl {
+            class SessionTracer : public soci::session_tracer {
+              public:
+                ~SessionTracer() override                       = default;
+                SessionTracer(const SessionTracer &)            = delete;
+                SessionTracer(SessionTracer &&)                 = delete;
+                SessionTracer &operator=(SessionTracer &&)      = delete;
+                SessionTracer &operator=(const SessionTracer &) = delete;
+
+                explicit SessionTracer(std::shared_ptr<api::CoreTracer> tracer) : _tracer(std::move(tracer)) {
+                }
+
+                void startSpan(std::string &string) override {
+                    _span = _tracer->startSpan(string);
+                    _span->setTagStr("db.statement", string);
+                    _span->setTagStr("sql.query", string);
+                    _span->setTagStr("db.system", "postgresql");
+                    _span->setTagStr("span.type", "sql");
+                    _span->setTagStr("service", "postgresql");
+                }
+
+                void finishSpan() override {
+                    _span->close();
+                }
+
+              private:
+                std::shared_ptr<api::Span> _span;
+                std::shared_ptr<api::CoreTracer> _tracer;
+            };
+        } // namespace impl
+
         DatabaseSessionPool::DatabaseSessionPool(
             const std::shared_ptr<DatabaseBackend> &backend,
             const std::shared_ptr<api::PathResolver> &resolver,
+            const std::shared_ptr<api::CoreTracer> &tracer,
             const std::shared_ptr<spdlog::logger> &logger,
             const std::string &dbName,
-            const std::string &password) : _pool((size_t)backend->getConnectionPoolSize()), _readonlyPool((size_t)backend->getReadonlyConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
+            const std::string &password) : _pool(static_cast<size_t>(backend->getConnectionPoolSize()), std::make_shared<impl::SessionTracer>((tracer))),
+                                           _readonlyPool(static_cast<size_t>(backend->getReadonlyConnectionPoolSize()), std::make_shared<impl::SessionTracer>((tracer))),
+                                           _backend(backend),
+                                           _buffer("SQL", logger) {
+            std::cout << "DatabaseSessionPool::DatabaseSessionPool" << std::endl;
             if (logger != nullptr && backend->isLoggingEnabled()) {
                 _logger = new std::ostream(&_buffer);
             } else {
@@ -82,12 +122,13 @@ namespace ledger {
         DatabaseSessionPool::getSessionPool(const std::shared_ptr<api::ExecutionContext> &context,
                                             const std::shared_ptr<DatabaseBackend> &backend,
                                             const std::shared_ptr<api::PathResolver> &resolver,
+                                            const std::shared_ptr<api::CoreTracer> &tracer,
                                             const std::shared_ptr<spdlog::logger> &logger,
                                             const std::string &dbName,
                                             const std::string &password) {
-            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName, logger, password]() {
-                auto pool = std::shared_ptr<DatabaseSessionPool>(new DatabaseSessionPool(
-                    backend, resolver, logger, dbName, password));
+            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, tracer, dbName, logger, password]() {
+                auto pool = std::make_shared<DatabaseSessionPool>(
+                    backend, resolver, tracer, logger, dbName, password);
 
                 return pool;
             });

@@ -110,6 +110,7 @@ namespace ledger {
             _database = std::make_shared<DatabaseSessionPool>(
                 std::static_pointer_cast<DatabaseBackend>(backend),
                 pathResolver,
+                getTracer(),
                 _logger,
                 Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(name),
                 password);
