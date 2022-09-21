@@ -81,7 +81,7 @@ TEST_F(BitcoinMakeTransactionFromNativeSegwitToNativeSegwit, CreateStandardP2WPK
         {"", // This is a change output. Don't use it explicitely in building
          hex::toByteArray("00141017b1e1ca8632828f22a4d6c5260f3492b1dd08"),
          // yes, change goes to legacy address
-         std::make_shared<api::BigIntImpl>(BigInt(16396))}};
+         std::make_shared<api::BigIntImpl>(BigInt(16701))}};
 
     createAndVerifyTransaction(input_descrs, output_descrs);
 }
@@ -112,7 +112,7 @@ TEST_F(BitcoinMakeTransactionFromLegacyToNativeSegwit, CreateStandardP2WPKHWithO
         {"", // This is a change output. Don't use it explicitely in building
          hex::toByteArray("76a914d642b9c546d114dc634e65f72283e3458032a3d488ac"),
          // yes, change goes to legacy address
-         std::make_shared<api::BigIntImpl>(BigInt(86114))}};
+         std::make_shared<api::BigIntImpl>(BigInt(86297))}};
 
     createAndVerifyTransaction(input_descrs, output_descrs);
 }

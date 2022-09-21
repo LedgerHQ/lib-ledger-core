@@ -76,7 +76,7 @@ jobs:
       - uses: actions/checkout@v3
         name: Checkout libcore
       - uses: actions/checkout@v3
-        name: Checkout wallet-daemont
+        name: Checkout wallet-daemon
         with:
           token: ${{ secrets.CI_BOT_TOKEN }}
           repository: LedgerHQ/ledger-wallet-daemon
