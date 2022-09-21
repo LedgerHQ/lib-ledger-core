@@ -31,6 +31,7 @@ WalletPool = interface +c {
     # @param rng, RandomNumberGenerator object, needed for generating random numbers (for seeds, salts ...)
     # @param backend, DatabseBackend object, DB in which wallet pool store all required infos (created wallets, their options, their accounts ...)
     # @param configuration, DynamicObject object, desired configuration for this wallet pool
+    # @param tracer, CoreTracer object, injected datadog tracer
     # @return WalletPool object, instance of WalletPool
     static newInstance(
         name: string,
