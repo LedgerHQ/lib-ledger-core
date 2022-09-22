@@ -68,7 +68,7 @@ jobs:
         retention-days: 30
 
   Macos:
-    if: ${{ inputs.macos }}
+    if: ${{ github.event_name == 'push' || inputs.buildMacos }}
     runs-on: macos-12
     env:
       BUILD_JNI: ${{ inputs.buildJni || 'OFF' }}

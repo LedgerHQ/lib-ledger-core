@@ -34,6 +34,7 @@
 #include <api/BitcoinLikeScript.hpp>
 #include <api/BitcoinLikeScriptChunk.hpp>
 #include <async/Promise.hpp>
+#include <utils/NarrowingCast.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 
@@ -116,10 +117,15 @@ namespace ledger {
             }
 
             // Fill change outputs
-            auto sizeWithChange = BitcoinLikeTransactionApi::estimateSize(buddy->transaction->getInputs().size(),
-                                                                          buddy->request.outputs.size() + 1,
-                                                                          getCurrency(),
-                                                                          buddy->keychain->getKeychainEngine());
+            auto sizeWithChange                = BitcoinLikeTransactionApi::estimateSize(buddy->transaction->getInputs().size(),
+                                                                                         buddy->transaction->getOutputs(),
+                                                                                         getCurrency(),
+                                                                                         buddy->keychain->getKeychainEngine());
+
+            const std::size_t changeOutputSize = BitcoinLikeTransactionApi::estimateOutputSize(buddy->keychain->getKeychainEngine());
+            sizeWithChange.Min += narrowing_cast<int32_t>(changeOutputSize);
+            sizeWithChange.Max += narrowing_cast<int32_t>(changeOutputSize);
+
             BigInt dustAmount(BitcoinLikeTransactionApi::computeDustAmount(getCurrency(), sizeWithChange.Max));
             if (buddy->changeAmount > dustAmount) {
                 // TODO implement multi change

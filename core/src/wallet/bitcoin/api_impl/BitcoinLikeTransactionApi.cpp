@@ -37,6 +37,8 @@
 #include <crypto/HASH160.hpp>
 #include <crypto/SHA512.hpp>
 #include <math/Base58.hpp>
+#include <utils/NarrowingCast.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 #include <wallet/bitcoin/networks.hpp>
 #include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
 #include <wallet/common/AbstractAccount.hpp>
@@ -189,7 +191,7 @@ namespace ledger {
 
         api::EstimatedSize BitcoinLikeTransactionApi::getEstimatedSize() {
             return estimateSize(getInputs().size(),
-                                getOutputs().size(),
+                                getOutputs(),
                                 _currency,
                                 _keychainEngine);
         }
@@ -223,41 +225,100 @@ namespace ledger {
             return *this;
         }
 
-        api::EstimatedSize
-        BitcoinLikeTransactionApi::estimateSize(std::size_t inputCount,
-                                                std::size_t outputCount,
-                                                const api::Currency &currency,
-                                                const std::string &keychainEngine) {
+        std::size_t BitcoinLikeTransactionApi::estimateOutputSize(const std::string &keychainEngine) {
+            const auto isSegwit = BitcoinLikeKeychain::isSegwit(keychainEngine);
+            if (isSegwit) {
+                return 32;
+            } else {
+                return 34;
+            }
+        }
+
+        std::size_t BitcoinLikeTransactionApi::estimateFixedTxSize(std::size_t inputCount,
+                                                                   std::size_t outputCount,
+                                                                   const api::Currency &currency) {
             // TODO Handle outputs and input for multisig P2SH
-            size_t maxSize, minSize, fixedSize = 0;
+            std::size_t fixedSize = 0;
 
             // Fixed size computation
-            fixedSize = 4; // Transaction version
+            fixedSize             = 4; // Transaction version
             if (currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction)
                 fixedSize += 4;                                                       // Timestamp
             fixedSize += BytesWriter().writeVarInt(inputCount).toByteArray().size();  // Number of inputs
             fixedSize += BytesWriter().writeVarInt(outputCount).toByteArray().size(); // Number of outputs
             fixedSize += 4;                                                           // Timelock
 
-            auto isSegwit = BitcoinLikeKeychain::isSegwit(keychainEngine);
+            return fixedSize;
+        }
+
+        api::EstimatedSize
+        BitcoinLikeTransactionApi::estimateSize(std::size_t fixedSize,
+                                                std::size_t inputCount,
+                                                std::size_t minOutputsSize,
+                                                std::size_t maxOutputsSize,
+                                                const std::string &keychainEngine) {
+            std::size_t maxSize = 0;
+            std::size_t minSize = 0;
+            const auto isSegwit = BitcoinLikeKeychain::isSegwit(keychainEngine);
+
             if (isSegwit) {
                 // Native Segwit: 32 PrevTxHash + 4 Index + 1 null byte + 4 sequence
                 // P2SH: 32 PrevTxHash + 4 Index + 23 scriptPubKey + 4 sequence
-                auto isNativeSegwit = BitcoinLikeKeychain::isNativeSegwit(keychainEngine);
-                size_t inputSize    = isNativeSegwit ? 41 : 63;
-                size_t noWitness    = fixedSize + inputSize * inputCount + 34 * outputCount;
+                const auto isNativeSegwit    = BitcoinLikeKeychain::isNativeSegwit(keychainEngine);
+                const std::size_t inputSize  = isNativeSegwit ? 41 : 63;
+                const std::size_t noWitness  = fixedSize + inputSize * inputCount + maxOutputsSize;
 
                 // Include flag and marker size (one byte each)
-                size_t minWitness   = noWitness + (106 * inputCount) + 2;
-                size_t maxWitness   = noWitness + (108 * inputCount) + 2;
+                const std::size_t minWitness = noWitness + (106 * inputCount) + 2;
+                const std::size_t maxWitness = noWitness + (108 * inputCount) + 2;
 
-                minSize             = (noWitness * 3 + minWitness) / 4;
-                maxSize             = (noWitness * 3 + maxWitness) / 4;
+                minSize                      = (noWitness * 3 + minWitness) / 4;
+                maxSize                      = (noWitness * 3 + maxWitness) / 4;
             } else {
-                minSize = fixedSize + 146 * inputCount + 32 * outputCount;
-                maxSize = fixedSize + 148 * inputCount + 34 * outputCount;
+                minSize = fixedSize + 146 * inputCount + minOutputsSize;
+                maxSize = fixedSize + 148 * inputCount + maxOutputsSize;
             }
-            return api::EstimatedSize(static_cast<int32_t>(minSize), static_cast<int32_t>(maxSize));
+
+            return api::EstimatedSize(narrowing_cast<int32_t>(minSize), narrowing_cast<int32_t>(maxSize));
+        }
+
+        api::EstimatedSize
+        BitcoinLikeTransactionApi::estimateSize(std::size_t inputCount,
+                                                std::size_t outputCount,
+                                                const api::Currency &currency,
+                                                const std::string &keychainEngine) {
+            std::size_t fixedSize = estimateFixedTxSize(inputCount, outputCount, currency);
+            return estimateSize(fixedSize, inputCount, 32 * outputCount, 34 * outputCount, keychainEngine);
+        }
+
+        api::EstimatedSize
+        BitcoinLikeTransactionApi::estimateSize(std::size_t inputCount,
+                                                const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &outputs,
+                                                const api::Currency &currency,
+                                                const std::string &keychainEngine) {
+            const std::size_t fixedSize = estimateFixedTxSize(inputCount, outputs.size(), currency);
+
+            std::size_t outputsSize     = (8 + 1) * outputs.size(); // amount (8 bytes) + script length (1 byte)
+            for (const auto &out : outputs) {
+                outputsSize += out->getScript().size();
+            }
+
+            return estimateSize(fixedSize, inputCount, outputsSize, outputsSize, keychainEngine);
+        }
+
+        api::EstimatedSize
+        BitcoinLikeTransactionApi::estimateSize(std::size_t inputCount,
+                                                const std::list<std::tuple<std::shared_ptr<BigInt>, std::shared_ptr<api::BitcoinLikeScript>>> &outputs,
+                                                const api::Currency &currency,
+                                                const std::string &keychainEngine) {
+            const std::size_t fixedSize = estimateFixedTxSize(inputCount, outputs.size(), currency);
+
+            std::size_t outputsSize     = (8 + 1) * outputs.size(); // amount (8 bytes) + script length (1 byte)
+            for (const auto &out : outputs) {
+                outputsSize += std::dynamic_pointer_cast<BitcoinLikeScriptApi>(std::get<1>(out))->getScript().serialize().size();
+            }
+
+            return estimateSize(fixedSize, inputCount, outputsSize, outputsSize, keychainEngine);
         }
 
         int64_t BitcoinLikeTransactionApi::computeDustAmount(const api::Currency &currency, int32_t size) {

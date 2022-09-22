@@ -248,6 +248,9 @@ namespace ledger {
         }
 
         std::shared_ptr<api::CoreTracer> WalletPool::getTracer() const {
+            if (!_tracer) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Missing tracer");
+            }
             return _tracer;
         }
 
