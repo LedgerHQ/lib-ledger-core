@@ -16,8 +16,6 @@
 #pragma warning(disable:4355)
 #endif
 
-#include <iostream>
-
 using namespace soci;
 using namespace soci::details;
 
