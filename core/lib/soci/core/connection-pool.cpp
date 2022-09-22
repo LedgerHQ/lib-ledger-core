@@ -45,10 +45,10 @@ struct connection_pool::connection_pool_impl
 
 connection_pool::connection_pool(std::size_t size)
 {
-  connection_pool(size, std::make_shared<session_tracer>());
+  connection_pool(size, std::make_shared<session_span_factory>());
 }
 
-connection_pool::connection_pool(std::size_t size, std::shared_ptr<session_tracer> tracer)
+connection_pool::connection_pool(std::size_t size, std::shared_ptr<session_span_factory> tracer)
 {
     if (size == 0)
     {

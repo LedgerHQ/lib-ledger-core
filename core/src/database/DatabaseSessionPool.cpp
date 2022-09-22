@@ -41,44 +41,41 @@
 namespace ledger {
     namespace core {
         namespace impl {
-            class SessionTracer : public soci::session_tracer {
+            class SessionSpan : public soci::sessions_span {
               public:
-                ~SessionTracer() override                       = default;
-                SessionTracer(const SessionTracer &)            = delete;
-                SessionTracer(SessionTracer &&)                 = delete;
-                SessionTracer &operator=(SessionTracer &&)      = delete;
-                SessionTracer &operator=(const SessionTracer &) = delete;
+                SessionSpan(const std::string &string, const std::shared_ptr<api::CoreTracer> &tracer) {
+                    _span = tracer->startSpan(string);
+                    _span->setTagStr("db.statement", string);
+                    _span->setTagStr("sql.query", string);
+                    _span->setTagStr("db.system", "postgresql");
+                    _span->setTagStr("span.type", "sql");
+                    _span->setTagStr("service", "postgresql");
+                }
+                ~SessionSpan() override {
+                    _span->close();
+                };
 
-                explicit SessionTracer(std::shared_ptr<api::CoreTracer> tracer) : _tracer(std::move(tracer)) {
+              private:
+                std::shared_ptr<api::Span> _span;
+            };
+
+            class SessionSpanFactory : public soci::session_span_factory {
+              public:
+                ~SessionSpanFactory() override                            = default;
+                SessionSpanFactory(const SessionSpanFactory &)            = delete;
+                SessionSpanFactory(SessionSpanFactory &&)                 = delete;
+                SessionSpanFactory &operator=(SessionSpanFactory &&)      = delete;
+                SessionSpanFactory &operator=(const SessionSpanFactory &) = delete;
+
+                explicit SessionSpanFactory(std::shared_ptr<api::CoreTracer> tracer) : _tracer(std::move(tracer)) {
                 }
 
-                int startSpan(std::string &string) override {
-                    const std::lock_guard<std::mutex> lock(_mutex);
-                    auto span = _tracer->startSpan(string);
-                    span->setTagStr("db.statement", string);
-                    span->setTagStr("sql.query", string);
-                    span->setTagStr("db.system", "postgresql");
-                    span->setTagStr("span.type", "sql");
-                    span->setTagStr("service", "postgresql");
-                    int id = _globalIndex++;
-                    _traces.insert(std::make_pair(id, span));
-                    return id;
-                }
-
-                void finishSpan(int traceId) override {
-                    const std::lock_guard<std::mutex> lock(_mutex);
-                    if (_traces.find(traceId) == _traces.end()) {
-                        throw std::runtime_error("Unknown session trace id");
-                    }
-                    _traces.at(traceId)->close();
-                    _traces.erase(traceId);
+                std::unique_ptr<soci::sessions_span> create(std::string &string) override {
+                    return std::make_unique<SessionSpan>(string, _tracer);
                 }
 
               private:
-                std::atomic<int> _globalIndex{};
-                std::map<int, std::shared_ptr<api::Span>> _traces;
                 std::shared_ptr<api::CoreTracer> _tracer;
-                std::mutex _mutex{};
             };
         } // namespace impl
 
@@ -88,8 +85,8 @@ namespace ledger {
             const std::shared_ptr<api::CoreTracer> &tracer,
             const std::shared_ptr<spdlog::logger> &logger,
             const std::string &dbName,
-            const std::string &password) : _pool(static_cast<size_t>(backend->getConnectionPoolSize()), std::make_shared<impl::SessionTracer>((tracer))),
-                                           _readonlyPool(static_cast<size_t>(backend->getReadonlyConnectionPoolSize()), std::make_shared<impl::SessionTracer>((tracer))),
+            const std::string &password) : _pool(static_cast<size_t>(backend->getConnectionPoolSize()), std::make_shared<impl::SessionSpanFactory>((tracer))),
+                                           _readonlyPool(static_cast<size_t>(backend->getReadonlyConnectionPoolSize()), std::make_shared<impl::SessionSpanFactory>((tracer))),
                                            _backend(backend),
                                            _buffer("SQL", logger) {
             std::cout << "DatabaseSessionPool::DatabaseSessionPool" << std::endl;
