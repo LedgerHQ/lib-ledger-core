@@ -54,6 +54,10 @@ namespace ledger {
                 ~SessionSpan() override {
                     _span->close();
                 };
+                SessionSpan(SessionSpan &)                  = delete;
+                SessionSpan(SessionSpan &&)                 = delete;
+                SessionSpan &operator=(const SessionSpan &) = delete;
+                SessionSpan &operator=(SessionSpan &&)      = delete;
 
               private:
                 std::shared_ptr<api::Span> _span;
