@@ -37,8 +37,8 @@ class blob_backend;
 class connection_pool;
 
 struct session_tracer {
-    virtual void startSpan(std::string &) {};
-    virtual void finishSpan() {};
+    virtual int startSpan(std::string &) { return 0; };
+    virtual void finishSpan(int) {};
     virtual ~session_tracer() = default;
 };
 

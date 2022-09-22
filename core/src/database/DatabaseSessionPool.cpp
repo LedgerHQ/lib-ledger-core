@@ -52,22 +52,33 @@ namespace ledger {
                 explicit SessionTracer(std::shared_ptr<api::CoreTracer> tracer) : _tracer(std::move(tracer)) {
                 }
 
-                void startSpan(std::string &string) override {
-                    _span = _tracer->startSpan(string);
-                    _span->setTagStr("db.statement", string);
-                    _span->setTagStr("sql.query", string);
-                    _span->setTagStr("db.system", "postgresql");
-                    _span->setTagStr("span.type", "sql");
-                    _span->setTagStr("service", "postgresql");
+                int startSpan(std::string &string) override {
+                    const std::lock_guard<std::mutex> lock(mut);
+                    auto span = _tracer->startSpan(string);
+                    span->setTagStr("db.statement", string);
+                    span->setTagStr("sql.query", string);
+                    span->setTagStr("db.system", "postgresql");
+                    span->setTagStr("span.type", "sql");
+                    span->setTagStr("service", "postgresql");
+                    int id = idx++;
+                    _traces.insert(std::make_pair(id, span));
+                    return id;
                 }
 
-                void finishSpan() override {
-                    _span->close();
+                void finishSpan(int traceId) override {
+                    const std::lock_guard<std::mutex> lock(mut);
+                    if (_traces.count(traceId) == 0) {
+                        throw std::runtime_error("Unknown session trace id");
+                    }
+                    _traces.at(traceId)->close();
+                    _traces.erase(traceId);
                 }
 
               private:
-                std::shared_ptr<api::Span> _span;
+                std::atomic<int> idx{};
+                std::map<int, std::shared_ptr<api::Span>> _traces;
                 std::shared_ptr<api::CoreTracer> _tracer;
+                std::mutex mut{};
             };
         } // namespace impl
 
