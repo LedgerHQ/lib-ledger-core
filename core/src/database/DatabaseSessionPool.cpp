@@ -53,21 +53,21 @@ namespace ledger {
                 }
 
                 int startSpan(std::string &string) override {
-                    const std::lock_guard<std::mutex> lock(mut);
+                    const std::lock_guard<std::mutex> lock(_mutex);
                     auto span = _tracer->startSpan(string);
                     span->setTagStr("db.statement", string);
                     span->setTagStr("sql.query", string);
                     span->setTagStr("db.system", "postgresql");
                     span->setTagStr("span.type", "sql");
                     span->setTagStr("service", "postgresql");
-                    int id = idx++;
+                    int id = _globalIndex++;
                     _traces.insert(std::make_pair(id, span));
                     return id;
                 }
 
                 void finishSpan(int traceId) override {
-                    const std::lock_guard<std::mutex> lock(mut);
-                    if (_traces.count(traceId) == 0) {
+                    const std::lock_guard<std::mutex> lock(_mutex);
+                    if (_traces.find(traceId) == _traces.end()) {
                         throw std::runtime_error("Unknown session trace id");
                     }
                     _traces.at(traceId)->close();
@@ -75,10 +75,10 @@ namespace ledger {
                 }
 
               private:
-                std::atomic<int> idx{};
+                std::atomic<int> _globalIndex{};
                 std::map<int, std::shared_ptr<api::Span>> _traces;
                 std::shared_ptr<api::CoreTracer> _tracer;
-                std::mutex mut{};
+                std::mutex _mutex{};
             };
         } // namespace impl
 
