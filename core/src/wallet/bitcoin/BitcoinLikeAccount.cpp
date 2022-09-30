@@ -454,15 +454,15 @@ namespace ledger {
         BitcoinLikeAccount::getUTXO(int32_t from, int32_t to) {
             auto self = getSelf();
             return async<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>([=]() -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
-                auto keychain = self->getKeychain();
-                auto currency = self->getWallet()->getCurrency();
+                auto keychain         = self->getKeychain();
+                auto currency         = self->getWallet()->getCurrency();
                 const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(currency, keychain->getKeychainEngine());
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxo;
                 BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, dustAmount,
                                                          utxo, [&keychain](const std::string &addr) {
-                    return keychain->contains(addr);
-                });
+                                                             return keychain->contains(addr);
+                                                         });
                 return functional::map<BitcoinLikeBlockchainExplorerOutput, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency](const BitcoinLikeBlockchainExplorerOutput &output) -> std::shared_ptr<api::BitcoinLikeOutput> {
                     return std::make_shared<BitcoinLikeOutputApi>(output, currency);
                 });
