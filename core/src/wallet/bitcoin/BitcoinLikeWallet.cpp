@@ -54,11 +54,13 @@ namespace ledger {
                                              const api::Currency &network,
                                              const std::shared_ptr<DynamicObject> &configuration,
                                              const DerivationScheme &scheme)
-            : AbstractWallet(name, network, pool, configuration, scheme) {
-            _explorer            = explorer;
-            _keychainFactory     = keychainFactory;
-            _synchronizerFactory = synchronizer;
-            _mempoolGracePeriod  = std::chrono::seconds(configuration->getInt(api::Configuration::MEMPOOL_GRACE_PERIOD_SECS).value_or(api::ConfigurationDefaults::DEFAULT_BTC_LIKE_MEMPOOL_GRACE));
+            : AbstractWallet(name, network, pool, configuration, scheme),
+              _synchronizerFactory(synchronizer),
+              _keychainFactory(keychainFactory),
+              _explorer(explorer),
+              _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
+                                                   .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE))),
+              _mempoolGracePeriod(std::chrono::seconds(configuration->getInt(api::Configuration::MEMPOOL_GRACE_PERIOD_SECS).value_or(api::ConfigurationDefaults::DEFAULT_BTC_LIKE_MEMPOOL_GRACE))) {
         }
 
         bool BitcoinLikeWallet::isSynchronizing() {
@@ -234,5 +236,20 @@ namespace ledger {
             return _explorer;
         }
 
+        void BitcoinLikeWallet::getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) {
+            auto currencyName = getCurrency().name;
+            auto optBlock     = _blockCache.get(currencyName);
+            if (optBlock.hasValue()) {
+                Future<api::Block>::successful(optBlock.getValue()).callback(getMainExecutionContext(), callback);
+            } else {
+                _explorer->getCurrentBlock()
+                    .map<api::Block>(getContext(), [self = getSelf(), currencyName](const std::shared_ptr<Block> &b) -> api::Block {
+                        auto block = b->toApiBlock();
+                        self->_blockCache.put(currencyName, block);
+                        return block;
+                    })
+                    .callback(getMainExecutionContext(), callback);
+            }
+        }
     } // namespace core
 } // namespace ledger
