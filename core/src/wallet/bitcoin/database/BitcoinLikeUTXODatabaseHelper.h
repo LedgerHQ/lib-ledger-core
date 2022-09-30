@@ -50,7 +50,7 @@ namespace ledger {
                                          int32_t count,
                                          int64_t dustAmount,
                                          std::vector<BitcoinLikeBlockchainExplorerOutput> &out,
-                                         std::function<bool(const std::string &address)> filter);
+                                         const std::function<bool(const std::string &address)>& filter);
 
             static std::size_t UTXOcount(soci::session &sql, const std::string &accountUid, std::function<bool(const std::string &address)> filter);
 
