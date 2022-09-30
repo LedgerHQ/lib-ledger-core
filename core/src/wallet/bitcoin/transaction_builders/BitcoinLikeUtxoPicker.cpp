@@ -250,16 +250,10 @@ namespace ledger {
         BitcoinLikeUtxoPicker::createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest &request,
                                                           const std::shared_ptr<BitcoinLikeKeychain> &keychain,
                                                           const BitcoinLikeGetUtxoFunction &getUtxo) {
-            const auto basicTransactionSize = BitcoinLikeTransactionApi::estimateSize(1, 1, getCurrency(), keychain->getKeychainEngine());
-            int64_t dustAmount              = BitcoinLikeTransactionApi::computeDustAmount(getCurrency(), basicTransactionSize.Max);
-            auto minAmount                  = dustAmount;
             return [=]() -> Future<std::vector<BitcoinLikeUtxo>> {
                 return getUtxo().map<std::vector<BitcoinLikeUtxo>>(getContext(), [=](auto const &utxos) {
                     auto const isNotExcluded = [&](auto const &currentUtxo) {
-                        // NOTE: This logic can be move to the SQL request itself but since we iterate through
-                        // the entire vector to compare the UTXO amount, this is fine to apply the filter(s) here.
-                        // The filter are sorted by ascending time order.
-                        return !(currentUtxo.address.isEmpty() || currentUtxo.value.toLong() < minAmount || !keychain->contains(currentUtxo.address.getValue()) || request.excludedUtxos.count(BitcoinLikeTransactionUtxoDescriptor{currentUtxo.transactionHash, currentUtxo.index}) > 0);
+                        return !(currentUtxo.address.isEmpty() || !keychain->contains(currentUtxo.address.getValue()) || request.excludedUtxos.count(BitcoinLikeTransactionUtxoDescriptor{currentUtxo.transactionHash, currentUtxo.index}) > 0);
                     };
 
                     std::vector<BitcoinLikeUtxo> filteredUtxos;
