@@ -307,10 +307,8 @@ namespace ledger {
             auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
-            auto future          = _synchronizer->synchronizeAccount(
-                                           std::static_pointer_cast<RippleLikeAccount>(shared_from_this()))
-                              ->getFuture();
-            auto self = std::static_pointer_cast<RippleLikeAccount>(shared_from_this());
+            auto future          = _synchronizer->synchronizeAccount(std::static_pointer_cast<RippleLikeAccount>(shared_from_this()))->getFuture();
+            auto self            = std::static_pointer_cast<RippleLikeAccount>(shared_from_this());
 
             // Update current block height (needed to compute trust level)
             _explorer->getCurrentBlock().onComplete(getContext(),
