@@ -360,8 +360,8 @@ namespace ledger {
                 std::vector<Operation> operations;
 
                 auto keychain                                   = self->getKeychain();
-                std::function<bool(const std::string &)> filter = [&keychain](const std::string &addr) -> bool {
-                    auto keychainAddr = keychain->getAddress()->toString();
+                auto keychainAddr                               = keychain->getAddress()->toString();
+                std::function<bool(const std::string &)> filter = [&keychain, &keychainAddr](const std::string &addr) -> bool {
                     return addr == keychainAddr;
                 };
 
@@ -543,8 +543,8 @@ namespace ledger {
                 auto skipEIP55Check = true;
                 // auto toAddress = BigInt::fromHex(hex::toString(reader.read(32))).toHexString();
                 erc20Tx.to          = EthereumLikeAddress::fromEIP55(
-                                          "0x" + BigInt::fromHex(hex::toString(reader.read(32))).toHexString(),
-                                          account->getWallet()->getCurrency(), Option<std::string>(""), skipEIP55Check)
+                                 "0x" + BigInt::fromHex(hex::toString(reader.read(32))).toHexString(),
+                                 account->getWallet()->getCurrency(), Option<std::string>(""), skipEIP55Check)
                                  ->toEIP55();
                 erc20Tx.value           = BigInt::fromHex(hex::toString(reader.read(32)));
                 erc20Tx.type            = api::OperationType::SEND;

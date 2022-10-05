@@ -46,6 +46,7 @@
 #include <events/Event.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <set>
+#include <utils/Cached.h>
 #include <utils/DateUtils.hpp>
 #include <wallet/common/BalanceHistory.hpp>
 #include <wallet/common/database/AccountDatabaseHelper.h>
@@ -176,10 +177,11 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain                                   = self->getKeychain();
-                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
+                auto keychain = self->getKeychain();
+                Cached<bool, std::string> cached;
+                std::function<bool(const std::string &)> filter = cached.build([&keychain](const std::string &addr) -> bool {
                     return keychain->contains(addr);
-                };
+                });
 
                 // Get operations related to an account
                 OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
