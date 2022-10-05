@@ -224,9 +224,9 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain                                   = self->getKeychain();
+                auto keychain = self->getKeychain();
                 Cached<bool, std::string> cached;
-                std::function<bool(const std::string &)> filter = cached.build([&keychain](const std::string& addr) -> bool {
+                std::function<bool(const std::string &)> filter = cached.build([&keychain](const std::string &addr) -> bool {
                     return keychain->contains(addr);
                 });
 
@@ -308,7 +308,7 @@ namespace ledger {
 
             _currentSyncEventBus = eventPublisher->getEventBus();
             auto future          = _synchronizer->synchronizeAccount(
-                                                    std::static_pointer_cast<RippleLikeAccount>(shared_from_this()))
+                                           std::static_pointer_cast<RippleLikeAccount>(shared_from_this()))
                               ->getFuture();
             auto self = std::static_pointer_cast<RippleLikeAccount>(shared_from_this());
 

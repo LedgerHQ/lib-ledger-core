@@ -32,15 +32,15 @@
 
 namespace ledger {
     namespace core {
-        template<class R, class P>
-        class  Cached {
+        template <class R, class P>
+        class Cached {
           public:
             std::function<bool(const P &)> build(std::function<R(const P &)> f) {
                 return [this, f = std::move(f)](const P &param) -> R {
                     const auto pos = cache.find(param);
                     if (pos == cache.cend()) {
                         const R contained = f(param);
-                        cache[param] = contained;
+                        cache[param]      = contained;
                         return contained;
                     }
                     return pos->second;
@@ -49,7 +49,6 @@ namespace ledger {
 
           private:
             std::unordered_map<P, R> cache{};
-
         };
-    }
+    } // namespace core
 } // namespace ledger
