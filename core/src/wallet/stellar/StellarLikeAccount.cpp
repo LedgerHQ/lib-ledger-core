@@ -178,10 +178,10 @@ namespace ledger {
                 std::vector<Operation> operations;
 
                 auto keychain = self->getKeychain();
-                Cached<bool, std::string> cached;
-                std::function<bool(const std::string &)> filter = cached.build([&keychain](const std::string &addr) -> bool {
-                    return keychain->contains(addr);
-                });
+                utils::cache_type<bool, std::string> cache{};
+                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                    return keychain->contains(addr);
+                                                                                }));
 
                 // Get operations related to an account
                 OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);

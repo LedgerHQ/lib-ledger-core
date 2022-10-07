@@ -28,27 +28,88 @@
 #pragma once
 
 #include <functional>
+#include <tuple>
 #include <unordered_map>
+namespace hash_tuple {
 
+    template <typename TT>
+    struct hash {
+        size_t
+        operator()(TT const &tt) const {
+            return std::hash<TT>()(tt);
+        }
+    };
+
+    namespace {
+        template <class T>
+        inline void hash_combine(std::size_t &seed, T const &v) {
+            seed ^= hash_tuple::hash<T>()(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        }
+
+        // Recursive template code derived from Matthieu M.
+        template <class Tuple, size_t Index = std::tuple_size<Tuple>::value - 1>
+        struct HashValueImpl {
+            static void apply(size_t &seed, Tuple const &tuple) {
+                HashValueImpl<Tuple, Index - 1>::apply(seed, tuple);
+                hash_combine(seed, std::get<Index>(tuple));
+            }
+        };
+
+        template <class Tuple>
+        struct HashValueImpl<Tuple, 0> {
+            static void apply(size_t &seed, Tuple const &tuple) {
+                hash_combine(seed, std::get<0>(tuple));
+            }
+        };
+    } // namespace
+
+    template <typename... TT>
+    struct hash<std::tuple<TT...>> {
+        size_t
+        operator()(std::tuple<TT...> const &tt) const {
+            size_t seed = 0;
+            HashValueImpl<std::tuple<TT...>>::apply(seed, tt);
+            return seed;
+        }
+    };
+
+} // namespace hash_tuple
 namespace ledger {
     namespace core {
-        template <class R, class P>
-        class Cached {
-          public:
-            std::function<bool(const P &)> build(std::function<R(const P &)> f) {
-                return [this, f = std::move(f)](const P &param) -> R {
-                    const auto pos = cache.find(param);
-                    if (pos == cache.cend()) {
-                        const R contained = f(param);
-                        cache[param]      = contained;
-                        return contained;
-                    }
-                    return pos->second;
-                };
+        namespace utils {
+
+            template <typename Function>
+            struct function_traits
+                : public function_traits<decltype(&Function::operator())> {};
+
+            template <typename ClassType, typename ReturnType, typename... Args>
+            struct function_traits<ReturnType (ClassType::*)(Args...) const> {
+                typedef ReturnType (*pointer)(Args...);
+                typedef std::function<ReturnType(Args...)> function;
+            };
+
+            template <typename Function>
+            typename function_traits<Function>::function
+            to_function(Function lambda) {
+                return typename function_traits<Function>::function(lambda);
             }
 
-          private:
-            std::unordered_map<P, R> cache{};
-        };
-    } // namespace core
+            template <typename R, typename... Args>
+            using cache_type = std::unordered_map<std::tuple<Args...>, R, hash_tuple::hash<std::tuple<Args...>>>;
+
+            template <typename R, typename... Args>
+            std::function<R(Args...)> cached(cache_type<R, Args...> &cache, std::function<R(Args...)> f) {
+                return [f, &cache](Args... args) {
+                    auto key = make_tuple(args...);
+                    if (cache.count(key) > 0)
+                        return cache[key];
+                    else {
+                        R result = f(std::forward<Args>(args)...);
+                        cache.insert(std::pair<decltype(key), R>(key, result));
+                        return result;
+                    }
+                };
+            }
+        } // namespace utils
+    }     // namespace core
 } // namespace ledger
