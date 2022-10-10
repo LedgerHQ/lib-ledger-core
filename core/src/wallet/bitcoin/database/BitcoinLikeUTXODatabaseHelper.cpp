@@ -96,7 +96,6 @@ namespace ledger {
                                                                "WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount "
                                                                "ORDER BY o.block_height",
                                             use(accountUid), use(dustAmount));
-            std::cout << "queryAllUtxos DustAmount: " << dustAmount << std::endl;
 
             std::vector<BitcoinLikeUtxo> utxos;
 
