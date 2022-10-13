@@ -491,9 +491,10 @@ namespace ledger {
             return async<int32_t>([=]() -> int32_t {
                 auto keychain = self->getKeychain();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
-                return (int32_t)BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), [keychain](const std::string &addr) -> bool {
+                const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
+                return static_cast<int32_t>(BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), dustAmount, [keychain](const std::string &addr) -> bool {
                     return keychain->contains(addr);
-                });
+                }));
             });
         }
 
