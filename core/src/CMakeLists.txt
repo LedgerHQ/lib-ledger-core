@@ -113,6 +113,13 @@ else()
     endif()
 
     if(UNIX AND NOT ANDROID)
+        # Disable warnings for generated files
+        set_source_files_properties(
+                ${ledger-core-djinni-api-sources}
+                ${ledger-core-jni-sources}
+                PROPERTIES
+                COMPILE_FLAGS "-w"
+        )
         target_link_libraries(ledger-core-obj PRIVATE -static-libstdc++)
     endif()
 

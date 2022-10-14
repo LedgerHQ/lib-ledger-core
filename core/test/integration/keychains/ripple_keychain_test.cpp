@@ -51,7 +51,7 @@ class RippleKeychains : public BaseFixture {
                 0,
                 ledger::core::RippleLikeExtendedPublicKey::fromBase58(data.currency,
                                                                       data.xpub,
-                                                                      optional<std::string>(data.derivationPath)),
+                                                                      experimental::optional<std::string>(data.derivationPath)),
                 std::make_shared<ledger::core::Preferences>(*backend, randomKeychainName()));
             f(keychain);
             dispatcher->stop();

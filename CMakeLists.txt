@@ -37,14 +37,14 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Cotire.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake-scripts/c++-standards.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake-scripts/tools.cmake")
 
-cxx_14()
+cxx_17()
 clang_tidy("-checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus*,cppcoreguidelines-*,modernize-*")            # add cmake conf option CLANG_TIDY=ON to activate
 include_what_you_use()  # add cmake conf option IWYU=ON to activate
 
 # The project version number.
 set(VERSION_MAJOR   4    CACHE STRING "Project major version number.")
 set(VERSION_MINOR   3    CACHE STRING "Project minor version number.")
-set(VERSION_PATCH   7    CACHE STRING "Project patch version number.")
+set(VERSION_PATCH   9    CACHE STRING "Project patch version number.")
 mark_as_advanced(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY build)

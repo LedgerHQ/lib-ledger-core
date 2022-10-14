@@ -44,14 +44,24 @@ namespace ledger {
             ~BitcoinLikeUTXODatabaseHelper() = delete;
 
           public:
-            static std::size_t queryUTXO(soci::session &sql, const std::string &accountUid, int32_t offset, int32_t count, std::vector<BitcoinLikeBlockchainExplorerOutput> &out, std::function<bool(const std::string &address)> filter);
+            static std::size_t queryUTXO(soci::session &sql,
+                                         const std::string &accountUid,
+                                         int32_t offset,
+                                         int32_t count,
+                                         int64_t dustAmount,
+                                         std::vector<BitcoinLikeBlockchainExplorerOutput> &out,
+                                         const std::function<bool(const std::string &address)> &filter);
 
-            static std::size_t UTXOcount(soci::session &sql, const std::string &accountUid, std::function<bool(const std::string &address)> filter);
+            static std::size_t UTXOcount(soci::session &sql,
+                                         const std::string &accountUid,
+                                         int64_t dustAmount,
+                                         const std::function<bool(const std::string &address)> &filter);
 
             static std::vector<BitcoinLikeUtxo> queryAllUtxos(
                 soci::session &session,
                 std::string const &accountUid,
-                api::Currency const &currency);
+                api::Currency const &currency,
+                int64_t dustAmount);
         };
     } // namespace core
 } // namespace ledger
