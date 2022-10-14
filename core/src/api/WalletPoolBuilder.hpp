@@ -16,6 +16,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+class CoreTracer;
 class DatabaseBackend;
 class DynamicObject;
 class HttpClient;
@@ -38,6 +39,13 @@ public:
      * @return WalletPoolBuilder object, instance with wallet pool http client set
      */
     virtual std::shared_ptr<WalletPoolBuilder> setHttpClient(const std::shared_ptr<HttpClient> & client) = 0;
+
+    /**
+     * Set tracer to be used for wallet pool build.
+     * @param tracer, CoreTracer
+     * @return WalletPoolBuilder object, instance with wallet pool http client set
+     */
+    virtual std::shared_ptr<WalletPoolBuilder> setTracer(const std::shared_ptr<CoreTracer> & tracer) = 0;
 
     /**
      * Set web socket client, through which wallet pool will listen and get notified (by explorers, DBs...).

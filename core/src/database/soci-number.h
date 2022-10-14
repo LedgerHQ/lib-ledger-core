@@ -67,7 +67,7 @@ namespace soci {
         case dt_unsigned_long_long:
             return (T)row.get<unsigned long long>(pos);
         default:
-            throw std::logic_error("Unknown data type. Should never come here.");
+            throw std::logic_error("Unmatched switch case");
         }
     };
 

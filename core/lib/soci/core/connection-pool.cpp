@@ -44,6 +44,10 @@ struct connection_pool::connection_pool_impl
 };
 
 connection_pool::connection_pool(std::size_t size)
+: connection_pool(size, std::make_shared<session_span_factory>())
+{}
+
+connection_pool::connection_pool(std::size_t size, std::shared_ptr<session_span_factory> tracer)
 {
     if (size == 0)
     {
@@ -54,7 +58,7 @@ connection_pool::connection_pool(std::size_t size)
     pimpl_->sessions_.resize(size);
     for (std::size_t i = 0; i != size; ++i)
     {
-        pimpl_->sessions_[i] = std::make_pair(true, new session());
+        pimpl_->sessions_[i] = std::make_pair(true, new session(tracer));
     }
 
     int cc = pthread_mutex_init(&(pimpl_->mtx_), NULL);

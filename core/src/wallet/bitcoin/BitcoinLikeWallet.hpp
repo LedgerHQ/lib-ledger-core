@@ -76,6 +76,8 @@ namespace ledger {
 
             std::chrono::seconds getMempoolGracePeriod() const override { return _mempoolGracePeriod; }
 
+            void getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) override;
+
           protected:
             std::shared_ptr<AbstractAccount>
             createAccountInstance(soci::session &sql, const std::string &accountUid) override;
@@ -88,6 +90,7 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeKeychainFactory> _keychainFactory;
             BitcoinLikeAccountSynchronizerFactory _synchronizerFactory;
             std::chrono::seconds _mempoolGracePeriod;
+            TTLCache<std::string, api::Block> _blockCache;
         };
     } // namespace core
 } // namespace ledger

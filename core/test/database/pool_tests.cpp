@@ -31,6 +31,7 @@
 
 #include "../common/test_config.h"
 #include "MemPreferencesBackend.hpp"
+#include "ProxyCoreTracer.h"
 #include "api/ConfigurationDefaults.hpp"
 
 #include <CoutLogPrinter.hpp>
@@ -68,7 +69,7 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
     auto resolver   = std::make_shared<NativePathResolver>();
     auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
 
-    DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, nullptr, getPostgresUrl())
+    DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, std::make_shared<ledger::core::test::ProxyCoreTracer>(), nullptr, getPostgresUrl())
         .onComplete(dispatcher->getMainExecutionContext(), [&](const TryPtr<DatabaseSessionPool> &result) {
             EXPECT_TRUE(result.isSuccess());
             if (result.isFailure()) {
@@ -110,7 +111,8 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
         backend,
         configuration,
         std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-        std::make_shared<ledger::core::test::MemPreferencesBackend>());
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        std::make_shared<ledger::core::test::ProxyCoreTracer>());
 
     api::Currency bitcoin;
 

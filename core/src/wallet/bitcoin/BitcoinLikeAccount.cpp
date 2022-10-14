@@ -391,6 +391,7 @@ namespace ledger {
 
         std::shared_ptr<api::EventBus> BitcoinLikeAccount::synchronize() {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
+            auto span = getTracer()->startSpan("BitcoinLikeAccount::synchronize");
             if (_currentSyncEventBus)
                 return _currentSyncEventBus;
             auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
@@ -410,7 +411,8 @@ namespace ledger {
 
             auto startTime = DateUtils::now();
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
-            future.onComplete(getContext(), [eventPublisher, self, wasEmpty, startTime](auto const &result) {
+            future.onComplete(getContext(), [eventPublisher, self, wasEmpty, startTime, span](auto const &result) {
+                auto span2   = self->getTracer()->startSpan("BitcoinLikeAccount::synchronize.onComplete");
                 auto isEmpty = self->checkIfWalletIsEmpty();
                 api::EventCode code;
                 auto payload  = std::make_shared<DynamicObject>();
@@ -438,6 +440,8 @@ namespace ledger {
                 eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
                 std::lock_guard<std::mutex> lock(self->_synchronizationLock);
                 self->_currentSyncEventBus = nullptr;
+                span2->close();
+                span->close();
             });
             return eventPublisher->getEventBus();
         }
@@ -450,13 +454,15 @@ namespace ledger {
         BitcoinLikeAccount::getUTXO(int32_t from, int32_t to) {
             auto self = getSelf();
             return async<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>([=]() -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
-                auto keychain = self->getKeychain();
+                auto keychain         = self->getKeychain();
+                auto currency         = self->getWallet()->getCurrency();
+                const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(currency, keychain->getKeychainEngine());
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxo;
-                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, utxo, [&keychain](const std::string &addr) {
-                    return keychain->contains(addr);
-                });
-                auto currency = self->getWallet()->getCurrency();
+                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, dustAmount,
+                                                         utxo, [&keychain](const std::string &addr) {
+                                                             return keychain->contains(addr);
+                                                         });
                 return functional::map<BitcoinLikeBlockchainExplorerOutput, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency](const BitcoinLikeBlockchainExplorerOutput &output) -> std::shared_ptr<api::BitcoinLikeOutput> {
                     return std::make_shared<BitcoinLikeOutputApi>(output, currency);
                 });
@@ -485,9 +491,10 @@ namespace ledger {
             return async<int32_t>([=]() -> int32_t {
                 auto keychain = self->getKeychain();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
-                return (int32_t)BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), [keychain](const std::string &addr) -> bool {
+                const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
+                return static_cast<int32_t>(BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), dustAmount, [keychain](const std::string &addr) -> bool {
                     return keychain->contains(addr);
-                });
+                }));
             });
         }
 
@@ -540,7 +547,8 @@ namespace ledger {
                 std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
                     return keychain->contains(addr);
                 };
-                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), utxos, filter);
+                const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
+                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), dustAmount, utxos, filter);
                 switch (strategy) {
                 case api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST:
                 case api::BitcoinLikePickingStrategy::MERGE_OUTPUTS:
@@ -583,7 +591,8 @@ namespace ledger {
                 std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
                     return keychain->contains(addr);
                 };
-                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), utxos, filter);
+                const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
+                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), dustAmount, utxos, filter);
                 for (const auto &utxo : utxos) {
                     sum = sum + utxo.value;
                 }
@@ -766,14 +775,8 @@ namespace ledger {
                     auto keychain = self->getKeychain();
                     soci::session session(self->getWallet()->getDatabase()->getPool());
 
-                    auto utxos         = BitcoinLikeUTXODatabaseHelper::queryAllUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency());
-                    const auto maxUtxo = self->getWallet()->getConfig()->getInt("MAX_UTXO").value_or(std::numeric_limits<int>::max());
-
-                    if (utxos.size() > maxUtxo) {
-                        throw std::runtime_error(fmt::format("Too many utxos. Got {}, but max is {}.", utxos.size(), maxUtxo));
-                    }
-
-                    return utxos;
+                    const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
+                    return BitcoinLikeUTXODatabaseHelper::queryAllUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency(), dustAmount);
                 });
             };
             auto getTransaction = [self](const std::string &hash) -> FuturePtr<BitcoinLikeBlockchainExplorerTransaction> {

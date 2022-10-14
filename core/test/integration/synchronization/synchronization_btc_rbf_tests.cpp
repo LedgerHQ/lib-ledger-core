@@ -33,6 +33,7 @@
 #include "ExplorerStorage.hpp"
 #include "HttpClientOnFakeExplorer.hpp"
 #include "MemPreferencesBackend.hpp"
+#include "ProxyCoreTracer.h"
 
 #include <UvThreadDispatcher.hpp>
 #include <algorithm>
@@ -71,7 +72,8 @@ struct BitcoinLikeWalletBtcRbfSynchronization : public BaseFixture {
             backend,
             api::DynamicObject::newInstance(),
             std::make_shared<ledger::core::test::MemPreferencesBackend>(),
-            std::make_shared<ledger::core::test::MemPreferencesBackend>());
+            std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+            std::make_shared<ledger::core::test::ProxyCoreTracer>());
     }
 
     std::shared_ptr<api::BitcoinLikeTransaction> findTransaction(const std::shared_ptr<BitcoinLikeAccount> &account,

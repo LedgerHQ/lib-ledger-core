@@ -1,0 +1,11 @@
+Span = interface +j {
+    setTagStr(name: string, value: string);
+    setTagInt(name: string, value: i32);
+    setTagDouble(name: string, value: f64);
+    setTagBool(name: string, value: bool);
+    close();
+}
+
+CoreTracer = interface +j {
+    startSpan(name: string): Span;
+}

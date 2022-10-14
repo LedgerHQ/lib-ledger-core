@@ -42,6 +42,7 @@
 #include <api/BitcoinLikeAccount.hpp>
 #include <api/Block.hpp>
 #include <api/BlockCallback.hpp>
+#include <api/CoreTracer.hpp>
 #include <api/CosmosLikeAccount.hpp>
 #include <api/ErrorCodeCallback.hpp>
 #include <api/EthereumLikeAccount.hpp>
@@ -84,6 +85,7 @@ namespace ledger {
             virtual const std::string &getAccountUid() const;
             virtual std::shared_ptr<AbstractWallet> getWallet() const;
             virtual std::shared_ptr<AbstractWallet> getWallet();
+            std::shared_ptr<api::CoreTracer> getTracer() const;
             const std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
 
             void getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) override;

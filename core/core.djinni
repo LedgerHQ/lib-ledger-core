@@ -1,5 +1,6 @@
 
 @import "idl/debug/logger.djinni"
+@import "idl/debug/tracing.djinni"
 @import "idl/fs/path_resolver.djinni"
 @import "idl/math/big_int.djinni"
 @import "idl/net/http_client.djinni"

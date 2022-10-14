@@ -11,16 +11,19 @@
 #include "soci-config.h"
 // std
 #include <cstddef>
+#include <memory>
 
 namespace soci
 {
 
 class session;
+class session_span_factory;
 
 class SOCI_DECL connection_pool
 {
 public:
     explicit connection_pool(std::size_t size);
+    explicit connection_pool(std::size_t size, std::shared_ptr<session_span_factory> tracer);
     ~connection_pool();
 
     session & at(std::size_t pos);

@@ -248,6 +248,7 @@ void statement_impl::undefine_and_bind()
 
 bool statement_impl::execute(bool withDataExchange)
 {
+    const auto span = session_.get_tracer()->create(query_);
     initialFetchSize_ = intos_size();
 
     if (intos_.empty() == false && initialFetchSize_ == 0)
