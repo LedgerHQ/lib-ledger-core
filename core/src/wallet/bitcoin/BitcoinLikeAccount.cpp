@@ -467,7 +467,6 @@ namespace ledger {
                                                                                 }));
 
                 BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, dustAmount, utxo, filter);
-                auto currency = self->getWallet()->getCurrency();
                 return functional::map<BitcoinLikeBlockchainExplorerOutput, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency](const BitcoinLikeBlockchainExplorerOutput &output) -> std::shared_ptr<api::BitcoinLikeOutput> {
                     return std::make_shared<BitcoinLikeOutputApi>(output, currency);
                 });
