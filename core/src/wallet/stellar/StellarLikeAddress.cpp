@@ -142,6 +142,8 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Crypto key of type KEY_TYPE_PRE_AUTH_TX is not an address.");
             case stellar::xdr::CryptoKeyType::KEY_TYPE_HASH_X:
                 throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Crypto key of type KEY_TYPE_HASH_X is not an address.");
+            default:
+                throw std::logic_error("Unknown data type. Should never come here.");
             }
         }
 

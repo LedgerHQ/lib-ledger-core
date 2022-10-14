@@ -128,6 +128,9 @@ namespace ledger {
 
             case api::DynamicType::UNDEFINED:
                 return fmt::format("<[{}]>\n", api::to_string(type));
+
+            default:
+                throw std::logic_error("Unknown data type. Should never come here.");
             }
         }
 
@@ -167,6 +170,9 @@ namespace ledger {
 
             case api::DynamicType::UNDEFINED:
                 return ss << fmt::format("[{}]", api::to_string(type));
+
+            default:
+                throw std::logic_error("Unknown data type. Should never come here.");
             }
         }
 
