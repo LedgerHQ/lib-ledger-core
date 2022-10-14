@@ -41,7 +41,7 @@ using namespace soci;
 namespace ledger {
     namespace core {
 
-        std::size_t BitcoinLikeUTXODatabaseHelper::UTXOcount(soci::session &sql, const std::string &accountUid, int64_t dustAmount, std::function<bool(const std::string &address)> filter) {
+        std::size_t BitcoinLikeUTXODatabaseHelper::UTXOcount(soci::session &sql, const std::string &accountUid, int64_t dustAmount, const std::function<bool(const std::string &address)> &filter) {
             rowset<row> rows  = (sql.prepare << "SELECT o.address FROM bitcoin_outputs AS o "
                                                 " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
                                                 " AND i.previous_output_idx = o.idx"
@@ -49,8 +49,9 @@ namespace ledger {
                                 use(accountUid), use(dustAmount));
             std::size_t count = 0;
             for (auto &row : rows) {
-                if (row.get_indicator(0) != i_null && filter(row.get<std::string>(0)))
+                if (row.get_indicator(0) != i_null && filter(row.get<std::string>(0))) {
                     count += 1;
+                }
             }
             return count;
         }
