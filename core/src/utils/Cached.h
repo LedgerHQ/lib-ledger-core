@@ -43,7 +43,7 @@ namespace hash_tuple {
     namespace {
         template <class T>
         inline void hash_combine(std::size_t &seed, T const &v) {
-            seed ^= hash_tuple::hash<T>()(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+            seed ^= hash_tuple::hash<T>()(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2); // NOLINT(hicpp-signed-bitwise)
         }
 
         // Recursive template code derived from Matthieu M.
@@ -84,8 +84,8 @@ namespace ledger {
 
             template <typename ClassType, typename ReturnType, typename... Args>
             struct function_traits<ReturnType (ClassType::*)(Args...) const> {
-                typedef ReturnType (*pointer)(Args...);
-                typedef std::function<ReturnType(Args...)> function;
+                using pointer  = ReturnType (*)(Args...);
+                using function = std::function<ReturnType(Args...)>;
             };
 
             template <typename Function>
@@ -101,13 +101,12 @@ namespace ledger {
             std::function<R(Args...)> cached(cache_type<R, Args...> &cache, std::function<R(Args...)> f) {
                 return [f, &cache](Args... args) {
                     auto key = make_tuple(args...);
-                    if (cache.count(key) > 0)
+                    if (cache.count(key) > 0) {
                         return cache[key];
-                    else {
-                        R result = f(std::forward<Args>(args)...);
-                        cache.insert(std::pair<decltype(key), R>(key, result));
-                        return result;
                     }
+                    R result = f(std::forward<Args>(args)...);
+                    cache.insert(std::pair<decltype(key), R>(key, result));
+                    return result;
                 };
             }
         } // namespace utils
