@@ -321,6 +321,11 @@ namespace ledger {
             return estimateSize(fixedSize, inputCount, outputsSize, outputsSize, keychainEngine);
         }
 
+        int64_t BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(const api::Currency &currency, const std::string &keychainEngine) {
+            const auto basicTransactionSize = estimateSize(1, 1, currency, keychainEngine);
+            return computeDustAmount(currency, basicTransactionSize.Max);
+        }
+
         int64_t BitcoinLikeTransactionApi::computeDustAmount(const api::Currency &currency, int32_t size) {
             int64_t dustAmount = currency.bitcoinLikeNetworkParameters.value().Dust;
             switch (currency.bitcoinLikeNetworkParameters.value().DustPolicy) {
