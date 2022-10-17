@@ -76,37 +76,35 @@ namespace hash_tuple {
 } // namespace hash_tuple
 namespace ledger::core::utils {
 
-            template <typename Function>
-            struct function_traits
-                : public function_traits<decltype(&Function::operator())> {};
+    template <typename Function>
+    struct function_traits
+        : public function_traits<decltype(&Function::operator())> {};
 
-            template <typename ClassType, typename ReturnType, typename... Args>
-            struct function_traits<ReturnType (ClassType::*)(Args...) const> {
-                using pointer  = ReturnType (*)(Args...);
-                using function = std::function<ReturnType(Args...)>;
-            };
+    template <typename ClassType, typename ReturnType, typename... Args>
+    struct function_traits<ReturnType (ClassType::*)(Args...) const> {
+        using pointer  = ReturnType (*)(Args...);
+        using function = std::function<ReturnType(Args...)>;
+    };
 
-            template <typename Function>
-            typename function_traits<Function>::function
-            to_function(Function lambda) {
-                return typename function_traits<Function>::function(lambda);
+    template <typename Function>
+    typename function_traits<Function>::function
+    to_function(Function lambda) {
+        return typename function_traits<Function>::function(lambda);
+    }
+
+    template <typename R, typename... Args>
+    using cache_type = std::unordered_map<std::tuple<Args...>, R, hash_tuple::hash<std::tuple<Args...>>>;
+
+    template <typename R, typename... Args>
+    std::function<R(Args...)> cached(cache_type<R, Args...> &cache, std::function<R(Args...)> f) {
+        return [f, &cache](Args... args) {
+            auto key = make_tuple(args...);
+            if (cache.count(key) > 0) {
+                return cache[key];
             }
-
-            template <typename R, typename... Args>
-            using cache_type = std::unordered_map<std::tuple<Args...>, R, hash_tuple::hash<std::tuple<Args...>>>;
-
-            template <typename R, typename... Args>
-            std::function<R(Args...)> cached(cache_type<R, Args...> &cache, std::function<R(Args...)> f) {
-                return [f, &cache](Args... args) {
-                    auto key = make_tuple(args...);
-                    if (cache.count(key) > 0) {
-                        return cache[key];
-                    }
-                    R result = f(std::forward<Args>(args)...);
-                    cache.insert(std::pair<decltype(key), R>(key, result));
-                    return result;
-                };
-            }
-        } // namespace utils
-    }     // namespace core
-} // namespace ledger
+            R result = f(std::forward<Args>(args)...);
+            cache.insert(std::pair<decltype(key), R>(key, result));
+            return result;
+        };
+    }
+} // namespace ledger::core::utils
