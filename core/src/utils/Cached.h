@@ -74,9 +74,7 @@ namespace hash_tuple {
     };
 
 } // namespace hash_tuple
-namespace ledger {
-    namespace core {
-        namespace utils {
+namespace ledger::core::utils {
 
             template <typename Function>
             struct function_traits
