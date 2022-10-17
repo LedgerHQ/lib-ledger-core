@@ -550,7 +550,7 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
                 BigInt sum(0);
-                auto keychain = self->getKeychain();
+                auto keychain         = self->getKeychain();
                 const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
                 utils::cache_type<bool, std::string> cache{};
                 std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
@@ -595,7 +595,7 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
                 BigInt sum(0);
-                auto keychain = self->getKeychain();
+                auto keychain         = self->getKeychain();
                 const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
                 utils::cache_type<bool, std::string> cache{};
                 std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
