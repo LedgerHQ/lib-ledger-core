@@ -167,12 +167,10 @@ namespace ledger {
 
             auto originatedAccountUid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(getAccountUid(), origAccount.address);
 
-            const auto found          = std::find_if(
-                _originatedAccounts.begin(),
-                _originatedAccounts.end(),
-                [&originatedAccountUid](const std::shared_ptr<api::TezosLikeOriginatedAccount> &element) {
-                    return std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(element)->getAccountUid() == originatedAccountUid;
-                });
+            const auto found          = std::find_if(_originatedAccounts.begin(), _originatedAccounts.end(),
+                                                     [&originatedAccountUid](const std::shared_ptr<api::TezosLikeOriginatedAccount> &element) {
+                                                return std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(element)->getAccountUid() == originatedAccountUid;
+                                            });
 
             if (found == _originatedAccounts.end()) {
                 _originatedAccounts.emplace_back(
