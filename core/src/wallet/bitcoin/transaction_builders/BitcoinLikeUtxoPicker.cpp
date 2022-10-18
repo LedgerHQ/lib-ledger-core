@@ -31,6 +31,8 @@
 
 #include "BitcoinLikeUtxoPicker.h"
 
+#include "utils/Cached.h"
+
 #include <api/BitcoinLikeScript.hpp>
 #include <api/BitcoinLikeScriptChunk.hpp>
 #include <async/Promise.hpp>
@@ -252,8 +254,13 @@ namespace ledger {
                                                           const BitcoinLikeGetUtxoFunction &getUtxo) {
             return [=]() -> Future<std::vector<BitcoinLikeUtxo>> {
                 return getUtxo().map<std::vector<BitcoinLikeUtxo>>(getContext(), [=](auto const &utxos) {
-                    auto const isNotExcluded = [&](auto const &currentUtxo) {
-                        return !(currentUtxo.address.isEmpty() || !keychain->contains(currentUtxo.address.getValue()) || request.excludedUtxos.count(BitcoinLikeTransactionUtxoDescriptor{currentUtxo.transactionHash, currentUtxo.index}) > 0);
+                    utils::cache_type<bool, std::string> cache{};
+                    std::function<bool(const std::string &)> keychainContains = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                                  return keychain->contains(addr);
+                                                                                              }));
+
+                    auto const isNotExcluded                                  = [&keychainContains, &request](auto const &currentUtxo) {
+                        return !(currentUtxo.address.isEmpty() || !keychainContains(currentUtxo.address.getValue()) || request.excludedUtxos.count(BitcoinLikeTransactionUtxoDescriptor{currentUtxo.transactionHash, currentUtxo.index}) > 0);
                     };
 
                     std::vector<BitcoinLikeUtxo> filteredUtxos;
