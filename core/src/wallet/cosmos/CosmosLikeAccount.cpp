@@ -43,6 +43,7 @@
 #include <math/Base58.hpp>
 #include <numeric>
 #include <soci.h>
+#include <utils/Cached.h>
 #include <utils/DateUtils.hpp>
 #include <utils/Option.hpp>
 #include <wallet/common/Block.h>
@@ -471,10 +472,10 @@ namespace ledger {
                     std::vector<Operation> operations;
 
                     auto keychain = self->getKeychain();
-                    std::function<bool(const std::string &)> filter =
-                        [&keychain](const std::string addr) -> bool {
-                        return keychain->contains(addr);
-                    };
+                    utils::cache_type<bool, std::string> cache{};
+                    std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                        return keychain->contains(addr);
+                                                                                    }));
 
                     // Get operations related to an account
                     CosmosLikeOperationDatabaseHelper::queryOperations(sql, uid, operations, filter);

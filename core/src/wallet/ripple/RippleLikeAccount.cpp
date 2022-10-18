@@ -40,6 +40,7 @@
 #include <database/soci-option.h>
 #include <events/Event.hpp>
 #include <math/Base58.hpp>
+#include <utils/Cached.h>
 #include <utils/DateUtils.hpp>
 #include <utils/Option.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
@@ -223,10 +224,11 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain                                   = self->getKeychain();
-                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-                    return keychain->contains(addr);
-                };
+                auto keychain = self->getKeychain();
+                utils::cache_type<bool, std::string> cache{};
+                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                    return keychain->contains(addr);
+                                                                                }));
 
                 // Get operations related to an account
                 OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
@@ -305,10 +307,8 @@ namespace ledger {
             auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
-            auto future          = _synchronizer->synchronizeAccount(
-                                                    std::static_pointer_cast<RippleLikeAccount>(shared_from_this()))
-                              ->getFuture();
-            auto self = std::static_pointer_cast<RippleLikeAccount>(shared_from_this());
+            auto future          = _synchronizer->synchronizeAccount(std::static_pointer_cast<RippleLikeAccount>(shared_from_this()))->getFuture();
+            auto self            = std::static_pointer_cast<RippleLikeAccount>(shared_from_this());
 
             // Update current block height (needed to compute trust level)
             _explorer->getCurrentBlock().onComplete(getContext(),

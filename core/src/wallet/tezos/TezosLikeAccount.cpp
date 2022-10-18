@@ -43,6 +43,7 @@
 #include <events/Event.hpp>
 #include <math/Base58.hpp>
 #include <soci.h>
+#include <utils/Cached.h>
 #include <utils/DateUtils.hpp>
 #include <utils/Option.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
@@ -166,12 +167,10 @@ namespace ledger {
 
             auto originatedAccountUid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(getAccountUid(), origAccount.address);
 
-            const auto found          = std::find_if(
-                         _originatedAccounts.begin(),
-                         _originatedAccounts.end(),
-                         [&originatedAccountUid](const std::shared_ptr<api::TezosLikeOriginatedAccount> &element) {
-                    return std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(element)->getAccountUid() == originatedAccountUid;
-                });
+            const auto found          = std::find_if(_originatedAccounts.begin(), _originatedAccounts.end(),
+                                                     [&originatedAccountUid](const std::shared_ptr<api::TezosLikeOriginatedAccount> &element) {
+                                                return std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(element)->getAccountUid() == originatedAccountUid;
+                                            });
 
             if (found == _originatedAccounts.end()) {
                 _originatedAccounts.emplace_back(
@@ -285,10 +284,11 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain                                   = self->getKeychain();
-                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-                    return keychain->contains(addr);
-                };
+                auto keychain = self->getKeychain();
+                utils::cache_type<bool, std::string> cache{};
+                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                    return keychain->contains(addr);
+                                                                                }));
 
                 // Get operations related to an account
                 TezosLikeAccountDatabaseHelper::queryOperations(sql, uid, operations, filter);

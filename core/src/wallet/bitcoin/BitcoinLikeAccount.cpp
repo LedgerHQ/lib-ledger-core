@@ -47,6 +47,7 @@
 #include <memory>
 #include <numeric>
 #include <spdlog/logger.h>
+#include <utils/Cached.h>
 #include <utils/DateUtils.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
@@ -459,10 +460,13 @@ namespace ledger {
                 const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(currency, keychain->getKeychainEngine());
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxo;
-                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, dustAmount,
-                                                         utxo, [&keychain](const std::string &addr) {
-                                                             return keychain->contains(addr);
-                                                         });
+
+                utils::cache_type<bool, std::string> cache{};
+                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                    return keychain->contains(addr);
+                                                                                }));
+
+                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, dustAmount, utxo, filter);
                 return functional::map<BitcoinLikeBlockchainExplorerOutput, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency](const BitcoinLikeBlockchainExplorerOutput &output) -> std::shared_ptr<api::BitcoinLikeOutput> {
                     return std::make_shared<BitcoinLikeOutputApi>(output, currency);
                 });
@@ -492,9 +496,12 @@ namespace ledger {
                 auto keychain = self->getKeychain();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
-                return static_cast<int32_t>(BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), dustAmount, [keychain](const std::string &addr) -> bool {
-                    return keychain->contains(addr);
-                }));
+                utils::cache_type<bool, std::string> cache{};
+                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                    return keychain->contains(addr);
+                                                                                }));
+
+                return static_cast<int32_t>(BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), dustAmount, filter));
             });
         }
 
@@ -543,11 +550,12 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
                 BigInt sum(0);
-                auto keychain                                   = self->getKeychain();
-                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-                    return keychain->contains(addr);
-                };
+                auto keychain         = self->getKeychain();
                 const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
+                utils::cache_type<bool, std::string> cache{};
+                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                    return keychain->contains(addr);
+                                                                                }));
                 BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), dustAmount, utxos, filter);
                 switch (strategy) {
                 case api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST:
@@ -587,11 +595,12 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
                 BigInt sum(0);
-                auto keychain                                   = self->getKeychain();
-                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-                    return keychain->contains(addr);
-                };
+                auto keychain         = self->getKeychain();
                 const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
+                utils::cache_type<bool, std::string> cache{};
+                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                    return keychain->contains(addr);
+                                                                                }));
                 BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), dustAmount, utxos, filter);
                 for (const auto &utxo : utxos) {
                     sum = sum + utxo.value;
@@ -619,10 +628,12 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain                                   = self->getKeychain();
-                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-                    return keychain->contains(addr);
-                };
+                auto keychain = self->getKeychain();
+
+                utils::cache_type<bool, std::string> cache{};
+                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                    return keychain->contains(addr);
+                                                                                }));
 
                 // Get operations related to an account
                 OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
