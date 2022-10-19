@@ -594,13 +594,16 @@ namespace ledger {
                 const auto &uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
-                BigInt sum(0);
                 auto keychain = self->getKeychain();
                 utils::cache_type<bool, std::string> cache{};
                 std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
                                                                                     return keychain->contains(addr);
                                                                                 }));
-                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), 0, utxos, filter);
+
+                BigInt sum(0);
+                const auto balanceWithDust = self->getWallet()->getConfig()->getBoolean("REGULATED_BALANCE_WITH_DUST").value_or(false);
+                const auto dustAmount      = balanceWithDust ? BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine()) : 0;
+                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), dustAmount, utxos, filter);
                 for (const auto &utxo : utxos) {
                     sum = sum + utxo.value;
                 }
