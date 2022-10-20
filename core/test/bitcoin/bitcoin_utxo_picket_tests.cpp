@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 #include <ledger/core/api/Networks.hpp>
 #include <spdlog/sinks/null_sink.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/common/Amount.h>
 #include <wallet/currencies.hpp>
@@ -83,23 +84,28 @@ std::vector<BitcoinLikeUtxo> createUtxos(const std::vector<int64_t> &values) {
         auto amount = Amount(currencies::BITCOIN, 0, BigInt(value));
 
         return BitcoinLikeUtxo{
-            0,
-            amount.toString(),
-            amount,
-            Option<std::string>{},
-            Option<std::string>{},
-            "",
-            Option<uint64_t>{}};
+            .index           = 0,
+            .transactionHash = amount.toString(),
+            .value           = amount,
+            .address         = Option<std::string>{},
+            .accountUid      = Option<std::string>{},
+            .script          = "",
+            .blockHeight     = Option<uint64_t>{}};
     });
 
     return utxos;
 }
 
-std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> createBuddy(int64_t feesPerByte, int64_t outputAmount, const api::Currency &currency) {
+std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> createBuddy(int64_t feesPerByte, int64_t outputAmount, const api::Currency &currency, Try<BitcoinLikeScript> script = Try<BitcoinLikeScript>()) {
     BitcoinLikeTransactionBuildRequest r(std::make_shared<BigInt>(0));
     r.wipe       = false;
     r.feePerByte = std::make_shared<BigInt>(feesPerByte);
-    r.outputs.push_back(std::make_tuple(std::make_shared<BigInt>(outputAmount), std::make_shared<MockBitcoinLikeScript>()));
+    if (script.isSuccess()) {
+        std::shared_ptr<api::BitcoinLikeScript> shared = std::make_shared<BitcoinLikeScriptApi>(script.getValue());
+        r.outputs.emplace_back(std::make_shared<BigInt>(outputAmount), shared);
+    } else {
+        r.outputs.emplace_back(std::make_shared<BigInt>(outputAmount), std::make_shared<MockBitcoinLikeScript>());
+    }
     r.utxoPicker = BitcoinUtxoPickerParams{api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0, optional<int32_t>()};
 
     BitcoinLikeGetUtxoFunction g;
@@ -175,6 +181,31 @@ TEST(OptimizeSize, ApproximationShouldTookEnough) {
 
     auto utxos               = createUtxos(inputAmounts);
     auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency);
+    int64_t totalInputsValue = 0;
+    for (auto utxo : pickedUtxos) {
+        totalInputsValue += utxo.value.toLong();
+    }
+    int64_t transactionFees     = totalInputsValue - buddy->changeAmount.toInt64() - outputAmount;
+    int64_t minimumRequiredFees = (emtyTransactionSizeInBytes + outputSizeInBytes * 2 + inputSizeInBytes * pickedUtxos.size()) * feesPerByte;
+    EXPECT_GE(transactionFees, minimumRequiredFees);
+    if (buddy->changeAmount.toInt64() != 0)
+        EXPECT_GE(buddy->changeAmount.toInt64(), inputSizeInBytes * feesPerByte);
+}
+
+TEST(MergeOutputs, ShouldCraftTransaction) {
+    auto script                              = BitcoinLikeScript::parse(hex::toByteArray("00205d1b56b63d714eebe542309525f484b7e9d6f686b3781b6f61ef925d66d6f6a0"));
+    const api::Currency currency             = currencies::BITCOIN;
+    const int64_t feesPerByte                = 20;
+    const int64_t inputSizeInBytes           = 148;
+    const int64_t outputSizeInBytes          = 34;
+    const int64_t emtyTransactionSizeInBytes = 10;
+    int64_t outputAmount                     = 2000;
+    std::vector<int64_t> inputAmounts{1500, 1500, 1500};
+
+    auto buddy               = createBuddy(feesPerByte, outputAmount, currency, script);
+
+    auto utxos               = createUtxos(inputAmounts);
+    auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithMergeOutputs(buddy, utxos, BigInt(-1), currency);
     int64_t totalInputsValue = 0;
     for (auto utxo : pickedUtxos) {
         totalInputsValue += utxo.value.toLong();
