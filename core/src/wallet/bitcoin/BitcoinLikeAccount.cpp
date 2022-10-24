@@ -455,7 +455,7 @@ namespace ledger {
         BitcoinLikeAccount::getUTXO(int32_t from, int32_t to) {
             auto self = getSelf();
             return _explorer->getFees()
-                .map<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>(getContext(), [&self, &from, &to](const std::vector<std::shared_ptr<api::BigInt>> &fees) -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
+                .map<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>(getContext(), [self, from, to](const std::vector<std::shared_ptr<api::BigInt>> &fees) -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
                     auto keychain         = self->getKeychain();
                     auto currency         = self->getWallet()->getCurrency();
                     const auto dustAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(currency, keychain->getKeychainEngine(), fees);
@@ -493,7 +493,7 @@ namespace ledger {
 
         Future<int32_t> BitcoinLikeAccount::getUTXOCount() {
             auto self = getSelf();
-            return _explorer->getFees().map<int32_t>(getContext(), [&self](const std::vector<std::shared_ptr<api::BigInt>> &fees) -> int32_t {
+            return _explorer->getFees().map<int32_t>(getContext(), [self](const std::vector<std::shared_ptr<api::BigInt>> &fees) -> int32_t {
                 auto keychain = self->getKeychain();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 const auto dustAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees);
@@ -546,7 +546,7 @@ namespace ledger {
 
         FuturePtr<ledger::core::Amount> BitcoinLikeAccount::getMaxSpendable(api::BitcoinLikePickingStrategy strategy, optional<int32_t> maxUtxos) {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return _explorer->getFees().mapPtr<ledger::core::Amount>(getContext(), [&self, &strategy, &maxUtxos](const std::vector<std::shared_ptr<api::BigInt>> &fees) {
+            return _explorer->getFees().mapPtr<ledger::core::Amount>(getContext(), [self, &strategy, &maxUtxos](const std::vector<std::shared_ptr<api::BigInt>> &fees) {
                 const auto &uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
@@ -591,7 +591,7 @@ namespace ledger {
                 return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
             }
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return _explorer->getFees().mapPtr<ledger::core::Amount>(getContext(), [&self](const std::vector<std::shared_ptr<api::BigInt>> &fees) {
+            return _explorer->getFees().mapPtr<ledger::core::Amount>(getContext(), [self](const std::vector<std::shared_ptr<api::BigInt>> &fees) {
                 const auto &uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
@@ -785,7 +785,7 @@ namespace ledger {
         std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction(bool partial) {
             auto self    = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
             auto getUTXO = [=]() -> Future<std::vector<BitcoinLikeUtxo>> {
-                return self->_explorer->getFees().map<std::vector<BitcoinLikeUtxo>>(self->getContext(), [&self](const std::vector<std::shared_ptr<api::BigInt>> &fees) {
+                return self->_explorer->getFees().map<std::vector<BitcoinLikeUtxo>>(self->getContext(), [self](const std::vector<std::shared_ptr<api::BigInt>> &fees) {
                     auto keychain = self->getKeychain();
                     soci::session session(self->getWallet()->getDatabase()->getPool());
 

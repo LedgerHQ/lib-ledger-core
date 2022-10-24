@@ -337,11 +337,11 @@ namespace ledger {
                                            fixedSize.Max;
 
 
-            const auto effectiveFees    = std::max_element(fees.cbegin(), fees.cend(), [](const auto &a, const auto &b) {
+            const auto effectiveFees    = *std::max_element(fees.cbegin(), fees.cend(), [](const auto &a, const auto &b) {
                 return a->intValue() < b->intValue();
             });
 
-            return (*effectiveFees)->intValue() * signedUTXOSize;
+            return effectiveFees->intValue() * signedUTXOSize;
         }
 
         int64_t BitcoinLikeTransactionApi::computeDustAmount(const api::Currency &currency, int32_t size) {
