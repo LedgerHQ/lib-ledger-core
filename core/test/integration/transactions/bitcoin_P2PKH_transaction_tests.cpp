@@ -37,6 +37,7 @@
 
 #include <crypto/HASH160.hpp>
 #include <iostream>
+#include <algorithm>
 #include <utils/DateUtils.hpp>
 #include <utils/hex.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
@@ -115,12 +116,12 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
     //    );
 }
 
+// Test only works in offline mode
 TEST_F(BitcoinStardustTransaction, FilterDustUtxo) {
-    int64_t dustAmount = BitcoinLikeTransactionApi::computeDustAmount(currency, 0);
-    ASSERT_EQ(
-        dustAmount,
-        (std::numeric_limits<int64_t>::max)())
-        << "The currency in this test should have a very high dust amount";
+    auto fees = uv::wait(account->getExplorer()->getFees());
+    std::for_each(fees.begin(), fees.end(), [](const auto &item) {
+        ASSERT_EQ(item->intValue(), 1000000000) << "The currency in this test should have a very high dust amount";
+    });
 
     auto builder = tx_builder();
 

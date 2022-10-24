@@ -1,0 +1,4 @@
+GET https://explorers.api.vault.ledger.com/blockchain/v3/bitcoin_stardust/fees
+0
+1
+{"2":1000000000,"4":1000000000,"6":1000000000,"last_updated":1666603038}

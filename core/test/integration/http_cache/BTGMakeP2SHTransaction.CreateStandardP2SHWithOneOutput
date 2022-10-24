@@ -1,3 +1,8 @@
+GET https://explorers.api.vault.ledger.com/blockchain/v3/btg/fees
+0
+1
+{"2":2004,"4":2004,"6":2004,"last_updated":1666603358}
+
 GET https://explorers.api.vault.ledger.com/blockchain/v3/btg/blocks/current
 0
 1

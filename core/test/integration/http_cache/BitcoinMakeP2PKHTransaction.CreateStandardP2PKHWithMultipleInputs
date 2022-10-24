@@ -8,3 +8,7 @@ GET https://explorers.api.vault.ledger.com/timestamp
 1
 {"timestamp":1658496292}
 
+GET https://explorers.api.vault.ledger.com/blockchain/v3/btc/fees
+0
+1
+{"2":7212,"4":4233,"6":3486,"last_updated":1666603360}
