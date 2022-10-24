@@ -454,23 +454,24 @@ namespace ledger {
         Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>
         BitcoinLikeAccount::getUTXO(int32_t from, int32_t to) {
             auto self = getSelf();
-            return async<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>([=]() -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
-                auto keychain         = self->getKeychain();
-                auto currency         = self->getWallet()->getCurrency();
-                const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(currency, keychain->getKeychainEngine());
-                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
-                std::vector<BitcoinLikeBlockchainExplorerOutput> utxo;
+            return _explorer->getFees()
+                .map<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>(getContext(), [&self, &from, &to](const std::vector<std::shared_ptr<api::BigInt>> &fees) -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
+                    auto keychain         = self->getKeychain();
+                    auto currency         = self->getWallet()->getCurrency();
+                    const auto dustAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(currency, keychain->getKeychainEngine(), fees);
+                    soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
+                    std::vector<BitcoinLikeBlockchainExplorerOutput> utxo;
 
-                utils::cache_type<bool, std::string> cache{};
-                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
-                                                                                    return keychain->contains(addr);
-                                                                                }));
+                    utils::cache_type<bool, std::string> cache{};
+                    std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                        return keychain->contains(addr);
+                                                                                    }));
 
-                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, dustAmount, utxo, filter);
-                return functional::map<BitcoinLikeBlockchainExplorerOutput, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency](const BitcoinLikeBlockchainExplorerOutput &output) -> std::shared_ptr<api::BitcoinLikeOutput> {
-                    return std::make_shared<BitcoinLikeOutputApi>(output, currency);
+                    BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, dustAmount, utxo, filter);
+                    return functional::map<BitcoinLikeBlockchainExplorerOutput, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency](const BitcoinLikeBlockchainExplorerOutput &output) -> std::shared_ptr<api::BitcoinLikeOutput> {
+                        return std::make_shared<BitcoinLikeOutputApi>(output, currency);
+                    });
                 });
-            });
         }
 
         void BitcoinLikeAccount::getUTXOCount(const std::shared_ptr<api::I32Callback> &callback) {
@@ -492,10 +493,10 @@ namespace ledger {
 
         Future<int32_t> BitcoinLikeAccount::getUTXOCount() {
             auto self = getSelf();
-            return async<int32_t>([=]() -> int32_t {
+            return _explorer->getFees().map<int32_t>(getContext(), [&self](const std::vector<std::shared_ptr<api::BigInt>> &fees) -> int32_t {
                 auto keychain = self->getKeychain();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
-                const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
+                const auto dustAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees);
                 utils::cache_type<bool, std::string> cache{};
                 std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
                                                                                     return keychain->contains(addr);
@@ -545,13 +546,13 @@ namespace ledger {
 
         FuturePtr<ledger::core::Amount> BitcoinLikeAccount::getMaxSpendable(api::BitcoinLikePickingStrategy strategy, optional<int32_t> maxUtxos) {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return FuturePtr<Amount>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=]() -> std::shared_ptr<Amount> {
+            return _explorer->getFees().mapPtr<ledger::core::Amount>(getContext(), [&self, &strategy, &maxUtxos](const std::vector<std::shared_ptr<api::BigInt>> &fees) {
                 const auto &uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
                 BigInt sum(0);
                 auto keychain         = self->getKeychain();
-                const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
+                const auto dustAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees);
                 utils::cache_type<bool, std::string> cache{};
                 std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
                                                                                     return keychain->contains(addr);
@@ -590,7 +591,7 @@ namespace ledger {
                 return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
             }
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return FuturePtr<Amount>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=]() -> std::shared_ptr<Amount> {
+            return _explorer->getFees().mapPtr<ledger::core::Amount>(getContext(), [&self](const std::vector<std::shared_ptr<api::BigInt>> &fees) {
                 const auto &uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
@@ -602,7 +603,7 @@ namespace ledger {
 
                 BigInt sum(0);
                 const auto balanceWithDust = self->getWallet()->getConfig()->getBoolean("REGULATED_BALANCE_WITH_DUST").value_or(false);
-                const auto dustAmount      = balanceWithDust ? BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine()) : 0;
+                const auto dustAmount      = balanceWithDust ? BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees) : 0;
                 BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), dustAmount, utxos, filter);
                 for (const auto &utxo : utxos) {
                     sum = sum + utxo.value;
@@ -784,11 +785,11 @@ namespace ledger {
         std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction(bool partial) {
             auto self    = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
             auto getUTXO = [=]() -> Future<std::vector<BitcoinLikeUtxo>> {
-                return Future<std::vector<BitcoinLikeUtxo>>::async(getContext(), [=]() {
+                return self->_explorer->getFees().map<std::vector<BitcoinLikeUtxo>>(self->getContext(), [&self](const std::vector<std::shared_ptr<api::BigInt>> &fees) {
                     auto keychain = self->getKeychain();
                     soci::session session(self->getWallet()->getDatabase()->getPool());
 
-                    const auto dustAmount = BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(self->getWallet()->getCurrency(), keychain->getKeychainEngine());
+                    const auto dustAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees);
                     return BitcoinLikeUTXODatabaseHelper::queryAllUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency(), dustAmount);
                 });
             };

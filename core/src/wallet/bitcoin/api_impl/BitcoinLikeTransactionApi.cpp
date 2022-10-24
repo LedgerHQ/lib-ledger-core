@@ -321,9 +321,27 @@ namespace ledger {
             return estimateSize(fixedSize, inputCount, outputsSize, outputsSize, keychainEngine);
         }
 
-        int64_t BitcoinLikeTransactionApi::computeBasicTransactionDustAmount(const api::Currency &currency, const std::string &keychainEngine) {
-            const auto basicTransactionSize = estimateSize(1, 1, currency, keychainEngine);
-            return computeDustAmount(currency, basicTransactionSize.Max);
+        int64_t BitcoinLikeTransactionApi::computeWorthlessUtxoValue(const api::Currency &currency, const std::string &keychainEngine, const std::vector<std::shared_ptr<api::BigInt>> & fees) {
+            // Compute cost of change
+            auto const fixedSize         = BitcoinLikeTransactionApi::estimateSize(0,
+                                                                                   0,
+                                                                                   currency,
+                                                                                   keychainEngine);
+
+            // Size 1 signed UTXO (signed input)
+            const int64_t signedUTXOSize = BitcoinLikeTransactionApi::estimateSize(1,
+                                                                                   0,
+                                                                                   currency,
+                                                                                   keychainEngine)
+                                               .Max -
+                                           fixedSize.Max;
+
+
+            const auto effectiveFees    = std::max_element(fees.cbegin(), fees.cend(), [](const auto &a, const auto &b) {
+                return a->intValue() < b->intValue();
+            });
+
+            return (*effectiveFees)->intValue() * signedUTXOSize;
         }
 
         int64_t BitcoinLikeTransactionApi::computeDustAmount(const api::Currency &currency, int32_t size) {

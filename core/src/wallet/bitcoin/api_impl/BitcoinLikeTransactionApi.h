@@ -164,7 +164,7 @@ namespace ledger {
 
             static int64_t computeDustAmount(const api::Currency &currency, int32_t size);
 
-            static int64_t computeBasicTransactionDustAmount(const api::Currency &currency, const std::string &keychainEngine);
+            static int64_t computeWorthlessUtxoValue(const api::Currency &currency, const std::string &keychainEngine, const std::vector<std::shared_ptr<api::BigInt>> &fees);
 
           private:
             static std::size_t estimateFixedTxSize(std::size_t inputCount, std::size_t outputCount, const api::Currency &currency);
