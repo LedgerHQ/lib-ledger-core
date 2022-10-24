@@ -1,0 +1,5 @@
+GET https://explorers.api.vault.ledger.com/blockchain/v3/btc/fees
+0
+1
+{"2":7218,"4":3136,"6":2991,"last_updated":1666616277}
+
