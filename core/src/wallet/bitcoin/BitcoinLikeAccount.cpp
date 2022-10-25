@@ -546,7 +546,7 @@ namespace ledger {
 
         FuturePtr<ledger::core::Amount> BitcoinLikeAccount::getMaxSpendable(api::BitcoinLikePickingStrategy strategy, optional<int32_t> maxUtxos) {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return _explorer->getFees().mapPtr<ledger::core::Amount>(getContext(), [self, &strategy, &maxUtxos](const std::vector<std::shared_ptr<api::BigInt>> &fees) {
+            return _explorer->getFees().mapPtr<ledger::core::Amount>(getContext(), [self, strategy, maxUtxos](const std::vector<std::shared_ptr<api::BigInt>> &fees) {
                 const auto &uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
