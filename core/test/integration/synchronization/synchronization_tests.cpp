@@ -331,27 +331,28 @@ TEST_F(BitcoinLikeWalletSynchronization, TestNetSynchronization) {
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+
+                auto amount = uv::wait(account->getBalance());
+                auto ops    = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+                std::cout << "Amount: " << amount->toLong() << std::endl;
+                std::cout << "Ops: " << ops.size() << std::endl;
+                for (auto &op : ops) {
+                    std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
+                    std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
+                    std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
+                }
+
+                // Test UTXOs
+                auto utxoCount = uv::wait(account->getUTXOCount());
+                auto utxos     = uv::wait(account->getUTXO(0, 1000000));
+                EXPECT_EQ(utxos.size(), utxoCount);
+
                 dispatcher->stop();
             });
 
             auto bus      = account->synchronize();
             bus->subscribe(getTestExecutionContext(), receiver);
             dispatcher->waitUntilStopped();
-
-            auto amount = uv::wait(account->getBalance());
-            auto ops    = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
-            std::cout << "Amount: " << amount->toLong() << std::endl;
-            std::cout << "Ops: " << ops.size() << std::endl;
-            for (auto &op : ops) {
-                std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
-                std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
-                std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
-            }
-
-            // Test UTXOs
-            auto utxoCount = uv::wait(account->getUTXOCount());
-            auto utxos     = uv::wait(account->getUTXO(0, 1000000));
-            EXPECT_EQ(utxos.size(), utxoCount);
         }
     }
 }
@@ -696,12 +697,12 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeWithMultiThreading) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
+                EXPECT_EQ(uv::wait(account->getBalance())->toString(), "166505122");
                 dispatcher->stop();
             });
 
             bus->subscribe(getTestExecutionContext(), receiver);
             dispatcher->waitUntilStopped();
-            EXPECT_EQ(uv::wait(account->getBalance())->toString(), "166505122");
             return bus;
         };
         auto b = synchronize();
