@@ -181,13 +181,13 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumLTCXpubSynchronization) {
                     return;
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                 // EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd");
+                fmt::print("BALANCE: {}\n", uv::wait(account->getBalance())->toString());
                 dispatcher->stop();
             });
 
             auto bus      = account->synchronize();
             bus->subscribe(getTestExecutionContext(), receiver);
             dispatcher->waitUntilStopped();
-            fmt::print("BALANCE: {}\n", uv::wait(account->getBalance())->toString());
         }
     }
 }
