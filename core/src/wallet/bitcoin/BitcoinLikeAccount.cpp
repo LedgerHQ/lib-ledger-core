@@ -591,7 +591,7 @@ namespace ledger {
                 return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
             }
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return _explorer->getFees().mapPtr<ledger::core::Amount>(getContext(), [self](const std::vector<std::shared_ptr<api::BigInt>> &fees) {
+            return FuturePtr<Amount>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=]() -> std::shared_ptr<Amount> {
                 const auto &uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
@@ -602,8 +602,7 @@ namespace ledger {
                                                                                 }));
 
                 BigInt sum(0);
-                const auto balanceWithDust = self->getWallet()->getConfig()->getBoolean("REGULATED_BALANCE_WITH_DUST").value_or(false);
-                const auto dustAmount      = balanceWithDust ? BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees) : 0;
+                const auto dustAmount = 0;
                 BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), dustAmount, utxos, filter);
                 for (const auto &utxo : utxos) {
                     sum = sum + utxo.value;
