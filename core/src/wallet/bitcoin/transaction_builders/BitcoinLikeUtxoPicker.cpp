@@ -156,14 +156,12 @@ namespace ledger {
             if (buddy->isPartial) {
                 return Future<Unit>::successful(unit);
             }
-/*
             // Set timestamp
             buddy->explorer->getTimestamp().onComplete(getContext(), [=](const Try<int64_t> &timestamp) {
                 if (timestamp.isSuccess()) {
                     buddy->transaction->setTimestamp(timestamp.getValue());
                 }
             });
-*/
 
             return buddy->explorer->getCurrentBlock().map<Unit>(getContext(), [=](const std::shared_ptr<BitcoinLikeBlockchainExplorer::Block> &block) -> Unit {
                 buddy->transaction->setLockTime(static_cast<uint32_t>(block->height));

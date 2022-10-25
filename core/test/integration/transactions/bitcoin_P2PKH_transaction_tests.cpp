@@ -35,9 +35,9 @@
 #include "../BaseFixture.h"
 #include "transaction_test_helper.h"
 
+#include <algorithm>
 #include <crypto/HASH160.hpp>
 #include <iostream>
-#include <algorithm>
 #include <utils/DateUtils.hpp>
 #include <utils/hex.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
