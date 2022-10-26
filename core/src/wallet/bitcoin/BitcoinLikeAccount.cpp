@@ -459,6 +459,7 @@ namespace ledger {
                     auto keychain         = self->getKeychain();
                     auto currency         = self->getWallet()->getCurrency();
                     const auto dustAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(currency, keychain->getKeychainEngine(), fees);
+                    self->logger()->info(fmt::format("Worhless utxo value is {}", dustAmount));
                     soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                     std::vector<BitcoinLikeBlockchainExplorerOutput> utxo;
 
@@ -497,6 +498,7 @@ namespace ledger {
                 auto keychain = self->getKeychain();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 const auto dustAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees);
+                self->logger()->info(fmt::format("Worhless utxo value is {}", dustAmount));
                 utils::cache_type<bool, std::string> cache{};
                 std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
                                                                                     return keychain->contains(addr);
@@ -553,6 +555,7 @@ namespace ledger {
                 BigInt sum(0);
                 auto keychain         = self->getKeychain();
                 const auto dustAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees);
+                self->logger()->info(fmt::format("Worhless utxo value is {}", dustAmount));
                 utils::cache_type<bool, std::string> cache{};
                 std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
                                                                                     return keychain->contains(addr);
@@ -789,6 +792,7 @@ namespace ledger {
                     soci::session session(self->getWallet()->getDatabase()->getPool());
 
                     const auto dustAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees);
+                    self->logger()->info(fmt::format("Worhless utxo value is {}", dustAmount));
                     return BitcoinLikeUTXODatabaseHelper::queryAllUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency(), dustAmount);
                 });
             };
