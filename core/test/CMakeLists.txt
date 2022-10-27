@@ -2,6 +2,10 @@ project(ledger_core_tests)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+if (TESTS_UPDATE_HTTP_CACHE)
+    add_compile_definitions(UPDATE_HTTP_CACHE)
+endif()
+
 set(gtest_force_shared_crt ON CACHE BOOL "Build gtest with shared runtime" FORCE)
 add_subdirectory(lib/googletest)
 

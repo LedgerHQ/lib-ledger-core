@@ -23,6 +23,11 @@ GET https://explorers.api.vault.ledger.com/blockchain/v3/btc_testnet/addresses/m
 1
 {"truncated":false,"txs":[]}
 
+GET https://explorers.api.vault.ledger.com/blockchain/v3/btc_testnet/fees
+0
+1
+{"2":1000,"4":1000,"6":1000,"last_updated":1666603363}
+
 GET https://explorers.api.vault.ledger.com/timestamp
 0
 1
