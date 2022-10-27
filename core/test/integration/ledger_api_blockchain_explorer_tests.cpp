@@ -105,7 +105,12 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash) {
     */
 }
 
+#if defined(UPDATE_HTTP_CACHE)
+// It seems that explorer do not return coinbase anymore in inputs
+TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, DISABLED_GetTransactionByHash_2) {
+#else
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash_2) {
+#endif
     auto transaction = uv::wait(explorer->getTransactionByHash("16da85a108a63ff318458be597f34f0a7f6b9f703528249056ba2f48722ae44e"));
     auto &tx         = *transaction;
     EXPECT_EQ(tx.inputs.size(), 1);
@@ -204,7 +209,12 @@ class LedgerApiEthereumLikeBlockchainExplorerTests : public LedgerApiBlockchainE
     }
 };
 
+#if defined(UPDATE_HTTP_CACHE)
+// Fake data in cache to avoid customer data, needs offline mode only
+TEST_F(LedgerApiEthereumLikeBlockchainExplorerTests, DISABLED_GeTransactionsInBigBlock) {
+#else
 TEST_F(LedgerApiEthereumLikeBlockchainExplorerTests, GeTransactionsInBigBlock) {
+#endif
     auto result = uv::wait(explorer->getTransactions({"1H6ZZpRmMnrw8ytepV3BYwMjYYnEkWDqVP"}, std::string{"00000000000000000db3ab2b2d1075e4e80fa97e27aea55095a30559a3b0d721"}));
     EXPECT_FALSE(result->transactions.empty());
     EXPECT_TRUE(result->transactions.front().block.hasValue() && result->transactions.back().block.hasValue());
