@@ -1,5 +1,5 @@
 GET https://explorers.api.vault.ledger.com/blockchain/v3/btc_testnet/fees
 0
 1
-{"2":0,"4":0,"6":0,"last_updated":1666684741}
+{"2":1000,"4":1000,"6":1000,"last_updated":1666684741}
 
