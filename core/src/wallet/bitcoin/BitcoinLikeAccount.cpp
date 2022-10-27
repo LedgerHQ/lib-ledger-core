@@ -456,8 +456,8 @@ namespace ledger {
             auto self = getSelf();
             return _explorer->getFees()
                 .map<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>(getContext(), [self, from, to](const std::vector<std::shared_ptr<api::BigInt>> &fees) -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
-                    auto keychain         = self->getKeychain();
-                    auto currency         = self->getWallet()->getCurrency();
+                    auto keychain                  = self->getKeychain();
+                    auto currency                  = self->getWallet()->getCurrency();
                     const auto worthlessUtxoAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(currency, keychain->getKeychainEngine(), fees);
                     self->logger()->info(fmt::format("Worthless utxo value is {}", worthlessUtxoAmount));
                     soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
@@ -553,7 +553,7 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
                 BigInt sum(0);
-                auto keychain         = self->getKeychain();
+                auto keychain                  = self->getKeychain();
                 const auto worthlessUtxoAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees);
                 self->logger()->info(fmt::format("Worthless utxo value is {}", worthlessUtxoAmount));
                 utils::cache_type<bool, std::string> cache{};
