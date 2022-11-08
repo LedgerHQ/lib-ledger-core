@@ -86,6 +86,22 @@ namespace ledger {
             return out.size();
         }
 
+        BigInt BitcoinLikeUTXODatabaseHelper::sumUTXO(soci::session &sql, const std::string &accountUid, int64_t dustAmount) {
+            rowset<row> rows = (sql.prepare << "SELECT sum(o.amount)::bigint"
+                                               " FROM bitcoin_outputs AS o "
+                                               " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
+                                               " AND i.previous_output_idx = o.idx"
+                                               " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount",
+                                use(accountUid), use(dustAmount));
+
+            for (auto &row : rows) {
+                if (row.get_indicator(0) != i_null) {
+                    return row.get<BigInt>(0);
+                }
+            }
+            return BigInt(0);
+        }
+
         std::vector<BitcoinLikeUtxo> BitcoinLikeUTXODatabaseHelper::queryAllUtxos(
             soci::session &session,
             std::string const &accountUid,

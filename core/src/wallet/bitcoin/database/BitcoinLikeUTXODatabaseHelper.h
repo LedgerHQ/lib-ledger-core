@@ -52,6 +52,11 @@ namespace ledger {
                                          std::vector<BitcoinLikeBlockchainExplorerOutput> &out,
                                          const std::function<bool(const std::string &address)> &filter);
 
+          public:
+            static BigInt sumUTXO(soci::session &sql,
+                                  const std::string &accountUid,
+                                  int64_t dustAmount);
+
             static std::size_t UTXOcount(soci::session &sql,
                                          const std::string &accountUid,
                                          int64_t dustAmount,
