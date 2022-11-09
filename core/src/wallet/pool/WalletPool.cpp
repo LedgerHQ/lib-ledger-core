@@ -99,12 +99,12 @@ namespace ledger {
             _logPrinter       = logPrinter;
             auto enableLogger = _configuration->getBoolean(api::PoolConfiguration::ENABLE_INTERNAL_LOGGING).value_or(true);
             _logger           = logger::create(
-                          name + "-l",
-                          dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", name)),
-                          pathResolver,
-                          logPrinter,
-                          logger::DEFAULT_MAX_SIZE,
-                          enableLogger);
+                name + "-l",
+                dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", name)),
+                pathResolver,
+                logPrinter,
+                logger::DEFAULT_MAX_SIZE,
+                enableLogger);
 
             // Database management
             _database = std::make_shared<DatabaseSessionPool>(
@@ -198,6 +198,7 @@ namespace ledger {
                 break;
             case api::WalletType::TEZOS:
                 _factories.push_back(make_factory<api::WalletType::TEZOS>(currency, shared_from_this()));
+                break;
             case api::WalletType::STELLAR:
                 _factories.push_back(make_factory<api::WalletType::STELLAR>(currency, shared_from_this()));
                 break;
@@ -368,7 +369,7 @@ namespace ledger {
                 auto factory = getFactory(entry.currencyName);
                 if (factory == nullptr) {
                     throw Exception(api::ErrorCode::UNSUPPORTED_CURRENCY,
-                                    fmt::format("Wallet '{}' uses an unsupported currency ''{}", entry.name,
+                                    fmt::format("Wallet '{}' uses an unsupported currency '{}'", entry.name,
                                                 entry.currencyName));
                 }
                 auto wallet = factory->build(entry);
@@ -403,7 +404,14 @@ namespace ledger {
                 auto count = PoolDatabaseHelper::getWallets(sql, *self, from, entries);
                 std::vector<std::shared_ptr<AbstractWallet>> wallets((size_t)count);
                 for (auto i = 0; i < count; i++) {
-                    wallets[i] = self->buildWallet(entries[i]);
+                    try {
+                        wallets[i] = self->buildWallet(entries[i]);
+                    } catch (const Exception &e) {
+                        if (e.getErrorCode() != api::ErrorCode::UNSUPPORTED_CURRENCY) {
+                            throw e;
+                        }
+                        self->_logger->info(fmt::format("Unsupported wallet {} with currency {} ignored in workspace {}.", entries[i].name, entries[i].currencyName, entries[i].poolName));
+                    }
                 }
                 return wallets;
             });
