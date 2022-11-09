@@ -42,7 +42,7 @@ namespace ledger {
     namespace core {
 
         std::size_t BitcoinLikeUTXODatabaseHelper::UTXOcount(soci::session &sql, const std::string &accountUid, int64_t dustAmount, const std::function<bool(const std::string &address)> &filter) {
-            rowset<row> rows  = (sql.prepare << "SELECT o.address FROM bitcoin_outputs AS o "
+            const rowset<row> rows  = (sql.prepare << "SELECT o.address FROM bitcoin_outputs AS o "
                                                 " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
                                                 " AND i.previous_output_idx = o.idx"
                                                 " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount",
@@ -58,7 +58,7 @@ namespace ledger {
 
         std::size_t
         BitcoinLikeUTXODatabaseHelper::queryUTXO(soci::session &sql, const std::string &accountUid, int32_t offset, int32_t count, int64_t dustAmount, std::vector<BitcoinLikeBlockchainExplorerOutput> &out, const std::function<bool(const std::string &address)> &filter) {
-            rowset<row> rows = (sql.prepare << "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height,"
+            const rowset<row> rows = (sql.prepare << "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height,"
                                                "replaceable"
                                                " FROM bitcoin_outputs AS o "
                                                " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
@@ -87,7 +87,7 @@ namespace ledger {
         }
 
         BigInt BitcoinLikeUTXODatabaseHelper::sumUTXO(soci::session &sql, const std::string &accountUid, int64_t dustAmount) {
-            rowset<row> rows = (sql.prepare << "SELECT sum(o.amount)::bigint"
+            const rowset<row> rows = (sql.prepare << "SELECT sum(o.amount)::bigint"
                                                " FROM bitcoin_outputs AS o "
                                                " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
                                                " AND i.previous_output_idx = o.idx"
@@ -107,7 +107,7 @@ namespace ledger {
             std::string const &accountUid,
             api::Currency const &currency,
             int64_t dustAmount) {
-            soci::rowset<soci::row> rows = (session.prepare << "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height "
+            const soci::rowset<soci::row> rows = (session.prepare << "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height "
                                                                "FROM bitcoin_outputs AS o "
                                                                "LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid AND i.previous_output_idx = o.idx "
                                                                "WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount "
@@ -118,7 +118,7 @@ namespace ledger {
 
             for (auto &row : rows) {
                 if (row.get_indicator(0) != i_null) {
-                    BitcoinLikeUtxo output{
+                    const BitcoinLikeUtxo output{
                         get_number<uint64_t>(row, 1),
                         row.get<std::string>(2),
                         Amount(currency, 0, row.get<BigInt>(3)),
