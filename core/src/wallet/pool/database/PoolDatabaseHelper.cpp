@@ -54,12 +54,18 @@ namespace ledger {
 
         int64_t PoolDatabaseHelper::getWalletCount(soci::session &sql, const WalletPool &pool) {
             int64_t count;
-            sql << "SELECT COUNT(*) FROM wallets WHERE pool_name = :pool", use(pool.getName()), into(count);
+            sql << "SELECT COUNT(*) FROM wallets WHERE pool_name = :pool AND currency_name in ('bitcoin', 'bitcoin_testnet', 'bitcoin_regtest', 'bitcoin_cash', "
+                   "'bitcoin_gold', 'zcash', 'zencash', 'litecoin', 'peercoin', 'digibyte', 'hcash', 'qtum', 'stealthcoin', 'vertcoin', 'viacoin', 'dash', 'dogecoin', "
+                   "'stratis','komodo', 'poswallet', 'pivx', 'clubcoin', 'decred', 'stakenet', 'cosmos', 'ethereum', 'ethereum_ropsten','ethereum_classic', 'ripple', "
+                   "'tezos', 'stellar', 'algorand')", use(pool.getName()), into(count);
             return count;
         }
 
         int64_t PoolDatabaseHelper::getWallets(soci::session &sql, const WalletPool &pool, int64_t offset, std::vector<WalletDatabaseEntry> &wallets) {
-            rowset<row> rows = (sql.prepare << "SELECT uid, name, currency_name, configuration FROM wallets WHERE pool_name = :pool "
+            rowset<row> rows = (sql.prepare << "SELECT uid, name, currency_name, configuration FROM wallets WHERE pool_name = :pool AND currency_name in ('bitcoin', "
+                                               "'bitcoin_testnet', 'bitcoin_regtest', 'bitcoin_cash', 'bitcoin_gold', 'zcash', 'zencash', 'litecoin', 'peercoin', 'digibyte', "
+                                               "'hcash', 'qtum', 'stealthcoin', 'vertcoin', 'viacoin', 'dash', 'dogecoin', 'stratis','komodo', 'poswallet', 'pivx', 'clubcoin', "
+                                               "'decred', 'stakenet', 'cosmos', 'ethereum', 'ethereum_ropsten','ethereum_classic', 'ripple', 'tezos', 'stellar', 'algorand') "
                                                "ORDER BY created_at "
                                                "LIMIT :count OFFSET :offset",
                                 use(pool.getName()), use(wallets.size()), use(offset));
