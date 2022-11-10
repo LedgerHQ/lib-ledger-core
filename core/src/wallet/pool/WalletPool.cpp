@@ -198,6 +198,7 @@ namespace ledger {
                 break;
             case api::WalletType::TEZOS:
                 _factories.push_back(make_factory<api::WalletType::TEZOS>(currency, shared_from_this()));
+                break;
             case api::WalletType::STELLAR:
                 _factories.push_back(make_factory<api::WalletType::STELLAR>(currency, shared_from_this()));
                 break;
