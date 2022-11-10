@@ -38,6 +38,13 @@ using namespace soci;
 namespace ledger {
     namespace core {
 
+        constexpr std::string_view VALID_CURRENCIES{"('bitcoin', 'bitcoin_testnet', 'bitcoin_regtest', 'bitcoin_cash', "
+                                                    "'bitcoin_gold', 'zcash', 'zencash', 'litecoin', 'peercoin', 'digibyte', "
+                                                    "'hcash', 'qtum', 'stealthcoin', 'vertcoin', 'viacoin', 'dash', 'dogecoin',  "
+                                                    "'stratis','komodo', 'poswallet', 'pivx', 'clubcoin', 'decred', 'stakenet', "
+                                                    "'cosmos', 'ethereum', 'ethereum_ropsten','ethereum_classic', 'ripple',  'tezos', "
+                                                    "'stellar', 'algorand')"};
+
         void PoolDatabaseHelper::putWallet(soci::session &sql, const WalletDatabaseEntry &wallet) {
             auto serializeConfig = wallet.configuration->serialize();
             auto configuration   = hex::toString(serializeConfig);
@@ -54,14 +61,16 @@ namespace ledger {
 
         int64_t PoolDatabaseHelper::getWalletCount(soci::session &sql, const WalletPool &pool) {
             int64_t count;
-            sql << "SELECT COUNT(*) FROM wallets WHERE pool_name = :pool", use(pool.getName()), into(count);
+            sql << fmt::format("SELECT COUNT(*) FROM wallets WHERE pool_name = :pool AND currency_name in {}", VALID_CURRENCIES),
+                use(pool.getName()), into(count);
             return count;
         }
 
         int64_t PoolDatabaseHelper::getWallets(soci::session &sql, const WalletPool &pool, int64_t offset, std::vector<WalletDatabaseEntry> &wallets) {
-            rowset<row> rows = (sql.prepare << "SELECT uid, name, currency_name, configuration FROM wallets WHERE pool_name = :pool "
-                                               "ORDER BY created_at "
-                                               "LIMIT :count OFFSET :offset",
+            rowset<row> rows = (sql.prepare << fmt::format("SELECT uid, name, currency_name, configuration FROM wallets WHERE pool_name = :pool AND currency_name in {} "
+                                                           "ORDER BY created_at "
+                                                           "LIMIT :count OFFSET :offset",
+                                                           VALID_CURRENCIES),
                                 use(pool.getName()), use(wallets.size()), use(offset));
             int64_t index    = 0;
             for (auto &row : rows) {

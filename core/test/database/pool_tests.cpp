@@ -33,6 +33,10 @@
 #include "MemPreferencesBackend.hpp"
 #include "ProxyCoreTracer.h"
 #include "api/ConfigurationDefaults.hpp"
+#include "wallet/common/CurrencyBuilder.hpp"
+#include "wallet/ethereum/ethereumNetworks.hpp"
+#include "wallet/pool/database/CurrenciesDatabaseHelper.hpp"
+#include "wallet/pool/database/PoolDatabaseHelper.hpp"
 
 #include <CoutLogPrinter.hpp>
 #include <NativePathResolver.hpp>
@@ -139,6 +143,78 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
             EXPECT_EQ(unit.numberOfDecimal, 5);
         }
     }
+
+    resolver->clean();
+}
+
+TEST(DatabaseSessionPool, ListingWalletsFilterUnsupportedOnes) {
+    auto dispatcher                                   = std::make_shared<uv::UvThreadDispatcher>();
+    auto resolver                                     = std::make_shared<NativePathResolver>();
+    auto backend                                      = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
+    auto printer                                      = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+
+    std::shared_ptr<api::DynamicObject> configuration = api::DynamicObject::newInstance();
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());
+
+    auto pool = WalletPool::newInstance(
+        "my_pool",
+        "",
+        nullptr,
+        nullptr,
+        resolver,
+        printer,
+        dispatcher,
+        nullptr,
+        backend,
+        configuration,
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        std::make_shared<ledger::core::test::MemPreferencesBackend>(),
+        std::make_shared<ledger::core::test::ProxyCoreTracer>());
+
+    // Add an unsupported currency in the database
+    const api::Currency polygon =
+        Currency("polygon")
+            .bip44(60)
+            .forkOfEthereum(networks::getEthLikeNetworkParameters("ethereum"))
+            .paymentUri("ethereum")
+            .unit("wei", 0, "wei")
+            .unit("ether", 18, "ETH")
+            .unit("kwei", 3, "kwei")
+            .unit("mwei", 6, "mwei")
+            .unit("gwei", 9, "gwei");
+
+    soci::session sql(pool->getDatabaseSessionPool()->getPool());
+
+    CurrenciesDatabaseHelper::insertCurrency(sql, polygon);
+
+    { // Add a wallet associated to this currency
+        WalletDatabaseEntry entry;
+        entry.configuration = std::static_pointer_cast<DynamicObject>(configuration);
+        entry.name          = "polygon";
+        entry.poolName      = pool->getName();
+        entry.currencyName  = "polygon";
+        entry.updateUid();
+        PoolDatabaseHelper::putWallet(sql, entry);
+    }
+
+    { // Add a valid wallet
+        WalletDatabaseEntry entry;
+        entry.configuration = std::static_pointer_cast<DynamicObject>(configuration);
+        entry.name          = "bitcoin";
+        entry.poolName      = pool->getName();
+        entry.currencyName  = "bitcoin";
+        entry.updateUid();
+        PoolDatabaseHelper::putWallet(sql, entry);
+    }
+
+    // Check the unsupported wallet is not fetched
+    const auto walletCount = uv::wait(pool->getWalletCount());
+
+    EXPECT_EQ(walletCount, 1);
+    const auto wallets = uv::wait(pool->getWallets(0, 10));
+
+    EXPECT_EQ(wallets.size(), 1);
+    EXPECT_EQ(wallets.front()->getName(), "bitcoin");
 
     resolver->clean();
 }
