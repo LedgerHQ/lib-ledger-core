@@ -57,7 +57,8 @@ namespace ledger {
             sql << "SELECT COUNT(*) FROM wallets WHERE pool_name = :pool AND currency_name in ('bitcoin', 'bitcoin_testnet', 'bitcoin_regtest', 'bitcoin_cash', "
                    "'bitcoin_gold', 'zcash', 'zencash', 'litecoin', 'peercoin', 'digibyte', 'hcash', 'qtum', 'stealthcoin', 'vertcoin', 'viacoin', 'dash', 'dogecoin', "
                    "'stratis','komodo', 'poswallet', 'pivx', 'clubcoin', 'decred', 'stakenet', 'cosmos', 'ethereum', 'ethereum_ropsten','ethereum_classic', 'ripple', "
-                   "'tezos', 'stellar', 'algorand')", use(pool.getName()), into(count);
+                   "'tezos', 'stellar', 'algorand')",
+                use(pool.getName()), into(count);
             return count;
         }
 
