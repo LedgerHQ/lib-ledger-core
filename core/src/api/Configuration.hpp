@@ -60,7 +60,10 @@ public:
     static std::string const TRUST_LIMIT;
 
     /** Time to Live for block cache */
-    static std::string const TTL_CACHE;
+    static std::string const TTL_BLOCK_CACHE;
+
+    /** Time to Live for balance */
+    static std::string const TTL_BALANCE_CACHE;
 
     /** Syncronization token deactivation */
     static std::string const DEACTIVATE_SYNC_TOKEN;

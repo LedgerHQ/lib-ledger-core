@@ -58,7 +58,7 @@ namespace ledger {
               _synchronizerFactory(synchronizer),
               _keychainFactory(keychainFactory),
               _explorer(explorer),
-              _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
+              _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_BLOCK_CACHE)
                                                    .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE))),
               _mempoolGracePeriod(std::chrono::seconds(configuration->getInt(api::Configuration::MEMPOOL_GRACE_PERIOD_SECS).value_or(api::ConfigurationDefaults::DEFAULT_BTC_LIKE_MEMPOOL_GRACE))) {
         }

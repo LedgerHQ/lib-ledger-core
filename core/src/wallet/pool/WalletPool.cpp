@@ -58,7 +58,7 @@ namespace ledger {
             std::shared_ptr<api::PreferencesBackend> externalPreferencesBackend,
             std::shared_ptr<api::PreferencesBackend> internalPreferencesBackend,
             const std::shared_ptr<api::CoreTracer> &tracer) : DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))),
-                                                              _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
+                                                              _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_BLOCK_CACHE)
                                                                                                    .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE))),
                                                               _externalPreferencesBackend(std::move(externalPreferencesBackend)), _internalPreferencesBackend(std::move(internalPreferencesBackend)) {
             // General

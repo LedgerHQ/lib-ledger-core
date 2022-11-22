@@ -58,7 +58,7 @@ namespace ledger {
                                        const DerivationScheme &derivationScheme)
             : DedicatedContext(pool->getThreadPoolExecutionContext()),
               _scheme(derivationScheme),
-              _balanceCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
+              _balanceCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_BALANCE_CACHE)
                                                      .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE))) {
             _pool                = pool;
             _name                = walletName;
