@@ -33,6 +33,8 @@ std::string const Configuration::TRUST_LIMIT = {"TRUST_LIMIT"};
 
 std::string const Configuration::TTL_CACHE = {"TTL_CACHE"};
 
+std::string const Configuration::TTL_BALANCE_CACHE = {"TTL_BALANCE_CACHE"};
+
 std::string const Configuration::DEACTIVATE_SYNC_TOKEN = {"DEACTIVATE_SYNC_TOKEN"};
 
 std::string const Configuration::MEMPOOL_GRACE_PERIOD_SECS = {"MEMPOOL_GRACE_PERIOD_SECS"};

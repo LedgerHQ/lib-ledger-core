@@ -113,6 +113,9 @@ Configuration = interface +c {
     # Time to Live for block cache
     const TTL_CACHE: string = "TTL_CACHE";
 
+    # Time to Live for balance
+    const TTL_BALANCE_CACHE: string = "TTL_BALANCE_CACHE";
+
     # Syncronization token deactivation
     const DEACTIVATE_SYNC_TOKEN: string = "DEACTIVATE_SYNC_TOKEN";
 
