@@ -111,7 +111,7 @@ Configuration = interface +c {
     const TRUST_LIMIT: string = "TRUST_LIMIT";
 
     # Time to Live for block cache
-    const TTL_CACHE: string = "TTL_CACHE";
+    const TTL_BLOCK_CACHE: string = "TTL_BLOCK_CACHE";
 
     # Time to Live for balance
     const TTL_BALANCE_CACHE: string = "TTL_BALANCE_CACHE";
