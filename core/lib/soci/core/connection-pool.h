@@ -17,7 +17,7 @@ namespace soci
 {
 
 class session;
-class session_span_factory;
+struct session_span_factory;
 
 class SOCI_DECL connection_pool
 {
