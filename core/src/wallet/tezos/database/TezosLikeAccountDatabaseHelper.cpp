@@ -95,30 +95,20 @@ namespace ledger {
         std::size_t
         TezosLikeAccountDatabaseHelper::queryOperations(soci::session &sql,
                                                         const std::string &accountUid,
-                                                        std::vector<Operation> &operations,
-                                                        std::function<bool(const std::string &address)> filter) {
+                                                        std::vector<Operation> &operations) {
             std::string query = "SELECT op.amount, op.fees, op.type, op.date, op.senders, op.recipients, op.uid "
                                 "FROM operations AS op "
                                 "LEFT JOIN tezos_originated_operations AS orig_op ON op.uid = orig_op.uid "
                                 "WHERE op.account_uid = :uid AND orig_op.uid IS NULL ORDER BY op.date";
             rowset<row> rows  = (sql.prepare << query, use(accountUid));
 
-            auto filterList   = [&](const std::vector<std::string> &list) -> bool {
-                for (auto &elem : list) {
-                    if (filter(elem)) {
-                        return true;
-                    }
-                }
-                return false;
-            };
-
-            std::size_t c = 0;
+            std::size_t c     = 0;
             for (auto &row : rows) {
                 auto type       = api::from_string<api::OperationType>(row.get<std::string>(2));
                 auto senders    = strings::split(row.get<std::string>(4), ",");
                 auto recipients = strings::split(row.get<std::string>(5), ",");
-                if ((type == api::OperationType::SEND && row.get_indicator(4) != i_null && filterList(senders)) ||
-                    (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients))) {
+                if ((type == api::OperationType::SEND && row.get_indicator(4) != i_null) ||
+                    (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null)) {
                     operations.resize(operations.size() + 1);
                     auto &operation  = operations[operations.size() - 1];
                     operation.amount = BigInt::fromHex(row.get<std::string>(0));

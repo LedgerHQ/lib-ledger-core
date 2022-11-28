@@ -359,14 +359,8 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain                                   = self->getKeychain();
-                auto keychainAddr                               = keychain->getAddress()->toString();
-                std::function<bool(const std::string &)> filter = [&keychain, &keychainAddr](const std::string &addr) -> bool {
-                    return addr == keychainAddr;
-                };
-
                 // Get operations related to an account
-                OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                OperationDatabaseHelper::queryOperations(sql, uid, operations);
 
                 // Get internal operations, add them to the list of operations and deallocate
                 // them to free memory

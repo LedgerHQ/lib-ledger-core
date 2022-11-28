@@ -50,8 +50,7 @@ namespace ledger {
 
             static std::size_t queryOperations(soci::session &sql,
                                                const std::string &accountUid,
-                                               std::vector<Operation> &out,
-                                               std::function<bool(const std::string &address)> filter);
+                                               std::vector<Operation> &out);
 
             /**
              * Checks if an operation is in a block or not

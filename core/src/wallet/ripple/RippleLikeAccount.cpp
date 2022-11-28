@@ -40,7 +40,6 @@
 #include <database/soci-option.h>
 #include <events/Event.hpp>
 #include <math/Base58.hpp>
-#include <utils/Cached.h>
 #include <utils/DateUtils.hpp>
 #include <utils/Option.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
@@ -225,13 +224,8 @@ namespace ledger {
                 std::vector<Operation> operations;
 
                 auto keychain = self->getKeychain();
-                utils::cache_type<bool, std::string> cache{};
-                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
-                                                                                    return keychain->contains(addr);
-                                                                                }));
-
                 // Get operations related to an account
-                OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                OperationDatabaseHelper::queryOperations(sql, uid, operations);
 
                 auto lowerDate = startDate;
                 auto upperDate = DateUtils::incrementDate(startDate, precision);
