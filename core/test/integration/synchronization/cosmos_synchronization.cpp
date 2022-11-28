@@ -263,14 +263,8 @@ TEST_F(CosmosLikeWalletSynchronization, DISABLED_GetDelegateWithExplorer) {
     auto validator = "cosmosvaloper1ey69r37gfxvxg62sh4r0ktpuc46pzjrm873ae8";
 
     auto filter    = GaiaCosmosLikeBlockchainExplorer::fuseFilters(
-        {GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
-             cosmos::constants::kEventTypeMessage,
-             cosmos::constants::kAttributeKeyAction,
-             cosmos::constants::kEventTypeDelegate),
-            GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
-             cosmos::constants::kEventTypeMessage,
-             cosmos::constants::kAttributeKeySender,
-             delegator)});
+        {GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(cosmos::constants::kEventTypeMessage, cosmos::constants::kAttributeKeyAction, cosmos::constants::kEventTypeDelegate),
+            GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(cosmos::constants::kEventTypeMessage, cosmos::constants::kAttributeKeySender, delegator)});
     auto bulk         = uv::wait(explorer->getTransactions(filter, 1, 10));
     auto transactions = bulk->transactions;
     ASSERT_TRUE(transactions.size() >= 1);
