@@ -365,7 +365,7 @@ namespace ledger {
             } else if (_msgData.type == kMsgCreateValidator) {
                 const auto &content = boost::get<cosmos::MsgCreateValidator>(_msgData.content);
 
-                auto jsonDesc       = rapidjson::Value(rapidjson::kObjectType);
+                auto jsonDesc = rapidjson::Value(rapidjson::kObjectType);
                 addString(kMoniker, content.descr.moniker, jsonDesc, allocator);
                 addOptionalString(kIdentity, content.descr.identity, jsonDesc, allocator);
                 addOptionalString(kWebsite, content.descr.website, jsonDesc, allocator);

@@ -83,7 +83,7 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     auto formatedDate = DateUtils::fromJSON(date);
 
     // Delete account
-    auto code         = uv::wait(wallet->eraseDataSince(formatedDate));
+    auto code = uv::wait(wallet->eraseDataSince(formatedDate));
     EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
     // Check if account was successfully deleted

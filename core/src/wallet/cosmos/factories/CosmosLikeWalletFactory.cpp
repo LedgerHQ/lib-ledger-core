@@ -152,7 +152,7 @@ namespace ledger {
                     api::BlockchainExplorerEngines::COSMOS_NODE);
                 auto &networkParams = getCurrency().cosmosLikeNetworkParameters.value();
 
-                explorer            = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
+                explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
                     context, http, networkParams, std::dynamic_pointer_cast<DynamicObject>(configuration));
             } else {
                 throw Exception(

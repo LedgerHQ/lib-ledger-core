@@ -238,9 +238,9 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                                     use(currency.name));
             for (auto &btc_row : btc_rows) {
                 api::BitcoinLikeNetworkParameters params;
-                params.P2PKHVersion                   = hex::toByteArray(btc_row.get<std::string>(0));
-                params.P2SHVersion                    = hex::toByteArray(btc_row.get<std::string>(1));
-                params.XPUBVersion                    = hex::toByteArray(btc_row.get<std::string>(2));
+                params.P2PKHVersion = hex::toByteArray(btc_row.get<std::string>(0));
+                params.P2SHVersion  = hex::toByteArray(btc_row.get<std::string>(1));
+                params.XPUBVersion  = hex::toByteArray(btc_row.get<std::string>(2));
                 /*
                  * On Linux, if we use int64_t, we get std::bad_cast exception thrown,
                  * so we replace by a long long (which is supported by soci (soci::dt_long_long))

@@ -163,12 +163,12 @@ namespace ledger {
                 if (_address.empty()) {
                     auto nodeScheme = getDerivationScheme()
                                           .getSchemeFrom(DerivationSchemeLevel::NODE);
-                    auto p               = nodeScheme.getPath().getDepth() > 0 ? nodeScheme
+                    auto p = nodeScheme.getPath().getDepth() > 0 ? nodeScheme
                                                                        .shift(1)
                                                                        .setCoinType(coinType)
                                                                        .getPath()
                                                                        .toString()
-                                                                               : "";
+                                                                 : "";
 
                     auto localNodeScheme = getDerivationScheme()
                                                .getSchemeTo(DerivationSchemeLevel::NODE)
@@ -178,7 +178,7 @@ namespace ledger {
                     auto xpub      = localNodeScheme.getPath().getDepth() > 0 && localNodeScheme.getPath().isHardened(0) ? std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(DerivationPath("")) : std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(localNodeScheme.getPath());
                     auto strScheme = localNodeScheme.getPath().toString();
 
-                    _address       = xpub->derive(p)->toEIP55();
+                    _address = xpub->derive(p)->toEIP55();
                     // Feed path -> address cache
                     // Feed address -> path cache
                     getPreferences()

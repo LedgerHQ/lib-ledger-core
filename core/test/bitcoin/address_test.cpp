@@ -114,8 +114,8 @@ TEST(Address, XpubFromBase58StringToBech32) {
 TEST(Address, XpubFromBase58StringToBech32DGB) {
     const Currency currency = currencies::DIGIBYTE;
     // xpub6DFGdRPjroChgYV1heGwjnPBVi9ANtLGDp8oFSgZMezMimPBQweUmH4co6pkP1zUMSvK1NAmNJqFpewnqM1dc2UA62MhdjcZemCGtjWWK9s
-    auto bech32Address      = "dgb1qgdg3hdysnpmaxpdpqqzhey2f5888av488hq0z6";
-    auto config             = std::make_shared<ledger::core::DynamicObject>();
+    auto bech32Address = "dgb1qgdg3hdysnpmaxpdpqqzhey2f5888av488hq0z6";
+    auto config        = std::make_shared<ledger::core::DynamicObject>();
     config->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
     auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromRaw(
         currency,
@@ -134,8 +134,8 @@ TEST(Address, XpubFromBase58StringToBech32DGB) {
 TEST(Address, XpubFromBase58StringToBech32LTC) {
     const Currency currency = currencies::LITECOIN;
     // Ltub2YC8XgcRjMJqvX8LsuBxdM7PKE5uih6247CpgK2rfEdzEGt1YHVHW4L865ss5eEy2K1KixTMkrHJbzTtqxpiGpM4wyrxYRFJFxuACSJqkyo
-    auto bech32Address      = "ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd";
-    auto config             = std::make_shared<ledger::core::DynamicObject>();
+    auto bech32Address = "ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd";
+    auto config        = std::make_shared<ledger::core::DynamicObject>();
     config->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
     auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromRaw(
         currency,

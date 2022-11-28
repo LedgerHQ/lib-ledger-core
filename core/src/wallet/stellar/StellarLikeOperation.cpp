@@ -74,7 +74,7 @@ namespace ledger {
             _envelope.tx.fee           = op.transactionFee.toUnsignedInt();
             _envelope.tx.memo.type     = stellar::xdr::MemoType::MEMO_NONE;
             // Rebuild MEMO
-            auto memo                  = StellarLikeMemo::fromDatabase(tx.memoType, tx.memo);
+            auto memo = StellarLikeMemo::fromDatabase(tx.memoType, tx.memo);
             if (memo.isSuccess()) {
                 _envelope.tx.memo = memo.getValue().getBackend();
             }

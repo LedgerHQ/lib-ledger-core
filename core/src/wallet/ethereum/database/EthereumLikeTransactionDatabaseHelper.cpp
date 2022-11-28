@@ -66,18 +66,18 @@ namespace ledger {
         bool EthereumLikeTransactionDatabaseHelper::inflateTransaction(soci::session &sql,
                                                                        const soci::row &row,
                                                                        EthereumLikeBlockchainExplorerTransaction &tx) {
-            tx.hash          = row.get<std::string>(0);
-            tx.value         = BigInt::fromHex(row.get<std::string>(1));
-            tx.nonce         = BigInt(row.get<std::string>(2)).toUint64();
-            tx.receivedAt    = row.get<std::chrono::system_clock::time_point>(3);
-            tx.inputData     = hex::toByteArray(row.get<std::string>(4));
+            tx.hash       = row.get<std::string>(0);
+            tx.value      = BigInt::fromHex(row.get<std::string>(1));
+            tx.nonce      = BigInt(row.get<std::string>(2)).toUint64();
+            tx.receivedAt = row.get<std::chrono::system_clock::time_point>(3);
+            tx.inputData  = hex::toByteArray(row.get<std::string>(4));
 
-            tx.gasPrice      = BigInt::fromHex(row.get<std::string>(5));
-            tx.gasLimit      = BigInt::fromHex(row.get<std::string>(6));
-            tx.gasUsed       = BigInt::fromHex(row.get<std::string>(7));
+            tx.gasPrice = BigInt::fromHex(row.get<std::string>(5));
+            tx.gasLimit = BigInt::fromHex(row.get<std::string>(6));
+            tx.gasUsed  = BigInt::fromHex(row.get<std::string>(7));
 
-            tx.sender        = row.get<std::string>(8);
-            tx.receiver      = row.get<std::string>(9);
+            tx.sender   = row.get<std::string>(8);
+            tx.receiver = row.get<std::string>(9);
 
             tx.confirmations = get_number<uint64_t>(row, 10);
             tx.status        = get_number<uint64_t>(row, 11);

@@ -110,7 +110,7 @@ TEST_F(StellarFixture, DISABLED_SynchronizeEmptyStellarAccount) {
     auto info    = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, emptyAccount());
 
-    auto exists  = uv::wait(account->exists());
+    auto exists = uv::wait(account->exists());
     EXPECT_FALSE(exists);
     auto bus = account->synchronize();
     bus->subscribe(getTestExecutionContext(),

@@ -117,7 +117,7 @@ namespace ledger {
                                                     account->interpretTransaction(tx, operations);
 
                                                     // Record the lowest round in this batch, to continue fetching txs below it if needed
-                                                    lowestBatchRound  = std::min(lowestBatchRound, tx.header.round.getValueOr(lowestBatchRound));
+                                                    lowestBatchRound = std::min(lowestBatchRound, tx.header.round.getValueOr(lowestBatchRound));
 
                                                     // Record the highest round ever seen, to update the cache for next incremental sychronization
                                                     savedState->round = std::max(savedState->round, tx.header.round.getValueOr(0));

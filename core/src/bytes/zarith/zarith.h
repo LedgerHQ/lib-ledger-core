@@ -118,8 +118,8 @@ namespace ledger {
                 size_t id = 0, delay = 0;
                 uint8_t offset = 0;
                 while (id + delay < data.size()) {
-                    auto byte       = data[id + delay];
-                    auto isLast     = id + delay == data.size() - 1;
+                    auto byte   = data[id + delay];
+                    auto isLast = id + delay == data.size() - 1;
 
                     // We should stop reading if most significant bit is null
                     auto shouldStop = !(byte & 0x80);

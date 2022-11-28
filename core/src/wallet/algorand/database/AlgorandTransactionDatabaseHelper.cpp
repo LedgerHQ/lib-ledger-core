@@ -46,7 +46,7 @@ namespace ledger {
         namespace algorand {
 
             static void putPaymentTransaction(soci::session &sql, const std::string &txUid, const model::Transaction &tx) {
-                auto &payment              = boost::get<model::PaymentTxnFields>(tx.details);
+                auto &payment = boost::get<model::PaymentTxnFields>(tx.details);
 
                 auto headerId              = optionalValue<std::string>(tx.header.id);
                 auto headerGenesisId       = optionalValue<std::string>(tx.header.genesisId);
@@ -325,7 +325,7 @@ namespace ledger {
                     paymentDetails.closeAddr    = getOptionalStringWithTransform<Address>(row, COL_TX_PAY_CLOSE_ADDRESS, stringToAddr);
                     paymentDetails.closeAmount  = getOptionalNumber(row, COL_TX_PAY_CLOSE_AMOUNT);
 
-                    tx.details                  = paymentDetails;
+                    tx.details = paymentDetails;
 
                 } else if (tx.header.type == constants::xKeyregs) {
                     // NOTE This has not been tested
@@ -339,7 +339,7 @@ namespace ledger {
                     keyregDetails.voteFirst        = getNumber(row, COL_TX_KEYREG_VOTE_FIRST);
                     keyregDetails.voteLast         = getNumber(row, COL_TX_KEYREG_VOTE_LAST);
 
-                    tx.details                     = keyregDetails;
+                    tx.details = keyregDetails;
 
                 } else if (tx.header.type == constants::xAcfg) {
                     model::AssetConfigTxnFields assetConfigDetails;
@@ -348,18 +348,18 @@ namespace ledger {
                     if (row.get_indicator(COL_TX_ACFG_TOTAL) != soci::i_null) {
                         model::AssetParams assetParams;
 
-                        assetParams.assetName          = getOptionalString(row, COL_TX_ACFG_ASSET_NAME);
-                        assetParams.unitName           = getOptionalString(row, COL_TX_ACFG_UNIT_NAME);
-                        assetParams.total              = getOptionalNumber(row, COL_TX_ACFG_TOTAL);
-                        assetParams.decimals           = row.get_indicator(COL_TX_ACFG_DECIMALS) != soci::i_null ? Option<uint32_t>(soci::get_number<uint32_t>(row, COL_TX_ACFG_DECIMALS)) : Option<uint32_t>::NONE;
-                        assetParams.defaultFrozen      = getOptionalNumberWithTransform<bool>(row, COL_TX_ACFG_DEFAULT_FROZEN, numToBool);
-                        assetParams.creatorAddr        = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_CREATOR_ADDRESS, stringToAddr);
-                        assetParams.managerAddr        = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_MANAGER_ADDRESS, stringToAddr);
-                        assetParams.reserveAddr        = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_RESERVE_ADDRESS, stringToAddr);
-                        assetParams.freezeAddr         = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_FREEZE_ADDRESS, stringToAddr);
-                        assetParams.clawbackAddr       = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_CLAWBACK_ADDRESS, stringToAddr);
-                        assetParams.url                = getOptionalString(row, COL_TX_ACFG_URL);
-                        assetParams.metaDataHash       = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_ACFG_METADATA_HASH, b64toBytes);
+                        assetParams.assetName     = getOptionalString(row, COL_TX_ACFG_ASSET_NAME);
+                        assetParams.unitName      = getOptionalString(row, COL_TX_ACFG_UNIT_NAME);
+                        assetParams.total         = getOptionalNumber(row, COL_TX_ACFG_TOTAL);
+                        assetParams.decimals      = row.get_indicator(COL_TX_ACFG_DECIMALS) != soci::i_null ? Option<uint32_t>(soci::get_number<uint32_t>(row, COL_TX_ACFG_DECIMALS)) : Option<uint32_t>::NONE;
+                        assetParams.defaultFrozen = getOptionalNumberWithTransform<bool>(row, COL_TX_ACFG_DEFAULT_FROZEN, numToBool);
+                        assetParams.creatorAddr   = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_CREATOR_ADDRESS, stringToAddr);
+                        assetParams.managerAddr   = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_MANAGER_ADDRESS, stringToAddr);
+                        assetParams.reserveAddr   = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_RESERVE_ADDRESS, stringToAddr);
+                        assetParams.freezeAddr    = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_FREEZE_ADDRESS, stringToAddr);
+                        assetParams.clawbackAddr  = getOptionalStringWithTransform<Address>(row, COL_TX_ACFG_CLAWBACK_ADDRESS, stringToAddr);
+                        assetParams.url           = getOptionalString(row, COL_TX_ACFG_URL);
+                        assetParams.metaDataHash  = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_ACFG_METADATA_HASH, b64toBytes);
 
                         assetConfigDetails.assetParams = assetParams;
                     }
@@ -376,7 +376,7 @@ namespace ledger {
                     assetTransferDetails.closeAmount   = getOptionalNumber(row, COL_TX_AXFER_CLOSE_AMOUNT);
                     assetTransferDetails.assetSender   = getOptionalStringWithTransform<Address>(row, COL_TX_AXFER_SENDER_ADDRESS, stringToAddr);
 
-                    tx.details                         = assetTransferDetails;
+                    tx.details = assetTransferDetails;
 
                 } else if (tx.header.type == constants::xAfreeze) {
                     // NOTE This has not been tested
@@ -387,7 +387,7 @@ namespace ledger {
                     assetFreezeDetails.assetFrozen   = !!getNumber(row, COL_TX_AFRZ_FROZEN);
                     assetFreezeDetails.frozenAddress = Address(getString(row, COL_TX_AFRZ_FROZEN_ADDRESS));
 
-                    tx.details                       = assetFreezeDetails;
+                    tx.details = assetFreezeDetails;
                 }
             }
 

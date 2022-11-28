@@ -81,7 +81,7 @@ namespace ledger {
             if (_currentSyncEventBus != nullptr)
                 return _currentSyncEventBus;
 
-            auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
+            auto eventPublisher = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
             auto self            = std::dynamic_pointer_cast<StellarLikeAccount>(shared_from_this());
@@ -150,7 +150,7 @@ namespace ledger {
                                                   return balance.assetType == "native";
                                               });
 
-                BigInt amount  = (balanceIt != account.balances.end()) ? balanceIt->value : BigInt::ZERO;
+                BigInt amount = (balanceIt != account.balances.end()) ? balanceIt->value : BigInt::ZERO;
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, amount);
             });
         }
@@ -287,8 +287,8 @@ namespace ledger {
             block.height       = tx.ledger;
             block.hash         = fmt::format("{}", block.height);
 
-            operation.block    = block;
-            operation.fees     = tx.feePaid;
+            operation.block = block;
+            operation.fees  = tx.feePaid;
             operation.senders.emplace_back(tx.sourceAccount);
 
             auto accountAddress     = getKeychain()->getAddress()->toString();

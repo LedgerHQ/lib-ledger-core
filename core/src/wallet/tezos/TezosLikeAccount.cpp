@@ -161,14 +161,14 @@ namespace ledger {
         }
 
         bool TezosLikeAccount::updateOriginatedAccounts(const Operation &operation) {
-            auto transaction          = operation.tezosTransaction.getValue();
-            auto self                 = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
-            auto origAccount          = transaction.originatedAccount.getValue();
+            auto transaction = operation.tezosTransaction.getValue();
+            auto self        = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
+            auto origAccount = transaction.originatedAccount.getValue();
 
             auto originatedAccountUid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(getAccountUid(), origAccount.address);
 
-            const auto found          = std::find_if(_originatedAccounts.begin(), _originatedAccounts.end(),
-                                                     [&originatedAccountUid](const std::shared_ptr<api::TezosLikeOriginatedAccount> &element) {
+            const auto found = std::find_if(_originatedAccounts.begin(), _originatedAccounts.end(),
+                                            [&originatedAccountUid](const std::shared_ptr<api::TezosLikeOriginatedAccount> &element) {
                                                 return std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(element)->getAccountUid() == originatedAccountUid;
                                             });
 

@@ -53,14 +53,14 @@ class AlgorandDatabaseTest : public WalletFixture<WalletFactory> {
         auto const currency = currencies::ALGORAND;
         registerCurrency(currency);
 
-        accountInfo        = api::AccountCreationInfo(1, {}, {}, {algorand::Address::toPublicKey(OBELIX_ADDRESS)}, {});
+        accountInfo = api::AccountCreationInfo(1, {}, {}, {algorand::Address::toPublicKey(OBELIX_ADDRESS)}, {});
 
         // NOTE: we run the tests on the staging environment which is on the TestNet
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
 
-        wallet     = std::dynamic_pointer_cast<algorand::Wallet>(uv::wait(pool->createWallet("algorand", currency.name, configuration)));
-        account    = createAlgorandAccount(wallet, accountInfo.index, accountInfo);
+        wallet  = std::dynamic_pointer_cast<algorand::Wallet>(uv::wait(pool->createWallet("algorand", currency.name, configuration)));
+        account = createAlgorandAccount(wallet, accountInfo.index, accountInfo);
 
         accountUid = algorand::AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), accountInfo.index);
     }
@@ -141,7 +141,7 @@ TEST_F(AlgorandDatabaseTest, DISABLED_OperationsDBTest) {
         auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
 
         EXPECT_EQ(ops.size(), 1);
-        auto op          = std::dynamic_pointer_cast<algorand::Operation>(ops[0]);
+        auto op = std::dynamic_pointer_cast<algorand::Operation>(ops[0]);
 
         /* TODO ?
         EXPECT_EQ(op->getAccountIndex(), account->getIndex());

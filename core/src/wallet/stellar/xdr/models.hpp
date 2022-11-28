@@ -48,9 +48,9 @@ namespace ledger {
                 // user is attempting any invalid operation
 
                 enum class CryptoKeyType : uint32_t {
-                    KEY_TYPE_ED25519       = 0,
-                    KEY_TYPE_PRE_AUTH_TX   = 1,
-                    KEY_TYPE_HASH_X        = 2,
+                    KEY_TYPE_ED25519     = 0,
+                    KEY_TYPE_PRE_AUTH_TX = 1,
+                    KEY_TYPE_HASH_X      = 2,
                     // MUXED enum values for supported type are derived from the enum values
                     // above by ORing them with 0x100
                     KEY_TYPE_MUXED_ED25519 = 0x100
@@ -68,13 +68,13 @@ namespace ledger {
                 using DataValue      = std::vector<uint8_t>;
 
                 // String types (CHECK THE VALIDITY OF THE DATA BEFORE SETTING!)
-                using string32       = std::string; // Max 32 chars
-                using string28       = std::string; // Max 28 chars
-                using string64       = std::string; // Max 64 chars
+                using string32 = std::string; // Max 32 chars
+                using string28 = std::string; // Max 28 chars
+                using string64 = std::string; // Max 64 chars
 
                 // Signature
-                using SignatureHint  = std::array<uint8_t, 4>;
-                using Signature      = std::vector<uint8_t>; // Max length == 64
+                using SignatureHint = std::array<uint8_t, 4>;
+                using Signature     = std::vector<uint8_t>; // Max length == 64
 
                 // TimeBounds structure
                 struct TimeBounds {

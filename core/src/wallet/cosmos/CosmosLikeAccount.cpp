@@ -145,7 +145,7 @@ namespace ledger {
         void CosmosLikeAccount::fillOperationTypeAmountFromMultiSend(
             CosmosLikeOperation &out,
             const cosmos::MsgMultiSend &innerMultiSendMsg) const {
-            const auto address  = getAddress();
+            const auto address = getAddress();
             // Check if the user has more inputs or outputs in the message
 
             const auto &inputs  = innerMultiSendMsg.inputs;
@@ -359,8 +359,8 @@ namespace ledger {
             // AbstractBlockchainObserver::putTransaction) it makes it impossible to manage uids of nested
             // objects (eg. cosmos::Message). Writable copy of tx to allow to add uids.
 
-            auto tx     = transaction;
-            tx.uid      = CosmosLikeTransactionDatabaseHelper::createCosmosTransactionUid(getAccountUid(), tx.hash);
+            auto tx = transaction;
+            tx.uid  = CosmosLikeTransactionDatabaseHelper::createCosmosTransactionUid(getAccountUid(), tx.hash);
 
             auto wallet = getWallet();
             if (wallet == nullptr) {
@@ -577,7 +577,7 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
             if (_currentSyncEventBus)
                 return _currentSyncEventBus;
-            auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
+            auto eventPublisher = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
             auto future =

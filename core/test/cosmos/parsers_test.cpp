@@ -60,7 +60,7 @@ TEST(CosmosGaiaParser, Unbonding) {
     rpcs_parsers::parseUnbondingList(unbondingJSON.GetObject(), parsedResult);
 
     // Expected values
-    const auto delegator      = std::string("cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl");
+    const auto delegator = std::string("cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl");
 
     const auto validator_a    = std::string("cosmosvaloper1vf44d85es37hwl9f4h9gv0e064m0lla60j9luj");
     const auto validator_b    = std::string("cosmosvaloper1clpqr4nrk4khgkxj78fcwwh6dl3uw4epsluffn");

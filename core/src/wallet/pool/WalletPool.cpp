@@ -62,21 +62,21 @@ namespace ledger {
                                                                                                    .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE))),
                                                               _externalPreferencesBackend(std::move(externalPreferencesBackend)), _internalPreferencesBackend(std::move(internalPreferencesBackend)) {
             // General
-            _poolName      = name;
+            _poolName = name;
 
             _configuration = std::static_pointer_cast<DynamicObject>(configuration);
 
             // File system management
-            _pathResolver  = pathResolver;
+            _pathResolver = pathResolver;
 
             // HTTP management
-            _httpEngine    = httpClient;
+            _httpEngine = httpClient;
 
             // Tracing management
-            _tracer        = tracer;
+            _tracer = tracer;
 
             // WS management
-            _wsClient      = std::make_shared<WebSocketClient>(webSocketClient);
+            _wsClient = std::make_shared<WebSocketClient>(webSocketClient);
 
             // Preferences management
             if (!_externalPreferencesBackend) {
@@ -87,7 +87,7 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "No internal preferences backend provided.");
             }
 
-            _rng      = rng;
+            _rng = rng;
             // Encrypt the preferences, if needed
             _password = password;
             if (!_password.empty()) {
@@ -116,9 +116,9 @@ namespace ledger {
                 password);
 
             // Threading management
-            _threadDispatcher           = dispatcher;
+            _threadDispatcher = dispatcher;
 
-            _publisher                  = std::make_shared<EventPublisher>(getContext());
+            _publisher = std::make_shared<EventPublisher>(getContext());
 
             _threadPoolExecutionContext = _threadDispatcher->getThreadPoolExecutionContext(fmt::format("pool_{}_thread_pool", name));
         }

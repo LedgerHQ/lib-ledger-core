@@ -114,7 +114,7 @@ namespace ledger {
                     const std::vector<uint8_t> &buffer = result.data.value();
                     std::stringstream ss;
                     std::copy(buffer.begin(), buffer.end(), std::ostream_iterator<char>(ss, ""));
-                    const std::string str    = ss.str();
+                    const std::string str = ss.str();
 
                     const int32_t statusCode = c->getStatusCode();
                     bool isFailure           = statusCode < 200 || statusCode >= 400;

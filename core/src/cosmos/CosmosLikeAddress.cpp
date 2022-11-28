@@ -97,7 +97,7 @@ namespace ledger {
             const Option<std::string> &derivationPath) {
             auto const &params = currency.cosmosLikeNetworkParameters.value();
 
-            auto const type    = [](auto const &address) {
+            auto const type = [](auto const &address) {
                 if (address.find(cosmos::getBech32Params(api::CosmosBech32Type::ADDRESS_VAL).hrp) !=
                     std::string::npos) {
                     return api::CosmosBech32Type::ADDRESS_VAL;

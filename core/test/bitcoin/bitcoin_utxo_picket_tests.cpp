@@ -123,7 +123,7 @@ TEST(OptimizeSize, BacktrackingCalculateChangeCorrectly) {
     int64_t outputAmount                     = 25000;
     std::vector<int64_t> inputAmounts{16500, 16500};
 
-    auto buddy               = createBuddy(feesPerByte, outputAmount, currency);
+    auto buddy = createBuddy(feesPerByte, outputAmount, currency);
 
     auto utxos               = createUtxos(inputAmounts);
     auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency);
@@ -147,7 +147,7 @@ TEST(OptimizeSize, ChangeShouldBeBigEnoughToSpend) {
     int64_t outputAmount                     = 25000;
     std::vector<int64_t> inputAmounts{19090, 19090};
 
-    auto buddy               = createBuddy(feesPerByte, outputAmount, currency);
+    auto buddy = createBuddy(feesPerByte, outputAmount, currency);
 
     auto utxos               = createUtxos(inputAmounts);
     auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency);
@@ -171,7 +171,7 @@ TEST(OptimizeSize, ApproximationShouldTookEnough) {
     int64_t outputAmount                     = 25000;
     std::vector<int64_t> inputAmounts{15000, 15000, 15000};
 
-    auto buddy               = createBuddy(feesPerByte, outputAmount, currency);
+    auto buddy = createBuddy(feesPerByte, outputAmount, currency);
 
     auto utxos               = createUtxos(inputAmounts);
     auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency);

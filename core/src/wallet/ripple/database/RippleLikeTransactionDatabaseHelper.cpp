@@ -120,7 +120,7 @@ namespace ledger {
         std::string RippleLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
                                                                         const std::string &accountUid,
                                                                         const RippleLikeBlockchainExplorerTransaction &tx) {
-            auto blockUid    = tx.block.map<std::string>([](const RippleLikeBlockchainExplorer::Block &block) {
+            auto blockUid = tx.block.map<std::string>([](const RippleLikeBlockchainExplorer::Block &block) {
                 return block.getUid();
             });
 

@@ -53,7 +53,7 @@ namespace ledger {
             /**
              * A function taking the number of missing bytes in a block and returning the padding to append to the encoding result.
              */
-            using PaddingPolicy  = std::function<void(int, std::stringstream &)>;
+            using PaddingPolicy = std::function<void(int, std::stringstream &)>;
 
             /**
              * Parameters used by the algorithm to encode or decode a byte array
@@ -144,7 +144,7 @@ namespace ledger {
                     auto remainingBits = bufferSize - ValueBitSize;
                     if (remainingBits < 0) {
                         // For the sake of understanding what we are doing, we set remainingBits to a positive value
-                        remainingBits   = -remainingBits;
+                        remainingBits = -remainingBits;
                         // Move the bits from the buffer to the index
                         auto bufferMask = (1 << bufferSize) - 1;
                         index           = (block[offset] & bufferMask) << remainingBits;
@@ -174,8 +174,8 @@ namespace ledger {
 
             template <int Base, int BlockBitSize, int ValueBitSize>
             static void decodeBlock(const char *str, int size, const Params<Base, BlockBitSize, ValueBitSize> &params, std::vector<uint8_t> &out) {
-                int buffer          = 0;
-                int bufferSize      = 0;
+                int buffer     = 0;
+                int bufferSize = 0;
                 // Compute extraction mask for a ValueBitSize of 5:
                 // (1 << 5) = 00100000
                 // (1 <<  5) -1 = 00011111 (i.e if we mask a byte with it, it will only give the 5 last bit values)

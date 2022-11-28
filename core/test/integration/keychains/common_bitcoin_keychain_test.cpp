@@ -125,7 +125,7 @@ TEST_F(CommonBitcoinKeychains, CorrectStateProducedByMarkPathAsUsed) {
 
 TEST_F(CommonBitcoinKeychains, CorrectStateUsedAtMarkPathAsUsed) {
     testKeychain(BTC_TESTNET_DATA, [](ConcreteCommonBitcoinLikeKeychains &keychain) {
-        auto addresses                       = keychain.getAllObservableAddresses(0, 10);
+        auto addresses = keychain.getAllObservableAddresses(0, 10);
 
         // update state from outside
         KeychainPersistentState stateInput   = keychain.getState();

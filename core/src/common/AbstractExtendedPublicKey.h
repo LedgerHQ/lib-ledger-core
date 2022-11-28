@@ -106,15 +106,15 @@ namespace ledger {
                     throw Exception(api::ErrorCode::INVALID_NETWORK_ADDRESS_VERSION, "Provided network parameters and address version do not match.");
                 }
                 // 1 byte of depth
-                auto depth       = reader.readNextByte();
+                auto depth = reader.readNextByte();
                 // 4 bytes of fingerprint
                 auto fingerprint = reader.readNextBeUint();
                 // 4 bytes of child's index
-                auto childNum    = reader.readNextBeUint();
+                auto childNum = reader.readNextBeUint();
                 // 32 bytes of chaincode
-                auto chainCode   = reader.read(32);
+                auto chainCode = reader.read(32);
                 // 33 bytes of publicKey
-                auto publicKey   = reader.readUntilEnd();
+                auto publicKey = reader.readUntilEnd();
                 return DeterministicPublicKey(publicKey, chainCode, childNum, depth, fingerprint, params.Identifier);
             }
 

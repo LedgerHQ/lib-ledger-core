@@ -116,7 +116,7 @@ namespace ledger {
                 {"Content-Type", "application/json"}};
             const bool jsonParseNumbersAsString = true;
 
-            const auto *const interestingField  = "estimated_gas_limit";
+            const auto *const interestingField = "estimated_gas_limit";
             rapidjson::Document body;
             body.SetObject();
             auto &allocator = body.GetAllocator();
@@ -254,7 +254,7 @@ namespace ledger {
 
             const std::size_t numAddresses = erc20Addresses.size();
 
-            bool parseNumbersAsString      = true;
+            bool parseNumbersAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return _http->POST(fmt::format("/blockchain/{}/{}/erc20/balances",
                                            getExplorerVersion(),

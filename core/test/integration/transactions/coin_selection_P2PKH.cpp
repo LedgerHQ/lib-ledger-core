@@ -70,8 +70,8 @@ TEST_F(CoinSelectionP2PKH, DISABLED_PickOneUTXOWithChange) {
     builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF, optional<int32_t>());
     int64_t fees = 10;
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
-    auto f          = builder->build();
-    auto tx         = uv::wait(f);
+    auto f  = builder->build();
+    auto tx = uv::wait(f);
 
     auto firstInput = tx->getInputs().at(0)->getValue()->toLong();
     EXPECT_EQ(tx->getInputs().size(), 1);

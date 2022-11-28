@@ -301,7 +301,7 @@ namespace ledger {
                     auto ecode = exception.getErrorCode();
                     // Tezos RPC returns a 500 when the transaction is not valid (bad counter, no
                     // balance, etc.) so we rethrow the tezos node error for easier debugging
-                    auto body  = std::static_pointer_cast<HttpRequest::JsonResult>(
+                    auto body = std::static_pointer_cast<HttpRequest::JsonResult>(
                         exception.getUserData().getValue());
                     const auto &json = *std::get<1>(*body);
                     rapidjson::StringBuffer buffer;

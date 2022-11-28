@@ -95,7 +95,7 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
 
         auto poolConfig = DynamicObject::newInstance();
         poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());
-        pool     = newDefaultPool("postgres", "", poolConfig);
+        pool = newDefaultPool("postgres", "", poolConfig);
 
         explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
             worker, client, PARAMS, std::make_shared<DynamicObject>());
@@ -138,7 +138,7 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
             getTestExecutionContext()->stop();
         });
 
-        auto bus      = account->synchronize();
+        auto bus = account->synchronize();
         bus->subscribe(getTestExecutionContext(), receiver);
         getTestExecutionContext()->waitUntilStopped();
     }

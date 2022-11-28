@@ -597,7 +597,7 @@ namespace ledger {
             return FuturePtr<Amount>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=]() -> std::shared_ptr<Amount> {
                 const auto &uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
-                auto keychain                      = self->getKeychain();
+                auto keychain = self->getKeychain();
                 // make sure ALL UTXOs are contained within the balance - although no transaction will be crafted with those
                 constexpr auto worthlessUtxoAmount = 0;
                 const auto sum                     = BitcoinLikeUTXODatabaseHelper::sumUTXO(sql, uid, worthlessUtxoAmount);

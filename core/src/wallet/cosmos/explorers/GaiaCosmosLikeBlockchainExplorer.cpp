@@ -172,12 +172,12 @@ namespace ledger {
                 /// No need to check for this as this check is done in
                 /// rpcs_parsers::parseTransaction and this function is
                 /// only called once parseTransaction has finished.
-                const auto &vNode   = node[kTx].GetObject()[kValue].GetObject();
+                const auto &vNode = node[kTx].GetObject()[kValue].GetObject();
 
                 const auto index    = transaction.messages.size();
                 auto msgFeesContent = cosmos::MsgFees();
 
-                auto pubKey         = std::string();
+                auto pubKey = std::string();
                 rpcs_parsers::parseSignerPubKey(vNode, pubKey);
                 const auto decoded = cereal::base64::decode(pubKey);
                 const auto vPubKey =
@@ -1040,7 +1040,7 @@ namespace ledger {
                 // TODO: use fold expression when C++17
                 // (document.AddMember(std::forward<JsonObj>(jsonObject).name,
                 // std::forward<JsonObj>(jsonObject).value, allocator), ...);
-                using _t        = int[];
+                using _t = int[];
                 (void)_t{0, (document.AddMember(std::forward<JsonObj>(jsonObject).name,
                                                 std::forward<JsonObj>(jsonObject).value,
                                                 allocator),
@@ -1083,17 +1083,17 @@ namespace ledger {
             const std::string gasAdjustment) const {
             auto document = rapidjson::Document();
             document.SetObject();
-            auto &allocator   = document.GetAllocator();
+            auto &allocator = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
             makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
-            auto baseReq                = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
+            auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
 
             const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgSend(message);
 
-            auto amountValue            = rapidjson::Value(rapidjson::kArrayType);
+            auto amountValue = rapidjson::Value(rapidjson::kArrayType);
             makeAmountArray(unwrappedMessage.amount, amountValue, allocator);
-            auto amount               = JsonObject(cosmos::constants::kAmount, amountValue);
+            auto amount = JsonObject(cosmos::constants::kAmount, amountValue);
 
             const auto rawTransaction = makeJsonFrom(document, baseReq, amount);
             const auto endpoint       = fmt::format(cosmos::constants::kGaiaTransfersEndpoint,
@@ -1108,7 +1108,7 @@ namespace ledger {
             const std::string gasAdjustment) const {
             auto document = rapidjson::Document();
             document.SetObject();
-            auto &allocator   = document.GetAllocator();
+            auto &allocator = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
             makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
@@ -1134,15 +1134,15 @@ namespace ledger {
             const std::string gasAdjustment) const {
             auto document = rapidjson::Document();
             document.SetObject();
-            auto &allocator   = document.GetAllocator();
+            auto &allocator = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
             makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
-            auto baseReq                = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
+            auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
 
             const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgDelegate(message);
 
-            auto delegatorAddressValue  = rapidjson::Value(rapidjson::kStringType);
+            auto delegatorAddressValue = rapidjson::Value(rapidjson::kStringType);
             makeStringValue(unwrappedMessage.delegatorAddress, delegatorAddressValue,
                             allocator);
             const auto delegatorAddress =
@@ -1156,7 +1156,7 @@ namespace ledger {
 
             auto amountValue = rapidjson::Value(rapidjson::kObjectType);
             makeAmount(unwrappedMessage.amount, amountValue, allocator);
-            const auto amount         = JsonObject(cosmos::constants::kAmount, amountValue);
+            const auto amount = JsonObject(cosmos::constants::kAmount, amountValue);
 
             const auto rawTransaction = makeJsonFrom(document, baseReq, delegatorAddress,
                                                      validatorAddress, amount);
@@ -1173,15 +1173,15 @@ namespace ledger {
             const std::string gasAdjustment) const {
             auto document = rapidjson::Document();
             document.SetObject();
-            auto &allocator   = document.GetAllocator();
+            auto &allocator = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
             makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
-            auto baseReq                = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
+            auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
 
             const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgUndelegate(message);
 
-            auto delegatorAddressValue  = rapidjson::Value(rapidjson::kStringType);
+            auto delegatorAddressValue = rapidjson::Value(rapidjson::kStringType);
             makeStringValue(unwrappedMessage.delegatorAddress, delegatorAddressValue,
                             allocator);
             const auto delegatorAddress =
@@ -1195,7 +1195,7 @@ namespace ledger {
 
             auto amountValue = rapidjson::Value(rapidjson::kObjectType);
             makeAmount(unwrappedMessage.amount, amountValue, allocator);
-            const auto amount         = JsonObject(cosmos::constants::kAmount, amountValue);
+            const auto amount = JsonObject(cosmos::constants::kAmount, amountValue);
 
             const auto rawTransaction = makeJsonFrom(document, baseReq, delegatorAddress,
                                                      validatorAddress, amount);
@@ -1212,7 +1212,7 @@ namespace ledger {
             const std::string gasAdjustment) const {
             auto document = rapidjson::Document();
             document.SetObject();
-            auto &allocator   = document.GetAllocator();
+            auto &allocator = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
             makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);

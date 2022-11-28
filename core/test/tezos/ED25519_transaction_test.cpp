@@ -85,8 +85,8 @@ Out[53]: '6e766ee0733ef0fb6385f2034cfbd437247afad4b301ebce1b929a67ce4a0b8d6c0090
 
     const std::string DESTINATION = "tz2B7ibGZBtVFLvRYBfe4Q9uw7SRE62MKZCD";
 
-    auto builder                  = tx_builder();
-    auto receiver                 = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    auto builder  = tx_builder();
+    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
             return;
@@ -95,7 +95,7 @@ Out[53]: '6e766ee0733ef0fb6385f2034cfbd437247afad4b301ebce1b929a67ce4a0b8d6c0090
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         getTestExecutionContext()->stop();
     });
-    auto bus                      = account->synchronize();
+    auto bus      = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
     getTestExecutionContext()->waitUntilStopped();
 
@@ -149,8 +149,8 @@ Out[26]: 'ade89a7e5460a33ebabcab7cb7b6589cd7e48b512ebdc57e0acfc439934b04096b0090
     */
     const std::string DESTINATION = "tz2B7ibGZBtVFLvRYBfe4Q9uw7SRE62MKZCD";
 
-    auto builder                  = tx_builder();
-    auto receiver                 = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    auto builder  = tx_builder();
+    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
             return;
@@ -159,7 +159,7 @@ Out[26]: 'ade89a7e5460a33ebabcab7cb7b6589cd7e48b512ebdc57e0acfc439934b04096b0090
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         getTestExecutionContext()->stop();
     });
-    auto bus                      = account->synchronize();
+    auto bus      = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
     getTestExecutionContext()->waitUntilStopped();
 
@@ -237,8 +237,8 @@ TEST_F(ED25519TezosMakeTransaction, CreateDelegation) {
 
     const std::string DESTINATION = "tz1aRoaRhSpRYvFdyvgWLL6TGyRoGF51wDjM";
 
-    auto builder                  = tx_builder();
-    auto receiver                 = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    auto builder  = tx_builder();
+    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
             return;
@@ -247,7 +247,7 @@ TEST_F(ED25519TezosMakeTransaction, CreateDelegation) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         getTestExecutionContext()->stop();
     });
-    auto bus                      = account->synchronize();
+    auto bus      = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
     getTestExecutionContext()->waitUntilStopped();
 

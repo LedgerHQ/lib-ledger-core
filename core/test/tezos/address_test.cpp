@@ -88,7 +88,7 @@ TEST_P(AddressTest, AddressValidation) {
     auto currency = currencies::TEZOS;
 
     // Test valid adresses
-    auto address  = KEY_ED25519.address;
+    auto address = KEY_ED25519.address;
     EXPECT_EQ(api::Address::isValid(address, currency), true);
     address = KEY_SECP256K1.address;
     EXPECT_EQ(api::Address::isValid(address, currency), true);

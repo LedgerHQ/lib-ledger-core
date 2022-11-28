@@ -56,7 +56,7 @@ std::pair<std::shared_ptr<LambdaEventReceiver>, ledger::core::Future<bool>> crea
 TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction) {
     auto fakeHttp = std::make_shared<test::FakeHttpClient>();
 
-    auto pool     = newDefaultPool(randomDBName(), "test", api::DynamicObject::newInstance(), fakeHttp);
+    auto pool = newDefaultPool(randomDBName(), "test", api::DynamicObject::newInstance(), fakeHttp);
 
     {
         auto configuration = DynamicObject::newInstance();

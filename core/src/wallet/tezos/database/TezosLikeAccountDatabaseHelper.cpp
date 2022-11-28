@@ -103,7 +103,7 @@ namespace ledger {
                                 "WHERE op.account_uid = :uid AND orig_op.uid IS NULL ORDER BY op.date";
             rowset<row> rows  = (sql.prepare << query, use(accountUid));
 
-            auto filterList   = [&](const std::vector<std::string> &list) -> bool {
+            auto filterList = [&](const std::vector<std::string> &list) -> bool {
                 for (auto &elem : list) {
                     if (filter(elem)) {
                         return true;

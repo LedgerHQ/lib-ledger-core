@@ -79,15 +79,15 @@ TEST_F(TezosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
                 auto account              = createTezosLikeAccount(wallet, nextIndex, XTZ_KEYS_INFO);
                 const auto accountAddress = account->getKeychain()->getAddress()->toString();
 
-                auto context              = getTestExecutionContext();
+                auto context = getTestExecutionContext();
 
-                auto receiver             = make_receiver([&](const std::shared_ptr<api::Event> &event) {
+                auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                     fmt::print("Received event {}\n", api::to_string(event->getCode()));
                     if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                         return;
                     EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED) << event->getPayload()->dump();
                     EXPECT_EQ(event->getCode(),
-                                          api::EventCode::SYNCHRONIZATION_SUCCEED);
+                              api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                     auto balance = uv::wait(account->getBalance());
                     EXPECT_GT(balance->toLong(), 0L) << "The account should have a non-zero balance";
@@ -95,8 +95,8 @@ TEST_F(TezosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
                     auto originatedAccounts = account->getOriginatedAccounts();
                     EXPECT_GE(originatedAccounts.size(), 2)
                         << fmt::format("{} should have at least 2 originated accounts. Check {}#contracts to make sure",
-                                                   accountAddress,
-                                                   externalExplorerUrl(accountAddress));
+                                       accountAddress,
+                                       externalExplorerUrl(accountAddress));
 
                     for (auto &origAccount : originatedAccounts) {
                         const auto address = origAccount->getAddress();
@@ -117,7 +117,7 @@ TEST_F(TezosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
                     context->stop();
                 });
 
-                auto restoreKey           = account->getRestoreKey();
+                auto restoreKey = account->getRestoreKey();
                 EXPECT_EQ(restoreKey, hex::toString(XTZ_KEYS_INFO.publicKeys[0]));
                 auto bus = account->synchronize();
                 bus->subscribe(context, receiver);
@@ -196,14 +196,14 @@ TEST_F(TezosLikeWalletSynchronization, NonActivated) {
     configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZKT_API);
     configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, kExplorerUrl);
 
-    auto wallet    = uv::wait(pool->createWallet("tezos wallet", "tezos", configuration));
+    auto wallet = uv::wait(pool->createWallet("tezos wallet", "tezos", configuration));
 
     auto nextIndex = uv::wait(wallet->getNextAccountIndex());
     EXPECT_EQ(nextIndex, 0);
 
-    auto account    = createTezosLikeAccount(wallet, nextIndex, XTZ_NON_ACTIVATED_KEYS_INFO);
+    auto account = createTezosLikeAccount(wallet, nextIndex, XTZ_NON_ACTIVATED_KEYS_INFO);
 
-    auto receiver   = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
             return;

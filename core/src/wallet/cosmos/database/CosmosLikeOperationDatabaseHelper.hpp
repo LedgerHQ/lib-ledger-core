@@ -61,7 +61,7 @@ namespace ledger {
                 const auto COL_SEND = 4;
                 const auto COL_RECV = 5;
 
-                auto filterList     = [&](const std::vector<std::string> &list) -> bool {
+                auto filterList = [&](const std::vector<std::string> &list) -> bool {
                     for (auto &elem : list) {
                         if (filter(elem)) {
                             return true;

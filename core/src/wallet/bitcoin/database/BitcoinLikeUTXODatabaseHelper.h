@@ -39,7 +39,7 @@
 namespace ledger {
     namespace core {
         class BitcoinLikeUTXODatabaseHelper {
-            BitcoinLikeUTXODatabaseHelper()  = delete;
+            BitcoinLikeUTXODatabaseHelper() = delete;
 
             ~BitcoinLikeUTXODatabaseHelper() = delete;
 

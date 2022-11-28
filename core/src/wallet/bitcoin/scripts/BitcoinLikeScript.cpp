@@ -203,7 +203,7 @@ namespace ledger {
                 if (_configuration.isSigned) {
                     std::vector<uint8_t> script = {0x00, 0x14};
                     // Hash160 of public key
-                    auto publicKeyHash160       = HASH160::hash((*this)[1].getBytes(), hashAlgorithm);
+                    auto publicKeyHash160 = HASH160::hash((*this)[1].getBytes(), hashAlgorithm);
                     script.insert(script.end(), publicKeyHash160.begin(), publicKeyHash160.end());
                     return Option<BitcoinLikeAddress>(
                         BitcoinLikeAddress(currency,

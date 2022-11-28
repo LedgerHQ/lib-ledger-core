@@ -57,11 +57,11 @@ namespace ledger {
                 uint32_t read = input->gcount();
 
                 // Create an IVt
-                auto IV       = _rng->getRandomBytes(AES256::BLOCK_SIZE);
+                auto IV = _rng->getRandomBytes(AES256::BLOCK_SIZE);
                 assert(IV.size() == AES256::BLOCK_SIZE);
 
                 // Encrypt
-                auto encrypted      = AES256::encrypt(IV, _key, std::vector<uint8_t>(buffer, buffer + read));
+                auto encrypted = AES256::encrypt(IV, _key, std::vector<uint8_t>(buffer, buffer + read));
                 // Store number of blocks
                 uint8_t blocksCount = (encrypted.size() / AES256::BLOCK_SIZE);
                 (*output) << blocksCount;
@@ -107,11 +107,11 @@ namespace ledger {
                 std::vector<uint8_t> dataToEncrypt = input.read(minEncryptedRead);
                 uint32_t read                      = dataToEncrypt.size();
                 // Create an IVt
-                auto IV                            = _rng->getRandomBytes(AES256::BLOCK_SIZE);
+                auto IV = _rng->getRandomBytes(AES256::BLOCK_SIZE);
                 // Encrypt
-                auto encrypted                     = AES256::encrypt(IV, _key, dataToEncrypt);
+                auto encrypted = AES256::encrypt(IV, _key, dataToEncrypt);
                 // Store number of blocks
-                uint8_t blocksCount                = (encrypted.size() / AES256::BLOCK_SIZE);
+                uint8_t blocksCount = (encrypted.size() / AES256::BLOCK_SIZE);
                 // Number of blocks of size AES256::BLOCK_SIZE in enrypted data
                 output.writeByte(blocksCount);
                 // Limit of reading (padding or string terminating before maxRead)
@@ -127,15 +127,15 @@ namespace ledger {
             uint32_t maxRead = 255 * AES256::BLOCK_SIZE;
             do {
                 // Get number of blocks in encrypted data
-                uint8_t blocksCount        = input.readNextByte();
+                uint8_t blocksCount = input.readNextByte();
                 // Size of encrypted (chunk of) data
                 uint32_t encryptedDataSize = blocksCount * AES256::BLOCK_SIZE;
                 // Get data that we read
-                uint32_t dataSize          = input.readNextVarInt();
+                uint32_t dataSize = input.readNextVarInt();
                 // Read IV
-                std::vector<uint8_t> IV    = input.read(AES256::BLOCK_SIZE);
+                std::vector<uint8_t> IV = input.read(AES256::BLOCK_SIZE);
                 // Get number of bytes to read
-                uint32_t available         = input.available();
+                uint32_t available = input.available();
                 if (available < encryptedDataSize) {
                     // Should not read than more available data
                     break;
@@ -143,7 +143,7 @@ namespace ledger {
                 // Read encrypted data
                 std::vector<uint8_t> encryptedData = input.read(encryptedDataSize);
                 // Decrypt
-                auto decrypted                     = AES256::decrypt(IV, _key, encryptedData);
+                auto decrypted = AES256::decrypt(IV, _key, encryptedData);
                 // Truncate if needed to size of encrypted data that we stored in dataSize bytes
                 if (dataSize < decrypted.size()) {
                     decrypted.resize(dataSize);

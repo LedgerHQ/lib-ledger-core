@@ -55,7 +55,7 @@ namespace ledger {
             static const std::string ASSET_CONFIG_TX_ID   = "GYF4N5DXRANS6AEJL4HZD53FHYSGL6AVYKLR4PG5DBSJJASWXD7Q";
             static const std::string ASSET_TRANSFER_TX_ID = "P3TBX7WYKO5SIZIHV2Z3GUCOD7B556RF6PSOPINFB6QN7EMTF6JQ";
 
-            static const std::string TESTNET_GENESIS_ID   = ledger::core::networks::getAlgorandNetworkParameters("algorand-testnet").genesisID;
+            static const std::string TESTNET_GENESIS_ID = ledger::core::networks::getAlgorandNetworkParameters("algorand-testnet").genesisID;
             static const B64String TESTNET_GENESIS_HASH(ledger::core::networks::getAlgorandNetworkParameters("algorand-testnet").genesisHash);
 
             static const model::AssetParams testAsset() {
@@ -98,10 +98,10 @@ namespace ledger {
                     tx.header.receiverRewards = Option<uint64_t>(0);
                     tx.header.closeRewards    = Option<uint64_t>(0);
 
-                    tx.details                = model::PaymentTxnFields();
-                    auto &details             = boost::get<model::PaymentTxnFields>(tx.details);
-                    details.receiverAddr      = Address(TEST_ACCOUNT_ADDRESS);
-                    details.amount            = 1000;
+                    tx.details           = model::PaymentTxnFields();
+                    auto &details        = boost::get<model::PaymentTxnFields>(tx.details);
+                    details.receiverAddr = Address(TEST_ACCOUNT_ADDRESS);
+                    details.amount       = 1000;
                 }
 
                 return tx;
@@ -166,11 +166,11 @@ namespace ledger {
                     tx.header.receiverRewards = Option<uint64_t>(0);
                     tx.header.closeRewards    = Option<uint64_t>(0);
 
-                    tx.details                = model::AssetTransferTxnFields();
-                    auto &details             = boost::get<model::AssetTransferTxnFields>(tx.details);
-                    details.assetId           = 342836;
-                    details.assetReceiver     = Address(TEST_ACCOUNT_ADDRESS);
-                    details.assetAmount       = 1000;
+                    tx.details            = model::AssetTransferTxnFields();
+                    auto &details         = boost::get<model::AssetTransferTxnFields>(tx.details);
+                    details.assetId       = 342836;
+                    details.assetReceiver = Address(TEST_ACCOUNT_ADDRESS);
+                    details.assetAmount   = 1000;
                 }
 
                 return tx;

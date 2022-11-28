@@ -93,7 +93,7 @@ TEST_F(RippleKeychains, RippleDerivationSchemes) {
             auto derivationSchemes = elem.equivalentDerivationSchemes;
             for (auto &scheme : derivationSchemes) {
                 configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, scheme);
-                auto wallet                   = uv::wait(pool->createWallet(scheme, "ripple", configuration));
+                auto wallet = uv::wait(pool->createWallet(scheme, "ripple", configuration));
                 // Create account as Live does
                 api::AccountCreationInfo info = uv::wait(wallet->getNextAccountCreationInfo());
                 EXPECT_EQ(info.derivations[0], elem.expectedDerivationPath);

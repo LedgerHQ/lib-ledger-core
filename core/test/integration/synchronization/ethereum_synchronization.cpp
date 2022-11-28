@@ -67,17 +67,17 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
                 auto nextIndex = uv::wait(wallet->getNextAccountIndex());
                 EXPECT_EQ(nextIndex, 0);
 
-                auto account    = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
+                auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
 
-                auto receiver   = make_receiver([=, &erc20Count](const std::shared_ptr<api::Event> &event) {
+                auto receiver = make_receiver([=, &erc20Count](const std::shared_ptr<api::Event> &event) {
                     fmt::print("Received event {}\n", api::to_string(event->getCode()));
                     if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                         return;
                     EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                     EXPECT_EQ(event->getCode(),
-                                api::EventCode::SYNCHRONIZATION_SUCCEED);
+                              api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-                    auto balance       = uv::wait(account->getBalance());
+                    auto balance = uv::wait(account->getBalance());
 
                     auto erc20Accounts = account->getERC20Accounts();
                     erc20Count         = erc20Accounts.size();
@@ -108,7 +108,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
                                                                                              ->queryOperations()
                                                                                              ->addOrder(api::OperationOrderKey::DATE, true)
                                                                                              ->complete())
-                                                     ->execute());
+                                                   ->execute());
                     std::cout << "ERC20 Operations: " << operations.size() << std::endl;
                     EXPECT_NE(operations.size(), 0);
 
@@ -132,8 +132,8 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
 
                 auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
                 std::cout << "Ops: " << ops.size() << std::endl;
-                auto block      = uv::wait(account->getLastBlock());
-                auto blockHash  = block.blockHash;
+                auto block     = uv::wait(account->getLastBlock());
+                auto blockHash = block.blockHash;
 
                 // ERC 20 tests
                 auto ercAccount = std::dynamic_pointer_cast<ledger::core::ERC20LikeAccount>(account->getERC20Accounts()[0]);
@@ -172,7 +172,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_BalanceHistory) {
                 auto nextIndex = uv::wait(wallet->getNextAccountIndex());
                 auto account   = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
 
-                auto receiver  = make_receiver([=, &erc20Count, &balanceStr](const std::shared_ptr<api::Event> &event) {
+                auto receiver = make_receiver([=, &erc20Count, &balanceStr](const std::shared_ptr<api::Event> &event) {
                     fmt::print("Received event {}\n", api::to_string(event->getCode()));
 
                     if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
@@ -181,14 +181,14 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_BalanceHistory) {
                     auto balance = uv::wait(account->getBalance());
                     balanceStr   = balance->toString();
 
-                    auto now     = std::time(nullptr);
+                    auto now = std::time(nullptr);
                     char now_str[256];
                     std::strftime(now_str, sizeof(now_str), "%Y-%m-%dT%H:%M:%SZ", std::localtime(&now));
 
                     auto history    = uv::wait(account->getBalanceHistory(
-                            "2019-09-20T00:00:00Z",
-                            now_str,
-                            api::TimePeriod::DAY));
+                           "2019-09-20T00:00:00Z",
+                           now_str,
+                           api::TimePeriod::DAY));
                     auto operations = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
                     BigInt cumulated;
                     BigInt cumulatedInt;
@@ -221,7 +221,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_BalanceHistory) {
                     dispatcher->stop();
                 });
 
-                auto eventBus  = account->synchronize();
+                auto eventBus = account->synchronize();
                 eventBus->subscribe(getTestExecutionContext(), receiver);
 
                 dispatcher->waitUntilStopped();
@@ -241,18 +241,18 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
-            auto account    = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
-            auto keychain   = account->getRestoreKey();
+            auto account  = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
+            auto keychain = account->getRestoreKey();
 
-            auto keyStore   = account->getRestoreKey();
+            auto keyStore = account->getRestoreKey();
 
-            auto receiver   = make_receiver([=](const std::shared_ptr<api::Event> &event) { // NOLINT(readability-function-cognitive-complexity)
+            auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) { // NOLINT(readability-function-cognitive-complexity)
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                 EXPECT_EQ(event->getCode(),
-                            api::EventCode::SYNCHRONIZATION_SUCCEED);
+                          api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                 auto balance = uv::wait(account->getBalance());
                 cout << " ETH Balance: " << balance->toLong() << endl;
@@ -260,9 +260,9 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
                 auto erc20Accounts = account->getERC20Accounts();
                 std::shared_ptr<api::ERC20LikeAccount> erc20Account;
                 for (const auto &item : erc20Accounts) {
-                      if (item->getToken().contractAddress == "0xE41d2489571d322189246DaFA5ebDe1F4699F498") {
-                          erc20Account = item;
-                          continue;
+                    if (item->getToken().contractAddress == "0xE41d2489571d322189246DaFA5ebDe1F4699F498") {
+                        erc20Account = item;
+                        continue;
                     }
                 }
                 EXPECT_GT(erc20Accounts.size(), 0);
@@ -306,18 +306,18 @@ TEST_F(EthereumLikeWalletSynchronization, BigInputData) {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
-            auto account    = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INPUT_DATA);
-            auto keychain   = account->getRestoreKey();
+            auto account  = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INPUT_DATA);
+            auto keychain = account->getRestoreKey();
 
-            auto keyStore   = account->getRestoreKey();
+            auto keyStore = account->getRestoreKey();
 
-            auto receiver   = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                 EXPECT_EQ(event->getCode(),
-                            api::EventCode::SYNCHRONIZATION_SUCCEED);
+                          api::EventCode::SYNCHRONIZATION_SUCCEED);
                 dispatcher->stop();
             });
 
@@ -348,19 +348,19 @@ TEST_F(EthereumLikeWalletSynchronization, XpubETCSynchronization) {
 
             // Test that the cointype we use is the one set by KEYCHAIN_DERIVATION_SCHEME
             EXPECT_EQ(infos.derivations[0], "44'/60'/0'/0");
-            auto account    = createEthereumLikeAccount(wallet, infos.index, infos);
+            auto account = createEthereumLikeAccount(wallet, infos.index, infos);
 
-            auto keychain   = account->getRestoreKey();
+            auto keychain = account->getRestoreKey();
 
-            auto keyStore   = account->getRestoreKey();
+            auto keyStore = account->getRestoreKey();
 
-            auto receiver   = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                 EXPECT_EQ(event->getCode(),
-                            api::EventCode::SYNCHRONIZATION_SUCCEED);
+                          api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                 auto balance = uv::wait(account->getBalance());
                 cout << " ETH Balance: " << balance->toLong() << endl;

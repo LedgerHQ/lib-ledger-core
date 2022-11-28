@@ -165,8 +165,8 @@ namespace ledger {
                                                          const std::string &protocolUpdate) {
             auto isBabylonActivated = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON;
 
-            auto params             = currency.tezosLikeNetworkParameters.value();
-            auto tx                 = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
+            auto params = currency.tezosLikeNetworkParameters.value();
+            auto tx     = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
 
             if (isSigned) {
                 // if signed remove the signature
@@ -191,7 +191,7 @@ namespace ledger {
             // Block Hash
             auto blockHashBytes = reader.read(32);
 
-            auto config         = std::make_shared<DynamicObject>();
+            auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params.Identifier);
             // Magic bytes (or version ?)
             std::vector<uint8_t> blockPrefix{0x01, 0x34};
@@ -214,8 +214,8 @@ namespace ledger {
                     // First curve code ...
                     senderCurveCode = reader.readNextByte();
                     // then hash160 ...
-                    senderHash160   = reader.read(20);
-                    version         = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(senderCurveCode));
+                    senderHash160 = reader.read(20);
+                    version       = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(senderCurveCode));
                 } else {
                     auto isSenderOriginated = reader.readNextByte();
                     if (isSenderOriginated) {
@@ -228,8 +228,8 @@ namespace ledger {
                         // Otherwise first curve code ...
                         senderCurveCode = reader.readNextByte();
                         // then hash160 ...
-                        senderHash160   = reader.read(20);
-                        version         = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(senderCurveCode));
+                        senderHash160 = reader.read(20);
+                        version       = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(senderCurveCode));
                     }
                 }
                 tx->setSender(std::make_shared<TezosLikeAddress>(currency, senderHash160, version, Option<std::string>()),
@@ -292,8 +292,8 @@ namespace ledger {
                         // Curve code
                         auto receiverCurveCode = reader.readNextByte();
                         // 20 bytes of publicKey hash
-                        receiverHash160        = reader.read(20);
-                        receiverVersion        = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(receiverCurveCode));
+                        receiverHash160 = reader.read(20);
+                        receiverVersion = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(receiverCurveCode));
                         tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
                                                                            receiverHash160,
                                                                            receiverVersion,
@@ -328,7 +328,7 @@ namespace ledger {
                     if (!isBabylonActivated) {
                         auto managerCurveCode = reader.readNextByte();
                         // manager hash160
-                        auto managerHash160   = reader.read(20);
+                        auto managerHash160 = reader.read(20);
                         if (managerHash160 != senderHash160) {
                             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Origination error: Manager is different from sender");
                         }
@@ -346,7 +346,7 @@ namespace ledger {
                         // Curve Code
                         auto delegateCurveCode = reader.readNextByte();
                         // Delegate hash160
-                        auto delegateHash160   = reader.read(20);
+                        auto delegateHash160 = reader.read(20);
                         tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
                                                                            delegateHash160,
                                                                            TezosLikeAddress::getPrefixFromImplicitVersion(

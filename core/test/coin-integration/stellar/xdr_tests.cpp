@@ -119,8 +119,8 @@ TEST_F(StellarFixture, XDRPaymentEncode) {
     PaymentOp op;
     op.destination = dest->toXdrMuxedAccount();
 
-    op.amount      = 250000000UL;
-    op.asset.type  = AssetType::ASSET_TYPE_NATIVE;
+    op.amount     = 250000000UL;
+    op.asset.type = AssetType::ASSET_TYPE_NATIVE;
 
     stellar::xdr::Operation operation;
     operation.type    = stellar::OperationType::PAYMENT;
@@ -146,8 +146,8 @@ TEST_F(StellarFixture, XDRPaymentDecode) {
     decoder >> envelope;
 
     EXPECT_EQ(envelope.type, EnvelopeType::ENVELOPE_TYPE_TX_V0);
-    const auto &v0  = boost::get<TransactionV0Envelope>(envelope.content);
-    const auto &tx  = v0.tx;
+    const auto &v0 = boost::get<TransactionV0Envelope>(envelope.content);
+    const auto &tx = v0.tx;
 
     auto sourceAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(tx.sourceAccountEd25519.begin(), tx.sourceAccountEd25519.end()), Option<uint64_t>::NONE, getCurrency().stellarLikeNetworkParameters.value());
     EXPECT_EQ(sourceAddr, SOURCE_ADDR);

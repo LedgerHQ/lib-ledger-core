@@ -70,7 +70,7 @@ namespace ledger {
             std::pair<std::string, std::vector<uint8_t>> decodeBech32Raw(const std::string &str) const;
 
             // Find the polynomial with value coefficients mod the generator as 64-bit.
-            virtual uint64_t polymod(const std::vector<uint8_t> &values) const   = 0;
+            virtual uint64_t polymod(const std::vector<uint8_t> &values) const = 0;
 
             // Expand a HRP for use in checksum computation.
             virtual std::vector<uint8_t> expandHrp(const std::string &hrp) const = 0;

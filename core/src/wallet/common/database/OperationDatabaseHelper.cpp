@@ -79,7 +79,7 @@ namespace ledger {
                                                " WHERE op.account_uid = :uid ORDER BY op.date",
                                 use(accountUid));
 
-            auto filterList  = [&](const std::vector<std::string> &list) -> bool {
+            auto filterList = [&](const std::vector<std::string> &list) -> bool {
                 for (auto &elem : list) {
                     if (filter(elem)) {
                         return true;

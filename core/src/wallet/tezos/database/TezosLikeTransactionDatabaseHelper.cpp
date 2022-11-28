@@ -86,7 +86,7 @@ namespace ledger {
                 tx.originatedAccount = TezosLikeBlockchainExplorerOriginatedAccount(values[0], static_cast<bool>(std::stoi(values[1])), static_cast<bool>(std::stoi(values[2])));
             }
 
-            tx.status       = get_number<uint64_t>(row, 12);
+            tx.status = get_number<uint64_t>(row, 12);
 
             auto explorerId = row.get<std::string>(13);
             if (!explorerId.empty()) {
@@ -122,7 +122,7 @@ namespace ledger {
         std::string TezosLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
                                                                        const std::string &accountUid,
                                                                        const TezosLikeBlockchainExplorerTransaction &tx) {
-            auto blockUid   = tx.block.map<std::string>([](const TezosLikeBlockchainExplorer::Block &block) {
+            auto blockUid = tx.block.map<std::string>([](const TezosLikeBlockchainExplorer::Block &block) {
                 return block.getUid();
             });
 

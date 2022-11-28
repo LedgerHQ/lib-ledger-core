@@ -46,7 +46,7 @@ class BitcoinP2WSHKeychains : public KeychainFixture<P2WSHBitcoinLikeKeychain> {
 };
 
 TEST_F(BitcoinP2WSHKeychains, UnitTest) {
-    auto currency      = currencies::BITCOIN;
+    auto currency = currencies::BITCOIN;
     // Script
     const auto &params = currency.bitcoinLikeNetworkParameters.value();
     HashAlgorithm hashAlgorithm(params.Identifier);
