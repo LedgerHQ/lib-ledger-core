@@ -171,9 +171,9 @@ TEST_F(CosmosLikeWalletSynchronization, DISABLED_InternalFeesMessageInTransactio
 
 TEST_F(CosmosLikeWalletSynchronization, DISABLED_GetWithdrawDelegationRewardWithExplorer) {
     auto filter       = GaiaCosmosLikeBlockchainExplorer::fuseFilters({GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
-        cosmos::constants::kEventTypeTransfer,
-        cosmos::constants::kAttributeKeyRecipient,
-        DEFAULT_ADDRESS)});
+              cosmos::constants::kEventTypeTransfer,
+              cosmos::constants::kAttributeKeyRecipient,
+              DEFAULT_ADDRESS)});
     auto bulk         = uv::wait(explorer->getTransactions(filter, 1, 10));
     auto transactions = bulk->transactions;
     ASSERT_TRUE(transactions.size() >= 1) << "At least 1 transaction must be fetched looking at the REST response manually.";
@@ -263,7 +263,7 @@ TEST_F(CosmosLikeWalletSynchronization, DISABLED_GetDelegateWithExplorer) {
     auto validator = "cosmosvaloper1ey69r37gfxvxg62sh4r0ktpuc46pzjrm873ae8";
 
     auto filter    = GaiaCosmosLikeBlockchainExplorer::fuseFilters(
-        {GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(cosmos::constants::kEventTypeMessage, cosmos::constants::kAttributeKeyAction, cosmos::constants::kEventTypeDelegate),
+           {GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(cosmos::constants::kEventTypeMessage, cosmos::constants::kAttributeKeyAction, cosmos::constants::kEventTypeDelegate),
             GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(cosmos::constants::kEventTypeMessage, cosmos::constants::kAttributeKeySender, delegator)});
     auto bulk         = uv::wait(explorer->getTransactions(filter, 1, 10));
     auto transactions = bulk->transactions;
