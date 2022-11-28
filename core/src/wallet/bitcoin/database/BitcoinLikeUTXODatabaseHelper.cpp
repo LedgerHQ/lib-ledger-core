@@ -42,12 +42,12 @@ namespace ledger {
     namespace core {
 
         std::size_t BitcoinLikeUTXODatabaseHelper::UTXOcount(soci::session &sql, const std::string &accountUid, int64_t dustAmount, const std::function<bool(const std::string &address)> &filter) {
-            rowset<row> rows  = (sql.prepare << "SELECT o.address FROM bitcoin_outputs AS o "
-                                                " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
-                                                " AND i.previous_output_idx = o.idx"
-                                                " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount",
-                                use(accountUid), use(dustAmount));
-            std::size_t count = 0;
+            const rowset<row> rows = (sql.prepare << "SELECT o.address FROM bitcoin_outputs AS o "
+                                                     " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
+                                                     " AND i.previous_output_idx = o.idx"
+                                                     " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount",
+                                      use(accountUid), use(dustAmount));
+            std::size_t count      = 0;
             for (auto &row : rows) {
                 if (row.get_indicator(0) != i_null && filter(row.get<std::string>(0))) {
                     count += 1;
@@ -58,14 +58,14 @@ namespace ledger {
 
         std::size_t
         BitcoinLikeUTXODatabaseHelper::queryUTXO(soci::session &sql, const std::string &accountUid, int32_t offset, int32_t count, int64_t dustAmount, std::vector<BitcoinLikeBlockchainExplorerOutput> &out, const std::function<bool(const std::string &address)> &filter) {
-            rowset<row> rows = (sql.prepare << "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height,"
-                                               "replaceable"
-                                               " FROM bitcoin_outputs AS o "
-                                               " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
-                                               " AND i.previous_output_idx = o.idx"
-                                               " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount"
-                                               " ORDER BY block_height LIMIT :count OFFSET :off",
-                                use(accountUid), use(dustAmount), use(count), use(offset));
+            const rowset<row> rows = (sql.prepare << "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height,"
+                                                     "replaceable"
+                                                     " FROM bitcoin_outputs AS o "
+                                                     " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
+                                                     " AND i.previous_output_idx = o.idx"
+                                                     " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount"
+                                                     " ORDER BY block_height LIMIT :count OFFSET :off",
+                                      use(accountUid), use(dustAmount), use(count), use(offset));
 
             for (auto &row : rows) {
                 if (row.get_indicator(0) != i_null && filter(row.get<std::string>(0))) {
@@ -86,23 +86,39 @@ namespace ledger {
             return out.size();
         }
 
+        BigInt BitcoinLikeUTXODatabaseHelper::sumUTXO(soci::session &sql, const std::string &accountUid, int64_t dustAmount) {
+            const rowset<row> rows = (sql.prepare << "SELECT sum(o.amount)::bigint"
+                                                     " FROM bitcoin_outputs AS o "
+                                                     " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
+                                                     " AND i.previous_output_idx = o.idx"
+                                                     " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount",
+                                      use(accountUid), use(dustAmount));
+
+            for (auto &row : rows) {
+                if (row.get_indicator(0) != i_null) {
+                    return row.get<BigInt>(0);
+                }
+            }
+            return BigInt(0);
+        }
+
         std::vector<BitcoinLikeUtxo> BitcoinLikeUTXODatabaseHelper::queryAllUtxos(
             soci::session &session,
             std::string const &accountUid,
             api::Currency const &currency,
             int64_t dustAmount) {
-            soci::rowset<soci::row> rows = (session.prepare << "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height "
-                                                               "FROM bitcoin_outputs AS o "
-                                                               "LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid AND i.previous_output_idx = o.idx "
-                                                               "WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount "
-                                                               "ORDER BY o.block_height",
-                                            use(accountUid), use(dustAmount));
+            const soci::rowset<soci::row> rows = (session.prepare << "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height "
+                                                                     "FROM bitcoin_outputs AS o "
+                                                                     "LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid AND i.previous_output_idx = o.idx "
+                                                                     "WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount "
+                                                                     "ORDER BY o.block_height",
+                                                  use(accountUid), use(dustAmount));
 
             std::vector<BitcoinLikeUtxo> utxos;
 
             for (auto &row : rows) {
                 if (row.get_indicator(0) != i_null) {
-                    BitcoinLikeUtxo output{
+                    const BitcoinLikeUtxo output{
                         get_number<uint64_t>(row, 1),
                         row.get<std::string>(2),
                         Amount(currency, 0, row.get<BigInt>(3)),

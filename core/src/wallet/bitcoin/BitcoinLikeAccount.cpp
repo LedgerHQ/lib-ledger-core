@@ -464,9 +464,9 @@ namespace ledger {
                     std::vector<BitcoinLikeBlockchainExplorerOutput> utxo;
 
                     utils::cache_type<bool, std::string> cache{};
-                    std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
-                                                                                        return keychain->contains(addr);
-                                                                                    }));
+                    const std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                              return keychain->contains(addr);
+                                                                                          }));
 
                     BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, worthlessUtxoAmount, utxo, filter);
                     return functional::map<BitcoinLikeBlockchainExplorerOutput, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency](const BitcoinLikeBlockchainExplorerOutput &output) -> std::shared_ptr<api::BitcoinLikeOutput> {
@@ -597,20 +597,11 @@ namespace ledger {
             return FuturePtr<Amount>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=]() -> std::shared_ptr<Amount> {
                 const auto &uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
-                std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
-                auto keychain = self->getKeychain();
-                utils::cache_type<bool, std::string> cache{};
-                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
-                                                                                    return keychain->contains(addr);
-                                                                                }));
-
-                BigInt sum(0);
+                auto keychain                      = self->getKeychain();
+                // make sure ALL UTXOs are contained within the balance - although no transaction will be crafted with those
                 constexpr auto worthlessUtxoAmount = 0;
-                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), worthlessUtxoAmount, utxos, filter);
-                for (const auto &utxo : utxos) {
-                    sum = sum + utxo.value;
-                }
-                Amount balance(self->getWallet()->getCurrency(), 0, sum);
+                const auto sum                     = BitcoinLikeUTXODatabaseHelper::sumUTXO(sql, uid, worthlessUtxoAmount);
+                const Amount balance(self->getWallet()->getCurrency(), 0, sum);
                 self->getWallet()->updateBalanceCache(self->getIndex(), balance);
                 return std::make_shared<Amount>(balance);
             });
@@ -636,9 +627,9 @@ namespace ledger {
                 auto keychain = self->getKeychain();
 
                 utils::cache_type<bool, std::string> cache{};
-                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
-                                                                                    return keychain->contains(addr);
-                                                                                }));
+                const std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
+                                                                                          return keychain->contains(addr);
+                                                                                      }));
 
                 // Get operations related to an account
                 OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
