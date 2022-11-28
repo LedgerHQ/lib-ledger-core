@@ -61,7 +61,7 @@ namespace ledger {
             virtual FuturePtr<std::vector<cosmos::Delegation>> getDelegations(
                 const std::string &delegatorAddr) const = 0;
             virtual FuturePtr<std::vector<cosmos::Reward>> getPendingRewards(
-                const std::string &delegatorAddr) const                                                                            = 0;
+                const std::string &delegatorAddr) const = 0;
 
             // Everything below is c/p from AbstractBlockchainExplorer, in sole purpose
             // of being able to use fromBlockHeight instead of fromBlockHash in getTransactions (see below)
@@ -81,22 +81,22 @@ namespace ledger {
             virtual Future<cosmos::UnbondingList> getUnbondingsByDelegator(
                 const std::string &delegatorAddress) const = 0;
             virtual Future<cosmos::RedelegationList> getRedelegationsByDelegator(
-                const std::string &delegatorAddress) const                              = 0;
+                const std::string &delegatorAddress) const = 0;
 
             // Balances
             /// Get Total Balance
             virtual FuturePtr<BigInt> getTotalBalance(const std::string &account) const = 0;
             /// Get Total Balance except pending rewards
             virtual FuturePtr<BigInt> getTotalBalanceWithoutPendingRewards(
-                const std::string &account) const                                                = 0;
+                const std::string &account) const = 0;
             /// Get total balance in delegation
-            virtual FuturePtr<BigInt> getDelegatedBalance(const std::string &account) const      = 0;
+            virtual FuturePtr<BigInt> getDelegatedBalance(const std::string &account) const = 0;
             /// Get total pending rewards
             virtual FuturePtr<BigInt> getPendingRewardsBalance(const std::string &account) const = 0;
             /// Get total unbonding balance
-            virtual FuturePtr<BigInt> getUnbondingBalance(const std::string &account) const      = 0;
+            virtual FuturePtr<BigInt> getUnbondingBalance(const std::string &account) const = 0;
             /// Get total available (spendable) balance
-            virtual FuturePtr<BigInt> getSpendableBalance(const std::string &account) const      = 0;
+            virtual FuturePtr<BigInt> getSpendableBalance(const std::string &account) const = 0;
 
             virtual FuturePtr<cosmos::Transaction> getTransactionByHash(
                 const String &transactionHash) const = 0;
@@ -105,7 +105,7 @@ namespace ledger {
             virtual FuturePtr<cosmos::TransactionsBulk> getTransactions(
                 const std::vector<std::string> &addresses,
                 uint32_t fromBlockHeight = 0,
-                Option<void *> session   = Option<void *>())                                              = 0;
+                Option<void *> session   = Option<void *>()) = 0;
 
             // Validators
             virtual Future<cosmos::ValidatorList> getActiveValidatorSet() const                         = 0;

@@ -127,7 +127,7 @@ namespace ledger {
 
                 std::shared_ptr<BlockchainExplorer> explorer = nullptr;
 
-                auto engine                                  = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE).value_or(ALGORAND_NODE_EXPLORER);
+                auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE).value_or(ALGORAND_NODE_EXPLORER);
                 if (engine == ALGORAND_NODE_EXPLORER) {
                     auto &networkParams = networks::getAlgorandNetworkParameters(getCurrency().name);
                     auto pool           = getPool();

@@ -58,20 +58,20 @@ namespace ledger {
                 _block = nullptr;
             }
 
-            _hash        = tx.hash;
+            _hash = tx.hash;
 
-            _currency    = operation->getAccount()->getWallet()->getCurrency();
+            _currency = operation->getAccount()->getWallet()->getCurrency();
 
-            _gasPrice    = std::make_shared<Amount>(_currency, 0, tx.gasPrice);
-            _gasLimit    = std::make_shared<Amount>(_currency, 0, tx.gasLimit);
-            _gasUsed     = std::make_shared<Amount>(_currency, 0, tx.gasUsed.getValue());
-            _value       = std::make_shared<Amount>(_currency, 0, tx.value);
+            _gasPrice = std::make_shared<Amount>(_currency, 0, tx.gasPrice);
+            _gasLimit = std::make_shared<Amount>(_currency, 0, tx.gasLimit);
+            _gasUsed  = std::make_shared<Amount>(_currency, 0, tx.gasUsed.getValue());
+            _value    = std::make_shared<Amount>(_currency, 0, tx.value);
 
-            _nonce       = std::make_shared<BigInt>((int64_t)tx.nonce);
-            _data        = tx.inputData;
-            _status      = tx.status;
-            _receiver    = EthereumLikeAddress::fromEIP55(tx.receiver, _currency);
-            _sender      = EthereumLikeAddress::fromEIP55(tx.sender, _currency);
+            _nonce    = std::make_shared<BigInt>((int64_t)tx.nonce);
+            _data     = tx.inputData;
+            _status   = tx.status;
+            _receiver = EthereumLikeAddress::fromEIP55(tx.receiver, _currency);
+            _sender   = EthereumLikeAddress::fromEIP55(tx.sender, _currency);
 
             auto vBigInt = BigInt(_currency.ethereumLikeNetworkParameters.value().ChainID) * BigInt(2) + BigInt(36);
             _vSignature  = hex::toByteArray(vBigInt.toHexString());

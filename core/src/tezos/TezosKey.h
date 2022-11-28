@@ -81,15 +81,15 @@ namespace ledger {
 
             const Encoding P2SIG{"p2sig", {54, 240, 44, 52}, api::TezosCurve::P256, 64, 99, "p256 signature"};
 
-            const std::vector<Encoding> ALL            = {EDPK, SPPK, P2PK, XPUB, TZ1, TZ2, TZ3, KT1};
+            const std::vector<Encoding> ALL = {EDPK, SPPK, P2PK, XPUB, TZ1, TZ2, TZ3, KT1};
 
-            const std::vector<Encoding> PUBKEYS        = {EDPK, SPPK, P2PK};
+            const std::vector<Encoding> PUBKEYS = {EDPK, SPPK, P2PK};
 
             const std::vector<Encoding> LEGACY_PUBKEYS = {EDPK, SPPK, P2PK, XPUB};
 
-            const std::vector<Encoding> ADDRESSES      = {TZ1, TZ2, TZ3, KT1};
+            const std::vector<Encoding> ADDRESSES = {TZ1, TZ2, TZ3, KT1};
 
-            const std::vector<Encoding> SIGNATURES     = {EDSIG, SPSIG, P2SIG, SIG};
+            const std::vector<Encoding> SIGNATURES = {EDSIG, SPSIG, P2SIG, SIG};
 
             /**
              * Get the key encoding definition for a given version

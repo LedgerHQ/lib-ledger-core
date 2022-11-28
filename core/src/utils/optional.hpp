@@ -594,7 +594,7 @@ namespace std {
 
             explicit optional(in_place_t, T &&) = delete;
 
-            ~optional()                         = default;
+            ~optional() = default;
 
             // 20.5.5.2, mutation
             optional &operator=(nullopt_t) noexcept {

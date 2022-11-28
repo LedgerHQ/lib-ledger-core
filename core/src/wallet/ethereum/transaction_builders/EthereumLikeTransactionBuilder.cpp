@@ -135,8 +135,8 @@ namespace ledger {
             auto children     = decodedRawTx->getChildren();
 
             // TODO: throw if size is KO
-            auto tx           = std::make_shared<EthereumLikeTransactionApi>(currency);
-            int index         = 0;
+            auto tx   = std::make_shared<EthereumLikeTransactionApi>(currency);
+            int index = 0;
             std::vector<uint8_t> vSignature, rSignature, sSignature;
             for (auto &child : children) {
                 if (child->isList()) {

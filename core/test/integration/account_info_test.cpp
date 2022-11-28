@@ -117,7 +117,7 @@ TEST_F(AccountInfoTests, DISABLED_GetAddressFromRange) {
     auto wallet           = uv::wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
     auto account          = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
 
-    auto freshAddresses   = uv::wait(account->getFreshPublicAddresses());
+    auto freshAddresses = uv::wait(account->getFreshPublicAddresses());
 
     auto from = 10, to = 100;
     auto addresses = uv::wait(account->getAddresses(from, to));

@@ -98,7 +98,7 @@ TEST(Encryption, EncryptDecryptWithAES256CBCAndPBKDF2) {
     std::string salt                = "Random salt";
     std::vector<uint8_t> encryptKey = PBKDF2::derive(vectorize(password), vectorize(salt), 10000, 32);
 
-    auto encrypted                  = AES256::encrypt(IV, encryptKey, vectorize(data));
+    auto encrypted = AES256::encrypt(IV, encryptKey, vectorize(data));
     EXPECT_NE(encrypted, vectorize(data));
     auto decrypted = strigify(AES256::decrypt(IV, encryptKey, encrypted));
     EXPECT_EQ(data, decrypted);

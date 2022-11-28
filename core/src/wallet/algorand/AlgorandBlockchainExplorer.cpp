@@ -41,7 +41,7 @@ namespace ledger {
 
             namespace constants {
 
-                const std::string purestakeTokenHeader                 = "x-api-key";
+                const std::string purestakeTokenHeader = "x-api-key";
 
                 // Explorer endpoints
                 const std::string purestakeStatusEndpoint              = "/ps2/v2/status";
@@ -54,9 +54,9 @@ namespace ledger {
                 const std::string purestakeAssetEndpoint               = "/idx2/v2/assets/{}";
 
                 // Query parameters
-                const std::string limitQueryParam                      = "{}?limit={}";
-                const std::string minRoundQueryParam                   = "{}&min-round={}";
-                const std::string maxRoundQueryParam                   = "{}&max-round={}";
+                const std::string limitQueryParam    = "{}?limit={}";
+                const std::string minRoundQueryParam = "{}&min-round={}";
+                const std::string maxRoundQueryParam = "{}&max-round={}";
 
             } // namespace constants
 

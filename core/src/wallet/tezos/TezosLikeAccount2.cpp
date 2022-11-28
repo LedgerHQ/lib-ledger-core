@@ -72,7 +72,7 @@ namespace ledger {
         static const std::size_t signatureSize{TezosLikeTransactionApi::SIGNATURE_SIZE_BYTES};
 
         Future<api::ErrorCode> TezosLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point &date) {
-            auto log                  = logger();
+            auto log = logger();
 
             auto eraseDataBenchmarker = std::make_shared<Benchmarker>(
                 fmt::format("erase_data_since/{}", tracePrefix()), log);
@@ -105,7 +105,7 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
             if (_currentSyncEventBus)
                 return _currentSyncEventBus;
-            auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
+            auto eventPublisher = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
             auto self            = std::static_pointer_cast<TezosLikeAccount>(shared_from_this());
@@ -451,7 +451,7 @@ namespace ledger {
                                                     BigInt computedRevealFees      = computeFees(txSize, gas->reveal);
                                                     BigInt computedTransactionFees = computeFees(txSize, gas->transaction);
 
-                                                    const auto revealFees          = std::make_shared<BigInt>(std::move(computedRevealFees));
+                                                    const auto revealFees = std::make_shared<BigInt>(std::move(computedRevealFees));
                                                     filledTx->setRevealFees(revealFees);
                                                     const auto transactionFees = std::make_shared<BigInt>(std::move(computedTransactionFees));
                                                     filledTx->setTransactionFees(transactionFees);
@@ -541,7 +541,7 @@ namespace ledger {
                 if (!sender) {
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "computeOperationUid: Sender must be provided");
                 }
-                auto receiver                      = parsedTx->getReceiver();
+                auto receiver = parsedTx->getReceiver();
 
                 const std::string &senderAddress   = sender->toBase58();
                 const std::string &receiverAddress = receiver ? receiver->toBase58() : std::string();
@@ -563,7 +563,7 @@ namespace ledger {
 
             std::string txIdBase = fmt::format("{}", parsedTx->getCounter()->intValue());
 
-            std::string &&txId   = Operation::computeTransactionId(txIdBase, parsedTx->getOperationTypeInTransaction(), additional);
+            std::string &&txId = Operation::computeTransactionId(txIdBase, parsedTx->getOperationTypeInTransaction(), additional);
 
             return OperationDatabaseHelper::createUid(getAccountUid(), txId, opType);
         }

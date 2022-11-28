@@ -119,10 +119,10 @@ namespace ledger {
             }
 
             // Fill change outputs
-            auto sizeWithChange                = BitcoinLikeTransactionApi::estimateSize(buddy->transaction->getInputs().size(),
-                                                                                         buddy->transaction->getOutputs(),
-                                                                                         getCurrency(),
-                                                                                         buddy->keychain->getKeychainEngine());
+            auto sizeWithChange = BitcoinLikeTransactionApi::estimateSize(buddy->transaction->getInputs().size(),
+                                                                          buddy->transaction->getOutputs(),
+                                                                          getCurrency(),
+                                                                          buddy->keychain->getKeychainEngine());
 
             const std::size_t changeOutputSize = BitcoinLikeTransactionApi::estimateOutputSize(buddy->keychain->getKeychainEngine());
             sizeWithChange.Min += narrowing_cast<int32_t>(changeOutputSize);
@@ -134,8 +134,8 @@ namespace ledger {
                 // TODO implement use specific change address
                 auto changeAddress = buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE)->toString();
 
-                auto amount        = buddy->changeAmount;
-                auto script        = BitcoinLikeScript::fromAddress(changeAddress, _currency);
+                auto amount = buddy->changeAmount;
+                auto script = BitcoinLikeScript::fromAddress(changeAddress, _currency);
                 BitcoinLikeBlockchainExplorerOutput out;
                 out.index                                           = static_cast<uint64_t>(buddy->transaction->getOutputs().size());
                 out.value                                           = amount;
@@ -172,7 +172,7 @@ namespace ledger {
         Future<Unit> BitcoinLikeUtxoPicker::fillInputs(const std::shared_ptr<Buddy> &buddy) {
             buddy->logger->info("Filling inputs");
 
-            auto self        = shared_from_this();
+            auto self = shared_from_this();
 
             auto performFill = [self, buddy](auto performFill, auto index) {
                 if (index >= buddy->request.inputs.size()) {
@@ -259,7 +259,7 @@ namespace ledger {
                                                                                                   return keychain->contains(addr);
                                                                                               }));
 
-                    auto const isNotExcluded                                  = [&keychainContains, &request](auto const &currentUtxo) {
+                    auto const isNotExcluded = [&keychainContains, &request](auto const &currentUtxo) {
                         return !(currentUtxo.address.isEmpty() || !keychainContains(currentUtxo.address.getValue()) || request.excludedUtxos.count(BitcoinLikeTransactionUtxoDescriptor{currentUtxo.transactionHash, currentUtxo.index}) > 0);
                     };
 

@@ -74,14 +74,14 @@ namespace ledger {
             const auto COL_WITHDRAW_ADDRESS = 6;
             const auto COL_LAST_UPDATE      = 7;
             for (auto &row : rows) {
-                entry.index                 = row.get<int32_t>(COL_IDX);
-                entry.pubkey                = row.get<std::string>(COL_PUBKEY);
-                auto accountType            = row.get<Option<std::string>>(COL_ACC_TYPE);
-                auto accountNumber          = row.get<Option<std::string>>(COL_ACC_NUM);
-                auto sequence               = row.get<Option<std::string>>(COL_SEQUENCE);
-                auto balances               = row.get<Option<std::string>>(COL_BALANCES);
-                auto withdrawAddress        = row.get<Option<std::string>>(COL_WITHDRAW_ADDRESS);
-                auto lastUpdate             = row.get<Option<std::chrono::system_clock::time_point>>(COL_LAST_UPDATE);
+                entry.index          = row.get<int32_t>(COL_IDX);
+                entry.pubkey         = row.get<std::string>(COL_PUBKEY);
+                auto accountType     = row.get<Option<std::string>>(COL_ACC_TYPE);
+                auto accountNumber   = row.get<Option<std::string>>(COL_ACC_NUM);
+                auto sequence        = row.get<Option<std::string>>(COL_SEQUENCE);
+                auto balances        = row.get<Option<std::string>>(COL_BALANCES);
+                auto withdrawAddress = row.get<Option<std::string>>(COL_WITHDRAW_ADDRESS);
+                auto lastUpdate      = row.get<Option<std::chrono::system_clock::time_point>>(COL_LAST_UPDATE);
 
                 entry.details.type          = accountType.getValueOr("");
                 entry.details.sequence      = sequence.getValueOr("0");
@@ -91,8 +91,8 @@ namespace ledger {
                 }
                 entry.details.withdrawAddress = withdrawAddress.getValueOr("");
 
-                entry.details.pubkey          = entry.pubkey;
-                entry.lastUpdate              = lastUpdate.getValueOr({});
+                entry.details.pubkey = entry.pubkey;
+                entry.lastUpdate     = lastUpdate.getValueOr({});
 
                 return true;
             }

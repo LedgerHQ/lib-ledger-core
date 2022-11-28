@@ -210,7 +210,7 @@ namespace ledger {
                 auto lowerDate = startDate;
                 auto upperDate = DateUtils::incrementDate(startDate, period);
 
-                const auto id  = std::stoull(assetId);
+                const auto id = std::stoull(assetId);
                 const auto transactions =
                     TransactionDatabaseHelper::queryAssetTransferTransactionsInvolving(
                         sql, id, _address.toString());
@@ -438,7 +438,7 @@ namespace ledger {
                 auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
                 _currentSyncEventBus = eventPublisher->getEventBus();
 
-                auto startTime       = DateUtils::now();
+                auto startTime = DateUtils::now();
                 eventPublisher->postSticky(
                     std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
 
@@ -573,7 +573,7 @@ namespace ledger {
             Future<api::ErrorCode> Account::eraseDataSince(const std::chrono::system_clock::time_point &date) {
                 auto accountUid = getAccountUid();
 
-                auto log        = logger();
+                auto log = logger();
                 log->debug(" Start erasing data of account : {}", accountUid);
 
                 std::lock_guard<std::mutex> lock(_synchronizationLock);

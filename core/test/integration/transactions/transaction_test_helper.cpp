@@ -131,8 +131,8 @@ void BitcoinMakeBaseTransaction::createAndVerifyTransaction(const std::vector<In
 
     std::vector<uint8_t> tx_bin = generatedTx->serialize();
 
-    auto parsedTx               = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(),
-                                                                                             tx_bin, 0);
+    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(),
+                                                                               tx_bin, 0);
 
     EXPECT_TRUE(verifyTransactionOutputs(parsedTx, outputs));
     // Values in inputs are missing after parsing. Here we can test only outputs.

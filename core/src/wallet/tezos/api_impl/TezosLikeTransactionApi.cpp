@@ -71,24 +71,24 @@ namespace ledger {
                 _block = nullptr;
             }
 
-            _hash                = tx.hash;
+            _hash = tx.hash;
 
-            _currency            = operation->getAccount()->getWallet()->getCurrency();
+            _currency = operation->getAccount()->getWallet()->getCurrency();
 
             _transactionFees     = std::make_shared<Amount>(_currency, 0, tx.fees);
             _transactionGasLimit = std::make_shared<Amount>(_currency, 0, tx.gas_limit);
             _value               = std::make_shared<Amount>(_currency, 0, tx.value);
 
-            _receiver            = TezosLikeAddress::fromBase58(tx.receiver, _currency);
-            _sender              = TezosLikeAddress::fromBase58(tx.sender, _currency);
+            _receiver = TezosLikeAddress::fromBase58(tx.receiver, _currency);
+            _sender   = TezosLikeAddress::fromBase58(tx.sender, _currency);
 
-            _type                = tx.type;
+            _type = tx.type;
 
-            _revealedPubKey      = tx.publicKey;
-            _revealFees          = std::make_shared<Amount>(_currency, 0, tx.fees);
-            _revealGasLimit      = std::make_shared<Amount>(_currency, 0, tx.gas_limit);
+            _revealedPubKey = tx.publicKey;
+            _revealFees     = std::make_shared<Amount>(_currency, 0, tx.fees);
+            _revealGasLimit = std::make_shared<Amount>(_currency, 0, tx.gas_limit);
 
-            _status              = tx.status;
+            _status = tx.status;
         }
 
         api::TezosOperationTag TezosLikeTransactionApi::getType() const {
@@ -226,7 +226,7 @@ namespace ledger {
             auto params = _currency.tezosLikeNetworkParameters.value_or(networks::getTezosLikeNetworkParameters("tezos"));
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params.Identifier);
-            auto decoded   = Base58::checkAndDecode(_block->getHash(), config);
+            auto decoded = Base58::checkAndDecode(_block->getHash(), config);
             // Remove 2 first bytes (of version)
             auto blockHash = std::vector<uint8_t>{decoded.getValue().begin() + 2, decoded.getValue().end()};
             writer.writeByteArray(blockHash);

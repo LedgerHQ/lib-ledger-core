@@ -53,16 +53,16 @@ namespace ledger {
             namespace constants {
 
                 // Header
-                static constexpr const char *fee     = "fee";
-                static constexpr const char *fv      = "fv";
-                static constexpr const char *gen     = "gen";
-                static constexpr const char *gh      = "gh";
-                static constexpr const char *grp     = "grp";
-                static constexpr const char *lv      = "lv";
-                static constexpr const char *lx      = "lx";
-                static constexpr const char *note    = "note";
-                static constexpr const char *snd     = "snd";
-                static constexpr const char *type    = "type";
+                static constexpr const char *fee  = "fee";
+                static constexpr const char *fv   = "fv";
+                static constexpr const char *gen  = "gen";
+                static constexpr const char *gh   = "gh";
+                static constexpr const char *grp  = "grp";
+                static constexpr const char *lv   = "lv";
+                static constexpr const char *lx   = "lx";
+                static constexpr const char *note = "note";
+                static constexpr const char *snd  = "snd";
+                static constexpr const char *type = "type";
 
                 // Key Registration Transaction
                 static constexpr const char *nonpart = "nonpart";
@@ -73,43 +73,43 @@ namespace ledger {
                 static constexpr const char *votelst = "votelst";
 
                 // Payment Transaction
-                static constexpr const char *amt     = "amt";
-                static constexpr const char *close   = "close";
-                static constexpr const char *rcv     = "rcv";
+                static constexpr const char *amt   = "amt";
+                static constexpr const char *close = "close";
+                static constexpr const char *rcv   = "rcv";
 
                 // Asset configuration Transaction
-                static constexpr const char *apar    = "apar";
-                static constexpr const char *caid    = "caid";
+                static constexpr const char *apar = "apar";
+                static constexpr const char *caid = "caid";
                 // Asset parameters
-                static constexpr const char *am      = "am";
-                static constexpr const char *an      = "an";
-                static constexpr const char *au      = "au";
-                static constexpr const char *c       = "c";
-                static constexpr const char *dc      = "dc";
-                static constexpr const char *df      = "df";
-                static constexpr const char *f       = "f";
-                static constexpr const char *m       = "m";
-                static constexpr const char *r       = "r";
-                static constexpr const char *t       = "t";
-                static constexpr const char *un      = "un";
+                static constexpr const char *am = "am";
+                static constexpr const char *an = "an";
+                static constexpr const char *au = "au";
+                static constexpr const char *c  = "c";
+                static constexpr const char *dc = "dc";
+                static constexpr const char *df = "df";
+                static constexpr const char *f  = "f";
+                static constexpr const char *m  = "m";
+                static constexpr const char *r  = "r";
+                static constexpr const char *t  = "t";
+                static constexpr const char *un = "un";
 
                 // Asset Transfer Transaction
-                static constexpr const char *aamt    = "aamt";
-                static constexpr const char *aclose  = "aclose";
-                static constexpr const char *arcv    = "arcv";
-                static constexpr const char *asnd    = "asnd";
-                static constexpr const char *xaid    = "xaid";
+                static constexpr const char *aamt   = "aamt";
+                static constexpr const char *aclose = "aclose";
+                static constexpr const char *arcv   = "arcv";
+                static constexpr const char *asnd   = "asnd";
+                static constexpr const char *xaid   = "xaid";
 
                 // Asset Freeze Transaction
-                static constexpr const char *afrz    = "afrz";
-                static constexpr const char *fadd    = "fadd";
-                static constexpr const char *faid    = "faid";
+                static constexpr const char *afrz = "afrz";
+                static constexpr const char *fadd = "fadd";
+                static constexpr const char *faid = "faid";
 
                 // Signed Transaction
-                static constexpr const char *lsig    = "lsig";
-                static constexpr const char *msig    = "msig";
-                static constexpr const char *sig     = "sig";
-                static constexpr const char *txn     = "txn";
+                static constexpr const char *lsig = "lsig";
+                static constexpr const char *msig = "msig";
+                static constexpr const char *sig  = "sig";
+                static constexpr const char *txn  = "txn";
 
             } // namespace constants
         }     // namespace algorand

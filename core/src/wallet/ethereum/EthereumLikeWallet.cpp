@@ -208,7 +208,7 @@ namespace ledger {
             auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfig(), entry.address,
                                                       getAccountInternalPreferences(entry.index), getCurrency());
 
-            auto account  = std::make_shared<EthereumLikeAccount>(shared_from_this(),
+            auto account = std::make_shared<EthereumLikeAccount>(shared_from_this(),
                                                                  entry.index,
                                                                  _explorer,
                                                                  _synchronizerFactory(),

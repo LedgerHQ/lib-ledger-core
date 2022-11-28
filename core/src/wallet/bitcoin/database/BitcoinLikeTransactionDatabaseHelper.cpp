@@ -95,7 +95,7 @@ namespace ledger {
                 out.block          = block;
             }
 
-            auto btcTxUid               = BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, out.hash);
+            auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, out.hash);
 
             // Fetch inputs
             rowset<soci::row> inputRows = (sql.prepare << "SELECT ti.input_idx, i.previous_output_idx, i.previous_tx_hash, i.amount, i.address, i.coinbase,"

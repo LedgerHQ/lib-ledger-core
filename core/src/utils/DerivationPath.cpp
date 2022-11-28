@@ -56,8 +56,8 @@ namespace ledger {
             bool lastCharWasZero    = false;
             bool nextIntIsInHex     = false;
             std::vector<uint32_t> result;
-            int sepCount     = 0;
-            int index        = 0;
+            int sepCount = 0;
+            int index    = 0;
 
             auto pushSegment = [&]() {
                 if (currentNode.size() == 0 && sepCount > 0) {

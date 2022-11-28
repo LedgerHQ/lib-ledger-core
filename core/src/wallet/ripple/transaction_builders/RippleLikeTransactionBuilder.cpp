@@ -233,14 +233,14 @@ namespace ledger {
                 // Nb of elements for R
                 sigReader.readNextByte();
                 // R length
-                auto rSize      = sigReader.readNextVarInt();
+                auto rSize = sigReader.readNextVarInt();
                 // TODO: verify that we don't truncate leading null byte
                 auto rSignature = sigReader.read(rSize);
 
                 // Nb of elements for S
                 sigReader.readNextByte();
                 // S length
-                auto sSize      = sigReader.readNextVarInt();
+                auto sSize = sigReader.readNextVarInt();
                 // TODO: verify that we don't truncate leading null byte
                 auto sSignature = sigReader.read(sSize);
                 tx->setSignature(rSignature, sSignature);

@@ -59,10 +59,10 @@ namespace ledger {
             DerivationScheme scheme(STRING(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'"));
 
             // Configure keychain factory
-            params.keychainFactory     = std::make_shared<StellarLikeKeychainFactory>();
+            params.keychainFactory = std::make_shared<StellarLikeKeychainFactory>();
 
             // Configure explorer
-            params.blockchainExplorer  = getExplorer(entry);
+            params.blockchainExplorer = getExplorer(entry);
             // Configure observer
 
             // Configure synchronizer

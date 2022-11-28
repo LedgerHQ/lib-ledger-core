@@ -423,7 +423,7 @@ namespace ledger {
             mp::cpp_dec_float_50 scale = mp::pow(mp::cpp_dec_float_50(10), (float)scaleFactor);
             f                          = f * scale;
 
-            bool isNegative            = f < 0;
+            bool isNegative = f < 0;
 
             if (isNegative)
                 f = f * -1;

@@ -143,7 +143,7 @@ namespace ledger {
             getStorage(const std::string &address) = 0;
 
             virtual Future<std::shared_ptr<BigInt>>
-            getCounter(const std::string &address)                                                                    = 0;
+            getCounter(const std::string &address) = 0;
 
             virtual Future<std::vector<uint8_t>> forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) = 0;
             // This a helper to manage legacy KT accounts
@@ -174,9 +174,9 @@ namespace ledger {
                                                           const std::string &rpcNode);
 
             /// Check that the account is funded.
-            virtual Future<bool> isFunded(const std::string &address)                                                    = 0;
+            virtual Future<bool> isFunded(const std::string &address) = 0;
 
-            virtual Future<bool> isDelegate(const std::string &address)                                                  = 0;
+            virtual Future<bool> isDelegate(const std::string &address) = 0;
 
             virtual Future<std::string> getSynchronisationOffset(const std::shared_ptr<api::OperationQuery> &operations) = 0;
 

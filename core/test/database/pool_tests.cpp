@@ -95,10 +95,10 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
 }
 
 TEST(DatabaseSessionPool, InitializeCurrencies) {
-    auto dispatcher                                   = std::make_shared<uv::UvThreadDispatcher>();
-    auto resolver                                     = std::make_shared<NativePathResolver>();
-    auto backend                                      = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
-    auto printer                                      = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
+    auto resolver   = std::make_shared<NativePathResolver>();
+    auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
+    auto printer    = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
 
     std::shared_ptr<api::DynamicObject> configuration = api::DynamicObject::newInstance();
     configuration->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());
@@ -148,10 +148,10 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
 }
 
 TEST(DatabaseSessionPool, ListingWalletsFilterUnsupportedOnes) {
-    auto dispatcher                                   = std::make_shared<uv::UvThreadDispatcher>();
-    auto resolver                                     = std::make_shared<NativePathResolver>();
-    auto backend                                      = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
-    auto printer                                      = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
+    auto resolver   = std::make_shared<NativePathResolver>();
+    auto backend    = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE, api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
+    auto printer    = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
 
     std::shared_ptr<api::DynamicObject> configuration = api::DynamicObject::newInstance();
     configuration->putString(api::PoolConfiguration::DATABASE_NAME, getPostgresUrl());

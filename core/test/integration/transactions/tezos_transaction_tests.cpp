@@ -58,7 +58,7 @@ struct TezosMakeTransaction : public TezosMakeBaseTransaction {
 };
 
 TEST_F(TezosMakeTransaction, DISABLED_CreateTx) {
-    auto builder  = tx_builder();
+    auto builder = tx_builder();
 
     auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
@@ -71,7 +71,7 @@ TEST_F(TezosMakeTransaction, DISABLED_CreateTx) {
         getTestExecutionContext()->stop();
     });
 
-    auto bus      = account->synchronize();
+    auto bus = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
 
     getTestExecutionContext()->waitUntilStopped();
@@ -96,7 +96,7 @@ TEST_F(TezosMakeTransaction, DISABLED_CreateTx) {
     auto formatedDate = DateUtils::fromJSON(date);
 
     // Delete account
-    auto code         = uv::wait(wallet->eraseDataSince(formatedDate));
+    auto code = uv::wait(wallet->eraseDataSince(formatedDate));
     EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
     // Check if account was successfully deleted
@@ -128,7 +128,7 @@ TEST_F(TezosMakeTransaction, DISABLED_CreateTx) {
     // auto parsedOriginatedTx = TezosLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedOriginatedTx);
     // EXPECT_EQ(serializedOriginatedTx, parsedOriginatedTx->serialize());
     // Delete wallet
-    auto walletCode             = uv::wait(pool->eraseDataSince(formatedDate));
+    auto walletCode = uv::wait(pool->eraseDataSince(formatedDate));
     EXPECT_EQ(walletCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
     // Check if wallet was successfully deleted

@@ -85,7 +85,7 @@ TEST_F(StellarFixture, DISABLED_ParseRawTransaction) {
                  "83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a5000000000000"
                  "00000000000000000000000000000";
 
-    auto tx    = api::StellarLikeTransactionBuilder::parseRawTransaction(ledger::core::currencies::STELLAR, hex::toByteArray(strTx));
+    auto tx = api::StellarLikeTransactionBuilder::parseRawTransaction(ledger::core::currencies::STELLAR, hex::toByteArray(strTx));
 
     EXPECT_EQ(tx->getSourceAccount()->toString(), "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
     EXPECT_EQ(tx->getSourceAccountSequence()->compare(api::BigInt::fromLong(98448948301135875L)), 0);
@@ -101,7 +101,7 @@ TEST_F(StellarFixture, DISABLED_ParseSignatureBase) {
                  "5fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a500000000000000000"
                  "0000000000000000";
 
-    auto tx    = api::StellarLikeTransactionBuilder::parseSignatureBase(ledger::core::currencies::STELLAR, hex::toByteArray(strTx));
+    auto tx = api::StellarLikeTransactionBuilder::parseSignatureBase(ledger::core::currencies::STELLAR, hex::toByteArray(strTx));
 
     EXPECT_EQ(tx->getSourceAccount()->toString(), "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
     EXPECT_EQ(tx->getSourceAccountSequence()->compare(api::BigInt::fromLong(98448948301135875L)), 0);

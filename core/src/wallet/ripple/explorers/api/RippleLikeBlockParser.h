@@ -49,7 +49,7 @@ namespace ledger {
                     _block->height = value.toUint64();
                     // Ledger index is not really a hash but since XRP doesn't have reorg
                     // it's safe to use ledger index as a unique hash.
-                    _block->hash   = number;
+                    _block->hash = number;
                 } else if (getLastKey() == "close_time") {
                     std::string number(str, length);
                     BigInt value = BigInt::fromString(number);

@@ -43,10 +43,10 @@ class AlgorandExplorerTest : public BaseFixture {
         auto worker           = dispatcher->getSerialExecutionContext("worker");
         auto threadpoolWorker = dispatcher->getThreadPoolExecutionContext("threadpoolWorker");
         // NOTE: we run the tests on the staging environment which is on the TestNet
-        auto client           = std::make_shared<HttpClient>("https://algorand.coin.staging.aws.ledger.com", http, worker, threadpoolWorker);
+        auto client = std::make_shared<HttpClient>("https://algorand.coin.staging.aws.ledger.com", http, worker, threadpoolWorker);
 
         // NOTE: we run the tests on the staging environment which is on the TestNet
-        auto configuration    = DynamicObject::newInstance();
+        auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
 
         explorer = std::make_shared<BlockchainExplorer>(

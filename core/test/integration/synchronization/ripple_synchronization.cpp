@@ -59,18 +59,18 @@ TEST_F(RippleLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
 
             auto account = createRippleLikeAccount(wallet, nextIndex, XRP_KEYS_INFO);
 
-            auto fees    = uv::wait(account->getFees());
+            auto fees = uv::wait(account->getFees());
             EXPECT_GT(fees->toLong(), 0L);
             auto baseReserve = uv::wait(account->getBaseReserve());
             EXPECT_GT(baseReserve->toLong(), 0L);
 
-            auto receiver   = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                 EXPECT_EQ(event->getCode(),
-                            api::EventCode::SYNCHRONIZATION_SUCCEED);
+                          api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                 auto balance = uv::wait(account->getBalance());
                 std::cout << "Balance: " << balance->toString() << std::endl;
@@ -133,13 +133,13 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
 
             std::shared_ptr<Amount> balance;
 
-            auto receiver   = make_receiver([&](const std::shared_ptr<api::Event> &event) {
+            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                 EXPECT_EQ(event->getCode(),
-                            api::EventCode::SYNCHRONIZATION_SUCCEED);
+                          api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                 balance = uv::wait(account->getBalance());
                 std::cout << "Balance: " << balance->toString() << std::endl;
@@ -191,7 +191,7 @@ TEST_F(RippleLikeWalletSynchronization, VaultAccountSynchronization) {
         dispatcher->stop();
     });
 
-    auto bus       = account->synchronize();
+    auto bus = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
     dispatcher->waitUntilStopped();
 

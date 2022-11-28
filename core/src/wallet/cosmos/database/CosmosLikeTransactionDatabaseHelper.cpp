@@ -165,9 +165,9 @@ namespace ledger {
             const constexpr int COL_BLK_TIME     = 10;
             const constexpr int COL_BLK_CURRNAME = 11;
 
-            tx.uid                               = row.get<std::string>(COL_TX_UID);
-            tx.hash                              = row.get<std::string>(COL_TX_HASH);
-            tx.timestamp                         = row.get<std::chrono::system_clock::time_point>(COL_TX_TIME);
+            tx.uid       = row.get<std::string>(COL_TX_UID);
+            tx.hash      = row.get<std::string>(COL_TX_HASH);
+            tx.timestamp = row.get<std::chrono::system_clock::time_point>(COL_TX_TIME);
             soci::stringToCoins(row.get<std::string>(COL_TX_FEE), tx.fee.amount);
             tx.fee.gas = row.get<std::string>(COL_TX_GAS);
             tx.gasUsed = row.get<Option<std::string>>(COL_TX_GASUSED).map<BigInt>([](const std::string &v) {

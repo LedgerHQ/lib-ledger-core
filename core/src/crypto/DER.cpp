@@ -112,7 +112,7 @@ namespace ledger {
 
             // Ensure DER encoded size match read bytes
             // Length = len(rType + rSize + rSig + sType + sSize + sSig)
-            auto readSize   = 2 /* rType + rSize */ + rSize + 2 /* rType + rSize */ + sSize;
+            auto readSize = 2 /* rType + rSize */ + rSize + 2 /* rType + rSize */ + sSize;
             if (length != readSize) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "Read size mismatch DER announced size");

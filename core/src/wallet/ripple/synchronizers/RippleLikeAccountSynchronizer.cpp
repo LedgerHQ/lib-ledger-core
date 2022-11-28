@@ -160,8 +160,8 @@ namespace ledger {
                         return lhs.blockHeight < rhs.blockHeight;
                     });
 
-                auto currencyName                 = buddy->wallet->getCurrency().name;
-                size_t index                      = 0;
+                auto currencyName = buddy->wallet->getCurrency().name;
+                size_t index      = 0;
                 // Reorg can't happen until genesis block, safely initialize with 0
                 uint64_t deepestFailedBlockHeight = 0;
                 while (index < sortedBatches.size() &&
@@ -249,7 +249,7 @@ namespace ledger {
             auto self        = shared_from_this();
             auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
 
-            auto benchmark   = std::make_shared<Benchmarker>(
+            auto benchmark = std::make_shared<Benchmarker>(
                 fmt::format("full_batch/{}", buddy->synchronizationTag),
                 buddy->logger);
             benchmark->start();
@@ -308,7 +308,7 @@ namespace ledger {
                                                                    AccountDatabaseHelper::removeBlockOperation(sql, buddy->account->getAccountUid(), blockToDelete);
 
                                                                    // Get last block not part from reorg
-                                                                   auto lastBlock          = BlockDatabaseHelper::getLastBlock(sql, buddy->wallet->getCurrency().name);
+                                                                   auto lastBlock = BlockDatabaseHelper::getLastBlock(sql, buddy->wallet->getCurrency().name);
 
                                                                    // Resync from the "beginning" if no last block in DB
                                                                    int64_t lastBlockHeight = 0;
@@ -416,7 +416,7 @@ namespace ledger {
                         auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
                         // self->transactions.insert(self->transactions.end(), bulk->transactions.begin(), bulk->transactions.end());
                         buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
-                        auto count              = 0;
+                        auto count = 0;
 
                         // NEW CODE
                         Option<Block> lastBlock = Option<Block>::NONE;

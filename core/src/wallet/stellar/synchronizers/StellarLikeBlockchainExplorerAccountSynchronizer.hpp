@@ -65,7 +65,7 @@ namespace ledger {
                 /**
                  * Last block height fetched during last synchronization
                  */
-                uint64_t lastBlockHeight    = 0;
+                uint64_t lastBlockHeight = 0;
 
                 template <class Archive>
                 void serialize(Archive &archive) {

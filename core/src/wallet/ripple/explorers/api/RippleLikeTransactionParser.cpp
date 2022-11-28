@@ -132,8 +132,8 @@ namespace ledger {
                     _transaction->confirmations = value.toUint64();
                 } else if (_lastKey == "ledger_index") {
                     RippleLikeBlockchainExplorer::Block block;
-                    block.height        = value.toUint64();
-                    block.currencyName  = currencies::RIPPLE.name;
+                    block.height       = value.toUint64();
+                    block.currencyName = currencies::RIPPLE.name;
                     // Ledger index is not really a hash but since XRP doesn't have reorg
                     // it's safe to use ledger index as a unique hash.
                     block.hash          = number;

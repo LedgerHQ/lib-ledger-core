@@ -42,7 +42,7 @@ TEST(Events, SimpleCase) {
     auto dispatcher     = std::make_shared<uv::UvThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
-    auto receiver       = make_receiver(
+    auto receiver = make_receiver(
         [&](const std::shared_ptr<api::Event> &event) {
             EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
             dispatcher->stop();
@@ -57,7 +57,7 @@ TEST(Events, SimpleCaseWithPayload) {
     auto dispatcher     = std::make_shared<uv::UvThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
-    auto receiver       = make_receiver([&](const std::shared_ptr<api::Event> &event) {
+    auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_STARTED);
         EXPECT_EQ(event->getPayload()->getString("hello"), Option<std::string>("world").toOptional());
         auto before = event->getPayload()->dump();

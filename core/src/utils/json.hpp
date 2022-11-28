@@ -245,32 +245,32 @@ Format](http://rfc7159.net/rfc7159)
         /// @{
 
         /// the type of elements in a basic_json container
-        using value_type      = basic_json;
+        using value_type = basic_json;
 
         /// the type of an element reference
-        using reference       = value_type &;
+        using reference = value_type &;
         /// the type of an element const reference
         using const_reference = const value_type &;
 
         /// a type to represent differences between iterators
         using difference_type = std::ptrdiff_t;
         /// a type to represent container sizes
-        using size_type       = std::size_t;
+        using size_type = std::size_t;
 
         /// the allocator type
-        using allocator_type  = AllocatorType<basic_json>;
+        using allocator_type = AllocatorType<basic_json>;
 
         /// the type of an element pointer
-        using pointer         = typename std::allocator_traits<allocator_type>::pointer;
+        using pointer = typename std::allocator_traits<allocator_type>::pointer;
         /// the type of an element const pointer
-        using const_pointer   = typename std::allocator_traits<allocator_type>::const_pointer;
+        using const_pointer = typename std::allocator_traits<allocator_type>::const_pointer;
 
         /// an iterator for a basic_json container
         class iterator;
         /// a const iterator for a basic_json container
         class const_iterator;
         /// a reverse iterator for a basic_json container
-        using reverse_iterator       = json_reverse_iterator<typename basic_json::iterator>;
+        using reverse_iterator = json_reverse_iterator<typename basic_json::iterator>;
         /// a const reverse iterator for a basic_json container
         using const_reverse_iterator = json_reverse_iterator<typename basic_json::const_iterator>;
 
@@ -375,7 +375,7 @@ Format](http://rfc7159.net/rfc7159)
     7159](http://rfc7159.net/rfc7159), because any order implements the
     specified "unordered" nature of JSON objects.
     */
-        using object_t          = ObjectType<StringType,
+        using object_t = ObjectType<StringType,
                                     basic_json,
                                     std::less<StringType>,
                                     AllocatorType<std::pair<const StringType,
@@ -425,7 +425,7 @@ Format](http://rfc7159.net/rfc7159)
 
     @since version 1.0.0
     */
-        using array_t           = ArrayType<basic_json, AllocatorType<basic_json>>;
+        using array_t = ArrayType<basic_json, AllocatorType<basic_json>>;
 
         /*!
     @brief a type for a string
@@ -472,7 +472,7 @@ Format](http://rfc7159.net/rfc7159)
 
     @since version 1.0.0
     */
-        using string_t          = StringType;
+        using string_t = StringType;
 
         /*!
     @brief a type for a boolean
@@ -498,7 +498,7 @@ Format](http://rfc7159.net/rfc7159)
 
     @since version 1.0.0
     */
-        using boolean_t         = BooleanType;
+        using boolean_t = BooleanType;
 
         /*!
     @brief a type for a number (integer)
@@ -570,7 +570,7 @@ Format](http://rfc7159.net/rfc7159)
 
     @since version 1.0.0
     */
-        using number_integer_t  = NumberIntegerType;
+        using number_integer_t = NumberIntegerType;
 
         /*!
     @brief a type for a number (unsigned)
@@ -709,7 +709,7 @@ Format](http://rfc7159.net/rfc7159)
 
     @since version 1.0.0
     */
-        using number_float_t    = NumberFloatType;
+        using number_float_t = NumberFloatType;
 
         /// @}
 
@@ -2634,7 +2634,7 @@ Format](http://rfc7159.net/rfc7159)
             using PointerType = typename std::add_pointer<ReferenceType>::type;
 
             // delegate the call to get_ptr<>()
-            auto ptr          = obj.template get_ptr<PointerType>();
+            auto ptr = obj.template get_ptr<PointerType>();
 
             if (ptr != nullptr) {
                 return *ptr;
@@ -5304,7 +5304,7 @@ Format](http://rfc7159.net/rfc7159)
             o.width(0);
 
             // fix locale problems
-            const auto old_locale    = o.imbue(std::locale(std::locale(), new DecimalSeparator));
+            const auto old_locale = o.imbue(std::locale(std::locale(), new DecimalSeparator));
             // set precision
 
             // 6, 15 or 16 digits of precision allows round-trip IEEE 754
@@ -5906,7 +5906,7 @@ Format](http://rfc7159.net/rfc7159)
         //////////////////////
 
         /// the type of the current element
-        value_t m_type     = value_t::null;
+        value_t m_type = value_t::null;
 
         /// the value of the current element
         json_value m_value = {};
@@ -5962,7 +5962,7 @@ Format](http://rfc7159.net/rfc7159)
             static constexpr difference_type end_value   = begin_value + 1;
 
             /// iterator as signed integer type
-            difference_type m_it                         = std::numeric_limits<std::ptrdiff_t>::denorm_min();
+            difference_type m_it = std::numeric_limits<std::ptrdiff_t>::denorm_min();
         };
 
         /*!
@@ -6092,18 +6092,18 @@ Format](http://rfc7159.net/rfc7159)
 
           public:
             /// the type of the values when the iterator is dereferenced
-            using value_type        = typename basic_json::value_type;
+            using value_type = typename basic_json::value_type;
             /// a type to represent differences between iterators
-            using difference_type   = typename basic_json::difference_type;
+            using difference_type = typename basic_json::difference_type;
             /// defines a pointer to the type iterated over (value_type)
-            using pointer           = typename basic_json::const_pointer;
+            using pointer = typename basic_json::const_pointer;
             /// defines a reference to the type iterated over (value_type)
-            using reference         = typename basic_json::const_reference;
+            using reference = typename basic_json::const_reference;
             /// the category of the iterator
             using iterator_category = std::bidirectional_iterator_tag;
 
             /// default constructor
-            const_iterator()        = default;
+            const_iterator() = default;
 
             /*!
         @brief constructor for a given JSON instance
@@ -6591,7 +6591,7 @@ Format](http://rfc7159.net/rfc7159)
 
           private:
             /// associated JSON instance
-            pointer m_object       = nullptr;
+            pointer m_object = nullptr;
             /// the actual iterator of the associated instance
             internal_iterator m_it = internal_iterator();
         };
@@ -6615,7 +6615,7 @@ Format](http://rfc7159.net/rfc7159)
             using reference     = typename basic_json::reference;
 
             /// default constructor
-            iterator()          = default;
+            iterator() = default;
 
             /// constructor for a given JSON instance
             explicit iterator(pointer object) noexcept
@@ -6736,7 +6736,7 @@ Format](http://rfc7159.net/rfc7159)
             /// shortcut to the reverse iterator adaptor
             using base_iterator = std::reverse_iterator<Base>;
             /// the reference type for the pointed-to element
-            using reference     = typename Base::reference;
+            using reference = typename Base::reference;
 
             /// create reverse iterator from iterator
             json_reverse_iterator(const typename base_iterator::iterator_type &it) noexcept
@@ -7004,7 +7004,7 @@ Format](http://rfc7159.net/rfc7159)
                     m_marker = nullptr;
 
                     // remember the begin of the token
-                    m_start  = m_cursor;
+                    m_start = m_cursor;
                     assert(m_start != nullptr);
 
                     {
@@ -7868,7 +7868,7 @@ Format](http://rfc7159.net/rfc7159)
         */
             void fill_line_buffer() {
                 // number of processed characters (p)
-                const auto offset_start  = m_start - m_content;
+                const auto offset_start = m_start - m_content;
                 // offset for m_marker wrt. to m_start
                 const auto offset_marker = (m_marker == nullptr) ? 0 : m_marker - m_start;
                 // number of unprocessed characters (u)
@@ -8140,7 +8140,7 @@ Format](http://rfc7159.net/rfc7159)
                 const lexer::lexer_char_t *curptr = m_start;
 
                 // accumulate the integer conversion result (unsigned for now)
-                number_unsigned_t value           = 0;
+                number_unsigned_t value = 0;
 
                 // maximum absolute value of the relevant integer type
                 number_unsigned_t max;
@@ -8211,15 +8211,15 @@ Format](http://rfc7159.net/rfc7159)
             /// the buffer pointer
             const lexer_char_t *m_content = nullptr;
             /// pointer to the beginning of the current symbol
-            const lexer_char_t *m_start   = nullptr;
+            const lexer_char_t *m_start = nullptr;
             /// pointer for backtracking information
-            const lexer_char_t *m_marker  = nullptr;
+            const lexer_char_t *m_marker = nullptr;
             /// pointer to the current symbol
-            const lexer_char_t *m_cursor  = nullptr;
+            const lexer_char_t *m_cursor = nullptr;
             /// pointer to the end of the buffer
-            const lexer_char_t *m_limit   = nullptr;
+            const lexer_char_t *m_limit = nullptr;
             /// the last token type
-            token_type last_token_type    = token_type::end_of_input;
+            token_type last_token_type = token_type::end_of_input;
         };
 
         /*!
@@ -8299,7 +8299,7 @@ Format](http://rfc7159.net/rfc7159)
                         expect(lexer::token_type::value_string);
                         const auto key = m_lexer.get_string();
 
-                        bool keep_tag  = false;
+                        bool keep_tag = false;
                         if (keep) {
                             if (callback) {
                                 basic_json k(key);
@@ -8451,9 +8451,9 @@ Format](http://rfc7159.net/rfc7159)
 
           private:
             /// current level of recursion
-            int depth                             = 0;
+            int depth = 0;
             /// callback function
-            const parser_callback_t callback      = nullptr;
+            const parser_callback_t callback = nullptr;
             /// the type of the last read token
             typename lexer::token_type last_token = lexer::token_type::uninitialized;
             /// the lexer
@@ -8792,7 +8792,7 @@ Format](http://rfc7159.net/rfc7159)
                     // search for the first slash after the first character
                     size_t slash = reference_string.find_first_of("/", 1),
                            // set the beginning of the first reference token
-                    start        = 1;
+                    start = 1;
                     // we can stop if start == string::npos+1 = 0
                     start != 0;
                     // set the beginning of the next reference token
@@ -9293,7 +9293,7 @@ Format](http://rfc7159.net/rfc7159)
                                               const std::string &member,
                                               bool string_type) -> basic_json & {
                     // find value
-                    auto it              = val.m_value.object->find(member);
+                    auto it = val.m_value.object->find(member);
 
                     // context-sensitive error message
                     const auto error_msg = (op == "op") ? "operation" : "operation '" + op + "'";

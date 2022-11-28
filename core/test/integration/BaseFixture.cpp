@@ -186,9 +186,9 @@ void BaseFixture::SetUp() {
     printer     = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto client = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
     // client->setGenerateCacheFile(true);
-    http        = std::make_shared<ProxyHttpClient>(client);
-    ws          = std::make_shared<FakeWebSocketClient>();
-    rng         = std::make_shared<OpenSSLRandomNumberGenerator>();
+    http = std::make_shared<ProxyHttpClient>(client);
+    ws   = std::make_shared<FakeWebSocketClient>();
+    rng  = std::make_shared<OpenSSLRandomNumberGenerator>();
 }
 
 void BaseFixture::TearDown() {
@@ -367,5 +367,5 @@ void BaseFixture::resetDispatcher() {
     printer     = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto client = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
     // client->setGenerateCacheFile(true);
-    http        = std::make_shared<ProxyHttpClient>(client);
+    http = std::make_shared<ProxyHttpClient>(client);
 }

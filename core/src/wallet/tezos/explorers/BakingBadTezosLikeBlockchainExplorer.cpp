@@ -184,7 +184,7 @@ namespace ledger {
                                              fmt::format("Failed to get fees from network, no (or malformed) response"));
                     }
 
-                    const auto &json         = jarray[static_cast<rapidjson::SizeType>(0)];
+                    const auto &json = jarray[static_cast<rapidjson::SizeType>(0)];
 
                     const auto getFieldValue = [&json](const char *fieldName) -> std::string {
                         std::string value;
@@ -197,7 +197,7 @@ namespace ledger {
                     const std::string levelValueStr = getFieldValue("level");
 
                     // try first with "fee" else with "fees"
-                    std::string feesValueStr        = getFieldValue("fee");
+                    std::string feesValueStr = getFieldValue("fee");
                     if (feesValueStr.empty()) {
                         feesValueStr = getFieldValue("fees");
                     }
@@ -214,7 +214,7 @@ namespace ledger {
                                                      if (result.isLeft()) {
                                                          throw result.getLeft();
                                                      }
-                                                     const auto &totalTx  = result.getRight();
+                                                     const auto &totalTx = result.getRight();
 
                                                      const auto totalFees = BigInt::fromString(feesValueStr);
                                                      BigInt fees          = BigInt::fromString(api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES);
@@ -312,7 +312,7 @@ namespace ledger {
         BakingBadTezosLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                               Option<std::string> offset,
                                                               Option<void *> /*session*/) {
-            const auto tryOffset       = Try<uint64_t>::from([=]() -> uint64_t {
+            const auto tryOffset = Try<uint64_t>::from([=]() -> uint64_t {
                 return std::stoul(offset.getValueOr(""), nullptr, 10);
             });
 
@@ -446,7 +446,7 @@ namespace ledger {
             return _http->GET(fmt::format("v1/accounts/{}", address))
                 .json(false)
                 .map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
-                    const auto &json        = *std::get<1>(result);
+                    const auto &json = *std::get<1>(result);
                     // look for the delegate field
                     const auto *const field = "delegate";
                     if (!json.IsObject()) {

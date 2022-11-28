@@ -193,7 +193,7 @@ namespace ledger {
                     operationApi = std::make_shared<OperationApi>(account->second);
                 }
 
-                auto &operation        = operationApi->getBackend();
+                auto &operation = operationApi->getBackend();
 
                 // Inflate abstract operation
 

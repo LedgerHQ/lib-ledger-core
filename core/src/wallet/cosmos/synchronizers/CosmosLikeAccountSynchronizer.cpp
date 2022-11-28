@@ -101,7 +101,7 @@ namespace ledger {
 
         Future<cosmos::AccountSynchronizationContext> CosmosLikeAccountSynchronizer::performSynchronization(
             const std::shared_ptr<CosmosLikeAccount> &account) {
-            auto buddy         = std::make_shared<cosmos::SynchronizationBuddy>();
+            auto buddy = std::make_shared<cosmos::SynchronizationBuddy>();
 
             buddy->account     = account;
             buddy->preferences = std::static_pointer_cast<AbstractAccount>(account)
@@ -141,8 +141,8 @@ namespace ledger {
                         return lhs.blockHeight < rhs.blockHeight;
                     });
 
-                auto currencyName                 = buddy->wallet->getCurrency().name;
-                size_t index                      = 0;
+                auto currencyName = buddy->wallet->getCurrency().name;
+                size_t index      = 0;
                 // Reorg can't happen until genesis block, safely initialize with 0
                 uint64_t deepestFailedBlockHeight = 0;
                 while (
@@ -208,10 +208,10 @@ namespace ledger {
                         // get the last block height treated during the synchronization
                         // std::max_element returns an iterator hence the indirection here
                         // We use an constant iterator variable for readability purpose
-                        auto const batchIt  = std::max_element(
-                             std::cbegin(batches),
-                             std::cend(batches),
-                             [](auto const &lhs, auto const &rhs) {
+                        auto const batchIt = std::max_element(
+                            std::cbegin(batches),
+                            std::cend(batches),
+                            [](auto const &lhs, auto const &rhs) {
                                 return lhs.blockHeight < rhs.blockHeight;
                             });
                         buddy->context.lastBlockHeight = batchIt->blockHeight;
@@ -262,7 +262,7 @@ namespace ledger {
             auto self        = shared_from_this();
             auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
 
-            auto benchmark   = std::make_shared<Benchmarker>(
+            auto benchmark = std::make_shared<Benchmarker>(
                 fmt::format("Synchronize batch {}", currentBatchIndex), buddy->logger);
             benchmark->start();
             return synchronizeBatch(currentBatchIndex, buddy)
@@ -369,8 +369,8 @@ namespace ledger {
             bool hadTransactions) {
             buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
 
-            auto self                = shared_from_this();
-            auto &batchState         = buddy->savedState.getValue().batches[currentBatchIndex];
+            auto self        = shared_from_this();
+            auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
 
             auto derivationBenchmark = std::make_shared<Benchmarker>("Batch derivation", buddy->logger);
             derivationBenchmark->start();

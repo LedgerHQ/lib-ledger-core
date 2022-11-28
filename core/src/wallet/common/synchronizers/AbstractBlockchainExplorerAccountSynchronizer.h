@@ -222,8 +222,8 @@ namespace ledger {
                         return lhs.blockHeight < rhs.blockHeight;
                     });
 
-                    auto currencyName                 = buddy->wallet->getCurrency().name;
-                    size_t index                      = 0;
+                    auto currencyName = buddy->wallet->getCurrency().name;
+                    size_t index      = 0;
                     // Reorg can't happen until genesis block, safely initialize with 0
                     uint64_t deepestFailedBlockHeight = 0;
                     while (index < sortedBatches.size() && !BlockDatabaseHelper::blockExists(sql, sortedBatches[index].blockHash, currencyName)) {
@@ -265,10 +265,10 @@ namespace ledger {
                         // get the last block height treated during the synchronization
                         // std::max_element returns an iterator hence the indirection here
                         // We use an constant iterator variable for readability purpose
-                        auto const batchIt  = std::max_element(
-                             std::cbegin(batches),
-                             std::cend(batches),
-                             [](auto const &lhs, auto const &rhs) {
+                        auto const batchIt = std::max_element(
+                            std::cbegin(batches),
+                            std::cend(batches),
+                            [](auto const &lhs, auto const &rhs) {
                                 return lhs.blockHeight < rhs.blockHeight;
                             });
                         soci::session sql(buddy->wallet->getDatabase()->getPool());
@@ -311,7 +311,7 @@ namespace ledger {
                 auto self        = getSharedFromThis();
                 auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
 
-                auto benchmark   = NEW_BENCHMARK("full_batch");
+                auto benchmark = NEW_BENCHMARK("full_batch");
                 benchmark->start();
                 return synchronizeBatch(currentBatchIndex, buddy).template flatMap<Unit>(buddy->account->getContext(), [=](const bool &hadTransactions) -> Future<Unit> {
                                                                      benchmark->stop();
@@ -364,8 +364,8 @@ namespace ledger {
                                                                AccountDatabaseHelper::removeBlockOperation(sql, buddy->account->getAccountUid(), blockToDelete);
 
                                                                // Get last block not part from reorg
-                                                               auto lastBlock          = BlockDatabaseHelper::getLastBlock(sql,
-                                                                                                                           buddy->wallet->getCurrency().name);
+                                                               auto lastBlock = BlockDatabaseHelper::getLastBlock(sql,
+                                                                                                                  buddy->wallet->getCurrency().name);
 
                                                                // Resync from the "beginning" if no last block in DB
                                                                int64_t lastBlockHeight = 0;
@@ -464,10 +464,10 @@ namespace ledger {
 
                         auto interpretBenchmark = NEW_BENCHMARK("interpret_operations");
 
-                        auto &batchState        = buddy->savedState.getValue().batches[currentBatchIndex];
+                        auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
                         // self->transactions.insert(self->transactions.end(), bulk->transactions.begin(), bulk->transactions.end());
                         buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
-                        auto count              = 0;
+                        auto count = 0;
 
                         // NEW CODE
                         Option<Block> lastBlock = Option<Block>::NONE;
@@ -558,10 +558,10 @@ namespace ledger {
             virtual void interpretTransaction(const Transaction &transaction, const std::shared_ptr<SynchronizationBuddy> &buddy, std::vector<Operation> &out) = 0;
 
             virtual void updateCurrentBlock(std::shared_ptr<SynchronizationBuddy> &buddy,
-                                            const std::shared_ptr<api::ExecutionContext> &context)                                                             = 0;
+                                            const std::shared_ptr<api::ExecutionContext> &context) = 0;
             virtual void updateTransactionsToDrop(soci::session &sql,
                                                   std::shared_ptr<SynchronizationBuddy> &buddy,
-                                                  const std::string &accountUid)                                                                               = 0;
+                                                  const std::string &accountUid)                   = 0;
 
             std::shared_ptr<Explorer> _explorer;
             std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>> _notifier;

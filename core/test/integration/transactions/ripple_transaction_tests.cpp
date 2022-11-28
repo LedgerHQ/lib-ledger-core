@@ -52,7 +52,7 @@ struct RippleMakeTransaction : public RippleMakeBaseTransaction {
 };
 
 TEST_F(RippleMakeTransaction, CreateTx) {
-    auto builder  = tx_builder();
+    auto builder = tx_builder();
 
     auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
@@ -68,7 +68,7 @@ TEST_F(RippleMakeTransaction, CreateTx) {
         getTestExecutionContext()->stop();
     });
 
-    auto bus      = account->synchronize();
+    auto bus = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
 
     getTestExecutionContext()->waitUntilStopped();
@@ -82,8 +82,8 @@ TEST_F(RippleMakeTransaction, CreateTx) {
 
     builder->setFees(api::Amount::fromLong(currency, 10));
     builder->sendToAddress(api::Amount::fromLong(currency, 220000), "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k");
-    auto f       = builder->build();
-    auto tx      = uv::wait(f);
+    auto f  = builder->build();
+    auto tx = uv::wait(f);
 
     auto destTag = tx->getDestinationTag();
     EXPECT_EQ(destTag.value_or(0), 0);
@@ -99,7 +99,7 @@ TEST_F(RippleMakeTransaction, CreateTx) {
     auto formatedDate = DateUtils::fromJSON(date);
 
     // Delete account
-    auto code         = uv::wait(wallet->eraseDataSince(formatedDate));
+    auto code = uv::wait(wallet->eraseDataSince(formatedDate));
     EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
     // Check if account was successfully deleted

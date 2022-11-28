@@ -197,15 +197,15 @@ TEST_F(BitcoinLikeWalletBtcRbfSynchronization, DISABLED_SimpleRbfScenario) {
     Output receive3{3000000, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7"};
     Output foreign{3000000, "1Bmpme646SNGa1jjjYAfuijdyBNJXLGEh"};
 
-    auto tx1        = mockTransaction("0001", {Input("0000", 0, genesis)}, {receive1}, block1);
-    auto rbfTx1     = mockTransaction("0002", {Input("1000", 0, send1, 0xFFFFFFFB)}, {receive2});
-    auto rbfTx2     = mockTransaction("0003", {Input("1001", 1, send2, 0xFFFFFFFA)}, {receive3});
+    auto tx1    = mockTransaction("0001", {Input("0000", 0, genesis)}, {receive1}, block1);
+    auto rbfTx1 = mockTransaction("0002", {Input("1000", 0, send1, 0xFFFFFFFB)}, {receive2});
+    auto rbfTx2 = mockTransaction("0003", {Input("1001", 1, send2, 0xFFFFFFFA)}, {receive3});
 
     auto replaceTx1 = mockTransaction("0004", {Input("1000", 0, send1, 0xFFFFFFFC)}, {receive1});
     auto replaceTx2 = mockTransaction("0005", {Input("1001", 1, send2, 0xFFFFFFFB)}, {foreign});
 
-    auto finalTx1   = mockTransaction("0004", {Input("1000", 0, send1, 0xFFFFFFFC)}, {receive1}, block2);
-    auto finalTx2   = mockTransaction("0003", {Input("1001", 1, send2, 0xFFFFFFFA)}, {receive3}, block2);
+    auto finalTx1 = mockTransaction("0004", {Input("1000", 0, send1, 0xFFFFFFFC)}, {receive1}, block2);
+    auto finalTx2 = mockTransaction("0003", {Input("1001", 1, send2, 0xFFFFFFFA)}, {receive3}, block2);
     ;
 
     // Receive a single transaction

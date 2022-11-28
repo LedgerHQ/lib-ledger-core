@@ -43,10 +43,10 @@ namespace ledger {
 
         constexpr auto ADDRESS_BATCH_SIZE = 10;
 
-        using Transaction                 = BitcoinLikeBlockchainExplorerTransaction;
-        using Input                       = BitcoinLikeBlockchainExplorerInput;
-        using CommonBuddy                 = BlockchainExplorerAccountSynchronizer::SynchronizationBuddy;
-        using TransactionMap              = std::unordered_map<std::string, std::pair<Transaction, bool /* replaceable */>>;
+        using Transaction    = BitcoinLikeBlockchainExplorerTransaction;
+        using Input          = BitcoinLikeBlockchainExplorerInput;
+        using CommonBuddy    = BlockchainExplorerAccountSynchronizer::SynchronizationBuddy;
+        using TransactionMap = std::unordered_map<std::string, std::pair<Transaction, bool /* replaceable */>>;
 
         struct BitcoinSynchronizationBuddy : public CommonBuddy {
             std::vector<BitcoinLikeBlockchainExplorerTransaction> mempoolTransaction;
@@ -63,7 +63,7 @@ namespace ledger {
         void BlockchainExplorerAccountSynchronizer::updateTransactionsToDrop(soci::session &sql,
                                                                              std::shared_ptr<SynchronizationBuddy> &buddy,
                                                                              const std::string &accountUid) {
-            auto span                    = _currentAccount->getTracer()->startSpan("BlockchainExplorerAccountSynchronizer::updateTransactionsToDrop");
+            auto span = _currentAccount->getTracer()->startSpan("BlockchainExplorerAccountSynchronizer::updateTransactionsToDrop");
             // Get all transactions in DB that may be dropped (txs without block_uid)
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.date, btc_op.transaction_hash FROM operations AS op "
                                                            "LEFT OUTER JOIN bitcoin_operations AS btc_op ON btc_op.uid = op.uid "
@@ -74,8 +74,8 @@ namespace ledger {
             const auto TX_HASH_COL       = 2;
 
             // Create predicate function that returns true if the transaction should be saved from `transactionsToDrop` pruning
-            auto gracePeriod             = buddy->account->getWallet()->getMempoolGracePeriod();
-            auto isGraced                = [gracePeriod, buddy](const auto &row, int date_col_index) -> bool {
+            auto gracePeriod = buddy->account->getWallet()->getMempoolGracePeriod();
+            auto isGraced    = [gracePeriod, buddy](const auto &row, int date_col_index) -> bool {
                 if (row.get_indicator(date_col_index) == soci::i_null) {
                     const auto txHash = row.template get<std::string>(date_col_index);
                     buddy->logger->warn("Mempool transaction (or optimistic update) is missing a date : {}, it won't be graced.", txHash);
@@ -440,8 +440,8 @@ namespace ledger {
                     return lhs.blockHeight < rhs.blockHeight;
                 });
 
-                auto currencyName                 = buddy->wallet->getCurrency().name;
-                size_t index                      = 0;
+                auto currencyName = buddy->wallet->getCurrency().name;
+                size_t index      = 0;
                 // Reorg can't happen until genesis block, safely initialize with 0
                 uint64_t deepestFailedBlockHeight = 0;
                 while (index < sortedBatches.size() && !BlockDatabaseHelper::blockExists(sql, sortedBatches[index].blockHash, currencyName)) {
@@ -508,10 +508,10 @@ namespace ledger {
                     // get the last block height treated during the synchronization
                     // std::max_element returns an iterator hence the indirection here
                     // We use an constant iterator variable for readability purpose
-                    auto const batchIt  = std::max_element(
-                         std::cbegin(batches),
-                         std::cend(batches),
-                         [](auto const &lhs, auto const &rhs) {
+                    auto const batchIt = std::max_element(
+                        std::cbegin(batches),
+                        std::cend(batches),
+                        [](auto const &lhs, auto const &rhs) {
                             return lhs.blockHeight < rhs.blockHeight;
                         });
                     soci::session sql(buddy->wallet->getDatabase()->getPool());
@@ -629,8 +629,8 @@ namespace ledger {
                                                            AccountDatabaseHelper::removeBlockOperation(sql, buddy->account->getAccountUid(), blockToDelete);
 
                                                            // Get last block not part from reorg
-                                                           auto lastBlock          = BlockDatabaseHelper::getLastBlock(sql,
-                                                                                                                       buddy->wallet->getCurrency().name);
+                                                           auto lastBlock = BlockDatabaseHelper::getLastBlock(sql,
+                                                                                                              buddy->wallet->getCurrency().name);
 
                                                            // Resync from the "beginning" if no last block in DB
                                                            int64_t lastBlockHeight = 0;
@@ -723,9 +723,9 @@ namespace ledger {
                     self->_explorerBenchmark->stop();
                     auto interpretBenchmark = NEW_BENCHMARK("interpret_operations");
 
-                    auto &batchState        = buddy->savedState.getValue().batches[currentBatchIndex];
+                    auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
                     buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
-                    auto count              = 0;
+                    auto count = 0;
 
                     Option<Block> lastBlock = Option<Block>::NONE;
                     std::vector<Operation> operations;

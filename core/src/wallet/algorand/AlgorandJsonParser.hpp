@@ -66,7 +66,7 @@ namespace ledger {
                     if (blockHeight > static_cast<uint64_t>(std::numeric_limits<int64_t>::max())) {
                         throw make_exception(api::ErrorCode::OUT_OF_RANGE, "Block height exceeds maximum value");
                     }
-                    block.height    = static_cast<int64_t>(blockHeight);
+                    block.height = static_cast<int64_t>(blockHeight);
 
                     /// In Algorand implementation, we use the block height (aka round) as block hash
                     block.blockHash = std::to_string(block.height);
@@ -94,7 +94,7 @@ namespace ledger {
                     assetParams.creatorAddr = getMandatoryAddressField(node, constants::xCreator);
                     assetParams.total       = getMandatoryUint64Field(node, constants::xTotal);
                     assert(node.HasMember(constants::xDecimal.c_str()));
-                    assetParams.decimals      = node[constants::xDecimal.c_str()].GetUint();
+                    assetParams.decimals = node[constants::xDecimal.c_str()].GetUint();
 
                     assetParams.defaultFrozen = getOptionalBoolField(node, constants::xDefaultFrozen);
                     assetParams.unitName      = getOptionalStringField(node, constants::xUnitName);
@@ -128,11 +128,11 @@ namespace ledger {
                 // WARNING This has not been tested
                 template <class T>
                 static void parseParticipationInfo(const T &node, model::KeyRegTxnFields &details) {
-                    details.selectionPk      = getMandatoryStringField(node, constants::xVotekey);
-                    details.votePk           = getMandatoryStringField(node, constants::xSelkey);
-                    details.voteKeyDilution  = getMandatoryUint64Field(node, constants::xVotekd);
-                    details.voteFirst        = getMandatoryUint64Field(node, constants::xVotefst);
-                    details.voteLast         = getMandatoryUint64Field(node, constants::xVotelst);
+                    details.selectionPk     = getMandatoryStringField(node, constants::xVotekey);
+                    details.votePk          = getMandatoryStringField(node, constants::xSelkey);
+                    details.voteKeyDilution = getMandatoryUint64Field(node, constants::xVotekd);
+                    details.voteFirst       = getMandatoryUint64Field(node, constants::xVotefst);
+                    details.voteLast        = getMandatoryUint64Field(node, constants::xVotelst);
 
                     details.nonParticipation = getOptionalBoolField(node, constants::xNonParticipation);
                 }
@@ -152,9 +152,9 @@ namespace ledger {
                     details.assetReceiver = getMandatoryAddressField(node, constants::xReceiver);
                     details.assetAmount   = getMandatoryUint64Field(node, constants::xAmount);
 
-                    details.assetCloseTo  = getOptionalAddressField(node, constants::xCloseTo);
-                    details.closeAmount   = getOptionalUint64Field(node, constants::xCloseAmount);
-                    details.assetSender   = getOptionalAddressField(node, constants::xSender);
+                    details.assetCloseTo = getOptionalAddressField(node, constants::xCloseTo);
+                    details.closeAmount  = getOptionalUint64Field(node, constants::xCloseAmount);
+                    details.assetSender  = getOptionalAddressField(node, constants::xSender);
                 }
 
                 // WARNING This has not been tested
@@ -167,13 +167,13 @@ namespace ledger {
 
                 template <class T>
                 static void parseTransaction(const T &node, model::Transaction &tx) {
-                    tx.header.type            = getMandatoryStringField(node, constants::xTxType);
-                    tx.header.id              = getMandatoryStringField(node, constants::xId);
-                    tx.header.sender          = getMandatoryAddressField(node, constants::xSender);
-                    tx.header.firstValid      = getMandatoryUint64Field(node, constants::xFirstValid);
-                    tx.header.lastValid       = getMandatoryUint64Field(node, constants::xLastValid);
-                    tx.header.fee             = getMandatoryUint64Field(node, constants::xFee);
-                    tx.header.genesisHash     = getMandatoryB64StringField(node, constants::xGenesisHash);
+                    tx.header.type        = getMandatoryStringField(node, constants::xTxType);
+                    tx.header.id          = getMandatoryStringField(node, constants::xId);
+                    tx.header.sender      = getMandatoryAddressField(node, constants::xSender);
+                    tx.header.firstValid  = getMandatoryUint64Field(node, constants::xFirstValid);
+                    tx.header.lastValid   = getMandatoryUint64Field(node, constants::xLastValid);
+                    tx.header.fee         = getMandatoryUint64Field(node, constants::xFee);
+                    tx.header.genesisHash = getMandatoryB64StringField(node, constants::xGenesisHash);
 
                     tx.header.round           = getOptionalUint64Field(node, constants::xConfirmedRound);
                     tx.header.timestamp       = getOptionalUint64Field(node, constants::xRoundTime);

@@ -173,7 +173,7 @@ TEST_F(EthereumKeychains, EthereumAddressValidationFromPubKeyAndChainCode) {
         auto chainCode        = elem[3];
         auto expectedAddress  = elem[4];
 
-        auto config           = DynamicObject::newInstance();
+        auto config = DynamicObject::newInstance();
         config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, derivationScheme);
         auto ethXpub        = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
                                                                                    experimental::optional<std::vector<uint8_t>>(),
@@ -219,7 +219,7 @@ TEST_F(EthereumKeychains, DISABLED_EthereumDerivationSchemes) {
             auto derivationSchemes = elem.equivalentDerivationSchemes;
             for (auto &scheme : derivationSchemes) {
                 configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, scheme);
-                auto wallet                   = uv::wait(pool->createWallet(scheme, "ethereum", configuration));
+                auto wallet = uv::wait(pool->createWallet(scheme, "ethereum", configuration));
                 // Create account as Live does
                 api::AccountCreationInfo info = uv::wait(wallet->getNextAccountCreationInfo());
                 info.publicKeys.push_back(hex::toByteArray(elem.pubKey));

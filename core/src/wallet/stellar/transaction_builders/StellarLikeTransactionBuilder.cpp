@@ -56,9 +56,9 @@ namespace ledger {
             stellar::xdr::Operation operation;
             stellar::xdr::PaymentOp op;
             StellarLikeAddress addr(address, _account->getWallet()->getCurrency(), Option<std::string>::NONE);
-            op.destination    = addr.toXdrMuxedAccount();
-            op.asset.type     = stellar::xdr::AssetType::ASSET_TYPE_NATIVE;
-            op.amount         = std::static_pointer_cast<Amount>(amount)->value()->toInt64();
+            op.destination = addr.toXdrMuxedAccount();
+            op.asset.type  = stellar::xdr::AssetType::ASSET_TYPE_NATIVE;
+            op.amount      = std::static_pointer_cast<Amount>(amount)->value()->toInt64();
 
             operation.type    = stellar::OperationType::PAYMENT;
             operation.content = op;
@@ -86,8 +86,8 @@ namespace ledger {
             std::copy(pubKey.begin(), pubKey.end(), op.destination.content.begin());
             op.startingBalance = std::static_pointer_cast<Amount>(amount)->value()->toInt64();
 
-            operation.type     = stellar::OperationType::CREATE_ACCOUNT;
-            operation.content  = op;
+            operation.type    = stellar::OperationType::CREATE_ACCOUNT;
+            operation.content = op;
             _envelope.tx.operations.emplace_back(operation);
 
             _balanceChange = _balanceChange + BigInt(op.startingBalance);

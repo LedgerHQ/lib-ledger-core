@@ -181,7 +181,7 @@ namespace ledger {
         ExternalTezosLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                              Option<std::string> offset,
                                                              Option<void *> /*session*/) {
-            auto tryOffset       = Try<uint64_t>::from([=]() -> uint64_t {
+            auto tryOffset = Try<uint64_t>::from([=]() -> uint64_t {
                 return std::stoul(offset.getValueOr(""), nullptr, 10);
             });
 
@@ -364,7 +364,7 @@ namespace ledger {
                     } else if (connection.getStatusCode() < 200 || connection.getStatusCode() >= 300) {
                         throw Exception(api::ErrorCode::HTTP_ERROR, connection.getStatusText());
                     } else {
-                        auto &json       = *std::get<1>(result);
+                        auto &json = *std::get<1>(result);
 
                         // look for the is_funded field
                         const auto field = "is_funded";
@@ -383,7 +383,7 @@ namespace ledger {
             return _http->GET(fmt::format("account/{}", address))
                 .json(false)
                 .map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
-                    auto &json       = *std::get<1>(result);
+                    auto &json = *std::get<1>(result);
                     // look for the is_active_delegate field
                     const auto field = "is_active_delegate";
                     if (!json.IsObject() || !json.HasMember(field) ||

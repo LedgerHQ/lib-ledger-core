@@ -36,7 +36,7 @@ namespace ledger {
     namespace core {
 
         // The Bech32 character set for encoding.
-        const char *charset          = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+        const char *charset = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 
         // The Bech32 character set for decoding.
         const int8_t charsetRev[128] = {

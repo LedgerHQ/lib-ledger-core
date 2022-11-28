@@ -84,8 +84,8 @@ struct DummyOperationStrategy {
 TEST(BalanceHistory, ZeroesOutOfRange) {
     // a basic collections of “operations” with nothing
     std::vector<DummyOperation> operations;
-    auto start    = DateUtils::fromJSON("2019-01-01T00:00:00Z");
-    auto end      = DateUtils::fromJSON("2019-02-01T00:00:00Z");
+    auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
+    auto end   = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
     auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t>(
         start,
@@ -112,8 +112,8 @@ TEST(BalanceHistory, CorrectBalancesPerHour) {
         DummyOperation(5, api::OperationType::SEND, DateUtils::fromJSON("2019-01-01T04:00:00Z")),
         DummyOperation(3, api::OperationType::SEND, DateUtils::fromJSON("2019-01-01T07:30:00Z"))};
 
-    auto start    = DateUtils::fromJSON("2019-01-01T00:00:00Z");
-    auto end      = DateUtils::fromJSON("2019-02-01T00:00:00Z");
+    auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
+    auto end   = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
     auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t>(
         start,
@@ -140,8 +140,8 @@ TEST(BalanceHistory, CorrectBalancesPerDay) {
         DummyOperation(5, api::OperationType::SEND, DateUtils::fromJSON("2019-01-02T04:00:00Z")),
         DummyOperation(3, api::OperationType::SEND, DateUtils::fromJSON("2019-01-02T04:30:00Z"))};
 
-    auto start    = DateUtils::fromJSON("2019-01-01T00:00:00Z");
-    auto end      = DateUtils::fromJSON("2019-02-01T00:00:00Z");
+    auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
+    auto end   = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
     auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t>(
         start,
@@ -166,8 +166,8 @@ TEST(BalanceHistory, CorrectBalancesPerDay2) {
         DummyOperation(5, api::OperationType::SEND, DateUtils::fromJSON("2019-01-19T04:00:00Z")),
         DummyOperation(3, api::OperationType::SEND, DateUtils::fromJSON("2019-01-22T05:30:00Z"))};
 
-    auto start    = DateUtils::fromJSON("2019-01-01T00:00:00Z");
-    auto end      = DateUtils::fromJSON("2019-02-01T00:00:00Z");
+    auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
+    auto end   = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
     auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t>(
         start,

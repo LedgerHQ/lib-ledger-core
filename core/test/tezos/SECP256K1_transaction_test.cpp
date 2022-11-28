@@ -82,8 +82,8 @@ binary payload
 
     const std::string DESTINATION = "tz2B7ibGZBtVFLvRYBfe4Q9uw7SRE62MKZCD";
 
-    auto builder                  = tx_builder();
-    auto receiver                 = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    auto builder  = tx_builder();
+    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
             return;
@@ -92,7 +92,7 @@ binary payload
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         getTestExecutionContext()->stop();
     });
-    auto bus                      = account->synchronize();
+    auto bus      = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
     getTestExecutionContext()->waitUntilStopped();
 
@@ -142,8 +142,8 @@ TEST_F(SECP256K1TezosMakeTransaction, CreateTxWithReveal) {
     */
     const std::string DESTINATION = "tz2B7ibGZBtVFLvRYBfe4Q9uw7SRE62MKZCD";
 
-    auto builder                  = tx_builder();
-    auto receiver                 = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    auto builder  = tx_builder();
+    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
             return;
@@ -152,7 +152,7 @@ TEST_F(SECP256K1TezosMakeTransaction, CreateTxWithReveal) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         getTestExecutionContext()->stop();
     });
-    auto bus                      = account->synchronize();
+    auto bus      = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
     getTestExecutionContext()->waitUntilStopped();
 
@@ -279,7 +279,7 @@ TEST_F(SECP256K1TezosMakeTransaction, incrementOptimisticCounter) {
     builder->setGasLimit(api::Amount::fromLong(currency, 10407));
     builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("0")));
     builder->sendToAddress(api::Amount::fromLong(currency, 5000), DESTINATION);
-    auto f               = builder->build();
+    auto f = builder->build();
 
     auto tx              = std::dynamic_pointer_cast<TezosLikeTransactionApi>(uv::wait(f));
     auto explorerCounter = std::make_shared<BigInt>(tx->getCounter()->toString(10));
@@ -350,8 +350,8 @@ TEST_F(SECP256K1TezosMakeTransaction, CreateDelegation) {
 
     const std::string DESTINATION = "tz1aRoaRhSpRYvFdyvgWLL6TGyRoGF51wDjM";
 
-    auto builder                  = tx_builder();
-    auto receiver                 = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    auto builder  = tx_builder();
+    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
             return;
@@ -360,7 +360,7 @@ TEST_F(SECP256K1TezosMakeTransaction, CreateDelegation) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         getTestExecutionContext()->stop();
     });
-    auto bus                      = account->synchronize();
+    auto bus      = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
     getTestExecutionContext()->waitUntilStopped();
 
@@ -402,8 +402,8 @@ TEST_F(SECP256K1TezosMakeTransaction, CreateUndelegation) {
 
     const std::string DESTINATION = "tz1aRoaRhSpRYvFdyvgWLL6TGyRoGF51wDjM";
 
-    auto builder                  = tx_builder();
-    auto receiver                 = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    auto builder  = tx_builder();
+    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
             return;
@@ -412,7 +412,7 @@ TEST_F(SECP256K1TezosMakeTransaction, CreateUndelegation) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         getTestExecutionContext()->stop();
     });
-    auto bus                      = account->synchronize();
+    auto bus      = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
     getTestExecutionContext()->waitUntilStopped();
 
@@ -511,8 +511,8 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawDelegationWithReveal) {
 TEST_F(SECP256K1TezosMakeTransaction, CreateTxAutoFill) {
     const std::string DESTINATION = "tz2B7ibGZBtVFLvRYBfe4Q9uw7SRE62MKZCD";
 
-    auto builder                  = tx_builder();
-    auto receiver                 = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    auto builder  = tx_builder();
+    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
             return;
@@ -521,15 +521,15 @@ TEST_F(SECP256K1TezosMakeTransaction, CreateTxAutoFill) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         getTestExecutionContext()->stop();
     });
-    auto bus                      = account->synchronize();
+    auto bus      = account->synchronize();
     bus->subscribe(getTestExecutionContext(), receiver);
     getTestExecutionContext()->waitUntilStopped();
     builder->setFees(api::Amount::fromLong(currency, 0));
     builder->setGasLimit(api::Amount::fromLong(currency, 0));
     builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("0")));
     builder->wipeToAddress(DESTINATION);
-    auto f             = builder->build();
-    auto tx            = std::dynamic_pointer_cast<TezosLikeTransactionApi>(uv::wait(f));
+    auto f  = builder->build();
+    auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(uv::wait(f));
     // tx->reveal(true);
     auto binaryPayload = tx->serialize();
     std::cout << "TezosMakeTransaction.CreateTx - serialized tx: " << hex::toString(binaryPayload) << std::endl;

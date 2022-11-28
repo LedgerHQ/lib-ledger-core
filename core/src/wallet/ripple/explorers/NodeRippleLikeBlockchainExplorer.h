@@ -99,9 +99,9 @@ namespace ledger {
             NodeRippleLikeBodyRequest &pushPagination(
                 const std::string &ledger,
                 const std::string &seq) {
-                std::string key                               = "marker";
-                std::string ledgerKeyStr                      = "ledger";
-                std::string seqKeyStr                         = "seq";
+                std::string key          = "marker";
+                std::string ledgerKeyStr = "ledger";
+                std::string seqKeyStr    = "seq";
 
                 rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
 

@@ -304,7 +304,7 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
             if (_currentSyncEventBus)
                 return _currentSyncEventBus;
-            auto eventPublisher  = std::make_shared<EventPublisher>(getContext());
+            auto eventPublisher = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
             auto future          = _synchronizer->synchronizeAccount(std::static_pointer_cast<RippleLikeAccount>(shared_from_this()))->getFuture();
@@ -388,7 +388,7 @@ namespace ledger {
         Future<std::string> RippleLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction, const std::string &correlationId) {
             auto self = getSelf();
             return _explorer->pushTransaction(transaction, correlationId).map<std::string>(getContext(), [self, transaction](const String &seq) -> std::string {
-                auto txHash     = seq.str();
+                auto txHash = seq.str();
                 // optimisticUpdate
                 auto txExplorer = getXRPLikeBlockchainExplorerTxFromRawTx(self, txHash, transaction);
                 // Store in DB
@@ -411,7 +411,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::RippleLikeTransactionBuilder> RippleLikeAccount::buildTransaction() {
-            auto self           = std::dynamic_pointer_cast<RippleLikeAccount>(shared_from_this());
+            auto self = std::dynamic_pointer_cast<RippleLikeAccount>(shared_from_this());
 
             // TODO: rm this
             auto getTransaction = [self](

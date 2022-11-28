@@ -121,8 +121,8 @@ namespace ledger {
             // Wipe mode
             _request.wipe = true;
             // We don't have the amount yet, will be set when we fill outputs in BitcoinLikeUtxoPicker
-            auto a        = std::shared_ptr<BigInt>();
-            auto script   = createSendScript(address);
+            auto a      = std::shared_ptr<BigInt>();
+            auto script = createSendScript(address);
             _request.outputs.push_back(std::tuple<std::shared_ptr<BigInt>, std::shared_ptr<api::BitcoinLikeScript>>(a, script));
             return shared_from_this();
         }

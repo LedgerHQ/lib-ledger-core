@@ -40,10 +40,10 @@ namespace ledger {
           public:
             template <typename InputIter, typename UnaryFunction>
             static void parallel_for_each(InputIter first, InputIter last, UnaryFunction f) {
-                auto range               = std::distance(first, last);
-                size_t approxNumThreads  = std::thread::hardware_concurrency();
+                auto range              = std::distance(first, last);
+                size_t approxNumThreads = std::thread::hardware_concurrency();
                 // number of elements for one thread
-                size_t jobsForThread     = range / approxNumThreads;
+                size_t jobsForThread = range / approxNumThreads;
                 // number of elements for one thread + remainder
                 size_t jobsForMainThread = range % approxNumThreads + jobsForThread;
                 // minus main thread

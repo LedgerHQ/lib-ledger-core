@@ -73,7 +73,7 @@ namespace soci {
             Document d;
             auto &allocator = d.GetAllocator();
 
-            auto &tuple     = d.SetArray();
+            auto &tuple = d.SetArray();
             cosmos_coin_to_json_tuple(in, tuple, allocator);
 
             StringBuffer buffer;
@@ -109,8 +109,8 @@ namespace soci {
             Document d;
             auto &allocator = d.GetAllocator();
 
-            auto &obj       = d.SetObject();
-            auto gas        = in.gas.toString();
+            auto &obj = d.SetObject();
+            auto gas  = in.gas.toString();
             obj["gas"].SetString(gas.data(), gas.size());
             auto &array = obj["amount"].SetObject();
             for (const auto &item : in.amount) {

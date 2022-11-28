@@ -241,7 +241,7 @@ namespace ledger {
             std::size_t fixedSize = 0;
 
             // Fixed size computation
-            fixedSize             = 4; // Transaction version
+            fixedSize = 4; // Transaction version
             if (currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction)
                 fixedSize += 4;                                                       // Timestamp
             fixedSize += BytesWriter().writeVarInt(inputCount).toByteArray().size();  // Number of inputs
@@ -264,16 +264,16 @@ namespace ledger {
             if (isSegwit) {
                 // Native Segwit: 32 PrevTxHash + 4 Index + 1 null byte + 4 sequence
                 // P2SH: 32 PrevTxHash + 4 Index + 23 scriptPubKey + 4 sequence
-                const auto isNativeSegwit    = BitcoinLikeKeychain::isNativeSegwit(keychainEngine);
-                const std::size_t inputSize  = isNativeSegwit ? 41 : 63;
-                const std::size_t noWitness  = fixedSize + inputSize * inputCount + maxOutputsSize;
+                const auto isNativeSegwit   = BitcoinLikeKeychain::isNativeSegwit(keychainEngine);
+                const std::size_t inputSize = isNativeSegwit ? 41 : 63;
+                const std::size_t noWitness = fixedSize + inputSize * inputCount + maxOutputsSize;
 
                 // Include flag and marker size (one byte each)
                 const std::size_t minWitness = noWitness + (106 * inputCount) + 2;
                 const std::size_t maxWitness = noWitness + (108 * inputCount) + 2;
 
-                minSize                      = (noWitness * 3 + minWitness) / 4;
-                maxSize                      = (noWitness * 3 + maxWitness) / 4;
+                minSize = (noWitness * 3 + minWitness) / 4;
+                maxSize = (noWitness * 3 + maxWitness) / 4;
             } else {
                 minSize = fixedSize + 146 * inputCount + minOutputsSize;
                 maxSize = fixedSize + 148 * inputCount + maxOutputsSize;
@@ -298,7 +298,7 @@ namespace ledger {
                                                 const std::string &keychainEngine) {
             const std::size_t fixedSize = estimateFixedTxSize(inputCount, outputs.size(), currency);
 
-            std::size_t outputsSize     = (8 + 1) * outputs.size(); // amount (8 bytes) + script length (1 byte)
+            std::size_t outputsSize = (8 + 1) * outputs.size(); // amount (8 bytes) + script length (1 byte)
             for (const auto &out : outputs) {
                 outputsSize += out->getScript().size();
             }
@@ -313,7 +313,7 @@ namespace ledger {
                                                 const std::string &keychainEngine) {
             const std::size_t fixedSize = estimateFixedTxSize(inputCount, outputs.size(), currency);
 
-            std::size_t outputsSize     = (8 + 1) * outputs.size(); // amount (8 bytes) + script length (1 byte)
+            std::size_t outputsSize = (8 + 1) * outputs.size(); // amount (8 bytes) + script length (1 byte)
             for (const auto &out : outputs) {
                 outputsSize += std::dynamic_pointer_cast<BitcoinLikeScriptApi>(std::get<1>(out))->getScript().serialize().size();
             }
@@ -323,10 +323,10 @@ namespace ledger {
 
         int32_t BitcoinLikeTransactionApi::computeWorthlessUtxoValue(const api::Currency &currency, const std::string &keychainEngine, const std::vector<std::shared_ptr<api::BigInt>> &fees) {
             // Size of empty transaction (0 input 0 output)
-            auto const fixedSize         = BitcoinLikeTransactionApi::estimateSize(0,
-                                                                                   0,
-                                                                                   currency,
-                                                                                   keychainEngine);
+            auto const fixedSize = BitcoinLikeTransactionApi::estimateSize(0,
+                                                                           0,
+                                                                           currency,
+                                                                           keychainEngine);
 
             // Size 1 signed UTXO (signed input)
             const int32_t signedUTXOSize = BitcoinLikeTransactionApi::estimateSize(1,
@@ -361,7 +361,7 @@ namespace ledger {
         BitcoinLikeTransactionApi &BitcoinLikeTransactionApi::setVersion(uint32_t version) {
             _version = version;
             // Update params
-            _params  = networks::getNetworkParameters(_currency.name, _version);
+            _params = networks::getNetworkParameters(_currency.name, _version);
             return *this;
         }
 
@@ -396,7 +396,7 @@ namespace ledger {
                 // 4 value representing both stack size and length of R and S - sighash is excluded
                 auto const sAndRLengthInt = 4 + signatures[i].r.size() + signatures[i].s.size();
                 // DER Signature = Total Size | DER prefix | Size(S+R) | R StackSize | R Length | R | S StackSize | S Length | S | SIGHASH
-                auto const totalSigInt    = 2 + sAndRLengthInt;
+                auto const totalSigInt = 2 + sAndRLengthInt;
                 writer.writeByte(totalSigInt);
                 // DER prefix
                 writer.writeByte(0x30);
@@ -806,12 +806,12 @@ namespace ledger {
                         // For BIP32_P2PKH it is recovered from scriptPubKey (see above)
                         // For BIP49_P2SH it is recovered from redeemScript (see above)
                         // Note: Decred does not support segwit
-                        auto outAddress                     = preparedInputs[index].address;
+                        auto outAddress = preparedInputs[index].address;
                         if (isSegwit && preparedInputs[index].address.empty()) {
                             // Get keychain engine
                             // BIP173_P2WPKH script : <sig> <pubKey> (with <pubKey>.size() == 33)
                             // BIP173_P2WSH script : <sig> <witness>
-                            auto keychain                 = pubKey.size() == 33 ? api::KeychainEngines::BIP173_P2WPKH : api::KeychainEngines::BIP173_P2WSH;
+                            auto keychain = pubKey.size() == 33 ? api::KeychainEngines::BIP173_P2WPKH : api::KeychainEngines::BIP173_P2WSH;
                             // Get hash160 to construct address
                             auto hash160                  = BitcoinLikeAddress::fromPublicKeyToHash160(pubKey, currency, keychain);
                             preparedInputs[index].address = BitcoinLikeAddress(currency, hash160, keychain).toString();

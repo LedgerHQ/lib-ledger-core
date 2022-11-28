@@ -152,10 +152,10 @@ namespace ledger {
                 auto contentObject       = valueObject[kContent].GetObject();
                 auto initialDepositArray = valueObject[kInitialDeposit].GetArray();
 
-                auto content             = api::CosmosLikeContent(
-                                getString(contentObject, kType),
-                                getString(contentObject, kTitle),
-                                getString(contentObject, kDescription));
+                auto content = api::CosmosLikeContent(
+                    getString(contentObject, kType),
+                    getString(contentObject, kTitle),
+                    getString(contentObject, kDescription));
 
                 std::vector<cosmos::Coin> amounts;
                 // the size of the array of amounts should be frequently equal to one
@@ -500,22 +500,22 @@ namespace ledger {
                 auto feeObject = document[kFee].GetObject();
 
                 // Gas Limit
-                auto gas       = std::make_shared<BigInt>(getString(feeObject, kGas));
+                auto gas = std::make_shared<BigInt>(getString(feeObject, kGas));
                 tx->setGas(gas);
 
                 // Total Tx fees
                 // Gas Price is then deduced with Total_Tx_fees / Gas Limit
                 if (feeObject[kAmount].IsArray()) {
-                    auto fee       = BigInt();
+                    auto fee = BigInt();
 
                     auto getAmount = [=](const rjObject &object) -> Amount {
                         auto denom  = getString(object, kDenom);
                         auto amount = getString(object, kAmount);
 
-                        auto unit   = std::find_if(
-                              currency.units.begin(),
-                              currency.units.end(),
-                              [&](const api::CurrencyUnit &unit) {
+                        auto unit = std::find_if(
+                            currency.units.begin(),
+                            currency.units.end(),
+                            [&](const api::CurrencyUnit &unit) {
                                 return unit.name == denom;
                             });
 
