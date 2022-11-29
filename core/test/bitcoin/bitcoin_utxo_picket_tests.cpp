@@ -4,12 +4,12 @@
 #include <gtest/gtest.h>
 #include <ledger/core/api/Networks.hpp>
 #include <spdlog/sinks/null_sink.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
+#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
+#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeStrategyUtxoPicker.h>
 #include <wallet/common/Amount.h>
 #include <wallet/currencies.hpp>
-#include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
-#include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
-#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 
 using namespace ledger::core;
 
@@ -94,8 +94,8 @@ std::vector<BitcoinLikeUtxo> createUtxos(const std::vector<int64_t> &values) {
 
 std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> createBuddy(int64_t feesPerByte, int64_t outputAmount, const api::Currency &currency, const std::string keychainEngine = api::KeychainEngines::BIP32_P2PKH, const std::string address = "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4") {
     BitcoinLikeTransactionBuildRequest r(std::make_shared<BigInt>(0));
-    r.wipe       = false;
-    r.feePerByte = std::make_shared<BigInt>(feesPerByte);
+    r.wipe                                       = false;
+    r.feePerByte                                 = std::make_shared<BigInt>(feesPerByte);
     ledger::core::BitcoinLikeScript outputScript = ledger::core::BitcoinLikeScript::fromAddress(address, currency);
     r.outputs.push_back(std::make_tuple(std::make_shared<BigInt>(outputAmount), std::make_shared<BitcoinLikeScriptApi>(outputScript)));
     r.utxoPicker = BitcoinUtxoPickerParams{api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0, optional<int32_t>()};
@@ -194,14 +194,14 @@ void feeIsEnoughFor(const std::string address, const int64_t targetOutputSizeInB
     int64_t outputAmount                     = 50000000;
     std::vector<int64_t> inputAmounts{100000000};
 
-    auto buddy               = createBuddy(feesPerByte, outputAmount, currency, api::KeychainEngines::BIP173_P2WPKH, address);
+    auto buddy                            = createBuddy(feesPerByte, outputAmount, currency, api::KeychainEngines::BIP173_P2WPKH, address);
 
     const int64_t changeOutputSizeInBytes = 8 + 1 + 1 + 1 + 20;
-    const int64_t allOutputsSizeInBytes = targetOutputSizeInBytes + changeOutputSizeInBytes;
+    const int64_t allOutputsSizeInBytes   = targetOutputSizeInBytes + changeOutputSizeInBytes;
 
-    auto utxos               = createUtxos(inputAmounts);
-    auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency);
-    int64_t totalInputsValue = 0;
+    auto utxos                            = createUtxos(inputAmounts);
+    auto pickedUtxos                      = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency);
+    int64_t totalInputsValue              = 0;
     for (auto utxo : pickedUtxos) {
         totalInputsValue += utxo.value.toLong();
     }
@@ -214,7 +214,7 @@ void feeIsEnoughFor(const std::string address, const int64_t targetOutputSizeInB
 }
 
 TEST(OptimizeSize, FeeIsEnoughForP2WPKH) {
-    const std::string address = "tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx"; // P2WPKH
+    const std::string address             = "tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx"; // P2WPKH
 
     const int64_t targetOutputSizeInBytes = 8 + 1 + 1 + 1 + 20;
     // amount + script length + witness version + hash size + hash
@@ -223,7 +223,7 @@ TEST(OptimizeSize, FeeIsEnoughForP2WPKH) {
 }
 
 TEST(OptimizeSize, FeeIsEnoughForP2WSH) {
-    const std::string address = "tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7"; // P2WSH
+    const std::string address             = "tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7"; // P2WSH
 
     const int64_t targetOutputSizeInBytes = 8 + 1 + 1 + 1 + 32;
     // amount + script length + witness version + hash size + hash
@@ -232,7 +232,7 @@ TEST(OptimizeSize, FeeIsEnoughForP2WSH) {
 }
 
 TEST(OptimizeSize, FeeIsEnoughForP2TR) {
-    const std::string address = "tb1pqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesf3hn0c"; // P2TR
+    const std::string address             = "tb1pqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesf3hn0c"; // P2TR
 
     const int64_t targetOutputSizeInBytes = 8 + 1 + 1 + 1 + 32;
     // amount + script length + witness version + hash size + hash
