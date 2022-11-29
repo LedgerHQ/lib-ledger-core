@@ -456,13 +456,13 @@ namespace ledger {
             // We take the dust as a reference plus the cost of spending this change
 
             const int64_t dustAmount_fixedAndOutputPart = BitcoinLikeTransactionApi::computeDustAmount(currency,
-                                                                                                       (fixedSize.Max + targetOutputsSize));
+                                                                                                       (fixedSize.Max + narrowing_cast<int32_t>(targetOutputsSize)));
 
             const int64_t dustAmount_OneInputPart       = BitcoinLikeTransactionApi::computeDustAmount(currency,
                                                                                                        signedUTXOSize);
 
             const int64_t dustAmountWithOneInput        = BitcoinLikeTransactionApi::computeDustAmount(currency,
-                                                                                                       fixedSize.Max + targetOutputsSize + signedUTXOSize + signedUTXOSize);
+                                                                                                       fixedSize.Max + narrowing_cast<int32_t>(targetOutputsSize + signedUTXOSize + signedUTXOSize));
 
             const int64_t minimumChangeWithOneInput     = dustAmountWithOneInput + signedUTXOCost;
 
