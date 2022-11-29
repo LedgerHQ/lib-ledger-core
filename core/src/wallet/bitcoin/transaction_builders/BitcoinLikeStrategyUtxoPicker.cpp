@@ -192,23 +192,32 @@ namespace ledger {
              */
 
             // Compute long term fees
-            uint32_t confirmTarget      = 1008;
+            uint32_t confirmTarget         = 1008;
             // TODO: we will have a call to estimateSmartFees (bitcoin core/ explorer side) to estimate long term fees
             // int64_t longTermFees = estimateSmartFees(confirmTarget);
-            int64_t longTermFees        = DEFAULT_FALLBACK_FEE;
+            int64_t longTermFees           = DEFAULT_FALLBACK_FEE;
 
             // Compute cost of change
-            auto const fixedSize        = BitcoinLikeTransactionApi::estimateSize(0,
-                                                                                  0,
-                                                                                  currency,
-                                                                                  buddy->keychain->getKeychainEngine());
+            auto const fixedSize           = BitcoinLikeTransactionApi::estimateSize(0,
+                                                                                     0,
+                                                                                     currency,
+                                                                                     buddy->keychain->getKeychainEngine());
             // Size of only 1 output (without fixed size)
-            const int64_t oneOutputSize = BitcoinLikeTransactionApi::estimateSize(0,
-                                                                                  1,
-                                                                                  currency,
-                                                                                  buddy->keychain->getKeychainEngine())
-                                              .Max -
-                                          fixedSize.Max;
+            const int64_t changeOutputSize = BitcoinLikeTransactionApi::estimateSize(0,
+                                                                                     1,
+                                                                                     currency,
+                                                                                     buddy->keychain->getKeychainEngine())
+                                                 .Max -
+                                             fixedSize.Max;
+
+            // Size of target outputs (can be different from change output size)
+            const int64_t targetOutputsSize = BitcoinLikeTransactionApi::estimateSize(0,
+                                                                                      buddy->request.outputs,
+                                                                                      currency,
+                                                                                      buddy->keychain->getKeychainEngine())
+                                                  .Max -
+                                              fixedSize.Max;
+
             // Size 1 signed UTXO (signed input)
             const int64_t signedUTXOSize = BitcoinLikeTransactionApi::estimateSize(1,
                                                                                    0,
@@ -217,8 +226,6 @@ namespace ledger {
                                                .Max -
                                            fixedSize.Max;
 
-            // Size of unsigned change
-            const int64_t changeSize       = oneOutputSize;
             // Size of signed change
             const int64_t signedChangeSize = signedUTXOSize;
 
@@ -226,9 +233,9 @@ namespace ledger {
             // Here signedChangeSize should be multiplied by discard fees
             // but since we don't have access to estimateSmartFees, we assume
             // that discard fees are equal to effectiveFees
-            const int64_t costOfChange     = effectiveFees * (signedChangeSize + changeSize);
+            const int64_t costOfChange     = effectiveFees * (signedChangeSize + changeOutputSize);
 
-            buddy->logger->debug("Cost of change {}, signedChangeSize {}, changeSize {}", costOfChange, signedChangeSize, changeSize);
+            buddy->logger->debug("Cost of change {}, signedChangeSize {}, changeOutputSize {}", costOfChange, signedChangeSize, changeOutputSize);
 
             // Calculate effective value of outputs
             int64_t currentAvailableValue = 0;
@@ -254,7 +261,7 @@ namespace ledger {
 
             // Get no inputs fees
             //  At beginning, there are no outputs in tx, so noInputFees are fixed fees
-            int64_t notInputFees = effectiveFees * (fixedSize.Max + (int64_t)(oneOutputSize * buddy->request.outputs.size())); // at least fixed size and outputs(version...)
+            int64_t notInputFees = effectiveFees * (fixedSize.Max + targetOutputsSize); // at least fixed size and outputs(version...)
 
             // Start coin selection algorithm (according to SelectCoinBnb from Bitcoin Core)
             int64_t currentValue = 0;
@@ -413,17 +420,25 @@ namespace ledger {
             const BigInt &aggregatedAmount,
             const api::Currency &currency) {
             // Tx fixed size
-            auto const fixedSize        = BitcoinLikeTransactionApi::estimateSize(0,
-                                                                                  0,
-                                                                                  currency,
-                                                                                  buddy->keychain->getKeychainEngine());
+            auto const fixedSize           = BitcoinLikeTransactionApi::estimateSize(0,
+                                                                                     0,
+                                                                                     currency,
+                                                                                     buddy->keychain->getKeychainEngine());
             // Size of one output (without fixed size)
-            const int64_t oneOutputSize = BitcoinLikeTransactionApi::estimateSize(0,
-                                                                                  1,
-                                                                                  currency,
-                                                                                  buddy->keychain->getKeychainEngine())
-                                              .Max -
-                                          fixedSize.Max;
+            const int64_t changeOutputSize = BitcoinLikeTransactionApi::estimateSize(0,
+                                                                                     1,
+                                                                                     currency,
+                                                                                     buddy->keychain->getKeychainEngine())
+                                                 .Max -
+                                             fixedSize.Max;
+
+            const int64_t targetOutputsSize = BitcoinLikeTransactionApi::estimateSize(0,
+                                                                                      buddy->request.outputs,
+                                                                                      currency,
+                                                                                      buddy->keychain->getKeychainEngine())
+                                                  .Max -
+                                              fixedSize.Max;
+
             // Size of UTXO as signed input in tx
             const int64_t signedUTXOSize = BitcoinLikeTransactionApi::estimateSize(1,
                                                                                    0,
@@ -435,19 +450,19 @@ namespace ledger {
             const int64_t signedUTXOCost                = signedUTXOSize * buddy->request.feePerByte->toInt64();
 
             // Amount + fixed size fees + outputs fees
-            const int64_t amountWithFixedFees           = buddy->request.feePerByte->toInt64() * (fixedSize.Max + (buddy->request.outputs.size() * oneOutputSize)) + buddy->outputAmount.toInt64();
+            const int64_t amountWithFixedFees           = buddy->request.feePerByte->toInt64() * (fixedSize.Max + targetOutputsSize) + buddy->outputAmount.toInt64();
 
             // Minimum amount from which we are willing to create a change for it
             // We take the dust as a reference plus the cost of spending this change
 
             const int64_t dustAmount_fixedAndOutputPart = BitcoinLikeTransactionApi::computeDustAmount(currency,
-                                                                                                       (fixedSize.Max + (buddy->request.outputs.size() * oneOutputSize)));
+                                                                                                       (fixedSize.Max + targetOutputsSize));
 
             const int64_t dustAmount_OneInputPart       = BitcoinLikeTransactionApi::computeDustAmount(currency,
                                                                                                        signedUTXOSize);
 
             const int64_t dustAmountWithOneInput        = BitcoinLikeTransactionApi::computeDustAmount(currency,
-                                                                                                       fixedSize.Max + oneOutputSize + signedUTXOSize + signedUTXOSize);
+                                                                                                       fixedSize.Max + targetOutputsSize + signedUTXOSize + signedUTXOSize);
 
             const int64_t minimumChangeWithOneInput     = dustAmountWithOneInput + signedUTXOCost;
 
@@ -555,13 +570,13 @@ namespace ledger {
                 buddy->logger->debug("Add coinLowestLarger to coin selection");
                 out.push_back(coinLowestLarger.getValue());
 
-                buddy->changeAmount = BigInt(coinLowestLarger.getValue().value.toLong() - signedUTXOCost - (int64_t)(amountWithFixedFees + oneOutputSize * buddy->request.feePerByte->toInt64()));
+                buddy->changeAmount = BigInt(coinLowestLarger.getValue().value.toLong() - signedUTXOCost - (int64_t)(amountWithFixedFees + changeOutputSize * buddy->request.feePerByte->toInt64()));
             } else { // Pick bestValues
                 buddy->logger->debug("Push all vUTXOs");
                 out                 = tmpOut;
                 // Set amount of change
                 // Change amount = amountWithFixedFees + fees for 1 additional output (change)
-                buddy->changeAmount = BigInt(bestValue - (int64_t)(amountWithFixedFees + oneOutputSize * buddy->request.feePerByte->toInt64()));
+                buddy->changeAmount = BigInt(bestValue - (int64_t)(amountWithFixedFees + changeOutputSize * buddy->request.feePerByte->toInt64()));
             }
 
             if (buddy->changeAmount.toInt64() < minimumChange) {
