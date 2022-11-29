@@ -570,7 +570,7 @@ namespace ledger {
                 buddy->logger->debug("Add coinLowestLarger to coin selection");
                 out.push_back(coinLowestLarger.getValue());
 
-                buddy->changeAmount = BigInt(coinLowestLarger.getValue().value.toLong() - signedUTXOCost - (int64_t)(amountWithFixedFees + changeOutputSize * buddy->request.feePerByte->toInt64()));
+                buddy->changeAmount = BigInt(coinLowestLarger.getValue().value.toLong() - signedUTXOCost - static_cast<int64_t>(amountWithFixedFees + changeOutputSize * buddy->request.feePerByte->toInt64()));
             } else { // Pick bestValues
                 buddy->logger->debug("Push all vUTXOs");
                 out                 = tmpOut;
