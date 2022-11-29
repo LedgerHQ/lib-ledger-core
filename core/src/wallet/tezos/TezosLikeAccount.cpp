@@ -283,7 +283,6 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain = self->getKeychain();
                 // Get operations related to an account
                 TezosLikeAccountDatabaseHelper::queryOperations(sql, uid, operations);
 
