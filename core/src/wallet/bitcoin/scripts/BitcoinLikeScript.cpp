@@ -127,6 +127,8 @@ namespace ledger {
             BitcoinLikeScript script;
             if (a->isP2WPKH() || a->isP2WSH()) {
                 script << btccore::OP_0 << a->getHash160();
+            } else if (a->isP2TR()) {
+                script << btccore::OP_1 << a->getHash160();
             } else if (a->isP2PKH()) {
                 script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
                        << btccore::OP_CHECKSIG;
