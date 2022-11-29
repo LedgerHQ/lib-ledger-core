@@ -576,7 +576,7 @@ namespace ledger {
                 out                 = tmpOut;
                 // Set amount of change
                 // Change amount = amountWithFixedFees + fees for 1 additional output (change)
-                buddy->changeAmount = BigInt(bestValue - (int64_t)(amountWithFixedFees + changeOutputSize * buddy->request.feePerByte->toInt64()));
+                buddy->changeAmount = BigInt(bestValue - static_cast<int64_t>(amountWithFixedFees + changeOutputSize * buddy->request.feePerByte->toInt64()));
             }
 
             if (buddy->changeAmount.toInt64() < minimumChange) {
