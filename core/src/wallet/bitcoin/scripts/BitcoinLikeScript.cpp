@@ -39,6 +39,7 @@
 #include <math/bech32/Bech32Factory.h>
 #include <utils/hex.h>
 #include <wallet/bitcoin/networks.hpp>
+#include <wallet/currencies.hpp>
 
 namespace ledger {
     namespace core {
@@ -128,6 +129,11 @@ namespace ledger {
             if (a->isP2WPKH() || a->isP2WSH()) {
                 script << btccore::OP_0 << a->getHash160();
             } else if (a->isP2TR()) {
+                if (currency.name != currencies::BITCOIN.name &&
+                    currency.name != currencies::BITCOIN_TESTNET.name &&
+                    currency.name != currencies::BITCOIN_REGTEST.name) {
+                    throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Can't generate script from Taproot address ({}) in currency {}", address, currency.name);
+                }
                 script << btccore::OP_1 << a->getHash160();
             } else if (a->isP2PKH()) {
                 script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
