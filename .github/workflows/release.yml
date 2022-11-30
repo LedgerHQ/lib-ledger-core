@@ -25,7 +25,7 @@ on:
         description: "Build macos in JAR"
         required: true
         type: boolean
-        default: true
+        default: false
 jobs:
   Release:
     runs-on: ubuntu-22.04
