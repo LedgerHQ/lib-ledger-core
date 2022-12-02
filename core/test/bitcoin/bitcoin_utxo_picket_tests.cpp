@@ -185,9 +185,8 @@ TEST(OptimizeSize, ApproximationShouldTookEnough) {
         EXPECT_GE(buddy->changeAmount.toInt64(), inputSizeInBytes * feesPerByte);
 }
 
-void feeIsEnoughFor(const std::string address, const int64_t targetOutputSizeInBytes) {
+void feeIsEnoughFor(const std::string address, const int64_t targetOutputSizeInBytes, const int64_t feesPerByte) {
     const api::Currency currency             = currencies::BITCOIN_TESTNET;
-    const int64_t feesPerByte                = 1;
     const int64_t inputSizeInBytes           = 68; // we are spending P2WPKH input
 
     const int64_t emtyTransactionSizeInBytes = 10;
@@ -208,6 +207,9 @@ void feeIsEnoughFor(const std::string address, const int64_t targetOutputSizeInB
     int64_t transactionFees     = totalInputsValue - buddy->changeAmount.toInt64() - outputAmount;
     int64_t minimumRequiredFees = (emtyTransactionSizeInBytes + allOutputsSizeInBytes + inputSizeInBytes * pickedUtxos.size()) * feesPerByte;
 
+    std::cerr << "transactionFees     == " << transactionFees << std::endl;
+    std::cerr << "minimumRequiredFees == " << minimumRequiredFees << std::endl;
+
     EXPECT_GE(transactionFees, minimumRequiredFees);
     if (buddy->changeAmount.toInt64() != 0)
         EXPECT_GE(buddy->changeAmount.toInt64(), inputSizeInBytes * feesPerByte);
@@ -219,7 +221,8 @@ TEST(OptimizeSize, FeeIsEnoughForP2WPKH) {
     const int64_t targetOutputSizeInBytes = 8 + 1 + 1 + 1 + 20;
     // amount + script length + witness version + hash size + hash
 
-    feeIsEnoughFor(address, targetOutputSizeInBytes);
+    for (int64_t feesPerByte = 1; feesPerByte < 1000000; feesPerByte *= 10)
+        feeIsEnoughFor(address, targetOutputSizeInBytes, feesPerByte);
 }
 
 TEST(OptimizeSize, FeeIsEnoughForP2WSH) {
@@ -228,7 +231,8 @@ TEST(OptimizeSize, FeeIsEnoughForP2WSH) {
     const int64_t targetOutputSizeInBytes = 8 + 1 + 1 + 1 + 32;
     // amount + script length + witness version + hash size + hash
 
-    feeIsEnoughFor(address, targetOutputSizeInBytes);
+    for (int64_t feesPerByte = 1; feesPerByte < 1000000; feesPerByte *= 10)
+        feeIsEnoughFor(address, targetOutputSizeInBytes, feesPerByte);
 }
 
 TEST(OptimizeSize, FeeIsEnoughForP2TR) {
@@ -237,5 +241,6 @@ TEST(OptimizeSize, FeeIsEnoughForP2TR) {
     const int64_t targetOutputSizeInBytes = 8 + 1 + 1 + 1 + 32;
     // amount + script length + witness version + hash size + hash
 
-    feeIsEnoughFor(address, targetOutputSizeInBytes);
+    for (int64_t feesPerByte = 1; feesPerByte < 1000000; feesPerByte *= 10)
+        feeIsEnoughFor(address, targetOutputSizeInBytes, feesPerByte);
 }
