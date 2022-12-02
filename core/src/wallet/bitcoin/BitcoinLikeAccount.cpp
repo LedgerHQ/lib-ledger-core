@@ -569,15 +569,6 @@ namespace ledger {
                         sum = sum + utxo.value;
                     }
                 } break;
-                case api::BitcoinLikePickingStrategy::HIGHEST_FIRST_LIMIT_UTXO:
-                case api::BitcoinLikePickingStrategy::LIMIT_UTXO: {
-                    std::sort(utxos.begin(), utxos.end(), [](auto &lhs, auto &rhs) {
-                        return lhs.value.toInt64() > rhs.value.toInt64();
-                    });
-                    for (int i = 0; i < utxos.size() && i < maxUtxos.value_or(0); ++i) {
-                        sum = sum + utxos[i].value;
-                    }
-                } break;
                 default: {
                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "unknown strategy");
                 }
