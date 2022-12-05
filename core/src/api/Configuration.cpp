@@ -11,6 +11,8 @@ std::string const Configuration::KEYCHAIN_DERIVATION_SCHEME = {"KEYCHAIN_DERIVAT
 
 std::string const Configuration::KEYCHAIN_OBSERVABLE_RANGE = {"KEYCHAIN_OBSERVABLE_RANGE"};
 
+std::string const Configuration::KEYCHAIN_STATIC_ADDRESS = {"KEYCHAIN_STATIC_ADDRESS"};
+
 std::string const Configuration::BLOCKCHAIN_EXPLORER_ENGINE = {"BLOCKCHAIN_EXPLORER_ENGINE"};
 
 std::string const Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT = {"BLOCKCHAIN_EXPLORER_API_ENDPOINT"};

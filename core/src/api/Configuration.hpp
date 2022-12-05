@@ -29,6 +29,9 @@ public:
     /** Sets the observable range for HD keychains (BIP32 based). */
     static std::string const KEYCHAIN_OBSERVABLE_RANGE;
 
+    /** Use a static address for receive & change. */
+    static std::string const KEYCHAIN_STATIC_ADDRESS;
+
     /** Selects the blockchain explorer engine (Ledger's API, Electrum server, RPC): */
     static std::string const BLOCKCHAIN_EXPLORER_ENGINE;
 

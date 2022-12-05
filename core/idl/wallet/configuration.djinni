@@ -82,6 +82,8 @@ Configuration = interface +c {
     const KEYCHAIN_DERIVATION_SCHEME: string = "KEYCHAIN_DERIVATION_SCHEME";
     # Sets the observable range for HD keychains (BIP32 based).
     const KEYCHAIN_OBSERVABLE_RANGE: string = "KEYCHAIN_OBSERVABLE_RANGE";
+    # Use a static address for receive & change.
+    const KEYCHAIN_STATIC_ADDRESS: string = "KEYCHAIN_STATIC_ADDRESS";
 
     # Selects the blockchain explorer engine (Ledger's API, Electrum server, RPC):
     const BLOCKCHAIN_EXPLORER_ENGINE: string = "BLOCKCHAIN_EXPLORER_ENGINE";
