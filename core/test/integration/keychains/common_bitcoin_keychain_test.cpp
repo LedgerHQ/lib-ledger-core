@@ -142,3 +142,47 @@ TEST_F(CommonBitcoinKeychains, CorrectStateUsedAtMarkPathAsUsed) {
         EXPECT_EQ(0, state.nonConsecutiveReceiveIndexes.size());
     });
 }
+
+template <enum ledger::core::BitcoinLikeKeychain::KeyPurpose PURPOSE, bool STATIC>
+void check(const std::string &addr0, ConcreteCommonBitcoinLikeKeychains &keychain) {
+    EXPECT_EQ(keychain.getFreshAddress(PURPOSE)->toBase58(), addr0);
+    EXPECT_TRUE(keychain.markAsUsed(addr0));
+    if constexpr (STATIC) {
+        EXPECT_EQ(keychain.getFreshAddress(PURPOSE)->toBase58(), addr0);
+    } else {
+        EXPECT_NE(keychain.getFreshAddress(PURPOSE)->toBase58(), addr0);
+    }
+
+    const auto addrs = keychain.getFreshAddresses(PURPOSE, 10);
+    if constexpr (STATIC) {
+        EXPECT_EQ(addrs.size(), 1);
+        EXPECT_EQ(addrs[0]->toBase58(), addr0);
+    } else {
+        EXPECT_EQ(addrs.size(), 10);
+        EXPECT_NE(addrs[0]->toBase58(), addr0);
+    }
+}
+
+TEST_F(CommonBitcoinKeychains, StaticAddressGivesSameAddress) {
+    auto configuration = std::make_shared<DynamicObject>();
+    configuration->putBoolean(api::Configuration::KEYCHAIN_STATIC_ADDRESS, true);
+
+    constexpr auto changeAddr0  = "3FgusxCLY23j7xcWsqAwC4DthKjrVhxbwx";
+    constexpr auto receiveAddr0 = "3HMhvAEtfDyQSZAmM6qvLGuZYUCyZrgNr3";
+
+    testKeychain(
+        BTC_DATA, [changeAddr0, receiveAddr0](ConcreteCommonBitcoinLikeKeychains &keychain) {
+            check<ledger::core::BitcoinLikeKeychain::CHANGE, true>(changeAddr0, keychain);
+            check<ledger::core::BitcoinLikeKeychain::RECEIVE, true>(receiveAddr0, keychain);
+        },
+        configuration);
+
+    configuration->putBoolean(api::Configuration::KEYCHAIN_STATIC_ADDRESS, false);
+
+    testKeychain(
+        BTC_DATA, [changeAddr0, receiveAddr0](ConcreteCommonBitcoinLikeKeychains &keychain) {
+            check<ledger::core::BitcoinLikeKeychain::CHANGE, false>(changeAddr0, keychain);
+            check<ledger::core::BitcoinLikeKeychain::RECEIVE, false>(receiveAddr0, keychain);
+        },
+        configuration);
+}

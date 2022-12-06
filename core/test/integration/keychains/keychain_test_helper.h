@@ -116,13 +116,12 @@ extern KeychainTestData ETHEREUM_DATA;
 template <class Keychain>
 class KeychainFixture : public BaseFixture {
   public:
-    void testKeychain(const KeychainTestData &data, std::function<void(Keychain &)> f) {
+    void testKeychain(const KeychainTestData &data, std::function<void(Keychain &)> f, std::shared_ptr<DynamicObject> configuration = std::make_shared<DynamicObject>()) {
         auto backend = std::make_shared<ledger::core::test::MemPreferencesBackend>();
-        testKeychain(data, std::move(backend), f);
+        testKeychain(data, std::move(backend), f, configuration);
     };
 
-    void testKeychain(const KeychainTestData &data, std::shared_ptr<api::PreferencesBackend> backend, std::function<void(Keychain &)> f) {
-        auto configuration = std::make_shared<DynamicObject>();
+    void testKeychain(const KeychainTestData &data, std::shared_ptr<api::PreferencesBackend> backend, std::function<void(Keychain &)> f, std::shared_ptr<DynamicObject> configuration = std::make_shared<DynamicObject>()) {
         {
             Keychain temp_keychain(
                 configuration,
