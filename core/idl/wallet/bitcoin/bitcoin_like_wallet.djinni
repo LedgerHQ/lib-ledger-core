@@ -230,8 +230,6 @@ BitcoinLikePickingStrategy = enum {
     deep_outputs_first;
     optimize_size;
     merge_outputs;
-    highest_first_limit_utxo;
-    limit_utxo;
 }
 
 BitcoinLikeTransactionBuilder = interface +c {
