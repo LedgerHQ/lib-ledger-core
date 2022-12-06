@@ -52,6 +52,9 @@ jobs:
         max-size: "3G"
     - name: Build
       run: .github/scripts/build.sh
+      env:
+        OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
+        ARGS: '-GNinja'
     - name: Tests
       if: env.BUILD_JNI == 'OFF'
       run: .github/scripts/test.sh
@@ -82,7 +85,6 @@ jobs:
           submodules: 'recursive'
       - name: Setup Macos
         run: |
-          brew install ninja
           brew install openssl
           brew install postgresql@13
           brew link --overwrite postgresql@13
@@ -101,6 +103,7 @@ jobs:
         run: .github/scripts/build.sh
         env:
           OPENSSL_ROOT_DIR: /usr/local/opt/openssl/
+          ARGS:
       - name: Tests
         if: env.BUILD_JNI == 'OFF'
         run: .github/scripts/test.sh
