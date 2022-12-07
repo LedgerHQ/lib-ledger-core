@@ -110,6 +110,50 @@ TEST_F(BitcoinMainNetMakeP2TRTransaction, CreateP2TRWithOneOutput) {
     createAndVerifyTransaction(input_descrs, output_descrs);
 }
 
+TEST_F(BitcoinMainNetMakeP2TRTransaction, CreateP2TRWithUnsupportedWitnessVersion) {
+    Option<std::shared_ptr<Bech32>> opt_bech32 = Bech32Factory::newBech32Instance("btc");
+    EXPECT_TRUE(opt_bech32.hasValue());
+    std::shared_ptr<Bech32> sp_bech32 = opt_bech32.getValue();
+    EXPECT_TRUE(sp_bech32.get() != nullptr);
+
+    for (uint8_t witnessVersion = 0; witnessVersion <= 16; witnessVersion++) {
+        const std::vector<uint8_t> version({witnessVersion});
+        const std::vector<uint8_t> hash(hex::toByteArray("826b608b63b17a0809ae4ed6105f6cbf2e0d15233532906aa4071a079c31e519"));
+
+        const std::string address = sp_bech32->encode(hash, version);
+        std::cerr << "witnessVersion = " << int(witnessVersion) << " address = \"" << address << "\"" << std::endl;
+
+        std::vector<uint8_t> hash_with_version_and_size({witnessVersion > 0 ? uint8_t(0x50 + witnessVersion) : uint8_t(0), 32});
+        hash_with_version_and_size.insert(hash_with_version_and_size.end(), hash.begin(), hash.end());
+
+        std::vector<InputDescr> input_descrs = {
+            {"673f7e1155dd2cf61c961cedd24608274c0f20cfaeaa1154c2b5ef94ec7b81d1",
+             1,
+             std::make_shared<api::BigIntImpl>(BigInt(25402))}};
+        std::vector<OutputDescr> output_descrs = {
+            {address,
+             hash_with_version_and_size,
+             std::make_shared<api::BigIntImpl>(BigInt(100))},
+            {"", // This is a change output. It isn't used for tx building.
+             hex::toByteArray("00141017b1e1ca8632828f22a4d6c5260f3492b1dd08"),
+             std::make_shared<api::BigIntImpl>(BigInt(15969))}};
+
+        try {
+            createAndVerifyTransaction(input_descrs, output_descrs);
+            EXPECT_TRUE(witnessVersion == 0 || witnessVersion == 1);
+            // Transactions with witness versions 0 (P2WSH, because hash is 32 bytes long)
+            // and 1 (P2TR) must be generated
+        } catch (const Exception &e) {
+            EXPECT_TRUE(witnessVersion > 1);
+            // Transactions with output to bech32 address with witness version > 1 MUST NOT
+            // be generated.
+
+            std::cerr << "An exception must be thrown here: " << e.what() << std::endl;
+            EXPECT_EQ(e.getErrorCode(), ledger::core::api::ErrorCode::RUNTIME_ERROR);
+        }
+    }
+}
+
 struct BitcoinP2TRFeatureFlagTest : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
