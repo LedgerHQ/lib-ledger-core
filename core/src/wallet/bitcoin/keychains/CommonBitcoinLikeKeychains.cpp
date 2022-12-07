@@ -205,6 +205,9 @@ namespace ledger {
 
         BitcoinLikeKeychain::Address CommonBitcoinLikeKeychains::getFreshAddress(BitcoinLikeKeychain::KeyPurpose purpose) {
             KeychainPersistentState state = getState();
+            if (getConfiguration()->getBoolean(api::Configuration::KEYCHAIN_STATIC_ADDRESS).value_or(false)) {
+                return derive(purpose, 0);
+            }
             return derive(purpose, (purpose == KeyPurpose::RECEIVE ? state.maxConsecutiveReceiveIndex : state.maxConsecutiveChangeIndex));
         }
 
@@ -214,6 +217,10 @@ namespace ledger {
 
         std::vector<BitcoinLikeKeychain::Address>
         CommonBitcoinLikeKeychains::getFreshAddresses(BitcoinLikeKeychain::KeyPurpose purpose, size_t n) {
+            if (getConfiguration()->getBoolean(api::Configuration::KEYCHAIN_STATIC_ADDRESS).value_or(false)) {
+                return {derive(purpose, 0)};
+            }
+
             KeychainPersistentState state = getState();
             auto startOffset              = (purpose == KeyPurpose::RECEIVE) ? state.maxConsecutiveReceiveIndex : state.maxConsecutiveChangeIndex;
             std::vector<BitcoinLikeKeychain::Address> result(n);
