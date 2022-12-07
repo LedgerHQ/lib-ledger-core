@@ -120,7 +120,7 @@ TEST_F(BitcoinMainNetMakeP2TRTransaction, CreateP2TRWithUnsupportedWitnessVersio
         const std::vector<uint8_t> version({witnessVersion});
         const std::vector<uint8_t> hash(hex::toByteArray("826b608b63b17a0809ae4ed6105f6cbf2e0d15233532906aa4071a079c31e519"));
 
-        const std::string address =sp_bech32->encode(hash, version);
+        const std::string address = sp_bech32->encode(hash, version);
         std::cerr << "witnessVersion = " << int(witnessVersion) << " address = \"" << address << "\"" << std::endl;
 
         std::vector<uint8_t> hash_with_version_and_size({witnessVersion > 0 ? uint8_t(0x50 + witnessVersion) : uint8_t(0), 32});
