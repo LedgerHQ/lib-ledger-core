@@ -31,6 +31,8 @@
 
 #include "LedgerApiBitcoinLikeBlockchainExplorer.hpp"
 
+#include "api/ConfigurationDefaults.hpp"
+
 #include <api/ErrorCode.hpp>
 #include <api_impl/BigIntImpl.hpp>
 namespace ledger {
@@ -40,7 +42,10 @@ namespace ledger {
                                                                                        const std::shared_ptr<HttpClient> &http,
                                                                                        const api::BitcoinLikeNetworkParameters &parameters,
                                                                                        const std::shared_ptr<api::DynamicObject> &configuration) : DedicatedContext(context),
-                                                                                                                                                   BitcoinLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
+                                                                                                                                                   BitcoinLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}),
+                                                                                                                                                   _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_BLOCK_CACHE)
+                                                                                                                                                                                        .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE)))
+        {
             _http            = http;
             _parameters      = parameters;
             _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v3");
@@ -90,7 +95,15 @@ namespace ledger {
         }
 
         FuturePtr<BitcoinLikeBlockchainExplorer::Block> LedgerApiBitcoinLikeBlockchainExplorer::getCurrentBlock() const {
-            return getLedgerApiCurrentBlock();
+            auto optBlock = _blockCache.get("lastBlock");
+            if (optBlock.hasValue()) {
+                return Future<std::shared_ptr<BitcoinLikeBlockchainExplorer::Block>>::successful(optBlock.getValue());
+            }
+            return getLedgerApiCurrentBlock()
+                .mapPtr<BitcoinLikeBlockchainExplorer::Block>(getContext(), [self = this](const std::shared_ptr<BitcoinLikeBlockchainExplorer::Block> &b) {
+                    self->_blockCache.put("lastBlock", b);
+                    return b;
+                });
         }
 
         FuturePtr<BitcoinLikeBlockchainExplorerTransaction>

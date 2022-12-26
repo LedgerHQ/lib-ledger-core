@@ -90,7 +90,6 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeKeychainFactory> _keychainFactory;
             BitcoinLikeAccountSynchronizerFactory _synchronizerFactory;
             std::chrono::seconds _mempoolGracePeriod;
-            TTLCache<std::string, api::Block> _blockCache;
         };
     } // namespace core
 } // namespace ledger
