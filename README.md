@@ -57,7 +57,6 @@ This project is based on **_cmake_** as a build system so you should install it 
 
 * [OpenSSL](https://www.openssl.org/) is needed to build tests of the library.
 * Generation of binding is automated with [Djinni](https://github.com/dropbox/djinni).
-* Build on multiple Operating Systems is based on [polly](https://github.com/ruslo/polly) toolchains.
 
 ## Build of C++ library
 
@@ -279,44 +278,6 @@ with makefiles).
 
 * [ccache](https://github.com/ccache/ccache) compilation optimization can be activated by setting `CCACHE` cmake option to `ON`
 
-## Binding to node.js
-
-The library can be compiled and integrated as an node module in a pretty straightforward way. You
-will be interested in either using it, or making a new version of the node module.
-
-### Using the node module
-
-The [lib-ledger-core-node-bindings] repository contains the node.js bindings you will need to
-interface with `lib-ledger-core`. You can either clone the git repository or simply install from
-`npm` directly:
-
-```
-npm i @ledgerhq/ledger-core
-```
-
-### Generating a new node module for your system
-
-Generating bindings is a several steps process:
-
-  1. First, you need to make some changes to `lib-ledger-core` and generate a fresh version of
-     `lib-ledger-core`.
-  2. Clone [lib-ledger-core-node-bindings] and edit the `package.json` file in order to remove or
-     comment the `"preinstall"` line in `"scripts"`.
-  3. In the folder of `lib-ledger-core`, run the `tools/generateBindings.sh` script by giving it the
-     path to the bindings (i.e. where you cloned [lib-ledger-core-node-bindings]) and as second
-     argument the path to the directory where you built the `lib-ledger-core` — it should be
-     something like `$(your-lib-ledger-core-dir)/../lib-ledger-core-build` or
-     `$(your-lib-ledger-core-dir)/build`.
-       - This script requires an up-to-date **djinni**. To ensure it’s correctly up to date, go
-         into `lib-ledger-core/djinni` and run
-         `get fetch origin --prune && git rebase origin/master`.
-       - You will need `sbt` and `java8` for a complete, working install.
-       - The script will generate files in both projects. You’re advised to remove the ones created
-         in `lib-ledger-core` — if any — with a `git checkout .` and/or `git reset .`.
-  4. `cd` into `lib-ledger-core-bindings` and run `yarn` to generate the bindings.
-  5. You will have the module in `build/Release/ledgerapp_nodejs.node` in the bindings project.
-  6. `npm i` should install your own version.
-
 ## Support
 
 ### Libcore:
@@ -326,10 +287,6 @@ Libcore can be built for following OSes:
  - Windows: 64-bit architecture is built with `MSVC` (starting from Visual Studio 15), 32-bit is built with `MinGW`,
  - iOS: `x86_64`, `armv7` and `arm64` architectures are supported, minimum supported version is `iOS 10.0`,
  - Android: `x86`, `armeabi-v7a` and `arm64-v8a` architectures are supported, minimum supported version is `Android 7 (API 24)` (Java 8 is needed).
-### Bindings:
- - NodeJS bindings:
-   - Please use `node` with version `>=8.4.0` and `<9.0.0` (other versions are not tested (yet)),
-   - Node-gyp is used to build native module and requires `python` with version `2.7.x`.
 
 ## Developement guidelines
 

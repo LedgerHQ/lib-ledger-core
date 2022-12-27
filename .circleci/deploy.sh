@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "main" -o "$CIRCLE_BRANCH" == "develop" ] || [ "$CIRCLE_BRANCH" == "nrt" ] || [ "$CIRCLE_BRANCH" == "nrt_jdk8" ] || [[ "$CIRCLE_BRANCH" == "release/"* ]] ; then
-	cd ../lib-ledger-core-artifacts
-	ls -la
-	aws s3 sync ./ s3://ledger-lib-ledger-core/$LIB_VERSION/ --acl public-read && \
-	aws s3 ls s3://ledger-lib-ledger-core/$LIB_VERSION;
-	cd -
-fi
