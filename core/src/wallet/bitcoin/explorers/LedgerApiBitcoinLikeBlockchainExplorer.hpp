@@ -36,11 +36,11 @@
 #include "api/TransactionsBulkParser.hpp"
 
 #include <api/BitcoinLikeNetworkParameters.hpp>
-#include <utils/TTLCache.h>
 #include <async/DedicatedContext.hpp>
 #include <async/Future.hpp>
 #include <collections/collections.hpp>
 #include <net/HttpClient.hpp>
+#include <utils/TTLCache.h>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
 
@@ -85,7 +85,6 @@ namespace ledger {
             api::BitcoinLikeNetworkParameters _parameters;
             std::string _explorerVersion;
             mutable TTLCache<std::string, std::shared_ptr<BitcoinLikeBlockchainExplorer::Block>> _blockCache;
-
         };
     } // namespace core
 } // namespace ledger
