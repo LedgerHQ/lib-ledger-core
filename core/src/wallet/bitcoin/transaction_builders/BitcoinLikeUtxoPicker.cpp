@@ -31,8 +31,6 @@
 
 #include "BitcoinLikeUtxoPicker.h"
 
-#include "utils/Cached.h"
-
 #include <api/BitcoinLikeScript.hpp>
 #include <api/BitcoinLikeScriptChunk.hpp>
 #include <async/Promise.hpp>
@@ -61,7 +59,7 @@ namespace ledger {
                 return self->async<std::shared_ptr<Buddy>>([=]() {
                                logger->info("{} Constructing BitcoinLikeTransactionBuildFunction with blockHeight: {}", CORRELATIONID_PREFIX(r.correlationId), currentBlockHeight);
                                auto tx              = std::make_shared<BitcoinLikeTransactionApi>(self->_currency, r.correlationId, keychain->getKeychainEngine(), currentBlockHeight);
-                               auto filteredGetUtxo = createFilteredUtxoFunction(r, keychain, getUtxo);
+                               auto filteredGetUtxo = createFilteredUtxoFunction(r, getUtxo);
                                return std::make_shared<Buddy>(r, filteredGetUtxo, getTransaction, explorer, keychain, logger, tx, partial);
                            })
                     .flatMap<std::shared_ptr<api::BitcoinLikeTransaction>>(self->getContext(), [=](const std::shared_ptr<Buddy> &buddy) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
@@ -250,17 +248,11 @@ namespace ledger {
 
         BitcoinLikeGetUtxoFunction
         BitcoinLikeUtxoPicker::createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest &request,
-                                                          const std::shared_ptr<BitcoinLikeKeychain> &keychain,
                                                           const BitcoinLikeGetUtxoFunction &getUtxo) {
             return [=]() -> Future<std::vector<BitcoinLikeUtxo>> {
                 return getUtxo().map<std::vector<BitcoinLikeUtxo>>(getContext(), [=](auto const &utxos) {
-                    utils::cache_type<bool, std::string> cache{};
-                    std::function<bool(const std::string &)> keychainContains = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
-                                                                                                  return keychain->contains(addr);
-                                                                                              }));
-
-                    auto const isNotExcluded                                  = [&keychainContains, &request](auto const &currentUtxo) {
-                        return !(currentUtxo.address.isEmpty() || !keychainContains(currentUtxo.address.getValue()) || request.excludedUtxos.count(BitcoinLikeTransactionUtxoDescriptor{currentUtxo.transactionHash, currentUtxo.index}) > 0);
+                    auto const isNotExcluded = [&request](auto const &currentUtxo) {
+                        return !(currentUtxo.address.isEmpty() || request.excludedUtxos.count(BitcoinLikeTransactionUtxoDescriptor{currentUtxo.transactionHash, currentUtxo.index}) > 0);
                     };
 
                     std::vector<BitcoinLikeUtxo> filteredUtxos;

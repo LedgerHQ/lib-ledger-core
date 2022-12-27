@@ -72,29 +72,19 @@ namespace ledger {
         std::size_t
         OperationDatabaseHelper::queryOperations(soci::session &sql,
                                                  const std::string &accountUid,
-                                                 std::vector<Operation> &operations,
-                                                 std::function<bool(const std::string &address)> filter) {
+                                                 std::vector<Operation> &operations) {
             rowset<row> rows = (sql.prepare << "SELECT op.amount, op.fees, op.type, op.date, op.senders, op.recipients"
                                                " FROM operations AS op "
                                                " WHERE op.account_uid = :uid ORDER BY op.date",
                                 use(accountUid));
 
-            auto filterList  = [&](const std::vector<std::string> &list) -> bool {
-                for (auto &elem : list) {
-                    if (filter(elem)) {
-                        return true;
-                    }
-                }
-                return false;
-            };
-
-            std::size_t c = 0;
+            std::size_t c    = 0;
             for (auto &row : rows) {
                 auto type       = api::from_string<api::OperationType>(row.get<std::string>(2));
                 auto senders    = strings::split(row.get<std::string>(4), ",");
                 auto recipients = strings::split(row.get<std::string>(5), ",");
-                if ((type == api::OperationType::SEND && row.get_indicator(4) != i_null && filterList(senders)) ||
-                    (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients))) {
+                if ((type == api::OperationType::SEND && row.get_indicator(4) != i_null) ||
+                    (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null)) {
                     Operation operation;
 
                     operation.amount = BigInt::fromHex(row.get<std::string>(0));

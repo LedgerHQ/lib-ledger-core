@@ -47,7 +47,6 @@
 #include <memory>
 #include <numeric>
 #include <spdlog/logger.h>
-#include <utils/Cached.h>
 #include <utils/DateUtils.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOutputApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
@@ -463,12 +462,7 @@ namespace ledger {
                     soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                     std::vector<BitcoinLikeBlockchainExplorerOutput> utxo;
 
-                    utils::cache_type<bool, std::string> cache{};
-                    const std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
-                                                                                              return keychain->contains(addr);
-                                                                                          }));
-
-                    BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, worthlessUtxoAmount, utxo, filter);
+                    BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, worthlessUtxoAmount, utxo);
                     return functional::map<BitcoinLikeBlockchainExplorerOutput, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency](const BitcoinLikeBlockchainExplorerOutput &output) -> std::shared_ptr<api::BitcoinLikeOutput> {
                         return std::make_shared<BitcoinLikeOutputApi>(output, currency);
                     });
@@ -499,12 +493,8 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 const auto worthlessUtxoAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees);
                 self->logger()->info(fmt::format("Worthless utxo value is {}", worthlessUtxoAmount));
-                utils::cache_type<bool, std::string> cache{};
-                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
-                                                                                    return keychain->contains(addr);
-                                                                                }));
 
-                return static_cast<int32_t>(BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), worthlessUtxoAmount, filter));
+                return static_cast<int32_t>(BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), worthlessUtxoAmount));
             });
         }
 
@@ -556,11 +546,7 @@ namespace ledger {
                 auto keychain                  = self->getKeychain();
                 const auto worthlessUtxoAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees);
                 self->logger()->info(fmt::format("Worthless utxo value is {}", worthlessUtxoAmount));
-                utils::cache_type<bool, std::string> cache{};
-                std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
-                                                                                    return keychain->contains(addr);
-                                                                                }));
-                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), worthlessUtxoAmount, utxos, filter);
+                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), worthlessUtxoAmount, utxos);
                 switch (strategy) {
                 case api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST:
                 case api::BitcoinLikePickingStrategy::MERGE_OUTPUTS:
@@ -615,15 +601,8 @@ namespace ledger {
                 soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
-                auto keychain = self->getKeychain();
-
-                utils::cache_type<bool, std::string> cache{};
-                const std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
-                                                                                          return keychain->contains(addr);
-                                                                                      }));
-
                 // Get operations related to an account
-                OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                OperationDatabaseHelper::queryOperations(sql, uid, operations);
 
                 auto lowerDate = startDate;
                 auto upperDate = DateUtils::incrementDate(startDate, precision);

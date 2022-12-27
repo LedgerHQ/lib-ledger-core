@@ -43,7 +43,6 @@
 #include <math/Base58.hpp>
 #include <numeric>
 #include <soci.h>
-#include <utils/Cached.h>
 #include <utils/DateUtils.hpp>
 #include <utils/Option.hpp>
 #include <wallet/common/Block.h>
@@ -471,14 +470,8 @@ namespace ledger {
                     soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                     std::vector<Operation> operations;
 
-                    auto keychain = self->getKeychain();
-                    utils::cache_type<bool, std::string> cache{};
-                    std::function<bool(const std::string &)> filter = utils::cached(cache, utils::to_function([&keychain](const std::string addr) -> bool { // NOLINT(performance-unnecessary-value-param)
-                                                                                        return keychain->contains(addr);
-                                                                                    }));
-
                     // Get operations related to an account
-                    CosmosLikeOperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                    CosmosLikeOperationDatabaseHelper::queryOperations(sql, uid, operations);
 
                     auto lowerDate = startDate;
                     auto upperDate = DateUtils::incrementDate(startDate, precision);

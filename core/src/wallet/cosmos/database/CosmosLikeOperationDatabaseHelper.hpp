@@ -46,8 +46,7 @@ namespace ledger {
             static std::size_t queryOperations(
                 soci::session &sql,
                 const std::string &accountUid,
-                std::vector<Operation> &operations,
-                std::function<bool(const std::string &address)> filter) {
+                std::vector<Operation> &operations) {
                 using namespace soci;
                 rowset<row> rows =
                     (sql.prepare << "SELECT op.amount, op.fees, op.type, op.date, op.senders, op.recipients"
@@ -61,26 +60,14 @@ namespace ledger {
                 const auto COL_SEND = 4;
                 const auto COL_RECV = 5;
 
-                auto filterList     = [&](const std::vector<std::string> &list) -> bool {
-                    for (auto &elem : list) {
-                        if (filter(elem)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                };
-
-                std::size_t c = 0;
+                std::size_t c       = 0;
                 for (auto &row : rows) {
                     auto type       = api::from_string<api::OperationType>(row.get<std::string>(COL_TYPE));
                     auto senders    = strings::split(row.get<std::string>(COL_SEND), ",");
                     auto recipients = strings::split(row.get<std::string>(COL_RECV), ",");
-                    if ((type == api::OperationType::SEND && row.get_indicator(COL_SEND) != i_null &&
-                         filterList(senders)) ||
-                        (type == api::OperationType::RECEIVE && row.get_indicator(COL_RECV) != i_null &&
-                         filterList(recipients)) ||
-                        (type == api::OperationType::NONE && row.get_indicator(COL_SEND) != i_null &&
-                         filterList(senders))) {
+                    if ((type == api::OperationType::SEND && row.get_indicator(COL_SEND) != i_null) ||
+                        (type == api::OperationType::RECEIVE && row.get_indicator(COL_RECV) != i_null) ||
+                        (type == api::OperationType::NONE && row.get_indicator(COL_SEND) != i_null)) {
                         Operation operation;
 
                         operation.amount = BigInt::fromHex(row.get<std::string>(COL_AMT));

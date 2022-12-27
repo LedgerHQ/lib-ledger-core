@@ -104,7 +104,6 @@ namespace ledger {
           private:
             void fillInput(const std::shared_ptr<Buddy> &buddy, const BitcoinLikeUtxo &utxo, const uint32_t sequence);
             BitcoinLikeGetUtxoFunction createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest &request,
-                                                                  const std::shared_ptr<BitcoinLikeKeychain> &keychain,
                                                                   const BitcoinLikeGetUtxoFunction &getUtxo);
 
           protected:

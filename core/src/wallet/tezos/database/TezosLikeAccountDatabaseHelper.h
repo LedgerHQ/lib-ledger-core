@@ -52,8 +52,7 @@ namespace ledger {
                                                       const std::string &originatedAccountUid);
             static size_t queryOperations(soci::session &sql,
                                           const std::string &accountUid,
-                                          std::vector<Operation> &operations,
-                                          std::function<bool(const std::string &address)> filter);
+                                          std::vector<Operation> &operations);
         };
     } // namespace core
 } // namespace ledger
