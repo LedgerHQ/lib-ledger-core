@@ -127,6 +127,9 @@ Configuration = interface +c {
 
     # Allow the generation of the P2TR (Taproot) outputs
     const ALLOW_P2TR: string = "ALLOW_P2TR";
+
+    # Order when querying utxos
+    const QUERY_CONFIRMED_UTXO_FIRST: string = "QUERY_CONFIRMED_UTXO_FIRST";
 }
 
 # Configuration of wallet pools.

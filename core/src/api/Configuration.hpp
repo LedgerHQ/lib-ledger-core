@@ -79,6 +79,9 @@ public:
 
     /** Allow the generation of the P2TR (Taproot) outputs */
     static std::string const ALLOW_P2TR;
+
+    /** Order when querying utxos */
+    static std::string const QUERY_CONFIRMED_UTXO_FIRST;
 };
 
 } } }  // namespace ledger::core::api
