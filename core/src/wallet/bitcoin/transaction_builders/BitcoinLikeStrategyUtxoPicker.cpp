@@ -51,10 +51,10 @@ namespace ledger {
             if( (isU1Confirmed && isU2Confirmed) || (!isU1Confirmed && !isU2Confirmed) ) {
                 // ignore the case where confirmation status is similar
                 return {};
-            } else {
-                // otherwise confirmed utxo should be first
-                return isU1Confirmed;
             }
+
+            // otherwise confirmed utxo should be first
+            return isU1Confirmed;
         }
 
 
