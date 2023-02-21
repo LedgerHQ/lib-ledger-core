@@ -44,16 +44,10 @@ namespace ledger {
             ~BitcoinLikeUTXODatabaseHelper() = delete;
 
           public:
-            enum class UTXOOrderType {
-                UNCONFIRMED_FIRST,
-                CONFIRMED_FIRST
-            };
-
             static std::size_t queryUTXO(soci::session &sql,
                                          const std::string &accountUid,
                                          int32_t offset,
                                          int32_t count,
-                                         UTXOOrderType order,
                                          int64_t dustAmount,
                                          std::vector<BitcoinLikeBlockchainExplorerOutput> &out);
 
@@ -69,7 +63,6 @@ namespace ledger {
                 soci::session &session,
                 std::string const &accountUid,
                 api::Currency const &currency,
-                UTXOOrderType order,
                 int64_t dustAmount);
         };
     } // namespace core

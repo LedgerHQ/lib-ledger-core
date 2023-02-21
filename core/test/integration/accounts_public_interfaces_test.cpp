@@ -86,26 +86,6 @@ TEST_F(AccountsPublicInterfaceTest, GetBalanceOnAccountWithSomeTxs) {
     EXPECT_EQ(uxtoCount, 8);
 }
 
-TEST_F(AccountsPublicInterfaceTest, UtxoOrderConfirmedFirstByDefault) {
-    auto account   = ledger::testing::medium_xpub::inflate(pool, wallet);
-    auto utxos     = uv::wait(account->getUTXO());
-    const auto size = utxos.size();
-    for(unsigned int i = 0; i < size-1; ++i) {
-        EXPECT_GE(utxos[i]->getBlockHeight().value(), utxos[i+1]->getBlockHeight().value());
-    }
-}
-
-TEST_F(AccountsPublicInterfaceTest, UtxoOrderUnConfirmedFirst) {
-    auto account   = ledger::testing::medium_xpub::inflate(pool, wallet);
-    auto config = account->getWallet()->getConfig();
-    config->putBoolean(api::Configuration::QUERY_CONFIRMED_UTXO_FIRST, false);
-    auto utxos     = uv::wait(account->getUTXO());
-    const auto size = utxos.size();
-    for(unsigned int i = 0; i < size-1; ++i) {
-        EXPECT_LE(utxos[i]->getBlockHeight().value(), utxos[i+1]->getBlockHeight().value());
-    }
-}
-
 TEST_F(AccountsPublicInterfaceTest, GetBalanceHistoryOnAccountWithSomeTxs) {
     auto account        = ledger::testing::medium_xpub::inflate(pool, wallet);
     auto fromDate       = "2017-10-12T13:38:23Z";
