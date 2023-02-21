@@ -46,27 +46,33 @@ namespace ledger {
         class BitcoinLikeStrategyUtxoPicker : public BitcoinLikeUtxoPicker {
           public:
             BitcoinLikeStrategyUtxoPicker(const std::shared_ptr<api::ExecutionContext> &context,
-                                          const api::Currency &currency);
+                                          const api::Currency &currency,
+                                          bool useConfirmedFirst);
 
           public:
             static std::vector<BitcoinLikeUtxo> filterWithKnapsackSolver(const std::shared_ptr<Buddy> &buddy,
                                                                          const std::vector<BitcoinLikeUtxo> &utxos,
                                                                          const BigInt &aggregatedAmount,
-                                                                         const api::Currency &currrency);
+                                                                         const api::Currency &currrency,
+                                                                         bool useConfirmedFirst);
 
             static std::vector<BitcoinLikeUtxo> filterWithOptimizeSize(const std::shared_ptr<Buddy> &buddy,
                                                                        const std::vector<BitcoinLikeUtxo> &utxos,
                                                                        const BigInt &aggregatedAmount,
-                                                                       const api::Currency &currrency);
+                                                                       const api::Currency &currrency,
+                                                                       bool useConfirmedFirst);
 
             static std::vector<BitcoinLikeUtxo> filterWithMergeOutputs(const std::shared_ptr<Buddy> &buddy,
                                                                        const std::vector<BitcoinLikeUtxo> &utxos,
                                                                        const BigInt &aggregatedAmount,
-                                                                       const api::Currency &currrency);
+                                                                       const api::Currency &currrency,
+                                                                       bool useConfirmedFirst);
+
             static std::vector<BitcoinLikeUtxo> filterWithDeepFirst(const std::shared_ptr<Buddy> &buddy,
                                                                     const std::vector<BitcoinLikeUtxo> &utxo,
                                                                     const BigInt &aggregatedAmount,
                                                                     const api::Currency &currrency);
+
             static bool hasEnough(const std::shared_ptr<Buddy> &buddy,
                                   const BigInt &aggregatedAmount,
                                   int inputCount,
@@ -93,6 +99,8 @@ namespace ledger {
                 BigInt amount,
                 const api::Currency &currency,
                 std::function<bool(BitcoinLikeUtxo &, BitcoinLikeUtxo &)> const &functor);
+
+            bool _useConfirmedFirst { true };
         };
     } // namespace core
 } // namespace ledger

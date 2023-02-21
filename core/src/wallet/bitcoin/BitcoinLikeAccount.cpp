@@ -192,7 +192,11 @@ namespace ledger {
             _synchronizer = synchronizer;
             _keychain     = keychain;
             _keychain->getAllObservableAddresses(0, 40);
-            _picker             = std::make_shared<BitcoinLikeStrategyUtxoPicker>(getWallet()->getPool()->getThreadPoolExecutionContext(), getWallet()->getCurrency());
+            _picker             = std::make_shared<BitcoinLikeStrategyUtxoPicker>(
+                    getWallet()->getPool()->getThreadPoolExecutionContext(), 
+                    getWallet()->getCurrency(),
+                    getWallet()->getConfig()->getBoolean(api::Configuration::QUERY_CONFIRMED_UTXO_FIRST).value_or(true)
+                );
             _currentBlockHeight = 0;
         }
 
