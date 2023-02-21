@@ -188,7 +188,7 @@ namespace ledger {
             _picker             = std::make_shared<BitcoinLikeStrategyUtxoPicker>(
                     getWallet()->getPool()->getThreadPoolExecutionContext(), 
                     getWallet()->getCurrency(),
-                    getWallet()->getConfig()->getBoolean(api::Configuration::QUERY_CONFIRMED_UTXO_FIRST).value_or(true)
+                    getWallet()->getConfig()->getBoolean(api::Configuration::CONFIRMED_UTXO_FIRST).value_or(true)
                 );
             _currentBlockHeight = 0;
         }
