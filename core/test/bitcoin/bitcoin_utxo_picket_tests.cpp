@@ -193,13 +193,10 @@ TEST(OptimizeSize, ApproximationShouldTookEnough) {
 
 TEST(OptimizeSize, UtxoOrderingShouldUseConfirmedFirst) {
     const api::Currency currency             = currencies::BITCOIN;
-    const int64_t feesPerByte                = 20;
-    const int64_t inputSizeInBytes           = 148;
-    const int64_t outputSizeInBytes          = 34;
-    const int64_t emtyTransactionSizeInBytes = 10;
+    const int64_t feesPerByte                = 5;
     int64_t outputAmount                     = 25000;
-    std::vector<int64_t> inputAmounts{15000, 15000, 15000, 15000};
-    std::vector<Option<uint64_t>> blockHeights = { Option<uint64_t>{}, Option<uint64_t>{}, 12000, Option<uint64_t>{} } ;
+    std::vector<int64_t> inputAmounts{10000, 10000, 10000};
+    std::vector<Option<uint64_t>> blockHeights = { Option<uint64_t>{}, 12000, Option<uint64_t>{} } ;
 
     auto buddy               = createBuddy(feesPerByte, outputAmount, currency);
 
@@ -207,16 +204,55 @@ TEST(OptimizeSize, UtxoOrderingShouldUseConfirmedFirst) {
     {
         auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency, true);
         EXPECT_EQ(pickedUtxos.size(), 3);
-        EXPECT_EQ(pickedUtxos[0].index, 2);
+        EXPECT_EQ(pickedUtxos[0].index, 1);
     }
+    // Cannot perform the "negative" as the algorithm may use randomization and thus might deliver a confirmed-first even if not requested.
+}
+
+TEST(DeepFirst, UtxoOrderingShouldUseConfirmedFirst) {
+    const api::Currency currency             = currencies::BITCOIN;
+    const int64_t feesPerByte                = 20;
+    int64_t outputAmount                     = 25000;
+    std::vector<int64_t> inputAmounts{15000, 15000, 15000, 15000};
+    std::vector<Option<uint64_t>> blockHeights = { 12000, Option<uint64_t>{}, 1000, Option<uint64_t>{} } ;
+
+    auto buddy               = createBuddy(feesPerByte, outputAmount, currency);
+
+    auto utxos               = createUtxos(inputAmounts, blockHeights);
     {
-        auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency, false);
+        auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithDeepFirst(buddy, utxos, BigInt(-1), currency);
         EXPECT_EQ(pickedUtxos.size(), 3);
-        EXPECT_NE(pickedUtxos[0].index, 2);
+        EXPECT_EQ(pickedUtxos[0].index, 2);
+        EXPECT_EQ(pickedUtxos[1].index, 0);
     }
 }
 
 
+TEST(MergeOutput, UtxoOrderingShouldUseConfirmedFirst) {
+    const api::Currency currency             = currencies::BITCOIN;
+    const int64_t feesPerByte                = 5;
+    int64_t outputAmount                     = 25000;
+    std::vector<int64_t> inputAmounts{15000, 5000, 5000, 1000, 1000, 1000, 1000, 3000};
+    std::vector<Option<uint64_t>> blockHeights(inputAmounts.size(), Option<uint64_t>{});
+    blockHeights[1] = 1000;
+    blockHeights[6] = 2000;
+
+    auto buddy               = createBuddy(feesPerByte, outputAmount, currency);
+
+    auto utxos               = createUtxos(inputAmounts, blockHeights);
+    {
+        auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithMergeOutputs(buddy, utxos, BigInt(-1), currency, true);
+        EXPECT_EQ(pickedUtxos.size(), 8);
+        EXPECT_EQ(pickedUtxos[0].index, 6);
+        EXPECT_EQ(pickedUtxos[1].index, 1);
+    }
+    {
+        auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithMergeOutputs(buddy, utxos, BigInt(-1), currency, false);
+        EXPECT_EQ(pickedUtxos.size(), 8);
+        EXPECT_EQ(pickedUtxos[0].index, 3);
+        EXPECT_EQ(pickedUtxos[1].index, 4);
+    }
+}
 
 void feeIsEnoughFor(const std::string address, const int64_t targetOutputSizeInBytes, const int64_t feesPerByte) {
     const api::Currency currency             = currencies::BITCOIN_TESTNET;
@@ -277,3 +313,7 @@ TEST(OptimizeSize, FeeIsEnoughForP2TR) {
     for (int64_t feesPerByte = 1; feesPerByte < 1000000; feesPerByte *= 10)
         feeIsEnoughFor(address, targetOutputSizeInBytes, feesPerByte);
 }
+
+
+
+
