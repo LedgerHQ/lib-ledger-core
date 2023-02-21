@@ -41,6 +41,10 @@ using namespace soci;
 namespace ledger {
     namespace core {
 
+        std::string serializeOrder(const BitcoinLikeUTXODatabaseHelper::UTXOOrderType& order) {
+            return order==BitcoinLikeUTXODatabaseHelper::UTXOOrderType::UNCONFIRMED_FIRST ? "ASC": "DESC";
+        }
+
         std::size_t BitcoinLikeUTXODatabaseHelper::UTXOcount(soci::session &sql, const std::string &accountUid, int64_t dustAmount) {
             const rowset<row> rows = (sql.prepare << "SELECT o.address FROM bitcoin_outputs AS o "
                                                      " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
@@ -57,14 +61,18 @@ namespace ledger {
         }
 
         std::size_t
-        BitcoinLikeUTXODatabaseHelper::queryUTXO(soci::session &sql, const std::string &accountUid, int32_t offset, int32_t count, int64_t dustAmount, std::vector<BitcoinLikeBlockchainExplorerOutput> &out) {
-            const rowset<row> rows = (sql.prepare << "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height,"
-                                                     "replaceable"
-                                                     " FROM bitcoin_outputs AS o "
-                                                     " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
-                                                     " AND i.previous_output_idx = o.idx"
-                                                     " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount"
-                                                     " ORDER BY block_height LIMIT :count OFFSET :off",
+        BitcoinLikeUTXODatabaseHelper::queryUTXO(soci::session &sql, const std::string &accountUid, int32_t offset, int32_t count, UTXOOrderType order, int64_t dustAmount, std::vector<BitcoinLikeBlockchainExplorerOutput> &out) {
+            const std::string orderStr = serializeOrder(order);
+            auto queryFmt        = fmt::format(
+                                    "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height,"
+                                    "replaceable"
+                                    " FROM bitcoin_outputs AS o "
+                                    " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
+                                    " AND i.previous_output_idx = o.idx"
+                                    " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount"
+                                    " ORDER BY block_height {} LIMIT :count OFFSET :off",
+                                    orderStr);
+            const rowset<row> rows = (sql.prepare << queryFmt,
                                       use(accountUid), use(dustAmount), use(count), use(offset));
 
             for (auto &row : rows) {
@@ -106,12 +114,17 @@ namespace ledger {
             soci::session &session,
             std::string const &accountUid,
             api::Currency const &currency,
+            UTXOOrderType order,
             int64_t dustAmount) {
-            const soci::rowset<soci::row> rows = (session.prepare << "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height "
-                                                                     "FROM bitcoin_outputs AS o "
-                                                                     "LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid AND i.previous_output_idx = o.idx "
-                                                                     "WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount "
-                                                                     "ORDER BY o.block_height",
+            const std::string orderStr = serializeOrder(order);
+            auto queryFmt        = fmt::format(
+                                    "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height "
+                                    "FROM bitcoin_outputs AS o "
+                                    "LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid AND i.previous_output_idx = o.idx "
+                                    "WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid AND o.amount > :dustAmount "
+                                    "ORDER BY o.block_height {} ",
+                                    orderStr);
+            const soci::rowset<soci::row> rows = (session.prepare << queryFmt,
                                                   use(accountUid), use(dustAmount));
 
             std::vector<BitcoinLikeUtxo> utxos;

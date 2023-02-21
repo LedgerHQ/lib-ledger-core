@@ -64,6 +64,13 @@
 
 namespace {
     using namespace ledger::core;
+    
+    BitcoinLikeUTXODatabaseHelper::UTXOOrderType getUtxoOrder(const std::shared_ptr<DynamicObject>& conf) {
+        bool confirmFirst = conf->getBoolean(api::Configuration::QUERY_CONFIRMED_UTXO_FIRST).value_or(true);
+        return confirmFirst ? BitcoinLikeUTXODatabaseHelper::UTXOOrderType::CONFIRMED_FIRST : BitcoinLikeUTXODatabaseHelper::UTXOOrderType::UNCONFIRMED_FIRST;
+    }
+
+
     /// Constructor of BitcoinLikeBlockchainExplorerTransaction that initializes some fields
     /// with a just signed transaction.
     ///
@@ -461,8 +468,13 @@ namespace ledger {
                     self->logger()->info(fmt::format("Worthless utxo value is {}", worthlessUtxoAmount));
                     soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                     std::vector<BitcoinLikeBlockchainExplorerOutput> utxo;
-
-                    BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, worthlessUtxoAmount, utxo);
+                    const auto& config = self->getWallet()->getConfig();
+                    const auto& utxoOrder = getUtxoOrder(config);
+                    BitcoinLikeUTXODatabaseHelper::queryUTXO(
+                        sql, 
+                        self->getAccountUid(), from, to - from,
+                        utxoOrder,
+                        worthlessUtxoAmount, utxo);
                     return functional::map<BitcoinLikeBlockchainExplorerOutput, std::shared_ptr<api::BitcoinLikeOutput>>(utxo, [&currency](const BitcoinLikeBlockchainExplorerOutput &output) -> std::shared_ptr<api::BitcoinLikeOutput> {
                         return std::make_shared<BitcoinLikeOutputApi>(output, currency);
                     });
@@ -546,7 +558,14 @@ namespace ledger {
                 auto keychain                  = self->getKeychain();
                 const auto worthlessUtxoAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees);
                 self->logger()->info(fmt::format("Worthless utxo value is {}", worthlessUtxoAmount));
-                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), worthlessUtxoAmount, utxos);
+                const auto& config = self->getWallet()->getConfig();
+                const auto& utxoOrder = getUtxoOrder(config);
+                BitcoinLikeUTXODatabaseHelper::queryUTXO(
+                    sql, uid, 0, std::numeric_limits<int32_t>::max(),
+                    utxoOrder,
+                    worthlessUtxoAmount,
+                    utxos
+                );
                 switch (strategy) {
                 case api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST:
                 case api::BitcoinLikePickingStrategy::MERGE_OUTPUTS:
@@ -754,7 +773,10 @@ namespace ledger {
 
                     const auto worthlessUtxoAmount = BitcoinLikeTransactionApi::computeWorthlessUtxoValue(self->getWallet()->getCurrency(), keychain->getKeychainEngine(), fees);
                     self->logger()->info(fmt::format("Worthless utxo value is {}", worthlessUtxoAmount));
-                    return BitcoinLikeUTXODatabaseHelper::queryAllUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency(), worthlessUtxoAmount);
+
+                    const auto& config = self->getWallet()->getConfig();
+                    const auto& utxoOrder = getUtxoOrder(config);
+                    return BitcoinLikeUTXODatabaseHelper::queryAllUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency(), utxoOrder, worthlessUtxoAmount);
                 });
             };
             auto getTransaction = [self](const std::string &hash) -> FuturePtr<BitcoinLikeBlockchainExplorerTransaction> {
