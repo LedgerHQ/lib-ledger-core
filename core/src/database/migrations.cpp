@@ -1265,5 +1265,80 @@ namespace ledger {
         void rollback<31>(soci::session &sql, api::DatabaseBackendType /*type*/) {
             sql << "ALTER TABLE tezos_transactions DROP explorer_id";
         }
+
+        template <>
+        void migrate<32>(soci::session &sql, api::DatabaseBackendType /*type*/) {
+            sql << R"(
+ALTER TABLE bitcoin_accounts
+    ADD COLUMN balance BIGINT default 0;
+
+CREATE OR REPLACE function sum_utxos(p_account_uid varchar(255), p_dust_amount integer)
+    RETURNS BIGINT
+    LANGUAGE plpgsql
+AS
+$$
+DECLARE
+    balance BIGINT;
+BEGIN
+    SELECT sum(o.amount)::bigint
+    INTO balance
+    FROM bitcoin_outputs AS o
+             LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid
+        AND i.previous_output_idx = o.idx
+    WHERE i.previous_tx_uid IS NULL
+      AND o.account_uid = p_account_uid
+      AND o.amount > p_dust_amount;
+
+    return balance;
+end;
+$$;
+
+CREATE OR REPLACE FUNCTION update_account_balance()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+AS
+$$
+DECLARE
+    new_balance BIGINT;
+BEGIN
+    SELECT sum_utxos INTO new_balance FROM sum_utxos(NEW.account_uid, 0);
+
+    UPDATE bitcoin_accounts SET balance = new_balance where uid = NEW.account_uid;
+
+    RETURN NEW;
+end;
+$$;
+
+CREATE OR REPLACE TRIGGER bitcoin_outputs_changed
+    AFTER INSERT OR UPDATE
+    ON bitcoin_outputs
+    FOR EACH ROW
+EXECUTE PROCEDURE update_account_balance();
+
+
+-- Populate account balance for first time
+DO
+$$
+    DECLARE
+        account bitcoin_accounts%rowtype;
+    BEGIN
+        FOR account in SELECT * FROM bitcoin_accounts
+            LOOP
+                update bitcoin_accounts
+                set balance = sum_utxos(account.uid, 0)
+                where uid = account.uid;
+            END LOOP;
+    end;
+$$;
+)";
+        }
+
+        template <>
+        void rollback<32>(soci::session &sql, api::DatabaseBackendType /*type*/) {
+            sql << "DROP TRIGGER bitcoin_outputs_changed on bitcoin_outputs;";
+            sql << "DROP FUNCTION update_account_balance;";
+            sql << "DROP FUNCTION sum_utxos;";
+            sql << "ALTER TABLE bitcoin_accounts DROP COLUMN balance;";
+        }
     } // namespace core
 } // namespace ledger
