@@ -496,37 +496,15 @@ namespace ledger {
 
             // Random shuffle utxos
             const auto &sz = utxos.size();
-            std::vector<size_t> indexes;
-            indexes.reserve(sz);
-            {
-                auto const seed = std::chrono::system_clock::now().time_since_epoch().count();
+            std::vector<size_t> indexes(sz, 0);
+            auto const seed = std::chrono::system_clock::now().time_since_epoch().count();
+            std::iota(indexes.begin(), indexes.end(), 0);
+            std::shuffle(indexes.begin(), indexes.end(), std::default_random_engine(seed));
 
-                if (useConfirmedFirst) {
-                    std::vector<size_t> indexesTmp(sz, 0);
-                    std::iota(indexesTmp.begin(), indexesTmp.end(), 0);
-                    std::shuffle(indexesTmp.begin(), indexesTmp.end(), std::default_random_engine(seed));
-
-                    std::list<size_t> allindexes;
-                    std::list<size_t> confirmed;
-                    std::list<size_t> unconfirmed;
-
-                    for (const auto idx : indexesTmp) {
-                        if (utxos[idx].blockHeight.hasValue()) {
-                            confirmed.emplace_back(idx);
-                        } else {
-                            unconfirmed.emplace_back(idx);
-                        }
-                    }
-
-                    allindexes.splice(allindexes.end(), confirmed);
-                    allindexes.splice(allindexes.end(), unconfirmed);
-                    std::move(std::begin(allindexes), std::end(allindexes), std::back_inserter(indexes));
-
-                } else {
-                    indexes.resize(sz);
-                    std::iota(indexes.begin(), indexes.end(), 0);
-                    std::shuffle(indexes.begin(), indexes.end(), std::default_random_engine(seed));
-                }
+            if (useConfirmedFirst) {
+                std::stable_sort(indexes.begin(), indexes.end(), [&utxos](auto id1, auto id2) {
+                    return compareConfirmation(utxos[id1], utxos[id2]).value_or(true);
+                });
             }
 
             // Add fees for a signed input to amount
