@@ -232,7 +232,7 @@ TEST(MergeOutput, UtxoOrderingShouldUseConfirmedFirst) {
     const api::Currency currency             = currencies::BITCOIN;
     const int64_t feesPerByte                = 5;
     int64_t outputAmount                     = 25000;
-    std::vector<int64_t> inputAmounts{15000, 5000, 5000, 1000, 1000, 1000, 1000, 3000};
+    std::vector<int64_t> inputAmounts{15000, 5000, 5000, 1000, 1001, 1002, 1003, 3000};
     std::vector<Option<uint64_t>> blockHeights(inputAmounts.size(), Option<uint64_t>{});
     blockHeights[1] = 1000;
     blockHeights[6] = 2000;
