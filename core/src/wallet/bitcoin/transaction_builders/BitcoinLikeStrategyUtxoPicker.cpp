@@ -43,9 +43,23 @@
 namespace ledger {
     namespace core {
 
-        BitcoinLikeStrategyUtxoPicker::BitcoinLikeStrategyUtxoPicker(const std::shared_ptr<api::ExecutionContext> &context,
-                                                                     const api::Currency &currency) : BitcoinLikeUtxoPicker(context, currency) {
+        std::optional<bool> compareConfirmation(const BitcoinLikeUtxo &u1, const BitcoinLikeUtxo &u2) {
+            bool isU1Confirmed = u1.blockHeight.hasValue();
+            bool isU2Confirmed = u2.blockHeight.hasValue();
+
+            if ((isU1Confirmed && isU2Confirmed) || (!isU1Confirmed && !isU2Confirmed)) {
+                // ignore the case where confirmation status is similar
+                return {};
+            }
+
+            // otherwise confirmed utxo should be first
+            return isU1Confirmed;
         }
+
+        BitcoinLikeStrategyUtxoPicker::BitcoinLikeStrategyUtxoPicker(const std::shared_ptr<api::ExecutionContext> &context,
+                                                                     const api::Currency &currency,
+                                                                     bool useConfirmedFirst)
+            : BitcoinLikeUtxoPicker(context, currency), _useConfirmedFirst{useConfirmedFirst} {}
 
         Future<std::vector<BitcoinLikeUtxo>>
         BitcoinLikeStrategyUtxoPicker::filterInputs(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy) {
@@ -71,9 +85,9 @@ namespace ledger {
                         case api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST:
                             return filterWithDeepFirst(buddy, utxos, amount, getCurrency());
                         case api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE:
-                            return filterWithOptimizeSize(buddy, utxos, amount, getCurrency());
+                            return filterWithOptimizeSize(buddy, utxos, amount, getCurrency(), _useConfirmedFirst);
                         case api::BitcoinLikePickingStrategy::MERGE_OUTPUTS:
-                            return filterWithMergeOutputs(buddy, utxos, amount, getCurrency());
+                            return filterWithMergeOutputs(buddy, utxos, amount, getCurrency(), _useConfirmedFirst);
                         }
 
                         throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Unknown UTXO picking strategy.");
@@ -173,7 +187,8 @@ namespace ledger {
         BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                                                               const std::vector<BitcoinLikeUtxo> &utxos,
                                                               const BigInt &aggregatedAmount,
-                                                              const api::Currency &currency) {
+                                                              const api::Currency &currency,
+                                                              bool useConfirmedFirst) {
             // NOTE: why are we using buddy->outputAmount here instead of aggregatedAmount ?
             // Don't use this strategy for wipe mode (we have more performent strategies for this use case)
             if (buddy->request.wipe) {
@@ -272,7 +287,13 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
             }
 
-            auto descendingEffectiveValue = [](const EffectiveUtxo &lhs, const EffectiveUtxo &rhs) -> bool {
+            auto descendingEffectiveValue = [useConfirmedFirst](const EffectiveUtxo &lhs, const EffectiveUtxo &rhs) -> bool {
+                if (useConfirmedFirst) {
+                    std::optional<bool> comp = compareConfirmation(*lhs.utxo, *rhs.utxo);
+                    if (comp.has_value()) {
+                        return comp.value();
+                    }
+                }
                 return lhs.effectiveValue > rhs.effectiveValue;
             };
 
@@ -347,7 +368,7 @@ namespace ledger {
             // If no selection found fallback on filterWithDeepFirst
             if (bestSelection.empty()) {
                 buddy->logger->debug("No best selection found, fallback on filterWithKnapsackSolver coin selection");
-                return filterWithKnapsackSolver(buddy, utxos, aggregatedAmount, currency);
+                return filterWithKnapsackSolver(buddy, utxos, aggregatedAmount, currency, useConfirmedFirst);
             }
 
             // Prepare result
@@ -414,7 +435,8 @@ namespace ledger {
             const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
             const std::vector<BitcoinLikeUtxo> &utxos,
             const BigInt &aggregatedAmount,
-            const api::Currency &currency) {
+            const api::Currency &currency,
+            bool useConfirmedFirst) {
             // Tx fixed size
             auto const fixedSize           = BitcoinLikeTransactionApi::estimateSize(0,
                                                                                      0,
@@ -473,11 +495,17 @@ namespace ledger {
             std::vector<BitcoinLikeUtxo> out;
 
             // Random shuffle utxos
-            std::vector<size_t> indexes(utxos.size());
-            std::iota(indexes.begin(), indexes.end(), 0);
-
+            const auto &sz = utxos.size();
+            std::vector<size_t> indexes(sz, 0);
             auto const seed = std::chrono::system_clock::now().time_since_epoch().count();
+            std::iota(indexes.begin(), indexes.end(), 0);
             std::shuffle(indexes.begin(), indexes.end(), std::default_random_engine(seed));
+
+            if (useConfirmedFirst) {
+                std::stable_sort(indexes.begin(), indexes.end(), [&utxos](auto id1, auto id2) {
+                    return compareConfirmation(utxos[id1], utxos[id2]).value_or(true);
+                });
+            }
 
             // Add fees for a signed input to amount
             for (auto index : indexes) {
@@ -516,7 +544,13 @@ namespace ledger {
             }
 
             // Sort vUTXOs descending
-            std::sort(vUTXOs.begin(), vUTXOs.end(), [](auto const &lhs, auto const &rhs) {
+            std::sort(vUTXOs.begin(), vUTXOs.end(), [useConfirmedFirst](auto const &lhs, auto const &rhs) {
+                if (useConfirmedFirst) {
+                    std::optional<bool> comp = compareConfirmation(lhs, rhs);
+                    if (comp.has_value()) {
+                        return comp.value();
+                    }
+                }
                 return lhs.value.toLong() > rhs.value.toLong();
             });
 
@@ -586,10 +620,18 @@ namespace ledger {
             const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
             const std::vector<BitcoinLikeUtxo> &utxos,
             const BigInt &aggregatedAmount,
-            const api::Currency &currency) {
+            const api::Currency &currency,
+            bool useConfirmedFirst) {
             buddy->logger->debug("Start filterWithMergeOutputs");
 
-            return filterWithSort(buddy, utxos, aggregatedAmount, currency, [](auto &lhs, auto &rhs) {
+            return filterWithSort(buddy, utxos, aggregatedAmount, currency, [useConfirmedFirst](auto &lhs, auto &rhs) {
+                if (useConfirmedFirst) {
+                    std::optional<bool> comp = compareConfirmation(lhs, rhs);
+                    if (comp.has_value()) {
+                        return comp.value();
+                    }
+                }
+
                 return lhs.value.toLong() < rhs.value.toLong();
             });
         }
@@ -631,5 +673,6 @@ namespace ledger {
 
             return pickedUtxos;
         }
+
     } // namespace core
 } // namespace ledger

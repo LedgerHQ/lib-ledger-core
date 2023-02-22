@@ -43,4 +43,6 @@ std::string const Configuration::MEMPOOL_GRACE_PERIOD_SECS = {"MEMPOOL_GRACE_PER
 
 std::string const Configuration::ALLOW_P2TR = {"ALLOW_P2TR"};
 
+std::string const Configuration::CONFIRMED_UTXO_FIRST = {"CONFIRMED_UTXO_FIRST"};
+
 } } }  // namespace ledger::core::api
