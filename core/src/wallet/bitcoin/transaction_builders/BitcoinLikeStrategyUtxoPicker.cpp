@@ -43,12 +43,11 @@
 namespace ledger {
     namespace core {
 
-
-        std::optional<bool> compareConfirmation(const BitcoinLikeUtxo& u1,const BitcoinLikeUtxo& u2) {
+        std::optional<bool> compareConfirmation(const BitcoinLikeUtxo &u1, const BitcoinLikeUtxo &u2) {
             bool isU1Confirmed = u1.blockHeight.hasValue();
             bool isU2Confirmed = u2.blockHeight.hasValue();
 
-            if( (isU1Confirmed && isU2Confirmed) || (!isU1Confirmed && !isU2Confirmed) ) {
+            if ((isU1Confirmed && isU2Confirmed) || (!isU1Confirmed && !isU2Confirmed)) {
                 // ignore the case where confirmation status is similar
                 return {};
             }
@@ -57,13 +56,10 @@ namespace ledger {
             return isU1Confirmed;
         }
 
-
-
         BitcoinLikeStrategyUtxoPicker::BitcoinLikeStrategyUtxoPicker(const std::shared_ptr<api::ExecutionContext> &context,
                                                                      const api::Currency &currency,
-                                                                     bool useConfirmedFirst) 
-                                                                     : BitcoinLikeUtxoPicker(context, currency), _useConfirmedFirst{ useConfirmedFirst }
-                                                                     {}
+                                                                     bool useConfirmedFirst)
+            : BitcoinLikeUtxoPicker(context, currency), _useConfirmedFirst{useConfirmedFirst} {}
 
         Future<std::vector<BitcoinLikeUtxo>>
         BitcoinLikeStrategyUtxoPicker::filterInputs(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy) {
@@ -291,11 +287,10 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
             }
 
-
             auto descendingEffectiveValue = [useConfirmedFirst](const EffectiveUtxo &lhs, const EffectiveUtxo &rhs) -> bool {
-                if(useConfirmedFirst) {
+                if (useConfirmedFirst) {
                     std::optional<bool> comp = compareConfirmation(*lhs.utxo, *rhs.utxo);
-                    if(comp.has_value()) {
+                    if (comp.has_value()) {
                         return comp.value();
                     }
                 }
@@ -500,14 +495,13 @@ namespace ledger {
             std::vector<BitcoinLikeUtxo> out;
 
             // Random shuffle utxos
-            const auto& sz = utxos.size();
+            const auto &sz = utxos.size();
             std::vector<size_t> indexes;
             indexes.reserve(sz);
             {
                 auto const seed = std::chrono::system_clock::now().time_since_epoch().count();
 
-                if(useConfirmedFirst) {
-
+                if (useConfirmedFirst) {
                     std::vector<size_t> indexesTmp(sz, 0);
                     std::iota(indexesTmp.begin(), indexesTmp.end(), 0);
                     std::shuffle(indexesTmp.begin(), indexesTmp.end(), std::default_random_engine(seed));
@@ -516,9 +510,8 @@ namespace ledger {
                     std::list<size_t> confirmed;
                     std::list<size_t> unconfirmed;
 
-                    for(const auto idx: indexesTmp) {
-
-                        if(utxos[idx].blockHeight.hasValue()) {
+                    for (const auto idx : indexesTmp) {
+                        if (utxos[idx].blockHeight.hasValue()) {
                             confirmed.emplace_back(idx);
                         } else {
                             unconfirmed.emplace_back(idx);
@@ -530,7 +523,6 @@ namespace ledger {
                     std::move(std::begin(allindexes), std::end(allindexes), std::back_inserter(indexes));
 
                 } else {
-
                     indexes.resize(sz);
                     std::iota(indexes.begin(), indexes.end(), 0);
                     std::shuffle(indexes.begin(), indexes.end(), std::default_random_engine(seed));
@@ -575,9 +567,9 @@ namespace ledger {
 
             // Sort vUTXOs descending
             std::sort(vUTXOs.begin(), vUTXOs.end(), [useConfirmedFirst](auto const &lhs, auto const &rhs) {
-                if(useConfirmedFirst) {
+                if (useConfirmedFirst) {
                     std::optional<bool> comp = compareConfirmation(lhs, rhs);
-                    if(comp.has_value()) {
+                    if (comp.has_value()) {
                         return comp.value();
                     }
                 }
@@ -655,10 +647,9 @@ namespace ledger {
             buddy->logger->debug("Start filterWithMergeOutputs");
 
             return filterWithSort(buddy, utxos, aggregatedAmount, currency, [useConfirmedFirst](auto &lhs, auto &rhs) {
-
-                if(useConfirmedFirst) {
+                if (useConfirmedFirst) {
                     std::optional<bool> comp = compareConfirmation(lhs, rhs);
-                    if(comp.has_value()) {
+                    if (comp.has_value()) {
                         return comp.value();
                     }
                 }
@@ -675,7 +666,6 @@ namespace ledger {
             std::function<bool(BitcoinLikeUtxo &, BitcoinLikeUtxo &)> const &functor) {
             auto pickedUtxos  = std::vector<BitcoinLikeUtxo>{};
             auto pickedInputs = 0;
-
 
             pickedUtxos.reserve(utxos.size());
             std::sort(utxos.begin(), utxos.end(), functor);
@@ -705,7 +695,6 @@ namespace ledger {
 
             return pickedUtxos;
         }
-
 
     } // namespace core
 } // namespace ledger

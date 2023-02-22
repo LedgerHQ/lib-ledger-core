@@ -100,7 +100,7 @@ namespace ledger {
                 const api::Currency &currency,
                 std::function<bool(BitcoinLikeUtxo &, BitcoinLikeUtxo &)> const &functor);
 
-            bool _useConfirmedFirst { true };
+            bool _useConfirmedFirst{true};
         };
     } // namespace core
 } // namespace ledger

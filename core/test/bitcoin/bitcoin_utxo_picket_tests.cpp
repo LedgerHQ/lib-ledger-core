@@ -71,13 +71,13 @@ class MockBitcoinLikeOutput : public api::BitcoinLikeOutput {
     std::shared_ptr<Amount> _amount;
 };
 
-std::vector<BitcoinLikeUtxo> createUtxos(const std::vector<int64_t> &values, const std::vector<Option<uint64_t>>& blockHeights) {
+std::vector<BitcoinLikeUtxo> createUtxos(const std::vector<int64_t> &values, const std::vector<Option<uint64_t>> &blockHeights) {
     std::vector<BitcoinLikeUtxo> utxos;
     const auto sz = values.size();
     assert(sz == blockHeights.size());
     utxos.reserve(sz);
 
-    for(unsigned int i = 0; i < sz; ++i) {
+    for (unsigned int i = 0; i < sz; ++i) {
         auto amount = Amount(currencies::BITCOIN, 0, BigInt(values[i]));
         utxos.emplace_back(BitcoinLikeUtxo{
             i,
@@ -86,8 +86,7 @@ std::vector<BitcoinLikeUtxo> createUtxos(const std::vector<int64_t> &values, con
             Option<std::string>{},
             Option<std::string>{},
             "",
-            blockHeights[i]
-        });
+            blockHeights[i]});
     }
 
     return utxos;
@@ -192,17 +191,17 @@ TEST(OptimizeSize, ApproximationShouldTookEnough) {
 }
 
 TEST(OptimizeSize, UtxoOrderingShouldUseConfirmedFirst) {
-    const api::Currency currency             = currencies::BITCOIN;
-    const int64_t feesPerByte                = 5;
-    int64_t outputAmount                     = 25000;
+    const api::Currency currency = currencies::BITCOIN;
+    const int64_t feesPerByte    = 5;
+    int64_t outputAmount         = 25000;
     std::vector<int64_t> inputAmounts{10000, 10000, 10000};
-    std::vector<Option<uint64_t>> blockHeights = { Option<uint64_t>{}, 12000, Option<uint64_t>{} } ;
+    std::vector<Option<uint64_t>> blockHeights = {Option<uint64_t>{}, 12000, Option<uint64_t>{}};
 
-    auto buddy               = createBuddy(feesPerByte, outputAmount, currency);
+    auto buddy                                 = createBuddy(feesPerByte, outputAmount, currency);
 
-    auto utxos               = createUtxos(inputAmounts, blockHeights);
+    auto utxos                                 = createUtxos(inputAmounts, blockHeights);
     {
-        auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency, true);
+        auto pickedUtxos = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency, true);
         EXPECT_EQ(pickedUtxos.size(), 3);
         EXPECT_EQ(pickedUtxos[0].index, 1);
     }
@@ -210,44 +209,43 @@ TEST(OptimizeSize, UtxoOrderingShouldUseConfirmedFirst) {
 }
 
 TEST(DeepFirst, UtxoOrderingShouldUseConfirmedFirst) {
-    const api::Currency currency             = currencies::BITCOIN;
-    const int64_t feesPerByte                = 20;
-    int64_t outputAmount                     = 25000;
+    const api::Currency currency = currencies::BITCOIN;
+    const int64_t feesPerByte    = 20;
+    int64_t outputAmount         = 25000;
     std::vector<int64_t> inputAmounts{15000, 15000, 15000, 15000};
-    std::vector<Option<uint64_t>> blockHeights = { 12000, Option<uint64_t>{}, 1000, Option<uint64_t>{} } ;
+    std::vector<Option<uint64_t>> blockHeights = {12000, Option<uint64_t>{}, 1000, Option<uint64_t>{}};
 
-    auto buddy               = createBuddy(feesPerByte, outputAmount, currency);
+    auto buddy                                 = createBuddy(feesPerByte, outputAmount, currency);
 
-    auto utxos               = createUtxos(inputAmounts, blockHeights);
+    auto utxos                                 = createUtxos(inputAmounts, blockHeights);
     {
-        auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithDeepFirst(buddy, utxos, BigInt(-1), currency);
+        auto pickedUtxos = BitcoinLikeStrategyUtxoPicker::filterWithDeepFirst(buddy, utxos, BigInt(-1), currency);
         EXPECT_EQ(pickedUtxos.size(), 3);
         EXPECT_EQ(pickedUtxos[0].index, 2);
         EXPECT_EQ(pickedUtxos[1].index, 0);
     }
 }
 
-
 TEST(MergeOutput, UtxoOrderingShouldUseConfirmedFirst) {
-    const api::Currency currency             = currencies::BITCOIN;
-    const int64_t feesPerByte                = 5;
-    int64_t outputAmount                     = 25000;
+    const api::Currency currency = currencies::BITCOIN;
+    const int64_t feesPerByte    = 5;
+    int64_t outputAmount         = 25000;
     std::vector<int64_t> inputAmounts{15000, 5000, 5000, 1000, 1001, 1002, 1003, 3000};
     std::vector<Option<uint64_t>> blockHeights(inputAmounts.size(), Option<uint64_t>{});
     blockHeights[1] = 1000;
     blockHeights[6] = 2000;
 
-    auto buddy               = createBuddy(feesPerByte, outputAmount, currency);
+    auto buddy      = createBuddy(feesPerByte, outputAmount, currency);
 
-    auto utxos               = createUtxos(inputAmounts, blockHeights);
+    auto utxos      = createUtxos(inputAmounts, blockHeights);
     {
-        auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithMergeOutputs(buddy, utxos, BigInt(-1), currency, true);
+        auto pickedUtxos = BitcoinLikeStrategyUtxoPicker::filterWithMergeOutputs(buddy, utxos, BigInt(-1), currency, true);
         EXPECT_EQ(pickedUtxos.size(), 8);
         EXPECT_EQ(pickedUtxos[0].index, 6);
         EXPECT_EQ(pickedUtxos[1].index, 1);
     }
     {
-        auto pickedUtxos         = BitcoinLikeStrategyUtxoPicker::filterWithMergeOutputs(buddy, utxos, BigInt(-1), currency, false);
+        auto pickedUtxos = BitcoinLikeStrategyUtxoPicker::filterWithMergeOutputs(buddy, utxos, BigInt(-1), currency, false);
         EXPECT_EQ(pickedUtxos.size(), 8);
         EXPECT_EQ(pickedUtxos[0].index, 3);
         EXPECT_EQ(pickedUtxos[1].index, 4);
@@ -313,7 +311,3 @@ TEST(OptimizeSize, FeeIsEnoughForP2TR) {
     for (int64_t feesPerByte = 1; feesPerByte < 1000000; feesPerByte *= 10)
         feeIsEnoughFor(address, targetOutputSizeInBytes, feesPerByte);
 }
-
-
-
-
