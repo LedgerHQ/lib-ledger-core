@@ -1269,43 +1269,67 @@ namespace ledger {
         template <>
         void migrate<32>(soci::session &sql, api::DatabaseBackendType /*type*/) {
             sql << R"(
-ALTER TABLE bitcoin_accounts
-    ADD COLUMN balance BIGINT default 0;
+alter table bitcoin_accounts
+     ADD COLUMN balance BIGINT default 0;
 
-CREATE OR REPLACE function sum_utxos(p_account_uid varchar(255), p_dust_amount integer)
+CREATE OR REPLACE function update_balance(p_account_uid varchar(255))
     RETURNS BIGINT
     LANGUAGE plpgsql
 AS
 $$
 DECLARE
-    balance BIGINT;
+    v_balance BIGINT;
 BEGIN
+    RAISE WARNING 'Update balance of account %', p_account_uid;
     SELECT sum(o.amount)::bigint
-    INTO balance
+    INTO v_balance
     FROM bitcoin_outputs AS o
              LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid
         AND i.previous_output_idx = o.idx
     WHERE i.previous_tx_uid IS NULL
-      AND o.account_uid = p_account_uid
-      AND o.amount > p_dust_amount;
+      AND o.account_uid = p_account_uid;
 
-    return balance;
+    UPDATE bitcoin_accounts SET balance = v_balance where uid = p_account_uid;
+
+    RAISE WARNING 'New balance = %', v_balance;
+    return v_balance;
 end;
 $$;
 
-CREATE OR REPLACE FUNCTION update_account_balance()
+CREATE OR REPLACE FUNCTION bitcoin_outputs_changed()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+AS
+$$
+BEGIN
+    RAISE WARNING 'Triggered bitcoin_outputs_changed with account uid %', NEW.account_uid;
+    PERFORM update_balance(NEW.account_uid);
+    RAISE WARNING 'End trigger bitcoin_outputs_changed';
+    RETURN NEW;
+end;
+$$;
+
+CREATE OR REPLACE FUNCTION bitcoin_inputs_changed()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL
 AS
 $$
 DECLARE
-    new_balance BIGINT;
+    uid varchar(255);
 BEGIN
-    SELECT sum_utxos INTO new_balance FROM sum_utxos(NEW.account_uid, 0);
+    RAISE WARNING 'Triggered bitcoin_inputs_changed with uid %', NEW.uid;
+    select o.account_uid into uid from bitcoin_inputs as i
+                                  right outer join bitcoin_outputs as o on o.transaction_uid = i.previous_tx_uid
+        and o.idx = i.previous_output_idx
+    WHERE i.previous_tx_uid IS NOT NULL and i.uid=NEW.uid;
 
-    UPDATE bitcoin_accounts SET balance = new_balance where uid = NEW.account_uid;
+    IF (uid IS NOT NULL) THEN
+        RAISE WARNING 'uid IS NOT NULL: %', uid;
+        PERFORM update_balance(uid);
+    END IF;
+    RAISE WARNING 'End trigger bitcoin_inputs_changed';
 
-    RETURN NEW;
+    return NEW;
 end;
 $$;
 
@@ -1313,7 +1337,13 @@ CREATE OR REPLACE TRIGGER bitcoin_outputs_changed
     AFTER INSERT OR UPDATE
     ON bitcoin_outputs
     FOR EACH ROW
-EXECUTE PROCEDURE update_account_balance();
+EXECUTE PROCEDURE bitcoin_outputs_changed();
+
+CREATE OR REPLACE TRIGGER bitcoin_inputs_changed
+    AFTER INSERT OR UPDATE
+    ON bitcoin_inputs
+    FOR EACH ROW
+EXECUTE PROCEDURE bitcoin_inputs_changed();
 
 
 -- Populate account balance for first time
@@ -1324,9 +1354,7 @@ $$
     BEGIN
         FOR account in SELECT * FROM bitcoin_accounts
             LOOP
-                update bitcoin_accounts
-                set balance = sum_utxos(account.uid, 0)
-                where uid = account.uid;
+                PERFORM update_balance(account.uid);
             END LOOP;
     end;
 $$;
