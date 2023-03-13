@@ -1280,7 +1280,7 @@ $$
 DECLARE
     v_balance BIGINT;
 BEGIN
-    RAISE WARNING 'Update balance of account %', p_account_uid;
+    -- RAISE NOTICE 'Update balance of account %', p_account_uid;
     SELECT sum(o.amount)::bigint
     INTO v_balance
     FROM bitcoin_outputs AS o
@@ -1291,7 +1291,7 @@ BEGIN
 
     UPDATE bitcoin_accounts SET balance = v_balance where uid = p_account_uid;
 
-    RAISE WARNING 'New balance = %', v_balance;
+    -- RAISE NOTICE 'New balance = %', v_balance;
     return v_balance;
 end;
 $$;
@@ -1302,9 +1302,9 @@ CREATE OR REPLACE FUNCTION bitcoin_outputs_changed()
 AS
 $$
 BEGIN
-    RAISE WARNING 'Triggered bitcoin_outputs_changed with account uid %', NEW.account_uid;
+    -- RAISE NOTICE 'Triggered bitcoin_outputs_changed with account uid %', NEW.account_uid;
     PERFORM update_balance(NEW.account_uid);
-    RAISE WARNING 'End trigger bitcoin_outputs_changed';
+    -- RAISE NOTICE 'End trigger bitcoin_outputs_changed';
     RETURN NEW;
 end;
 $$;
@@ -1317,17 +1317,17 @@ $$
 DECLARE
     uid varchar(255);
 BEGIN
-    RAISE WARNING 'Triggered bitcoin_inputs_changed with uid %', NEW.uid;
+    -- RAISE NOTICE 'Triggered bitcoin_inputs_changed with uid %', NEW.uid;
     select o.account_uid into uid from bitcoin_inputs as i
                                   right outer join bitcoin_outputs as o on o.transaction_uid = i.previous_tx_uid
         and o.idx = i.previous_output_idx
     WHERE i.previous_tx_uid IS NOT NULL and i.uid=NEW.uid;
 
     IF (uid IS NOT NULL) THEN
-        RAISE WARNING 'uid IS NOT NULL: %', uid;
+        -- RAISE NOTICE 'uid IS NOT NULL: %', uid;
         PERFORM update_balance(uid);
     END IF;
-    RAISE WARNING 'End trigger bitcoin_inputs_changed';
+    -- RAISE NOTICE 'End trigger bitcoin_inputs_changed';
 
     return NEW;
 end;
