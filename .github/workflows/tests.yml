@@ -86,8 +86,8 @@ jobs:
       - name: Setup Macos
         run: |
           brew install openssl
-          brew install postgresql@13
-          brew link --overwrite postgresql@13
+          brew install postgresql@14
+          brew link --overwrite postgresql@14
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
