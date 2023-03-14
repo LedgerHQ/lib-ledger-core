@@ -1364,8 +1364,10 @@ $$;
         template <>
         void rollback<32>(soci::session &sql, api::DatabaseBackendType /*type*/) {
             sql << "DROP TRIGGER bitcoin_outputs_changed on bitcoin_outputs;";
-            sql << "DROP FUNCTION update_account_balance;";
-            sql << "DROP FUNCTION sum_utxos;";
+            sql << "DROP TRIGGER bitcoin_inputs_changed on bitcoin_inputs;";
+            sql << "DROP FUNCTION update_balance;";
+            sql << "DROP FUNCTION bitcoin_outputs_changed;";
+            sql << "DROP FUNCTION bitcoin_inputs_changed;";
             sql << "ALTER TABLE bitcoin_accounts DROP COLUMN balance;";
         }
     } // namespace core
