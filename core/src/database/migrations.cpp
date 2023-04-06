@@ -1268,106 +1268,11 @@ namespace ledger {
 
         template <>
         void migrate<32>(soci::session &sql, api::DatabaseBackendType /*type*/) {
-            sql << R"(
-alter table bitcoin_accounts
-     ADD COLUMN balance BIGINT default 0;
-
-CREATE OR REPLACE function update_balance(p_account_uid varchar(255))
-    RETURNS BIGINT
-    LANGUAGE plpgsql
-AS
-$$
-DECLARE
-    v_balance BIGINT;
-BEGIN
-    -- RAISE NOTICE 'Update balance of account %', p_account_uid;
-    SELECT sum(o.amount)::bigint
-    INTO v_balance
-    FROM bitcoin_outputs AS o
-             LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid
-        AND i.previous_output_idx = o.idx
-    WHERE i.previous_tx_uid IS NULL
-      AND o.account_uid = p_account_uid;
-
-    UPDATE bitcoin_accounts SET balance = v_balance where uid = p_account_uid;
-
-    -- RAISE NOTICE 'New balance = %', v_balance;
-    return v_balance;
-end;
-$$;
-
-CREATE OR REPLACE FUNCTION bitcoin_outputs_changed()
-    RETURNS TRIGGER
-    LANGUAGE PLPGSQL
-AS
-$$
-BEGIN
-    -- RAISE NOTICE 'Triggered bitcoin_outputs_changed with account uid %', NEW.account_uid;
-    PERFORM update_balance(NEW.account_uid);
-    -- RAISE NOTICE 'End trigger bitcoin_outputs_changed';
-    RETURN NEW;
-end;
-$$;
-
-CREATE OR REPLACE FUNCTION bitcoin_inputs_changed()
-    RETURNS TRIGGER
-    LANGUAGE PLPGSQL
-AS
-$$
-DECLARE
-    uid varchar(255);
-BEGIN
-    -- RAISE NOTICE 'Triggered bitcoin_inputs_changed with uid %', NEW.uid;
-    select o.account_uid into uid from bitcoin_inputs as i
-                                  right outer join bitcoin_outputs as o on o.transaction_uid = i.previous_tx_uid
-        and o.idx = i.previous_output_idx
-    WHERE i.previous_tx_uid IS NOT NULL and i.uid=NEW.uid;
-
-    IF (uid IS NOT NULL) THEN
-        -- RAISE NOTICE 'uid IS NOT NULL: %', uid;
-        PERFORM update_balance(uid);
-    END IF;
-    -- RAISE NOTICE 'End trigger bitcoin_inputs_changed';
-
-    return NEW;
-end;
-$$;
-
-CREATE OR REPLACE TRIGGER bitcoin_outputs_changed
-    AFTER INSERT OR UPDATE
-    ON bitcoin_outputs
-    FOR EACH ROW
-EXECUTE PROCEDURE bitcoin_outputs_changed();
-
-CREATE OR REPLACE TRIGGER bitcoin_inputs_changed
-    AFTER INSERT OR UPDATE
-    ON bitcoin_inputs
-    FOR EACH ROW
-EXECUTE PROCEDURE bitcoin_inputs_changed();
-
-
--- Populate account balance for first time
-DO
-$$
-    DECLARE
-        account bitcoin_accounts%rowtype;
-    BEGIN
-        FOR account in SELECT * FROM bitcoin_accounts
-            LOOP
-                PERFORM update_balance(account.uid);
-            END LOOP;
-    end;
-$$;
-)";
+            sql << "ALTER TABLE bitcoin_accounts ADD COLUMN balance BIGINT DEFAULT -1;";
         }
 
         template <>
         void rollback<32>(soci::session &sql, api::DatabaseBackendType /*type*/) {
-            sql << "DROP TRIGGER bitcoin_outputs_changed on bitcoin_outputs;";
-            sql << "DROP TRIGGER bitcoin_inputs_changed on bitcoin_inputs;";
-            sql << "DROP FUNCTION update_balance;";
-            sql << "DROP FUNCTION bitcoin_outputs_changed;";
-            sql << "DROP FUNCTION bitcoin_inputs_changed;";
             sql << "ALTER TABLE bitcoin_accounts DROP COLUMN balance;";
         }
     } // namespace core

@@ -21,7 +21,7 @@ jobs:
         password: ${{ secrets.CI_BOT_TOKEN }}
     services:
       postgres:
-        image: postgres:14
+        image: postgres:12
         env:
           POSTGRES_USER: libcore
           POSTGRES_PASSWORD: libcore_pwd

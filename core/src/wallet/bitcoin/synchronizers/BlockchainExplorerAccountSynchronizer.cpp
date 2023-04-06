@@ -30,6 +30,8 @@
  */
 #include "BlockchainExplorerAccountSynchronizer.h"
 
+#include "wallet/bitcoin/database/BitcoinLikeUTXODatabaseHelper.h"
+
 #include <async/FutureUtils.hpp>
 #include <async/algorithm.h>
 #include <debug/Benchmarker.h>
@@ -535,6 +537,10 @@ namespace ledger {
                                          buddy->account->getWallet()->getName(), duration.count());
                     buddy->logger->error("Due to {}, {}", api::to_string(ex.getErrorCode()), ex.getMessage());
                     return buddy->context;
+                })
+                .then(account->getContext(), [account, buddy]() {
+                    soci::session sql(buddy->wallet->getDatabase()->getPool());
+                    BitcoinLikeUTXODatabaseHelper::updateBalance(sql, account->getAccountUid());
                 });
         };
 

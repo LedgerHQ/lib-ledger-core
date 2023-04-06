@@ -54,6 +54,10 @@ namespace ledger {
             static BigInt getBalance(soci::session &sql,
                                      const std::string &accountUid);
 
+            // Only used for tests (by libcore btc sync)
+            static void updateBalance(soci::session &sql,
+                                         const std::string &accountUid);
+
             static std::size_t UTXOcount(soci::session &sql,
                                          const std::string &accountUid,
                                          int64_t dustAmount);
