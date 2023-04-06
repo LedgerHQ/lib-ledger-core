@@ -56,7 +56,7 @@ namespace ledger {
 
             // Only used for tests (by libcore btc sync)
             static void updateBalance(soci::session &sql,
-                                         const std::string &accountUid);
+                                      const std::string &accountUid);
 
             static std::size_t UTXOcount(soci::session &sql,
                                          const std::string &accountUid,
