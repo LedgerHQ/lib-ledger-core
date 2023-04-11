@@ -1265,5 +1265,15 @@ namespace ledger {
         void rollback<31>(soci::session &sql, api::DatabaseBackendType /*type*/) {
             sql << "ALTER TABLE tezos_transactions DROP explorer_id";
         }
+
+        template <>
+        void migrate<32>(soci::session &sql, api::DatabaseBackendType /*type*/) {
+            sql << "ALTER TABLE bitcoin_accounts ADD COLUMN balance BIGINT DEFAULT -1;";
+        }
+
+        template <>
+        void rollback<32>(soci::session &sql, api::DatabaseBackendType /*type*/) {
+            sql << "ALTER TABLE bitcoin_accounts DROP COLUMN balance;";
+        }
     } // namespace core
 } // namespace ledger
