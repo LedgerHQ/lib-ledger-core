@@ -112,7 +112,7 @@ namespace ledger {
                 if (row.get_indicator(0) != i_null) {
                     auto balance = row.get<BigInt>(0);
                     if (balance.isNegative()) {
-                        // We compute balance from DB instead of updating it, to let only lama-bitcoin doing the update
+                        // We compute balance from DB instead of updating it, to let only the sync (lama-bitcoin or libcore, depending on the coin) doing the update
                         return getUncachedBalance(sql, accountUid);
                     }
                     return balance;
@@ -122,7 +122,6 @@ namespace ledger {
         }
 
         void BitcoinLikeUTXODatabaseHelper::updateBalance(session &sql, const std::string &accountUid) {
-            // Only used for tests (by libcore btc sync), production update of balance is made by lama-bitcoin
             const rowset<row> rows = (sql.prepare << std::string{"UPDATE bitcoin_accounts SET balance = ("} + uncachedBalanceQuery + ") WHERE uid = :uid;",
                                       use(accountUid), use(accountUid));
         }
