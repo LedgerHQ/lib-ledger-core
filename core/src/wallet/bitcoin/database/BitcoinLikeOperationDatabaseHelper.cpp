@@ -233,7 +233,7 @@ namespace {
     const auto UPSERT_OUTPUT = db::stmt<OutputBinding>(
         "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, "
         ":account_uid, :block_height, :replaceable) "
-        "ON CONFLICT DO NOTHING",
+        "ON CONFLICT(idx, transaction_uid) DO UPDATE SET block_height=excluded.block_height",
         [](auto &s, auto &b) {
             s, use(b.index), use(b.txUid), use(b.txHash), use(b.amount),
                 use(b.script), use(b.address), use(b.accountUid),
