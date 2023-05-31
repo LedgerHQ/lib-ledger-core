@@ -107,6 +107,8 @@ enum class ErrorCode : int {
     INVALID_STELLAR_MEMO_TYPE,
     /** Tezos errors */
     INVALID_SELF_TX,
+    /** Exolorer errors */
+    EXPLORER_ERROR,
 };
 LIBCORE_EXPORT  std::string to_string(const ErrorCode& errorCode);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const ErrorCode &o);

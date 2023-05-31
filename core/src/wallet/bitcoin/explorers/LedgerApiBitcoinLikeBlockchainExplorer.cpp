@@ -62,9 +62,12 @@ namespace ledger {
             return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send", getExplorerVersion(), getNetworkParameters().Identifier),
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
                                headers)
-                .json()
+                .json(false, true, false)
                 .template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
                     auto &json = *std::get<1>(result);
+                    if (!json.HasMember("result")) {
+                        throw Exception(api::ErrorCode::EXPLORER_ERROR, fmt::format("Got explorer error: {}", json["message"].GetString()));
+                    }
                     return json["result"].GetString();
                 });
         }

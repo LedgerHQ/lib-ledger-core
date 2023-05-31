@@ -108,6 +108,9 @@ ErrorCode = enum {
 
     # Tezos errors
     invalid_self_tx;
+
+    # Exolorer errors
+    explorer_error;
 }
 
 Error = record {
