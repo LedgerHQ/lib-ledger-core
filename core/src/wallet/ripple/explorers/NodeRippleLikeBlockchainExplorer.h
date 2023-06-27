@@ -86,6 +86,16 @@ namespace ledger {
                 return *this;
             };
 
+            NodeRippleLikeBodyRequest &pushParameter(const std::string &key, uint64_t value) {
+                rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
+                rapidjson::Value vKeyParam(rapidjson::kStringType);
+                vKeyParam.SetString(key.c_str(), static_cast<rapidjson::SizeType>(key.length()), allocator);
+                rapidjson::Value vParam(rapidjson::kNumberType);
+                vParam.SetUint64(value);
+                _params.AddMember(vKeyParam, vParam, allocator);
+                return *this;
+            };
+
             NodeRippleLikeBodyRequest &pushParameterBool(const std::string &key, bool value) {
                 // TODO: C++17 group all 3 pushParameter in a single one with a if constexpr ()
                 rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();

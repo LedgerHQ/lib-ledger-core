@@ -215,7 +215,8 @@ namespace ledger {
             bodyRequest.pushParameter("account", addresses[0]);
             bodyRequest.pushParameterBool("forward", true);
             if (fromBlockHash.hasValue() && _paginationMarker.empty()) {
-                bodyRequest.pushParameter("ledger_index_min", fromBlockHash.getValue());
+                BigInt blockHash{fromBlockHash.getValue()};
+                bodyRequest.pushParameter("ledger_index_min", blockHash.toUint64());
             }
 
             // handle transaction pagination in the case we have a pagination marker, which happens
