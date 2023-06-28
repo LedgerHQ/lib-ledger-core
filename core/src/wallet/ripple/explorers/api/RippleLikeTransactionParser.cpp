@@ -161,7 +161,7 @@ namespace ledger {
                     _transaction->sender = value;
                 } else if (_lastKey == "Destination") {
                     _transaction->receiver = value;
-                } else if (_lastKey == "Amount") {
+                } else if (_lastKey == "Amount" || _lastKey == "DeliveredAmount") {
                     BigInt valueBigInt  = BigInt::fromString(value);
                     _transaction->value = valueBigInt;
                 } else if (_lastKey == "Fee") {
