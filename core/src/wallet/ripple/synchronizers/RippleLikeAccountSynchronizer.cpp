@@ -48,6 +48,8 @@
 namespace ledger {
     namespace core {
 
+        constexpr auto subPreferencesPrefix = "RippleLikeAccountSynchronizer";
+
         namespace {
 
             void initializeSavedState(
@@ -87,7 +89,7 @@ namespace ledger {
         RippleLikeAccountSynchronizer::RippleLikeAccountSynchronizer(
             const std::shared_ptr<WalletPool> &pool,
             const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer)
-            : DedicatedContext(pool->getDispatcher()->getThreadPoolExecutionContext("synchronizers")), _explorer(explorer) {}
+            : DedicatedContext(pool->getDispatcher()->getThreadPoolExecutionContext("synchronizers")), _explorer(explorer), _savedStateProvider{} {}
 
         std::shared_ptr<ProgressNotifier<AccountSynchronizationContext>>
         RippleLikeAccountSynchronizer::synchronizeAccount(const std::shared_ptr<RippleLikeAccount> &account) {
@@ -119,7 +121,7 @@ namespace ledger {
             buddy->account     = account;
             buddy->preferences = std::static_pointer_cast<AbstractAccount>(account)
                                      ->getInternalPreferences()
-                                     ->getSubPreferences("RippleLikeAccountSynchronizer");
+                                     ->getSubPreferences(subPreferencesPrefix);
             auto loggerPurpose = fmt::format("synchronize_{}", account->getAccountUid());
             auto tracePrefix   = fmt::format(
                   "{}/{}/{}",
@@ -551,6 +553,21 @@ namespace ledger {
                         std::pair<std::string, std::string>(row.get<std::string>(1), row.get<std::string>(0)));
                 }
             }
+        }
+
+        Option<AccountSynchronizationSavedState> RippleLikeAccountSynchronizer::getSavedState(const std::shared_ptr<RippleLikeAccount> &account) {
+            return getSavedStateProvider(account)->getSavedState();
+        }
+
+        void RippleLikeAccountSynchronizer::setSavedState(const std::shared_ptr<RippleLikeAccount> &account, AccountSynchronizationSavedState &savedState) {
+            getSavedStateProvider(account)->setSavedState(savedState);
+        }
+
+        std::unique_ptr<RippleLikeAccountSynchronizer::SavedStateProviderType> RippleLikeAccountSynchronizer::getSavedStateProvider(const std::shared_ptr<RippleLikeAccount> &account) {
+            auto subPreferences = std::static_pointer_cast<AbstractAccount>(account)
+                                      ->getInternalPreferences()
+                                      ->getSubPreferences(subPreferencesPrefix);
+            return std::make_unique<SavedStateProviderType>(subPreferences);
         }
 
     } // namespace core

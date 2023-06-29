@@ -123,6 +123,8 @@ namespace ledger {
 
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
+            void eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date) override;
+
           private:
             std::shared_ptr<RippleLikeAccount> getSelf();
 

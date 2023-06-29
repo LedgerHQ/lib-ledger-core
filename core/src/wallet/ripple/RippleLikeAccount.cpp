@@ -288,6 +288,27 @@ namespace ledger {
             return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
         }
 
+        void RippleLikeAccount::eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date) {
+            // Update account's internal preferences (for synchronization)
+
+            auto selfPtr    = std::static_pointer_cast<RippleLikeAccount>(shared_from_this());
+            auto savedState = _synchronizer->getSavedState(selfPtr);
+            if (savedState.nonEmpty()) {
+                // Reset batches to blocks mined before given date
+                auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
+                for (auto &batch : savedState.getValue().batches) {
+                    if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
+                        batch.blockHeight = (uint32_t)previousBlock.getValue().height;
+                        batch.blockHash   = previousBlock.getValue().blockHash;
+                    } else if (!previousBlock.nonEmpty()) { // if no previous block, sync should go back from genesis block
+                        batch.blockHeight = 0;
+                        batch.blockHash   = "";
+                    }
+                }
+                _synchronizer->setSavedState(selfPtr, savedState.getValue());
+            }
+        }
+
         bool RippleLikeAccount::isSynchronizing() {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
             return _currentSyncEventBus != nullptr;
