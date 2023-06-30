@@ -130,6 +130,8 @@ namespace ledger {
             Option<AccountSynchronizationSavedState> getSavedState(const std::shared_ptr<RippleLikeAccount> &account);
             void setSavedState(const std::shared_ptr<RippleLikeAccount> &account, AccountSynchronizationSavedState &savedState);
 
+            void eraseDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date, const std::shared_ptr<RippleLikeAccount> &account);
+
           private:
             std::unique_ptr<RippleLikeAccountSynchronizer::SavedStateProviderType> getSavedStateProvider(const std::shared_ptr<RippleLikeAccount> &account);
 

@@ -281,32 +281,15 @@ namespace ledger {
             //  Clear synchronizer state
             eraseSynchronizerDataSince(sql, date);
 
+            // Update block height in internal preferences
+            auto selfPtr = std::static_pointer_cast<RippleLikeAccount>(shared_from_this());
+            _synchronizer->eraseDataSince(sql, date, selfPtr);
+
             auto accountUid = getAccountUid();
             RippleLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
 
             log->debug(" Finish erasing data of account : {}", accountUid);
             return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
-        }
-
-        void RippleLikeAccount::eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date) {
-            // Update account's internal preferences (for synchronization)
-
-            auto selfPtr    = std::static_pointer_cast<RippleLikeAccount>(shared_from_this());
-            auto savedState = _synchronizer->getSavedState(selfPtr);
-            if (savedState.nonEmpty()) {
-                // Reset batches to blocks mined before given date
-                auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
-                for (auto &batch : savedState.getValue().batches) {
-                    if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
-                        batch.blockHeight = (uint32_t)previousBlock.getValue().height;
-                        batch.blockHash   = previousBlock.getValue().blockHash;
-                    } else if (!previousBlock.nonEmpty()) { // if no previous block, sync should go back from genesis block
-                        batch.blockHeight = 0;
-                        batch.blockHash   = "";
-                    }
-                }
-                _synchronizer->setSavedState(selfPtr, savedState.getValue());
-            }
         }
 
         bool RippleLikeAccount::isSynchronizing() {
