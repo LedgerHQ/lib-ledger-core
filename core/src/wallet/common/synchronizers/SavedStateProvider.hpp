@@ -1,9 +1,8 @@
 #pragma once
 
-#include "../../preferences/Preferences.hpp"
-#include "../../utils/Option.hpp"
-
 #include <memory>
+#include <preferences/Preferences.hpp>
+#include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {

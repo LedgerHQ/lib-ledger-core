@@ -36,7 +36,7 @@
 #include <memory>
 #include <mutex>
 #include <utils/Option.hpp>
-#include <wallet/common/SavedStateProvider.hpp>
+#include <wallet/common/synchronizers/SavedStateProvider.hpp>
 #include <wallet/pool/WalletPool.hpp>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 #include <wallet/ripple/keychains/RippleLikeKeychain.h>
