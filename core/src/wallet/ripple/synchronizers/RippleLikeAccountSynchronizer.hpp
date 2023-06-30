@@ -35,6 +35,8 @@
 #include <events/ProgressNotifier.h>
 #include <memory>
 #include <mutex>
+#include <utils/Option.hpp>
+#include <wallet/common/synchronizers/SavedStateProvider.hpp>
 #include <wallet/pool/WalletPool.hpp>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 #include <wallet/ripple/keychains/RippleLikeKeychain.h>
@@ -93,6 +95,8 @@ namespace ledger {
         class RippleLikeAccountSynchronizer : public DedicatedContext,
                                               public std::enable_shared_from_this<RippleLikeAccountSynchronizer> {
           public:
+            using SavedStateProviderType = SavedStateProvider<AccountSynchronizationSavedState>;
+
             RippleLikeAccountSynchronizer(
                 const std::shared_ptr<WalletPool> &pool,
                 const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer);
@@ -123,12 +127,20 @@ namespace ledger {
                 std::shared_ptr<SynchronizationBuddy> &buddy,
                 const std::string &accountUid);
 
+            Option<AccountSynchronizationSavedState> getSavedState(const std::shared_ptr<RippleLikeAccount> &account);
+            void setSavedState(const std::shared_ptr<RippleLikeAccount> &account, AccountSynchronizationSavedState &savedState);
+
+            void eraseDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date, const std::shared_ptr<RippleLikeAccount> &account);
+
           private:
+            std::unique_ptr<RippleLikeAccountSynchronizer::SavedStateProviderType> getSavedStateProvider(const std::shared_ptr<RippleLikeAccount> &account);
+
             std::shared_ptr<RippleLikeBlockchainExplorer> _explorer;
             std::shared_ptr<ProgressNotifier<AccountSynchronizationContext>> _notifier;
             std::mutex _lock;
             std::shared_ptr<RippleLikeAccount> _currentAccount;
             std::shared_ptr<Preferences> _internalPreferences;
+            std::unique_ptr<SavedStateProviderType> _savedStateProvider;
         };
 
     } // namespace core

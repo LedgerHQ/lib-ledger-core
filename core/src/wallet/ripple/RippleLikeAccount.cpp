@@ -281,6 +281,10 @@ namespace ledger {
             //  Clear synchronizer state
             eraseSynchronizerDataSince(sql, date);
 
+            // Update block height in internal preferences
+            auto selfPtr = std::static_pointer_cast<RippleLikeAccount>(shared_from_this());
+            _synchronizer->eraseDataSince(sql, date, selfPtr);
+
             auto accountUid = getAccountUid();
             RippleLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
 
