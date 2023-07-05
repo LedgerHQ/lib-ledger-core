@@ -115,6 +115,10 @@ namespace ledger {
             return _notifier;
         }
 
+        std::shared_ptr<spdlog::logger> getLogger(const std::string &loggerPurpose, const std::string &tracePrefix, const std::shared_ptr<RippleLikeAccount> &account) {
+            return logger::trace(loggerPurpose, tracePrefix, account->logger());
+        }
+
         Future<AccountSynchronizationContext>
         RippleLikeAccountSynchronizer::performSynchronization(const std::shared_ptr<RippleLikeAccount> &account) {
             auto buddy         = std::make_shared<SynchronizationBuddy>();
@@ -122,14 +126,13 @@ namespace ledger {
             buddy->preferences = std::static_pointer_cast<AbstractAccount>(account)
                                      ->getInternalPreferences()
                                      ->getSubPreferences(subPreferencesPrefix);
-            auto loggerPurpose = fmt::format("synchronize_{}", account->getAccountUid());
-            auto tracePrefix   = fmt::format(
-                  "{}/{}/{}",
-                  account->getWallet()->getPool()->getName(),
-                  account->getWallet()->getName(),
-                  account->getIndex());
+            auto tracePrefix = fmt::format(
+                "{}/{}/{}",
+                account->getWallet()->getPool()->getName(),
+                account->getWallet()->getName(),
+                account->getIndex());
             buddy->synchronizationTag = tracePrefix;
-            buddy->logger             = logger::trace(loggerPurpose, tracePrefix, account->logger());
+            buddy->logger             = getLogger(fmt::format("synchronize_{}", account->getAccountUid()), tracePrefix, account);
             buddy->startDate          = DateUtils::now();
             buddy->wallet             = account->getWallet();
             buddy->configuration      = account->getWallet()->getConfig();
@@ -564,20 +567,37 @@ namespace ledger {
         }
 
         void RippleLikeAccountSynchronizer::eraseDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date, const std::shared_ptr<RippleLikeAccount> &account) {
-            auto savedState = getSavedState(account);
+            auto tracePrefix = fmt::format(
+                "{}/{}/{}",
+                account->getWallet()->getPool()->getName(),
+                account->getWallet()->getName(),
+                account->getIndex());
+            auto logger               = getLogger(fmt::format("eraseDataSince_{}", account->getAccountUid()), tracePrefix, account);
+
+            constexpr auto funcPrefix = "Erasing synchronizer data (ripple account):";
+            auto savedState           = getSavedState(account);
             if (savedState.nonEmpty()) {
                 // Reset batches to blocks mined before given date
                 auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, account->getWallet()->getCurrency().name, date);
+                logger->debug("{} starting with previousBlock={}", funcPrefix, previousBlock.nonEmpty() ? std::to_string(previousBlock.getValue().height) : "NA");
+
                 for (auto &batch : savedState.getValue().batches) {
                     if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
+                        logger->debug("{} block change {} -> {}", funcPrefix, batch.blockHeight, previousBlock.getValue().height);
                         batch.blockHeight = static_cast<uint32_t>(previousBlock.getValue().height);
                         batch.blockHash   = previousBlock.getValue().blockHash;
                     } else if (!previousBlock.nonEmpty()) { // if no previous block, sync should go back from genesis block
+                        logger->debug("{} block change {} -> 0", funcPrefix, batch.blockHeight);
                         batch.blockHeight = 0;
                         batch.blockHash   = "";
+                    } else {
+                        logger->debug("{} block skipped", funcPrefix);
                     }
                 }
                 setSavedState(account, savedState.getValue());
+                logger->debug("{} finished", funcPrefix);
+            } else {
+                logger->debug("{} no prior saved state, doing nothing.", funcPrefix);
             }
         }
 

@@ -285,20 +285,33 @@ namespace ledger {
 
         void AbstractAccount::eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date) {
             // Update account's internal preferences (for synchronization)
-            auto savedState = getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
+            constexpr auto funcPrefix = "Erasing synchronizer data (abstract account):";
+            auto savedState           = getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
+
             if (savedState.nonEmpty()) {
                 // Reset batches to blocks mined before given date
                 auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
+                logger()->debug("{} starting with previousBlock={}", funcPrefix, previousBlock.nonEmpty() ? std::to_string(previousBlock.getValue().height) : "NA");
+
                 for (auto &batch : savedState.getValue().batches) {
                     if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
+                        logger()->debug("{} block change {} -> {}", funcPrefix, batch.blockHeight, previousBlock.getValue().height);
                         batch.blockHeight = (uint32_t)previousBlock.getValue().height;
                         batch.blockHash   = previousBlock.getValue().blockHash;
                     } else if (!previousBlock.nonEmpty()) { // if no previous block, sync should go back from genesis block
+                        logger()->debug("{} block change {} -> 0", funcPrefix, batch.blockHeight);
                         batch.blockHeight = 0;
                         batch.blockHash   = "";
+                    } else {
+                        logger()->debug("{} block skipped", funcPrefix);
                     }
                 }
+
                 getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
+                logger()->debug("{} finished", funcPrefix);
+
+            } else {
+                logger()->debug("{} no prior saved state, doing nothing.", funcPrefix);
             }
         }
 
