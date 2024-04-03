@@ -98,8 +98,7 @@ namespace {
             auto prevTxOutputIndex = input->getPreviousOutputIndex().value_or(0);
             BitcoinLikeBlockchainExplorerTransaction prevTx;
             if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(
-                    sql, prevTxHash, accountUid, prevTx) ||
-                prevTxOutputIndex >= prevTx.outputs.size()) {
+                    sql, prevTxHash, accountUid, prevTx)) {
                 throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND,
                                      "Transaction {} not found while broadcasting",
                                      prevTxHash);
