@@ -2,8 +2,8 @@
 
 Core library which will be used by Ledger applications.
 
-> This project is considered "legacy", and no new coin support will arrive in the repo;
-> only updates related to currently supported protocols.
+> [!IMPORTANT] 
+> **This project is considered deprecated and is no longer maintained.** No new coin support or functionalities will be added, and it is not intended for use in new projects.
 
   - [Clone project](#clone-project)
   - [Dependencies](#dependencies)
