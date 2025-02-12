@@ -9,7 +9,6 @@ else
 fi
 echo "Enable debug compilation " $trace
 PACKAGE_NAME=ledgerapp_nodejs
-DEST=api/core/nodejs
 CORE_CPP_API_DIRECTORY=core/src/api
 CORE_CPP_JNI_DIRECTORY=core/src/jni
 
@@ -20,7 +19,7 @@ CORE_CPP_JNI_DIRECTORY=core/src/jni
 # by EXPORT_MACRO_NAME option) should be exactly same name in upper case
 
 # prune export directories
-rm -rf $DEST $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
+rm -rf $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
 
 ./djinni/src/run    --idl ./core/core.djinni \
                     --cpp-out $CORE_CPP_API_DIRECTORY \
@@ -31,10 +30,6 @@ rm -rf $DEST $CORE_CPP_API_DIRECTORY $CORE_CPP_JNI_DIRECTORY
                     --jni-out $CORE_CPP_JNI_DIRECTORY/jni \
                     --java-out api/core/java \
                     --java-package co.ledger.core \
-                    --node-out $DEST \
-                    --node-type-prefix NJS \
-                    --node-include-cpp ../../../core/src/api \
-                    --node-package $PACKAGE_NAME \
                     --export-header-name libcore_export \
                     --trace $trace
 
