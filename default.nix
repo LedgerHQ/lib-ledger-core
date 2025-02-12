@@ -96,10 +96,6 @@ pkgs.compilationStdenv.mkDerivation {
     echo "=====> Libcore version : $LIB_VERSION"
 
     echo "======= Pushing to S3 =========="
-    cd $out/lib
-    ls -la
-    aws s3 sync ./ s3://ledger-lib-ledger-core/$LIB_VERSION/ --acl public-read --exclude "*" --include "*.so" --include "*.dylib" && \
-    aws s3 ls s3://ledger-lib-ledger-core/$LIB_VERSION;
-    cd -
+    echo "Publishing to the S3 bucket has been disabled."
   '';
 }
